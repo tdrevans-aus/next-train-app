@@ -20,6 +20,67 @@
     remindMe: true,
   };
 
+  /**
+   * Melbourne + Adelaide relabelled to terminus-only/Perth style 22 Sep 2026
+   * (docs/jim-brief-melbourne-direction-labels-perth-style.md) — a saved journey created under
+   * the retired "<Line> Line + <terminus>" / "<line> <terminus>" format migrates to the new
+   * terminus-only / hub-bound-with-line-in-parens format the next time it's normalized (every
+   * app load). Mirrors lib/cities/melbourne/direction-labels.js's METRO_LINE_NAMES and
+   * lib/cities/adelaide/line-map.json's line names — this file has no import access to lib/, so
+   * the two are kept in sync by hand.
+   */
+  const LEGACY_DIRECTION_ALIASES = (function buildLegacyDirectionAliases() {
+    const aliases = {};
+
+    const MELBOURNE_HUB = "Flinders Street";
+    const MELBOURNE_METRO_LINE_NAMES = {
+      ALM: "Alamein",
+      BEG: "Belgrave",
+      CBE: "Cranbourne",
+      CGB: "Craigieburn",
+      FKN: "Frankston",
+      GWY: "Glen Waverley",
+      HBE: "Hurstbridge",
+      LIL: "Lilydale",
+      MDD: "Mernda",
+      PKM: "Pakenham",
+      RCE: "Racecourse",
+      SHM: "Sandringham",
+      STY: "Stony Point",
+      SUY: "Sunbury",
+      UFD: "Upfield",
+      WER: "Werribee",
+      WIL: "Williamstown",
+    };
+    for (const lineName of Object.values(MELBOURNE_METRO_LINE_NAMES)) {
+      aliases[`${lineName} Line + ${lineName}`] = lineName;
+      aliases[`${lineName} Line + ${lineName} via City Loop`] = `${lineName} via City Loop`;
+      aliases[`${lineName} Line + ${MELBOURNE_HUB}`] = `${MELBOURNE_HUB} (${lineName} Line)`;
+    }
+
+    const ADELAIDE_HUB = "Adelaide Railway Station";
+    const ADELAIDE_LINE_NAME_BY_TERMINUS = {
+      Belair: "Belair line",
+      Seaford: "Seaford line",
+      Flinders: "Flinders line",
+      "Gawler Central": "Gawler line",
+      "Outer Harbor": "Outer Harbor line",
+      "Port Dock": "Port Dock line",
+      Grange: "Grange line",
+    };
+    for (const [terminus, lineName] of Object.entries(ADELAIDE_LINE_NAME_BY_TERMINUS)) {
+      aliases[`${lineName} ${terminus}`] = terminus;
+      aliases[`${lineName} ${ADELAIDE_HUB}`] = `${ADELAIDE_HUB} (${lineName})`;
+    }
+
+    return aliases;
+  })();
+
+  function migrateLegacyDirectionLabel(direction) {
+    const trimmed = String(direction || "").trim();
+    return LEGACY_DIRECTION_ALIASES[trimmed] || direction;
+  }
+
   let deps = {};
 
   function init(nextDeps = {}) {
@@ -345,7 +406,9 @@ function normalizeJourney(raw = {}) {
     id: raw.id || createJourneyId(),
     name: String(raw.name || "Journey").trim() || "Journey",
     station: raw.station ? deps.normalizeStation(raw.station) : "",
-    direction: raw.direction ? deps.normalizeDirection(raw.direction) : "",
+    direction: raw.direction
+      ? deps.normalizeDirection(migrateLegacyDirectionLabel(raw.direction))
+      : "",
     leaveBeforeMinutes:
       Number(raw.leaveBeforeMinutes) || DEFAULT_SETTINGS.leaveBeforeMinutes,
     useLeaveBefore: raw.useLeaveBefore !== false,

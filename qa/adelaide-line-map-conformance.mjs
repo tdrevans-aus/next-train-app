@@ -2,7 +2,8 @@
  * D5 — Offline Adelaide line-map conformance (published D1 vs hand-locked D2).
  * Usage: node qa/adelaide-line-map-conformance.mjs
  *
- * LABEL_EXPECTATIONS: line + terminus. Hub is Adelaide Railway Station.
+ * LABEL_EXPECTATIONS: terminus only, Perth style (relabelled 22 Sep 2026,
+ * docs/jim-brief-melbourne-direction-labels-perth-style.md). Hub is Adelaide Railway Station.
  * Port Dock is a seventh printed line. Tonsley is not a line.
  */
 import { existsSync, readFileSync } from "fs";
@@ -17,15 +18,7 @@ const HUB = "Adelaide Railway Station";
 const DIRECTION_CEILING = 16;
 const FROZEN_SHORT_TURN_GROUPS = {};
 
-const HUB_LABELS = [
-  "Belair line Belair",
-  "Flinders line Flinders",
-  "Gawler line Gawler Central",
-  "Grange line Grange",
-  "Outer Harbor line Outer Harbor",
-  "Port Dock line Port Dock",
-  "Seaford line Seaford",
-];
+const HUB_LABELS = ["Belair", "Flinders", "Gawler Central", "Grange", "Outer Harbor", "Port Dock", "Seaford"];
 
 const H6_STATIONS = [
   "Adelaide Railway Station",
@@ -179,7 +172,7 @@ function main() {
   for (const station of H6_STATIONS) {
     const labels = marketingLabelsForStation(station);
     if (labels.length === 0) {
-      failures.push(`C7: ${station} has no line+terminus labels`);
+      failures.push(`C7: ${station} has no direction labels`);
     }
     if (labels.length > DIRECTION_CEILING) {
       failures.push(`C7: ${station} has ${labels.length} labels (ceiling ${DIRECTION_CEILING})`);

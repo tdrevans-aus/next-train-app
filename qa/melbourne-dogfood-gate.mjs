@@ -16,6 +16,11 @@
  * time — a coverage gap by design, not a feed failure) and all 13 V/Line route_ids, including
  * both structurally-excluded ones (Albury, Warrnambool).
  *
+ * Direction labels relabelled to terminus-only/Perth style 22 Sep 2026
+ * (docs/jim-brief-melbourne-direction-labels-perth-style.md): assertions (a)-(d) below cover the
+ * pre-existing loop/spine rules, (e) covers the new terminus-only/hub-parenthetical format, (f)
+ * covers the terminating-here-is-an-arrival filter.
+ *
  * Most assertions below are pure-function/offline (direction-label derivation, board eligibility
  * filtering, catalog/registry wiring) — no network. A handful of real end-to-end
  * fetchStationBoard() calls at the bottom prove the wiring against the real Open Data Portal
@@ -42,12 +47,14 @@ import {
   METRO_TUNNEL_SPINE_CODES,
   VIA_CITY_LOOP_SUFFIX_STATIONS,
   CITY_LOOP_STATIONS,
+  HUB_TERMINUS,
   routeCodeFromTripId,
   stripLoopTunnelSuffix,
   buildLoopTripIdSet,
   buildMetroDirectionLabel,
   buildVlineDirectionLabel,
   isVlineTripAllowed,
+  isTerminatingAtStation,
   VLINE_EXCLUDED_ROUTE_CODES,
 } from "../lib/cities/melbourne/direction-labels.js";
 import {
@@ -168,9 +175,17 @@ for (const code of METRO_TUNNEL_SPINE_CODES) {
     stationName: "Dandenong",
     isViaLoop: false,
   });
-  assert(!/\+\s*$/.test(label), `(a) terminus must never be blank on the ${code} spine — got "${label}"`);
+  assert(label.trim().length > 0, `(a) terminus must never be blank on the ${code} spine — got "${label}"`);
   assert(label.includes(METRO_LINE_NAMES[code]), `(a) blank-destination fallback must still name the ${code} line`);
 }
+assert(
+  buildMetroDirectionLabel({ tripId: "02-CBE--1-1", destination: "Pakenham", stationName: "Dandenong", isViaLoop: false }) === "Pakenham",
+  "(a) Cranbourne vs Pakenham must stay distinct terminus-only labels at Dandenong"
+);
+assert(
+  buildMetroDirectionLabel({ tripId: "02-PKM--1-1", destination: "Cranbourne", stationName: "Dandenong", isViaLoop: false }) === "Cranbourne",
+  "(a) Cranbourne vs Pakenham must stay distinct terminus-only labels at Dandenong"
+);
 
 // (b) "via City Loop" only at the five named stations.
 const loopTrip = { tripId: "02-FKN--67-T5-1001", destination: "Frankston via City Loop", isViaLoop: true };
@@ -222,6 +237,37 @@ for (const code of ["GEL", "BAT", "BGO", "SER", "TRN", "ECH", "ART", "MBY", "SNH
   assert(isVlineTripAllowed(`01-${code}--10-T2-1`) === true, `${code} must be allowed (in) — resolved eligibility from hazard-pack.md`);
 }
 assert(buildVlineDirectionLabel({ destination: "Traralgon" }) === "V/Line Traralgon", "V/Line label must prefix the operator so it never collapses into a Metro Trains row");
+
+// (e) terminus-only / Perth style (docs/jim-brief-melbourne-direction-labels-perth-style.md):
+// outbound is the bare terminus; hub-bound (terminus is Flinders Street, shared by every line)
+// carries the line name; no label ever repeats a word ("<X> Line + <X>").
+assert(HUB_TERMINUS === "Flinders Street", "HUB_TERMINUS must be Flinders Street");
+assert(
+  buildMetroDirectionLabel({ tripId: "02-WIL--1-1", destination: "Williamstown", stationName: "Newport", isViaLoop: false }) === "Williamstown",
+  "(e) an outbound label must be the bare terminus"
+);
+assert(
+  buildMetroDirectionLabel({ tripId: "02-BEG--1-1", destination: "Belgrave via City Loop", stationName: "Flinders Street", isViaLoop: true }) === "Belgrave via City Loop",
+  "(e) an outbound via-loop label must be the terminus plus the suffix, no line name"
+);
+assert(
+  buildMetroDirectionLabel({ tripId: "02-WIL--1-1", destination: "Flinders Street", stationName: "Newport", isViaLoop: false }) === "Flinders Street (Williamstown Line)",
+  "(e) a hub-bound label must add the line name in parentheses, since every Metro line shares Flinders Street"
+);
+for (const code of Object.keys(METRO_LINE_NAMES)) {
+  const word = METRO_LINE_NAMES[code];
+  const outboundLabel = buildMetroDirectionLabel({ tripId: `02-${code}--1-1`, destination: word, stationName: "Newport", isViaLoop: false });
+  const hubLabel = buildMetroDirectionLabel({ tripId: `02-${code}--1-1`, destination: "Flinders Street", stationName: "Newport", isViaLoop: false });
+  assert(!outboundLabel.includes(" + "), `(e) no label may contain " + " any more — got "${outboundLabel}"`);
+  assert(!hubLabel.includes(" + "), `(e) no label may contain " + " any more — got "${hubLabel}"`);
+  assert(!new RegExp(`${word}.*\\b${word}\\b`, "i").test(outboundLabel), `(e) ${code}'s outbound label must not repeat "${word}" — got "${outboundLabel}"`);
+}
+
+// (f) a trip terminating at the station being viewed is an arrival, not a departure.
+assert(isTerminatingAtStation({ destination: "Flinders Street", stationName: "Flinders Street" }) === true, "(f) a trip destined for the station being viewed must be flagged as terminating here");
+assert(isTerminatingAtStation({ destination: "Flinders Street Stn", stationName: "Flinders Street" }) === true, "(f) terminating-here must be suffix/case-insensitive");
+assert(isTerminatingAtStation({ destination: "Belgrave via City Loop", stationName: "Flinders Street" }) === false, "(f) a genuine departure must not be flagged as terminating here");
+assert(isTerminatingAtStation({ destination: "Williamstown", stationName: "Newport" }) === false, "(f) an intermediate-station board must not flag a through trip as terminating");
 
 // --- fetchStationBoard — offline failure paths, no network ---
 
@@ -282,6 +328,14 @@ async function runLiveEndToEndChecks() {
     !flindersBoard.trips.some((t) => /metro tunnel/i.test(t.destination)),
     '"Metro Tunnel" must never appear in a live Flinders Street board label'
   );
+  assert(
+    !flindersBoard.trips.some((t) => t.destination.trim() === "Flinders Street"),
+    "no departure from Flinders Street may itself be destined for Flinders Street — that's an arrival, filtered by isTerminatingAtStation"
+  );
+  assert(
+    !flindersBoard.trips.some((t) => t.destination.includes(" + ")),
+    'no live Flinders Street board label may use the retired "<Line> Line + <terminus>" format'
+  );
   const loopSuffixed = flindersBoard.trips.filter((t) => /via city loop/i.test(t.destination));
   // Not asserted > 0 — depends on what's actually running right now — but if present, every one
   // must be at a suffix-eligible station (trivially true here, Flinders Street is one of the five).
@@ -328,5 +382,5 @@ async function runLiveEndToEndChecks() {
 // exact edits" section — and are checked by qa/live-city-lists-sync.mjs, not repeated here.
 
 console.log(
-  "melbourne-dogfood-gate: ok (live, dispatch switch-cases + MULTI_CITY_IDS/mount/persistence lists wired, D1 pack, Board eligibility section all resolved, 220 stations with lat/lng and GTFS stopIds inside CITY_BOUNDS, Jolimont/Jolimont-MCG alias, direction-label gate assertions (a)-(d) all pass, V/Line Albury/Warrnambool excluded structurally, other V/Line services allowed, missing-key throws before any fetch, Perth Australia green)"
+  "melbourne-dogfood-gate: ok (live, dispatch switch-cases + MULTI_CITY_IDS/mount/persistence lists wired, D1 pack, Board eligibility section all resolved, 220 stations with lat/lng and GTFS stopIds inside CITY_BOUNDS, Jolimont/Jolimont-MCG alias, direction-label gate assertions (a)-(f) all pass (terminus-only/Perth style, hub-parenthetical, terminating-here filter), V/Line Albury/Warrnambool excluded structurally, other V/Line services allowed, missing-key throws before any fetch, Perth Australia green)"
 );
