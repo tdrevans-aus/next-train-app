@@ -1,406 +1,406 @@
 {
   "Adelaide Railway Station": [
-    "Belair line Belair",
-    "Flinders line Flinders",
-    "Gawler line Gawler Central",
-    "Grange line Grange",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Port Dock",
-    "Seaford line Seaford"
+    "Belair",
+    "Flinders",
+    "Gawler Central",
+    "Grange",
+    "Outer Harbor",
+    "Port Dock",
+    "Seaford"
   ],
   "Adelaide Showground": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair",
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders",
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Belair line)",
+    "Adelaide Railway Station (Flinders line)",
+    "Adelaide Railway Station (Seaford line)",
+    "Belair",
+    "Flinders",
+    "Seaford"
   ],
   "Albert Park": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange"
+    "Adelaide Railway Station (Grange line)",
+    "Grange"
   ],
   "Alberton": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Ascot Park": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Belair": [
-    "Belair line Adelaide Railway Station"
+    "Adelaide Railway Station (Belair line)"
   ],
   "Blackwood": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Bowden": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange",
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Grange line)",
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Grange",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Brighton": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Broadmeadows": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Cheltenham": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Chidda": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Christie Downs": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Clarence Park": [
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders",
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Flinders line)",
+    "Adelaide Railway Station (Seaford line)",
+    "Flinders",
+    "Seaford"
   ],
   "Coromandel": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Croydon": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange",
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Grange line)",
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Grange",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Draper": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Dry Creek": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Dudley Park": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "East Grange": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange"
+    "Adelaide Railway Station (Grange line)",
+    "Grange"
   ],
   "Eden Hills": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Edwardstown": [
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders",
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Flinders line)",
+    "Adelaide Railway Station (Seaford line)",
+    "Flinders",
+    "Seaford"
   ],
   "Elizabeth": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Elizabeth South": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Emerson": [
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders",
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Flinders line)",
+    "Adelaide Railway Station (Seaford line)",
+    "Flinders",
+    "Seaford"
   ],
   "Ethelton": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Evanston": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Flinders": [
-    "Flinders line Adelaide Railway Station"
+    "Adelaide Railway Station (Flinders line)"
   ],
   "Gawler": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Gawler Central": [
-    "Gawler line Adelaide Railway Station"
+    "Adelaide Railway Station (Gawler line)"
   ],
   "Gawler Oval": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Glanville": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Glenalta": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Goodwood": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair",
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders",
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Belair line)",
+    "Adelaide Railway Station (Flinders line)",
+    "Adelaide Railway Station (Seaford line)",
+    "Belair",
+    "Flinders",
+    "Seaford"
   ],
   "Grange": [
-    "Grange line Adelaide Railway Station"
+    "Adelaide Railway Station (Grange line)"
   ],
   "Greenfields": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Hallett Cove": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Hallett Cove Beach": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Hove": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Islington": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Kilburn": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Kilkenny": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange",
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Grange line)",
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Grange",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Kudla": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Largs": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Largs North": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Lonsdale": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Lynton": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Marino": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Marino Rocks": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Marion": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Mawson Lakes Railway Station": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Midlunga": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Mile End": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair",
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders",
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Belair line)",
+    "Adelaide Railway Station (Flinders line)",
+    "Adelaide Railway Station (Seaford line)",
+    "Belair",
+    "Flinders",
+    "Seaford"
   ],
   "Millswood": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Mitcham": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Mitchell Park": [
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders"
+    "Adelaide Railway Station (Flinders line)",
+    "Flinders"
   ],
   "Munno Para": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Noarlunga Railway Station": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "North Adelaide": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "North Haven": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Nurlutta": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Oaklands": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Osborne": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Outer Harbor": [
-    "Outer Harbor line Adelaide Railway Station"
+    "Adelaide Railway Station (Outer Harbor line)"
   ],
   "Ovingham": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Parafield": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Parafield Gardens": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Peterhead": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Pinera": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Port Adelaide": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Port Dock": [
-    "Port Dock line Adelaide Railway Station"
+    "Adelaide Railway Station (Port Dock line)"
   ],
   "Salisbury": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Seacliff": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Seaford": [
-    "Seaford line Adelaide Railway Station"
+    "Adelaide Railway Station (Seaford line)"
   ],
   "Seaford Meadows": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "Seaton Park": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange"
+    "Adelaide Railway Station (Grange line)",
+    "Grange"
   ],
   "Smithfield": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "St Clair": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Tambelin": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Taperoo": [
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor"
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Outer Harbor"
   ],
   "Tonsley": [
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders"
+    "Adelaide Railway Station (Flinders line)",
+    "Flinders"
   ],
   "Torrens Park": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Unley Park": [
-    "Belair line Adelaide Railway Station",
-    "Belair line Belair"
+    "Adelaide Railway Station (Belair line)",
+    "Belair"
   ],
   "Warradale": [
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Seaford line)",
+    "Seaford"
   ],
   "West Croydon": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange",
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Grange line)",
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Grange",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Womma": [
-    "Gawler line Adelaide Railway Station",
-    "Gawler line Gawler Central"
+    "Adelaide Railway Station (Gawler line)",
+    "Gawler Central"
   ],
   "Woodlands Park": [
-    "Flinders line Adelaide Railway Station",
-    "Flinders line Flinders",
-    "Seaford line Adelaide Railway Station",
-    "Seaford line Seaford"
+    "Adelaide Railway Station (Flinders line)",
+    "Adelaide Railway Station (Seaford line)",
+    "Flinders",
+    "Seaford"
   ],
   "Woodville": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange",
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Grange line)",
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Grange",
+    "Outer Harbor",
+    "Port Dock"
   ],
   "Woodville Park": [
-    "Grange line Adelaide Railway Station",
-    "Grange line Grange",
-    "Outer Harbor line Adelaide Railway Station",
-    "Outer Harbor line Outer Harbor",
-    "Port Dock line Adelaide Railway Station",
-    "Port Dock line Port Dock"
+    "Adelaide Railway Station (Grange line)",
+    "Adelaide Railway Station (Outer Harbor line)",
+    "Adelaide Railway Station (Port Dock line)",
+    "Grange",
+    "Outer Harbor",
+    "Port Dock"
   ]
 }
