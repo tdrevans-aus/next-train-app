@@ -54,8 +54,10 @@ function main() {
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
   }
-  if (assertCityLive("melbourne")?.ok !== false) {
-    failures.push("C0: Melbourne must stay planned");
+  // Anchor moved off melbourne (flipped live 22 Sep 2026) to bart — see
+  // docs/jim-brief-melbourne-flip-unblock.md.
+  if (assertCityLive("bart")?.ok !== false) {
+    failures.push("C0: BART must stay planned");
   }
   if (lineMap.timeZone !== "Australia/Sydney" || lineMap.dst !== true) {
     failures.push("C0: Australia/Sydney must record DST");

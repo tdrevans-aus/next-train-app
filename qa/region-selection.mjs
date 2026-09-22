@@ -339,9 +339,12 @@ async function run() {
     await context.close();
   }
 
-  // 6. Melbourne stays Coming Soon — no live board (Osaka / Hong Kong rows removed from the picker 4 Sep 2026)
+  // 6. Melbourne is live and selectable in the Australia picker (flipped live 22 Sep 2026 — see
+  // docs/jim-brief-melbourne-flip-unblock.md); BART takes over as the Coming-Soon / applyCity-
+  // refused regression case this test originally proved for Melbourne (Osaka / Hong Kong rows
+  // removed from the picker 4 Sep 2026 — still absent, checked below).
   {
-    console.log("  Test 6: Melbourne picker Coming Soon...");
+    console.log("  Test 6: Melbourne picker live / BART Coming Soon...");
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
@@ -350,7 +353,7 @@ async function run() {
     await page.evaluate(() => window.NextTrainCitySession.openRegionScreen());
     await page.waitForTimeout(500);
 
-    const picker = await page.evaluate(() => {
+    const auPicker = await page.evaluate(() => {
       const countrySelect = document.querySelector("[data-region-country]");
       countrySelect.value = "au";
       countrySelect.dispatchEvent(new Event("change", { bubbles: true }));
@@ -364,21 +367,37 @@ async function run() {
       };
     });
 
-    const applied = await page.evaluate(async () => {
+    const melbourneApplied = await page.evaluate(async () => {
       await window.NextTrainCitySession.applyCity("melbourne", { persist: true, explicit: true });
       return { savedCity: window.NextTrainCitySession.readSavedCity() };
     });
 
+    const usPicker = await page.evaluate(() => {
+      const countrySelect = document.querySelector("[data-region-country]");
+      countrySelect.value = "us";
+      countrySelect.dispatchEvent(new Event("change", { bubbles: true }));
+      const citySelect = document.querySelector("[data-region-city]");
+      const bart = [...(citySelect?.options ?? [])].find((option) => option.value === "bart");
+      return { bartLabel: bart?.textContent?.trim() ?? "" };
+    });
+
+    const bartApplied = await page.evaluate(async () => {
+      await window.NextTrainCitySession.applyCity("bart", { persist: true, explicit: true });
+      return { savedCity: window.NextTrainCitySession.readSavedCity() };
+    });
+
     if (
-      picker.melbourneLabel === "Melbourne (Coming Soon)" &&
-      !picker.hasJapan &&
-      !picker.hasHongKong &&
-      applied.savedCity !== "melbourne" &&
-      (applied.savedCity === "perth" || applied.savedCity === "")
+      auPicker.melbourneLabel === "Melbourne" &&
+      !auPicker.hasJapan &&
+      !auPicker.hasHongKong &&
+      melbourneApplied.savedCity === "melbourne" &&
+      usPicker.bartLabel === "BART (San Francisco Bay Area) (Coming Soon)" &&
+      bartApplied.savedCity !== "bart" &&
+      (bartApplied.savedCity === "melbourne" || bartApplied.savedCity === "perth" || bartApplied.savedCity === "")
     ) {
-      console.log("    PASS — Melbourne Coming Soon, Japan/Hong Kong absent; applyCity does not persist (falls back to Perth)");
+      console.log("    PASS — Melbourne live and selectable, Japan/Hong Kong absent; BART Coming Soon and applyCity does not persist");
     } else {
-      console.error("    FAIL — Melbourne picker / applyCity", { picker, applied });
+      console.error("    FAIL — Melbourne/BART picker / applyCity", { auPicker, melbourneApplied, usPicker, bartApplied });
       process.exitCode = 1;
     }
     await context.close();

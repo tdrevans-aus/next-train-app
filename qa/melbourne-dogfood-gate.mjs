@@ -1,7 +1,12 @@
 /**
- * Melbourne flip follow-through gate. Melbourne stays `status: "planned"` (Mark/Tim's flip
- * call) but the dogfood module, live-city-api.js dispatch switch-cases, and this gate are wired
- * ahead of that per the flip-follow-through guardrail (Boston/Washington shape).
+ * Melbourne dogfood/flip gate. Melbourne flipped `status: "live"` 22 Sep 2026 (Mark's second-pass
+ * green QA note, docs/melbourne-d1/mark-qa-note.md) — this gate's registry/dispatch assertions
+ * are written for the POST-FLIP state (melbourne in MULTI_CITY_IDS, matching the established
+ * pattern from Brussels/East Midlands/West of England's flip gates), replacing the earlier
+ * planned/pre-flip assertions.
+ *
+ * Calls loadEnvLocal() up front (as dev-server.js does) so a quoted `.env.local` value doesn't
+ * silently 401 — see docs/jim-brief-melbourne-flip-unblock.md for the incident this fixes.
  *
  * Metro Trains + V/Line walk-up services, GTFS-RT static-join over the Transport Victoria Open
  * Data Portal (docs/melbourne-d1/jim-handoff.md) — supersedes the earlier PTV Timetable API
@@ -22,6 +27,7 @@
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { loadEnvLocal } from "../lib/load-env-local.js";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 import { readVicOpenDataApiKey, vicOpenDataAuthHeaders, MissingProviderApiKeyError } from "../lib/providers/gtfs/auth.js";
@@ -53,6 +59,8 @@ import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+loadEnvLocal();
+
 function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
@@ -63,13 +71,12 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity + status — Melbourne stays planned; only the flip changes this.
+// Registry identity + status — Melbourne is live (flipped 22 Sep 2026).
 const live = assertCityLive("melbourne");
-assert(live?.ok === false, "assertCityLive(melbourne) must fail");
-assert(live?.status === 501, "melbourne must be 501 planned");
+assert(live?.ok === true, "assertCityLive(melbourne) must pass");
 
 const entry = getCity("melbourne");
-assert(entry?.status === "planned", "melbourne registry status must be planned");
+assert(entry?.status === "live", "melbourne registry status must be live");
 assert(entry?.adapterReady === true, "melbourne adapterReady must be true");
 assert(entry?.displayName === "Melbourne", "melbourne display name must be Melbourne");
 assert(entry?.timeZone === "Australia/Melbourne", "melbourne timezone must be Australia/Melbourne");
@@ -80,8 +87,8 @@ for (const forbiddenId of ["mel", "ptv", "vic", "au"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dogfood dispatch is wired ahead of the flip — NOT in MULTI_CITY_IDS yet.
-assert(isMultiCity("melbourne") === false, "melbourne must NOT be in MULTI_CITY_IDS while status stays planned");
+// Dogfood dispatch is wired and melbourne is now in MULTI_CITY_IDS post-flip.
+assert(isMultiCity("melbourne") === true, "melbourne must be in MULTI_CITY_IDS now that it is live");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/melbourne-d1");
@@ -250,8 +257,20 @@ assert(dogfoodStations.some((row) => row.name === "Flinders Street"), "Flinders 
 // --- End-to-end against the real Open Data Portal feeds (skipped, not failed, without a key) ---
 
 if (!readVicOpenDataApiKey()) {
-  console.log("melbourne-dogfood-gate: VIC_OPENDATA_API_KEY not set — skipping live end-to-end checks");
+  console.log("melbourne-dogfood-gate: SKIP — VIC_OPENDATA_API_KEY not set, skipping live end-to-end checks (offline assertions above still ran)");
 } else {
+  try {
+    await runLiveEndToEndChecks();
+  } catch (err) {
+    // Report a clean FAIL line with the status/message (fetchTripUpdates embeds the HTTP status
+    // in its own error message, e.g. "GTFS-RT fetch failed (401) for ...") instead of letting the
+    // raw fetch exception's stack trace propagate — see docs/jim-brief-melbourne-flip-unblock.md.
+    console.error(`melbourne-dogfood-gate: FAIL — live end-to-end check failed: ${err?.message ?? err}`);
+    process.exit(1);
+  }
+}
+
+async function runLiveEndToEndChecks() {
   const flindersBoard = await fetchStationBoard("Flinders Street");
   assert(flindersBoard.realtime === true, "Flinders Street board realtime must be true");
   assert(flindersBoard.trips.every((t) => t.realtime === true), "every trip on a live board must carry realtime:true (live-only — nothing scheduled-only reaches the board)");
@@ -304,12 +323,10 @@ if (!readVicOpenDataApiKey()) {
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
 // brisbane-dogfood MULTI_CITY_IDS/available, app.js NEARBY_MULTI_CITY_IDS/LIVE_CITY_IDS,
-// city-session.js MULTI_CITY_IDS + picker comingSoon) are deliberately NOT touched yet — same
-// registry-status-derived invariant as MULTI_CITY_IDS above (qa/live-city-lists-sync.mjs
-// requires them to equal exactly the live-city set). Add "melbourne"/"australia" to all of
-// them in the same commit as the status flip — see docs/melbourne-d1/jim-handoff.md's
-// "Flip commit — exact edits" section.
+// city-session.js MULTI_CITY_IDS + picker comingSoon) now include melbourne/australia, landed in
+// the same commit as the status flip — see docs/melbourne-d1/jim-handoff.md's "Flip commit —
+// exact edits" section — and are checked by qa/live-city-lists-sync.mjs, not repeated here.
 
 console.log(
-  "melbourne-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section all resolved, 220 stations with lat/lng and GTFS stopIds inside CITY_BOUNDS, Jolimont/Jolimont-MCG alias, direction-label gate assertions (a)-(d) all pass, V/Line Albury/Warrnambool excluded structurally, other V/Line services allowed, missing-key throws before any fetch, Perth Australia green)"
+  "melbourne-dogfood-gate: ok (live, dispatch switch-cases + MULTI_CITY_IDS/mount/persistence lists wired, D1 pack, Board eligibility section all resolved, 220 stations with lat/lng and GTFS stopIds inside CITY_BOUNDS, Jolimont/Jolimont-MCG alias, direction-label gate assertions (a)-(d) all pass, V/Line Albury/Warrnambool excluded structurally, other V/Line services allowed, missing-key throws before any fetch, Perth Australia green)"
 );

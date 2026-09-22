@@ -1,0 +1,992 @@
+{
+  "Aircraft": [
+    "Werribee Line + Flinders Street",
+    "Werribee Line + Werribee"
+  ],
+  "Alamein": [
+    "Alamein Line + Camberwell"
+  ],
+  "Albion": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Alphington": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Anstey": [
+    "Upfield Line + Upfield"
+  ],
+  "Anzac": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Arden": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Armadale": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Ascot Vale": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Ashburton": [
+    "Alamein Line + Alamein",
+    "Alamein Line + Camberwell"
+  ],
+  "Aspendale": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Auburn": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Balaclava": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Batman": [
+    "Upfield Line + Flinders Street"
+  ],
+  "Bayswater": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street"
+  ],
+  "Beaconsfield": [
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Belgrave": [
+    "Belgrave Line + Flinders Street"
+  ],
+  "Bell": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Bentleigh": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Berwick": [
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Blackburn": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Bonbeach": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Boronia": [
+    "Belgrave Line + Belgrave"
+  ],
+  "Box Hill": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Brighton Beach": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Broadmeadows": [
+    "Craigieburn Line + Craigieburn",
+    "V/Line Seymour",
+    "V/Line Shepparton"
+  ],
+  "Burnley": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley",
+    "Lilydale Line + Flinders Street"
+  ],
+  "Burwood": [
+    "Alamein Line + Alamein"
+  ],
+  "Camberwell": [
+    "Alamein Line + Alamein",
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Canterbury": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Cardinia Road": [
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Carnegie": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Carrum": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Caulfield": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens",
+    "V/Line Bairnsdale",
+    "V/Line Traralgon"
+  ],
+  "Chatham": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Chelsea": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Cheltenham": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Clayton": [
+    "Cranbourne Line + Cranbourne",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens",
+    "V/Line Bairnsdale",
+    "V/Line Traralgon"
+  ],
+  "Clifton Hill": [
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge",
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Coburg": [
+    "Upfield Line + Flinders Street"
+  ],
+  "Collingwood": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge",
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Coolaroo": [
+    "Craigieburn Line + Craigieburn"
+  ],
+  "Craigieburn": [
+    "Craigieburn Line + Flinders Street",
+    "V/Line Seymour",
+    "V/Line Shepparton"
+  ],
+  "Cranbourne": [
+    "Cranbourne Line + Sunbury"
+  ],
+  "Croxton": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Croydon": [
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Dandenong": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens",
+    "V/Line Bairnsdale",
+    "V/Line Traralgon"
+  ],
+  "Darebin": [
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Darling": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Dennis": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Diamond Creek": [
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Diggers Rest": [
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury"
+  ],
+  "Eaglemont": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "East Camberwell": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "East Malvern": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "East Pakenham": [
+    "Pakenham Line + Watergardens"
+  ],
+  "East Richmond": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Edithvale": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Elsternwick": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Eltham": [
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Epping": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Essendon": [
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Fairfield": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Fawkner": [
+    "Upfield Line + Flinders Street",
+    "Upfield Line + Upfield"
+  ],
+  "Ferntree Gully": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street"
+  ],
+  "Flemington Bridge": [
+    "Upfield Line + Flinders Street",
+    "Upfield Line + Upfield"
+  ],
+  "Flinders Street": [
+    "Belgrave Line + Belgrave via City Loop",
+    "Belgrave Line + Flinders Street via City Loop",
+    "Craigieburn Line + Craigieburn via City Loop",
+    "Frankston Line + Flinders Street via City Loop",
+    "Frankston Line + Frankston",
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley via City Loop",
+    "Hurstbridge Line + Eltham via City Loop",
+    "Hurstbridge Line + Hurstbridge via City Loop",
+    "Lilydale Line + Lilydale via City Loop",
+    "Mernda Line + Mernda via City Loop",
+    "Sandringham Line + Sandringham",
+    "Upfield Line + Upfield via City Loop",
+    "V/Line Bairnsdale",
+    "V/Line Traralgon",
+    "Werribee Line + Laverton via Altona Loop",
+    "Werribee Line + Werribee",
+    "Williamstown Line + Williamstown"
+  ],
+  "Footscray": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens",
+    "V/Line Bendigo",
+    "V/Line Marshall",
+    "V/Line Melton",
+    "V/Line South Geelong",
+    "V/Line Waurn Ponds",
+    "V/Line Wendouree",
+    "Werribee Line + Flinders Street",
+    "Werribee Line + Laverton via Altona Loop",
+    "Werribee Line + Sandringham via Altona Loop and Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "Frankston": [
+    "Frankston Line + Flinders Street"
+  ],
+  "Gardenvale": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Gardiner": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Ginifer": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Watergardens"
+  ],
+  "Glen Huntly": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Glen Iris": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Glen Waverley": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Glenbervie": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Glenferrie": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street"
+  ],
+  "Glenroy": [
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Gowrie": [
+    "Upfield Line + Upfield"
+  ],
+  "Greensborough": [
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Hallam": [
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Hampton": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Hartwell": [
+    "Alamein Line + Alamein"
+  ],
+  "Hawksburn": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Hawkstowe": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Hawthorn": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street"
+  ],
+  "Heatherdale": [
+    "Belgrave Line + Belgrave",
+    "Lilydale Line + Lilydale",
+    "Lilydale Line + Ringwood"
+  ],
+  "Heathmont": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street"
+  ],
+  "Heidelberg": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Heyington": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Highett": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Holmesglen": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Hoppers Crossing": [
+    "Werribee Line + Flinders Street",
+    "Werribee Line + Werribee"
+  ],
+  "Hughesdale": [
+    "Cranbourne Line + Cranbourne",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Huntingdale": [
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Hurstbridge": [
+    "Hurstbridge Line + Flinders Street"
+  ],
+  "Ivanhoe": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Jacana": [
+    "Craigieburn Line + Craigieburn"
+  ],
+  "Jewell": [
+    "Upfield Line + Flinders Street",
+    "Upfield Line + Upfield"
+  ],
+  "Jolimont": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge",
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Jordanville": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Kananook": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Keilor Plains": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Kensington": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Keon Park": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Kooyong": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Laburnum": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Lalor": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Laverton": [
+    "Werribee Line + Flinders Street",
+    "Werribee Line + Sandringham via Altona Loop and Flinders Street"
+  ],
+  "Lilydale": [
+    "Lilydale Line + Flinders Street"
+  ],
+  "Lynbrook": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury"
+  ],
+  "Macaulay": [
+    "Upfield Line + Upfield"
+  ],
+  "Macleod": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Malvern": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston",
+    "Pakenham Line + Watergardens"
+  ],
+  "McKinnon": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Mentone": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Merinda Park": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury"
+  ],
+  "Merlynston": [
+    "Upfield Line + Flinders Street"
+  ],
+  "Mernda": [
+    "Mernda Line + Flinders Street"
+  ],
+  "Merri": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Middle Brighton": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham"
+  ],
+  "Middle Footscray": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Middle Gorge": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Mitcham": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Montmorency": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Moonee Ponds": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Moorabbin": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Mooroolbark": [
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Mordialloc": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Moreland": [
+    "Upfield Line + Flinders Street"
+  ],
+  "Mount Waverley": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Murrumbeena": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + Watergardens"
+  ],
+  "Narre Warren": [
+    "Pakenham Line + East Pakenham"
+  ],
+  "Newmarket": [
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Newport": [
+    "Werribee Line + Laverton via Altona Loop",
+    "Werribee Line + Sandringham via Altona Loop and Flinders Street",
+    "Werribee Line + Werribee",
+    "Williamstown Line + Sandringham via Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "Noble Park": [
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "North Brighton": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "North Melbourne": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street",
+    "Upfield Line + Flinders Street",
+    "Upfield Line + Upfield",
+    "V/Line Shepparton",
+    "Werribee Line + Sandringham via Altona Loop and Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "North Richmond": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge",
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "North Williamstown": [
+    "Williamstown Line + Sandringham via Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "Northcote": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Nunawading": [
+    "Belgrave Line + Belgrave",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Oak Park": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Oakleigh": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Officer": [
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Ormond": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Pakenham": [
+    "Pakenham Line + East Pakenham"
+  ],
+  "Parkdale": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Parkville": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Pascoe Vale": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Patterson": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Prahran": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Preston": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Regent": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Reservoir": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Richmond": [
+    "Belgrave Line + Flinders Street",
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston",
+    "Glen Waverley Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "V/Line Bairnsdale",
+    "V/Line Traralgon"
+  ],
+  "Ringwood": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Ringwood East": [
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Ripponlea": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Riversdale": [
+    "Alamein Line + Alamein",
+    "Alamein Line + Camberwell"
+  ],
+  "Rosanna": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Roxburgh Park": [
+    "Craigieburn Line + Craigieburn",
+    "Craigieburn Line + Flinders Street"
+  ],
+  "Royal Park": [
+    "Upfield Line + Flinders Street",
+    "Upfield Line + Upfield"
+  ],
+  "Rushall": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Ruthven": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Sandown Park": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Sandringham": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Seaford": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Seddon": [
+    "Werribee Line + Sandringham via Altona Loop and Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "South Kensington": [
+    "Williamstown Line + Williamstown"
+  ],
+  "South Morang": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "South Yarra": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston",
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham"
+  ],
+  "Southern Cross": [
+    "Craigieburn Line + Flinders Street",
+    "Frankston Line + Flinders Street via City Loop",
+    "Hurstbridge Line + Eltham via City Loop",
+    "Mernda Line + Mernda via City Loop",
+    "Upfield Line + Flinders Street",
+    "V/Line Bairnsdale",
+    "V/Line Bendigo",
+    "V/Line Marshall",
+    "V/Line Melton",
+    "V/Line Shepparton",
+    "V/Line South Geelong",
+    "V/Line Traralgon",
+    "V/Line Waurn Ponds",
+    "V/Line Wendouree",
+    "Werribee Line + Flinders Street",
+    "Werribee Line + Laverton via Altona Loop",
+    "Werribee Line + Sandringham via Altona Loop and Flinders Street",
+    "Werribee Line + Werribee",
+    "Williamstown Line + Sandringham via Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "Southland": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Spotswood": [
+    "Werribee Line + Laverton via Altona Loop",
+    "Werribee Line + Sandringham via Altona Loop and Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "Springvale": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "St Albans": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "State Library": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Strathmore": [
+    "Craigieburn Line + Craigieburn"
+  ],
+  "Sunbury": [
+    "Sunbury Line + East Pakenham",
+    "V/Line Southern Cross"
+  ],
+  "Sunshine": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens",
+    "V/Line Marshall",
+    "V/Line Melton",
+    "V/Line South Geelong",
+    "V/Line Waurn Ponds",
+    "V/Line Wendouree"
+  ],
+  "Syndal": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Tecoma": [
+    "Belgrave Line + Belgrave"
+  ],
+  "Thomastown": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Thornbury": [
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Toorak": [
+    "Frankston Line + Flinders Street",
+    "Frankston Line + Frankston"
+  ],
+  "Tooronga": [
+    "Glen Waverley Line + Flinders Street",
+    "Glen Waverley Line + Glen Waverley"
+  ],
+  "Tottenham": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Town Hall": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "Union": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street",
+    "Lilydale Line + Flinders Street",
+    "Lilydale Line + Lilydale"
+  ],
+  "Upfield": [
+    "Upfield Line + Flinders Street"
+  ],
+  "Upper Ferntree Gully": [
+    "Belgrave Line + Belgrave",
+    "Belgrave Line + Flinders Street"
+  ],
+  "Upwey": [
+    "Belgrave Line + Belgrave"
+  ],
+  "Victoria Park": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Watergardens": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + Sunbury"
+  ],
+  "Watsonia": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Wattle Glen": [
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Werribee": [
+    "Werribee Line + Flinders Street"
+  ],
+  "West Footscray": [
+    "Sunbury Line + Cranbourne",
+    "Sunbury Line + East Pakenham",
+    "Sunbury Line + Sunbury",
+    "Sunbury Line + Watergardens"
+  ],
+  "West Richmond": [
+    "Hurstbridge Line + Eltham",
+    "Hurstbridge Line + Flinders Street",
+    "Mernda Line + Flinders Street",
+    "Mernda Line + Mernda"
+  ],
+  "Westall": [
+    "Cranbourne Line + Cranbourne",
+    "Pakenham Line + East Pakenham"
+  ],
+  "Westgarth": [
+    "Hurstbridge Line + Flinders Street",
+    "Hurstbridge Line + Hurstbridge"
+  ],
+  "Williams Landing": [
+    "Werribee Line + Flinders Street",
+    "Werribee Line + Werribee"
+  ],
+  "Williamstown": [
+    "Williamstown Line + Sandringham via Flinders Street"
+  ],
+  "Williamstown Beach": [
+    "Williamstown Line + Sandringham via Flinders Street",
+    "Williamstown Line + Williamstown"
+  ],
+  "Willison": [
+    "Alamein Line + Alamein",
+    "Alamein Line + Camberwell"
+  ],
+  "Windsor": [
+    "Sandringham Line + Laverton via Flinders Street",
+    "Sandringham Line + Sandringham",
+    "Sandringham Line + Williamstown via Flinders Street"
+  ],
+  "Yarraman": [
+    "Cranbourne Line + Cranbourne",
+    "Cranbourne Line + Sunbury",
+    "Pakenham Line + East Pakenham",
+    "Pakenham Line + Watergardens"
+  ],
+  "Yarraville": [
+    "Werribee Line + Laverton via Altona Loop",
+    "Williamstown Line + Williamstown"
+  ]
+}

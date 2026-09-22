@@ -49,8 +49,10 @@ function main() {
   if (assertCityLive("amsterdam")?.ok !== false) {
     failures.push("C0: Amsterdam is also retired");
   }
-  if (assertCityLive("melbourne")?.ok !== false) {
-    failures.push("C0: Melbourne stays planned");
+  // Anchor moved off melbourne (flipped live 22 Sep 2026) to bart — see
+  // docs/jim-brief-melbourne-flip-unblock.md.
+  if (assertCityLive("bart")?.ok !== false) {
+    failures.push("C0: BART stays planned");
   }
   if (getCity("nl") || getCity("the-hague")) {
     failures.push("C0: city=nl / the-hague must not exist");
