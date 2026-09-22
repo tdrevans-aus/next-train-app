@@ -267,6 +267,23 @@ for (const code of Object.keys(METRO_LINE_NAMES)) {
 assert(isTerminatingAtStation({ destination: "Flinders Street", stationName: "Flinders Street" }) === true, "(f) a trip destined for the station being viewed must be flagged as terminating here");
 assert(isTerminatingAtStation({ destination: "Flinders Street Stn", stationName: "Flinders Street" }) === true, "(f) terminating-here must be suffix/case-insensitive");
 assert(isTerminatingAtStation({ destination: "Belgrave via City Loop", stationName: "Flinders Street" }) === false, "(f) a genuine departure must not be flagged as terminating here");
+
+// (g) Mark's #439 amber (docs/jim-brief-direction-label-aliases-server-side.md Part 2):
+// a Werribee/Williamstown-line trip terminating at Flinders Street "via Altona Loop" must get
+// the same hub disambiguation as any other hub-bound trip — stripLoopTunnelSuffix() must fold
+// the Altona Loop headsign suffix away first so the terminus resolves to bare "Flinders Street".
+assert(
+  stripLoopTunnelSuffix("Flinders Street via Altona Loop") === "Flinders Street",
+  "(g) stripLoopTunnelSuffix must strip the Altona Loop headsign suffix"
+);
+assert(
+  buildMetroDirectionLabel({ tripId: "02-WER--1-1", destination: "Flinders Street via Altona Loop", stationName: "Newport", isViaLoop: false }) === "Flinders Street (Werribee Line)",
+  "(g) a Werribee-line Altona Loop trip terminating at Flinders Street must be disambiguated (Werribee Line)"
+);
+assert(
+  buildMetroDirectionLabel({ tripId: "02-WIL--1-1", destination: "Flinders Street via Altona Loop", stationName: "Newport", isViaLoop: false }) === "Flinders Street (Williamstown Line)",
+  "(g) a Williamstown-line Altona Loop trip terminating at Flinders Street must be disambiguated (Williamstown Line)"
+);
 assert(isTerminatingAtStation({ destination: "Williamstown", stationName: "Newport" }) === false, "(f) an intermediate-station board must not flag a through trip as terminating");
 
 // --- fetchStationBoard — offline failure paths, no network ---
@@ -373,6 +390,39 @@ async function runLiveEndToEndChecks() {
     });
     assert(directDogfoodNextTrain.config?.destination === destination, "dogfood next-train destination must equal the chosen chip");
   }
+
+  // jim-brief-direction-label-aliases-server-side.md Part 1: every installed app still sending
+  // the retired "<Line> Line + <terminus>" form must keep getting a train, and the response must
+  // echo the canonical terminus-only label so the client self-heals its saved value.
+  const legacyLabelNextTrain = await getMultiCityNextTrain("melbourne", {
+    station: "Flinders Street",
+    destination: "Hurstbridge Line + Hurstbridge",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+  assert(
+    legacyLabelNextTrain.config?.destination === "Hurstbridge",
+    `legacy label "Hurstbridge Line + Hurstbridge" must resolve to canonical "Hurstbridge", got ${legacyLabelNextTrain.config?.destination}`
+  );
+  assert(
+    legacyLabelNextTrain.config?.destinationLabel === "Hurstbridge",
+    "legacy label request must echo the canonical destinationLabel"
+  );
+
+  const legacyHubLabelNextTrain = await getMultiCityNextTrain("melbourne", {
+    station: "Eaglemont",
+    destination: "Hurstbridge Line + Flinders Street",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+  assert(
+    legacyHubLabelNextTrain.config?.destination === "Flinders Street (Hurstbridge Line)",
+    `legacy hub-bound label must resolve to canonical "Flinders Street (Hurstbridge Line)", got ${legacyHubLabelNextTrain.config?.destination}`
+  );
+  assert(
+    legacyHubLabelNextTrain.next !== null,
+    "legacy hub-bound label request (Eaglemont towards Flinders Street) must return a non-null next train — this is the production regression from #439"
+  );
 }
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
@@ -382,5 +432,5 @@ async function runLiveEndToEndChecks() {
 // exact edits" section — and are checked by qa/live-city-lists-sync.mjs, not repeated here.
 
 console.log(
-  "melbourne-dogfood-gate: ok (live, dispatch switch-cases + MULTI_CITY_IDS/mount/persistence lists wired, D1 pack, Board eligibility section all resolved, 220 stations with lat/lng and GTFS stopIds inside CITY_BOUNDS, Jolimont/Jolimont-MCG alias, direction-label gate assertions (a)-(f) all pass (terminus-only/Perth style, hub-parenthetical, terminating-here filter), V/Line Albury/Warrnambool excluded structurally, other V/Line services allowed, missing-key throws before any fetch, Perth Australia green)"
+  "melbourne-dogfood-gate: ok (live, dispatch switch-cases + MULTI_CITY_IDS/mount/persistence lists wired, D1 pack, Board eligibility section all resolved, 220 stations with lat/lng and GTFS stopIds inside CITY_BOUNDS, Jolimont/Jolimont-MCG alias, direction-label gate assertions (a)-(g) all pass (terminus-only/Perth style, hub-parenthetical, terminating-here filter, Altona Loop hub disambiguation), legacy label server-side aliases proven live, V/Line Albury/Warrnambool excluded structurally, other V/Line services allowed, missing-key throws before any fetch, Perth Australia green)"
 );

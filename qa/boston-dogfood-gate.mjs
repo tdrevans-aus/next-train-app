@@ -260,32 +260,55 @@ for (const name of COMMUTER_RAIL_STATIONS) {
 assert(isCommuterRailStation("Park Street") === false, "Park Street must not be a Commuter Rail station");
 assert(!COMMUTER_RAIL_ROUTES["CR-Foxboro"], "CR-Foxboro (Foxboro Event Service) must be excluded — not a walk-up standard product");
 
-// mapCommuterRailDestination — line + terminus from the route's own known termini, never a
-// raw headsign (same never-fabricate posture as mapLineTerminusDestination).
+// mapCommuterRailDestination — terminus-only/Perth style, extended 22 Sep 2026
+// (docs/jim-brief-direction-label-aliases-server-side.md Part 2): bare terminus outbound,
+// "<terminus> (<Line>)" only for the two shared hubs (South Station/North Station). Subway
+// colour-line labels ("Red Line + Alewife") are unchanged — see the doNotGroup assertions below.
 assert(
-  mapCommuterRailDestination("CR-Worcester", 0) === "Framingham/Worcester Line + Worcester",
-  "mapCommuterRailDestination must combine line + outbound terminus"
+  mapCommuterRailDestination("CR-Worcester", 0) === "Worcester",
+  "mapCommuterRailDestination must return the bare outbound terminus, no line prefix"
 );
 assert(
-  mapCommuterRailDestination("CR-Worcester", 1) === "Framingham/Worcester Line + South Station",
-  "mapCommuterRailDestination must combine line + inbound terminus"
+  mapCommuterRailDestination("CR-Worcester", 1) === "South Station (Framingham/Worcester Line)",
+  "mapCommuterRailDestination must disambiguate the shared South Station hub with the line name"
 );
 assert(mapCommuterRailDestination("CR-Foxboro", 0) === null, "mapCommuterRailDestination must return null for an out-of-scope route id");
+
+// Every CR route's chip, from the route table itself — no chip may repeat "Line" text at a
+// non-hub terminus, and every hub-bound chip must carry the line name.
+const ALL_CR_HUB_CHIPS = new Set();
+const ALL_CR_OUTBOUND_CHIPS = new Set();
+for (const [routeId, route] of Object.entries(COMMUTER_RAIL_ROUTES)) {
+  for (let directionId = 0; directionId < route.termini.length; directionId += 1) {
+    const terminus = route.termini[directionId];
+    const chip = mapCommuterRailDestination(routeId, directionId);
+    if (terminus === "South Station" || terminus === "North Station") {
+      assert(chip === `${terminus} (${route.longName})`, `${routeId} hub-bound chip must disambiguate, got "${chip}"`);
+      ALL_CR_HUB_CHIPS.add(chip);
+    } else {
+      assert(chip === terminus, `${routeId} outbound chip must be the bare terminus, got "${chip}"`);
+      ALL_CR_OUTBOUND_CHIPS.add(chip);
+    }
+  }
+}
 
 // marketingLabelsForStation — subway chips unchanged at a subway-only station, Commuter Rail
 // chips added only at the five dual-mode stations, self-referential terminus excluded.
 const parkStreetLabels = marketingLabelsForStation(BOSTON_HUB);
 assert(parkStreetLabels.includes("Red Line + Alewife"), "Park Street must still offer Red Line + Alewife");
-assert(!parkStreetLabels.some((label) => /Line \+/.test(label) && COMMUTER_RAIL_ROUTES[Object.keys(COMMUTER_RAIL_ROUTES).find((id) => label.startsWith(COMMUTER_RAIL_ROUTES[id].longName))]), "Park Street (not a Commuter Rail station) must offer zero Commuter Rail chips");
+assert(
+  !parkStreetLabels.some((label) => ALL_CR_HUB_CHIPS.has(label) || ALL_CR_OUTBOUND_CHIPS.has(label)),
+  "Park Street (not a Commuter Rail station) must offer zero Commuter Rail chips"
+);
 
 const southStationLabels = marketingLabelsForStation("South Station");
 assert(southStationLabels.includes("Red Line + Alewife"), "South Station must still offer its subway chip");
-assert(southStationLabels.includes("Framingham/Worcester Line + Worcester"), "South Station must offer a Commuter Rail chip");
-assert(!southStationLabels.includes("Framingham/Worcester Line + South Station"), "South Station must not offer a self-referential Commuter Rail chip");
+assert(southStationLabels.includes("Worcester"), "South Station must offer a Commuter Rail chip");
+assert(!southStationLabels.includes("South Station (Framingham/Worcester Line)"), "South Station must not offer a self-referential Commuter Rail chip");
 
 const forestHillsLabels = marketingLabelsForStation("Forest Hills");
-assert(forestHillsLabels.includes("Providence/Stoughton Line + South Station"), "Forest Hills (through-station) must offer the inbound-to-South-Station Commuter Rail chip");
-assert(forestHillsLabels.includes("Providence/Stoughton Line + Stoughton or Wickford Junction"), "Forest Hills must offer the outbound Commuter Rail chip");
+assert(forestHillsLabels.includes("South Station (Providence/Stoughton Line)"), "Forest Hills (through-station) must offer the disambiguated inbound-to-South-Station Commuter Rail chip");
+assert(forestHillsLabels.includes("Stoughton or Wickford Junction"), "Forest Hills must offer the bare outbound Commuter Rail chip");
 
 // tripMatchesMarketingChip — board trips arrive already remapped to chip form.
 assert(tripMatchesMarketingChip({ destination: "Red Line + Alewife" }, "Red Line + Alewife") === true, "tripMatchesMarketingChip must match an identical chip");
@@ -322,7 +345,7 @@ const crPrediction = {
 };
 assert(mapPredictionToTrip(crPrediction, REAL_TRIP)?.lineId === "commuter-rail", "a Commuter Rail route_id must map to lineId commuter-rail");
 assert(
-  mapPredictionToTrip(crPrediction, REAL_TRIP)?.destination === "Framingham/Worcester Line + Worcester",
+  mapPredictionToTrip(crPrediction, REAL_TRIP)?.destination === "Worcester",
   "Commuter Rail direction must come from COMMUTER_RAIL_ROUTES termini, never a raw headsign"
 );
 const unknownRoutePrediction = {
@@ -518,6 +541,24 @@ const directDogfoodNextTrain = await getBostonDogfoodNextTrain({
   refreshSeconds: 60,
 });
 assert(directDogfoodNextTrain.config?.destination === "Red Line + Alewife", "dogfood next-train destination must equal the chosen chip");
+
+// jim-brief-direction-label-aliases-server-side.md Part 2: a client still sending the retired
+// "<Line long name> + <terminus>" Commuter Rail label must resolve to the new terminus-only
+// canonical form, and the response must echo it back. Reuses Braintree's cached predictions.
+const legacyCrNextTrain = await getMultiCityNextTrain("boston", {
+  station: "Braintree",
+  destination: "Greenbush Line + South Station",
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+});
+assert(
+  legacyCrNextTrain.config?.destination === "South Station (Greenbush Line)",
+  `legacy Commuter Rail label must resolve to canonical "South Station (Greenbush Line)", got ${legacyCrNextTrain.config?.destination}`
+);
+assert(
+  legacyCrNextTrain.config?.destinationLabel === "South Station (Greenbush Line)",
+  "legacy Commuter Rail label request must echo the canonical destinationLabel"
+);
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
 // brisbane-dogfood MULTI_CITY_IDS/available) were added to all four in the same commit as

@@ -222,6 +222,44 @@ assert(
   "mapMetrolinkDestination must not fabricate an unresolved Red-line via-point chip"
 );
 
+// docs/jim-brief-direction-label-aliases-server-side.md Part 2: only the two chips where the
+// line number literally repeated the terminus word lose the "<Line> + " prefix; every other
+// chip (checked above — "Green + Altrincham" etc.) is unchanged.
+assert(
+  mapMetrolinkDestination("Eccles", "Eccles") === "Eccles",
+  'mapMetrolinkDestination must drop the repeated line prefix for the Eccles line\'s Eccles terminus — was "Eccles + Eccles"'
+);
+assert(
+  mapMetrolinkDestination("Manchester Airport", "Airport") === "Manchester Airport",
+  'mapMetrolinkDestination must drop the repeated line prefix for the Airport line\'s Manchester Airport terminus — was "Airport + Manchester Airport"'
+);
+assert(
+  mapMetrolinkDestination("Manchester", "Eccles") === "Eccles + Manchester",
+  "the Eccles line's other terminus (Manchester) does not repeat the line name and keeps its prefix"
+);
+assert(
+  mapMetrolinkDestination("Piccadilly", "Airport") === "Airport + Piccadilly",
+  "the Airport line's other terminus (Piccadilly) does not repeat the line name and keeps its prefix"
+);
+const ecclesStopLabels = marketingLabelsForStation("Eccles");
+assert(ecclesStopLabels.includes("Eccles + Manchester"), `Eccles stop must still offer "Eccles + Manchester", got: ${ecclesStopLabels.join("; ")}`);
+assert(!ecclesStopLabels.some((label) => label === "Eccles + Eccles"), `Eccles stop must never show the retired "Eccles + Eccles" chip, got: ${ecclesStopLabels.join("; ")}`);
+
+// The Metrolink board itself is not implemented yet (fetchMetrolinkStopBoard always throws
+// MetrolinkFeedUnconfirmedError — see file header), so a live "old label -> train" check isn't
+// possible here the way it is for Melbourne/Adelaide/Boston. What IS provable: the shared
+// per-city alias table (jim-brief-direction-label-aliases-server-side.md) resolves both retired
+// Metrolink chips to their canonical form, ready for when the feed is unblocked.
+const gmAliases = JSON.parse(
+  readFileSync(join(ROOT, "lib/cities/greater-manchester/direction-label-aliases.json"), "utf8")
+);
+assert(gmAliases["Eccles + Eccles"] === "Eccles", 'the alias table must map the retired "Eccles + Eccles" chip to "Eccles"');
+assert(
+  gmAliases["Airport + Manchester Airport"] === "Manchester Airport",
+  'the alias table must map the retired "Airport + Manchester Airport" chip to "Manchester Airport"'
+);
+assert(Object.keys(gmAliases).length === 2, `only the two repeated-word chips should have an alias, got: ${Object.keys(gmAliases).join(", ")}`);
+
 // No direction-hubs.json for this region (no intermediate through-station
 // candidate identified) — the shared helper must still degrade to an empty,
 // no-op hub list, same call shape as every other UK region.

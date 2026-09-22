@@ -17,6 +17,7 @@ import {
 import { readAdelaideMetroApiKey } from "../lib/providers/gtfs/auth.js";
 import { loadAdelaideStatic } from "../lib/providers/adelaide.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
+import { getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 
 function assert(condition, message) {
   if (!condition) {
@@ -110,6 +111,39 @@ if (previous === undefined) {
 }
 
 await assertSnapshotNotStaleTodayOrSkip("adelaide", loadAdelaideStatic);
+
+// jim-brief-direction-label-aliases-server-side.md Part 1: every installed app still sending the
+// retired "<line name> <terminus>" form must keep getting a train, and the response must echo
+// the canonical terminus-only label so the client self-heals its saved value.
+const legacyOutboundNextTrain = await getMultiCityNextTrain("adelaide", {
+  station: "Adelaide Railway Station",
+  destination: "Belair line Belair",
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+});
+assert(
+  legacyOutboundNextTrain.config?.destination === "Belair",
+  `legacy label "Belair line Belair" must resolve to canonical "Belair", got ${legacyOutboundNextTrain.config?.destination}`
+);
+assert(
+  legacyOutboundNextTrain.config?.destinationLabel === "Belair",
+  "legacy label request must echo the canonical destinationLabel"
+);
+assert(
+  legacyOutboundNextTrain.next !== null,
+  'legacy label "Belair line Belair" from Adelaide Railway Station must return a non-null next train'
+);
+
+const legacyHubNextTrain = await getMultiCityNextTrain("adelaide", {
+  station: "Goodwood",
+  destination: "Belair line Adelaide Railway Station",
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+});
+assert(
+  legacyHubNextTrain.config?.destination === "Adelaide Railway Station (Belair line)",
+  `legacy hub-bound label must resolve to canonical "Adelaide Railway Station (Belair line)", got ${legacyHubNextTrain.config?.destination}`
+);
 
 console.log(
   "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips (terminus-only/Perth style), Goodwood's hub-bound chips carry the line name, terminating-here filter, BART stays planned, snapshot not stale today)"
