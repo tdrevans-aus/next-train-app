@@ -6,6 +6,9 @@
  * terminus ("Belair"); hub-bound chips (terminus is Adelaide Railway Station, shared by every
  * line) carry the line name — "Adelaide Railway Station (Belair line)".
  */
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { assertCityLive } from "../lib/providers/registry.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
@@ -14,6 +17,8 @@ import {
   isTerminatingAtStation,
   tripMatchesMarketingChip,
 } from "../lib/cities/adelaide/marketing-directions.js";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 import { readAdelaideMetroApiKey } from "../lib/providers/gtfs/auth.js";
 import { loadAdelaideStatic } from "../lib/providers/adelaide.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
@@ -99,6 +104,49 @@ assert(isTerminatingAtStation("Belair", "Belair") === true, "a trip destined for
 assert(isTerminatingAtStation("Adelaide", "Adelaide Railway Station") === true, "the hub is its own terminus under either spelling");
 assert(isTerminatingAtStation("Belair", "Goodwood") === false, "a genuine departure must not be flagged as terminating here");
 
+// docs/jim-brief-adelaide-city-bound-rows-missing.md: the live Adelaide Metro feed's
+// trip_headsign for every hub-bound trip is the bare word "City" (not "Adelaide" or
+// "Adelaide Railway Station") — #439 missed this and every hub-bound chip's trip count
+// silently went to zero in production. Assert both ends of that regression directly.
+assert(isTerminatingAtStation("City", "Adelaide Railway Station") === true, '"City" must be recognised as the hub, so an arrival there is dropped, not double-counted');
+assert(isTerminatingAtStation("City", "Alberton") === false, '"City" is not an arrival anywhere except the hub itself');
+assert(tripMatchesMarketingChip({ destination: "City", routeShortName: "OUTHA" }, "Adelaide Railway Station (Outer Harbor line)") === true, 'a feed trip destined "City" must match its line\'s hub-bound chip');
+assert(tripMatchesMarketingChip({ destination: "City", routeShortName: "BEL" }, "Adelaide Railway Station (Belair line)") === true, 'a feed trip destined "City" must match its line\'s hub-bound chip');
+
+// A real captured Adelaide feed fixture (qa/fixtures/adelaide/city-bound-capture.json,
+// no synthetic rows) must prove hub-bound chips have real trips behind them, not just
+// resolvable labels — this is the exact check that was missing before this fix: the old
+// gate only ever exercised tripMatchesMarketingChip against a bare "Adelaide" destination,
+// which the live feed never actually sends.
+const capture = JSON.parse(
+  readFileSync(join(ROOT, "qa/fixtures/adelaide/city-bound-capture.json"), "utf8")
+);
+for (const [stationName, trips, expectedHubChips] of [
+  ["Alberton", capture.alberton, ["Adelaide Railway Station (Outer Harbor line)", "Adelaide Railway Station (Port Dock line)"]],
+  ["Goodwood", capture.goodwood, ["Adelaide Railway Station (Belair line)", "Adelaide Railway Station (Flinders line)", "Adelaide Railway Station (Seaford line)"]],
+]) {
+  const labels = marketingLabelsForStation(stationName);
+  for (const chip of expectedHubChips) {
+    assert(labels.includes(chip), `${stationName} must offer the hub-bound chip "${chip}"`);
+    const matches = trips.filter((t) => !isTerminatingAtStation(t.destination, stationName) && tripMatchesMarketingChip(t, chip));
+    assert(matches.length >= 1, `${stationName}'s "${chip}" chip must have at least one real captured trip behind it, got ${matches.length}`);
+  }
+  // Osborne-style short-workings must still be attributed to their line's outbound chip,
+  // not silently dropped for lacking a printed terminus of their own.
+  const osborneTrips = trips.filter((t) => t.destination === "Osborne");
+  if (osborneTrips.length > 0) {
+    const outerHarborMatches = osborneTrips.filter((t) => tripMatchesMarketingChip(t, "Outer Harbor"));
+    assert(outerHarborMatches.length === osborneTrips.length, `every captured Osborne short-working at ${stationName} must match the Outer Harbor outbound chip`);
+  }
+  // No trip on a non-hub station's fixture may resolve as an arrival at that station.
+  assert(!trips.some((t) => isTerminatingAtStation(t.destination, stationName)), `${stationName} must show no arrival rows for itself`);
+}
+// Adelaide Railway Station itself must show no arrival rows: every hub-bound destination
+// spelling the feed uses is recognised as terminating there.
+for (const hubDestination of ["City", "Adelaide", "Adelaide Railway Station"]) {
+  assert(isTerminatingAtStation(hubDestination, "Adelaide Railway Station") === true, `"${hubDestination}" must be recognised as an arrival at Adelaide Railway Station itself`);
+}
+
 assert(
   typeof readAdelaideMetroApiKey() === "string",
   "H2: missing key must be an empty string, not a throw"
@@ -144,7 +192,11 @@ assert(
   legacyHubNextTrain.config?.destination === "Adelaide Railway Station (Belair line)",
   `legacy hub-bound label must resolve to canonical "Adelaide Railway Station (Belair line)", got ${legacyHubNextTrain.config?.destination}`
 );
+assert(
+  legacyHubNextTrain.next !== null,
+  'Goodwood towards "Adelaide Railway Station (Belair line)" must return a non-null next train — this is the exact production regression from #439 (docs/jim-brief-adelaide-city-bound-rows-missing.md)'
+);
 
 console.log(
-  "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips (terminus-only/Perth style), Goodwood's hub-bound chips carry the line name, terminating-here filter, BART stays planned, snapshot not stale today)"
+  "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips (terminus-only/Perth style), Goodwood's hub-bound chips carry the line name, terminating-here filter, hub-bound chips proven to have real captured trips behind them (city-bound feed destination \"City\" recognised), Osborne short-workings attributed to their line, BART stays planned, snapshot not stale today)"
 );
