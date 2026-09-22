@@ -147,6 +147,10 @@
     "gold-coast": { minLat: -28.13, maxLat: -27.90, minLng: 153.32, maxLng: 153.46 },
     brisbane: { minLat: -28.2, maxLat: -27.0, minLng: 152.6, maxLng: 153.6 },
     adelaide: { minLat: -35.3, maxLat: -34.55, minLng: 138.35, maxLng: 138.85 },
+    // Melbourne (docs/melbourne-d1/jim-handoff.md, 22 Sep 2026) — comingSoon in the picker,
+    // box derived from lib/cities/melbourne/stations.json's 220 catalogued stations
+    // (lat -38.374..-37.579, lng 144.661..145.507) with a small margin.
+    melbourne: { minLat: -38.43, maxLat: -37.52, minLng: 144.60, maxLng: 145.56 },
     "uk-london-tfl": { minLat: 51.28, maxLat: 51.7, minLng: -0.52, maxLng: 0.35 },
     canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
     stockholm: { minLat: 58.85, maxLat: 59.60, minLng: 17.50, maxLng: 18.40 },

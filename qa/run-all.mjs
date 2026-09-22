@@ -158,6 +158,7 @@ const SMOKE_SCRIPTS = [
   "bart-planned-gate.mjs",
   "chicago-dogfood-gate.mjs",
   "washington-dogfood-gate.mjs",
+  "melbourne-dogfood-gate.mjs",
   "write-city-directions-resilience.mjs",
   "late-leave-slider-stays.mjs",
   "cold-boot-fetch-coalesce.mjs",
