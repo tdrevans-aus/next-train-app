@@ -1,0 +1,557 @@
+{
+  "Addison Rd-Seat Pleasant": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Anacostia": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av"
+  ],
+  "Archives-Navy Mem'l-Penn Quarter": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Arlington Cemetery": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo"
+  ],
+  "Ashburn": [
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Ballston-MU": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Benning Rd": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Bethesda": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Braddock Rd": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Branch Av": [
+    "Green Line + Greenbelt"
+  ],
+  "Brookland-CUA": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Capitol Heights": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Capitol South": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Cheverly": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton"
+  ],
+  "Clarendon": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Cleveland Park": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "College Park-U of Md": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Columbia Heights": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Congress Heights": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av"
+  ],
+  "Court House": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Crystal City": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Deanwood": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton"
+  ],
+  "Downtown Largo": [
+    "Blue Line + Franconia-Springfield",
+    "Silver Line + Ashburn",
+    "Silver Line + New Carrollton"
+  ],
+  "Dunn Loring-Merrifield": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton"
+  ],
+  "Dupont Circle": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "East Falls Church": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Eastern Market": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Eisenhower Av": [
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Farragut North": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Farragut West": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Federal Center SW": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Federal Triangle": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Foggy Bottom-GWU": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Forest Glen": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Fort Totten": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Franconia-Springfield": [
+    "Blue Line + Downtown Largo"
+  ],
+  "Friendship Heights": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Gallery Place-Chinatown": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Georgia Av-Petworth": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Glenmont": [
+    "Red Line + Shady Grove"
+  ],
+  "Greenbelt": [
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center"
+  ],
+  "Greensboro": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Grosvenor - Strathmore": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Herndon": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Huntington": [
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Hyattsville Crossing": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Innovation Center": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Judiciary Sq": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "King St-Old Town": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "L'Enfant Plaza": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Landover": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton"
+  ],
+  "Loudoun Gateway": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "McLean": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "McPherson Sq": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Medical Center": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Metro Center": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Minnesota Av": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton"
+  ],
+  "Morgan Blvd": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Mt Vernon Sq/7th St-Convention Center": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Greenbelt"
+  ],
+  "Navy Yard-Ballpark": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av"
+  ],
+  "Naylor Rd": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av"
+  ],
+  "New Carrollton": [
+    "Orange Line + Vienna/Fairfax-GMU"
+  ],
+  "NoMa-Gallaudet U": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "North Bethesda": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Pentagon": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Pentagon City": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Potomac Av": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Potomac Yard-VT": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Reston Town Center": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Rhode Island Av-Brentwood": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Rockville": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Ronald Reagan Washington National Airport": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Rosslyn": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Shady Grove": [
+    "Red Line + Glenmont"
+  ],
+  "Shaw-Howard U": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Silver Spring": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Smithsonian": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Southern Av": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av"
+  ],
+  "Spring Hill": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Stadium-Armory": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo",
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Suitland": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av"
+  ],
+  "Takoma": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Tenleytown-AU": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Twinbrook": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Tysons": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "U St/African-Amer Civil War Mem'l/Cardozo": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Union Station": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Van Dorn St": [
+    "Blue Line + Franconia-Springfield",
+    "Blue Line + Downtown Largo"
+  ],
+  "Van Ness-UDC": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Vienna/Fairfax-GMU": [
+    "Orange Line + New Carrollton"
+  ],
+  "Virginia Sq-GMU": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton",
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Washington Dulles International Airport": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Waterfront": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av"
+  ],
+  "West Falls Church-VT": [
+    "Orange Line + Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton"
+  ],
+  "West Hyattsville": [
+    "Green Line + Greenbelt",
+    "Green Line + Branch Av",
+    "Yellow Line + Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt"
+  ],
+  "Wheaton": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ],
+  "Wiehle-Reston East": [
+    "Silver Line + Ashburn",
+    "Silver Line + Downtown Largo",
+    "Silver Line + New Carrollton"
+  ],
+  "Woodley Park-Zoo/Adams Morgan": [
+    "Red Line + Shady Grove",
+    "Red Line + Glenmont"
+  ]
+}

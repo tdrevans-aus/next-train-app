@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -117,9 +117,9 @@
         { id: "bart", name: "BART (San Francisco Bay Area)", timeZone: "America/Los_Angeles", comingSoon: true },
         { id: "boston", name: "Boston", timeZone: "America/New_York" },
         { id: "chicago", name: "Chicago", timeZone: "America/Chicago", comingSoon: true },
-        // docs/washington-d1/ — same Coming Soon shape (PR #418/#420 US wave 2
-        // pattern). status stays "planned" in the registry until a flip PR.
-        { id: "washington", name: "Washington, D.C.", timeZone: "America/New_York", comingSoon: true },
+        // Flipped live 25 Sep 2026 (docs/washington-d1/mark-qa-note.md,
+        // docs/jim-brief-washington-live-gate.md) — comingSoon dropped, same as Boston's flip.
+        { id: "washington", name: "Washington, D.C.", timeZone: "America/New_York" },
       ],
     },
     {

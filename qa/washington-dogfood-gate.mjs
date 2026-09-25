@@ -1,21 +1,34 @@
 /**
- * Washington flip follow-through gate. Washington stays `status: "planned"` (Mark/Tim's flip
- * call) but the dogfood module, live-city-api.js dispatch switch-cases, and this gate are wired
- * ahead of that per the flip-follow-through guardrail (Boston/Chicago shape) so no second pass
- * is needed once the flip happens.
+ * Washington flip follow-through gate. Rewritten 25 Sep 2026 (docs/jim-brief-washington-live-gate.md)
+ * to assert LIVE state — Washington flipped `status: "live"` per Mark's fully-green QA pass
+ * (docs/washington-d1/mark-qa-note.md). Mirrors qa/boston-dogfood-gate.mjs's post-flip shape,
+ * which hit the identical pre-flip-assertions-vs-flip problem before Boston's own flip. The old
+ * pre-flip assertions (assertCityLive must fail, status === "planned", isMultiCity() === false,
+ * dispatched calls must surface MissingWmataApiKeyError) are removed, not left disabled.
  *
- * Deliberately does NOT call any live WMATA endpoint itself (api.wmata.com/Rail.svc/json/
- * jStations or StationPrediction.svc) — this is a smoke-tier gate, not a network test. Instead
- * it replays qa/fixtures/washington/{jstations,predictions}.json, a trimmed REAL capture against
- * both live endpoints taken 20 Sep 2026 (docs/washington-d1/jim-handoff.md "Live verification"),
- * through the catalog/allow-list/direction-model logic (resolveCatalogEntry, mapWmataTrainToTrip,
- * tripsFromTrainsList, mapLineTerminusDestination, resolveTerminus,
- * resolveStationCodesForCatalogEntry), plus asserts that fetchStationBoard throws for an unknown
- * station and for a missing WMATA_API_KEY, all without any network call. Rows in the fixtures
- * marked "_source": "synthetic" are hand-authored for shapes the live capture didn't happen to
- * produce (an unrecognized Line code; a reliable "---" Min on a passenger line; a Yellow Line
- * train, since the "All" capture carried zero YL trains at capture time) — same pattern as
- * qa/fixtures/brussels/irail-liveboard.json.
+ * Unlike Boston's MBTA V3 API, WMATA's endpoints always require a key (WMATA_API_KEY) — there is
+ * no unauthenticated fallback, and no WMATA key is registered in CI. So the end-to-end dispatch
+ * coverage below stubs globalThis.fetch to serve the real captured
+ * qa/fixtures/washington/{jstations,predictions}.json fixtures (taken 20 Sep 2026 against both
+ * live endpoints, docs/washington-d1/jim-handoff.md "Live verification") and temporarily sets
+ * process.env.WMATA_API_KEY to a dummy value for the duration of that section, since neither
+ * getWashingtonDogfoodNextTrain nor live-city-api.js's washington dispatch case accepts an apiKey
+ * override — both resolve their key the same way production does, via
+ * lib/providers/gtfs/auth.js's readWmataApiKey() reading process.env.WMATA_API_KEY. This proves
+ * the full dispatch/dogfood wiring end-to-end, offline and deterministically, the same real
+ * fixture data Mark's live round-trip captured — rather than either skipping the dispatch path or
+ * depending on a key being present in whichever environment runs this gate.
+ *
+ * The rest of the gate is unchanged by the flip: it still replays
+ * qa/fixtures/washington/{jstations,predictions}.json through the catalog/allow-list/
+ * direction-model logic (resolveCatalogEntry, mapWmataTrainToTrip, tripsFromTrainsList,
+ * mapLineTerminusDestination, resolveTerminus, resolveStationCodesForCatalogEntry), and still
+ * asserts that fetchStationBoard throws for an unknown station and for a missing WMATA_API_KEY
+ * (still a real, live failure mode — the mock above only covers the dispatch-wiring section).
+ * Rows in the fixtures marked "_source": "synthetic" are hand-authored for shapes the live
+ * capture didn't happen to produce (an unrecognized Line code; a reliable "---" Min on a
+ * passenger line; a Yellow Line train, since the "All" capture carried zero YL trains at capture
+ * time) — same pattern as qa/fixtures/brussels/irail-liveboard.json.
  *
  * This gate also walks every real (non-synthetic) fixture row through
  * checkNoSilentlyUnmappedRow() below, which throws if a Line code or (Line, DestinationName)
@@ -47,6 +60,7 @@ import {
   tripsFromTrainsList,
   resolveStationCodesForCatalogEntry,
   fetchStationBoard,
+  resetStationsMetadataCacheForTests,
   WashingtonStationCodeUnconfirmedError,
   MissingWmataApiKeyError,
 } from "../lib/providers/washington.js";
@@ -78,13 +92,13 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity + status — Washington stays planned; only the flip changes this.
+// Registry identity + status — Washington flipped live 25 Sep 2026
+// (docs/washington-d1/mark-qa-note.md); assertCityLive must now succeed.
 const live = assertCityLive("washington");
-assert(live?.ok === false, "assertCityLive(washington) must fail");
-assert(live?.status === 501, "washington must be 501 planned");
+assert(live?.ok === true, "assertCityLive(washington) must succeed now that washington is live");
 
 const entry = getCity("washington");
-assert(entry?.status === "planned", "washington registry status must be planned");
+assert(entry?.status === "live", "washington registry status must be live");
 assert(entry?.adapterReady === true, "washington adapterReady must be true");
 assert(entry?.displayName === "Washington, D.C.", "washington display name must be Washington, D.C.");
 assert(entry?.timeZone === "America/New_York", "washington timezone must be America/New_York");
@@ -93,8 +107,9 @@ for (const forbiddenId of ["dc", "washington-dc", "wmata", "us"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dogfood dispatch is wired ahead of the flip — NOT in MULTI_CITY_IDS yet.
-assert(isMultiCity("washington") === false, "washington must NOT be in MULTI_CITY_IDS while status stays planned");
+// Washington is now live — must be in MULTI_CITY_IDS (qa/live-city-lists-sync.mjs enforces this
+// against the registry's live-city set).
+assert(isMultiCity("washington") === true, "washington must be in MULTI_CITY_IDS now that status is live");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/washington-d1");
@@ -104,6 +119,7 @@ for (const name of [
   "hazard-pack.md",
   "direction-model-memo.md",
   "jim-handoff.md",
+  "mark-qa-note.md",
 ]) {
   assert(existsSync(join(d1Dir, name)), `docs/washington-d1/${name} is required`);
 }
@@ -418,10 +434,9 @@ try {
 }
 assert(missingKeyThrew, "fetchStationBoard must throw MissingWmataApiKeyError when no key is configured — no silent timetable fallback");
 
-// Note: fetchStationBoard's `codes`/`stationsData` options only skip the jStations-join step —
-// the GetPrediction HTTP call itself is never mocked, so this gate deliberately stops testing
-// fetchStationBoard once past catalog/key resolution (the missing-key throw above happens
-// before any fetch) rather than making a real network call.
+// Note: `codes`/`stationsData` only skip the jStations-join step — past that, the GetPrediction
+// HTTP call itself is exercised for real (against a stubbed globalThis.fetch, not a live
+// network call) in the mocked end-to-end dispatch section further below, not here.
 
 // Dogfood station list + directions come from the catalog/route tables, not a live parse.
 const dogfoodStations = listWashingtonDogfoodStations();
@@ -432,8 +447,7 @@ const hubPack = getWashingtonDogfoodDirections(WASHINGTON_HUB);
 assert(hubPack.source === "washington-marketing-ends", "directions source must be washington-marketing-ends");
 assert(JSON.stringify(hubPack.directions.sort()) === JSON.stringify(marketingLabelsForStation(WASHINGTON_HUB).sort()), "dogfood directions must match marketingLabelsForStation");
 
-// The production dispatch entry exists and returns the same chips as the dogfood harness, even
-// though washington is deliberately not in MULTI_CITY_IDS yet.
+// The production dispatch entry exists and returns the same chips as the dogfood harness.
 const dispatchedDirections = await getMultiCityDirections("washington", "Glenmont");
 assert(
   JSON.stringify(dispatchedDirections.directions.sort()) === JSON.stringify(glenmontLabels.sort()),
@@ -441,40 +455,59 @@ assert(
 );
 assert(dispatchedDirections.source === "washington-marketing-ends", "live-city-api dispatch source must be washington-marketing-ends");
 
-// The dispatched next-train call must still surface MissingWmataApiKeyError (no key registered
-// this session) rather than silently degrading to a fake board.
-let dispatchedThrew = false;
-try {
-  await getMultiCityNextTrain("washington", {
-    station: "Glenmont",
-    destination: "Red Line + Shady Grove",
-    leaveBeforeMinutes: 5,
-    refreshSeconds: 60,
-  });
-} catch (err) {
-  dispatchedThrew = err instanceof MissingWmataApiKeyError;
-}
-assert(dispatchedThrew, "dispatched next-train must surface MissingWmataApiKeyError, not a silent fallback board");
+// --- End-to-end wiring against a mocked WMATA response (offline, no real network / key) ---
+// WMATA always requires a key and CI has none registered, so this stubs globalThis.fetch to
+// serve the real captured jStations/GetPrediction fixtures and temporarily sets
+// process.env.WMATA_API_KEY to a dummy value — neither getWashingtonDogfoodNextTrain nor
+// live-city-api.js's washington dispatch case accepts an apiKey override, so both resolve their
+// key the same way production does (readWmataApiKey() reading the env var). This proves the full
+// dispatch/dogfood wiring end-to-end against real captured data, deterministically.
+const previousWmataKey = process.env.WMATA_API_KEY;
+process.env.WMATA_API_KEY = "gate-test-key";
+resetStationsMetadataCacheForTests();
+const originalDispatchFetch = globalThis.fetch;
+globalThis.fetch = async (url) => {
+  const href = String(url);
+  if (href.startsWith(WMATA_STATIONS_URL)) {
+    return { ok: true, json: async () => ({ Stations: jstationsFixture.Stations }) };
+  }
+  if (href.startsWith(WMATA_PREDICTION_URL)) {
+    return { ok: true, json: async () => ({ Trains: predictionsFixture.metroCenter }) };
+  }
+  throw new Error(`unexpected fetch in washington-dogfood-gate mocked e2e section: ${href}`);
+};
 
-let dogfoodThrew = false;
+let dispatchedNextTrain;
+let directDogfoodNextTrain;
 try {
-  await getWashingtonDogfoodNextTrain({
-    station: "Glenmont",
-    destination: "Red Line + Shady Grove",
+  dispatchedNextTrain = await getMultiCityNextTrain("washington", {
+    station: WASHINGTON_HUB,
+    destination: "Red Line + Glenmont",
     leaveBeforeMinutes: 5,
     refreshSeconds: 60,
   });
-} catch (err) {
-  dogfoodThrew = err instanceof MissingWmataApiKeyError;
+  directDogfoodNextTrain = await getWashingtonDogfoodNextTrain({
+    station: WASHINGTON_HUB,
+    destination: "Red Line + Glenmont",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+} finally {
+  globalThis.fetch = originalDispatchFetch;
+  resetStationsMetadataCacheForTests();
+  if (previousWmataKey === undefined) {
+    delete process.env.WMATA_API_KEY;
+  } else {
+    process.env.WMATA_API_KEY = previousWmataKey;
+  }
 }
-assert(dogfoodThrew, "dogfood next-train must surface MissingWmataApiKeyError, not a silent fallback board");
+assert(dispatchedNextTrain.config?.destination === "Red Line + Glenmont", "dispatched next-train destination must equal the chosen chip");
+assert(directDogfoodNextTrain.config?.destination === "Red Line + Glenmont", "dogfood next-train destination must equal the chosen chip");
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
-// brisbane-dogfood MULTI_CITY_IDS/available) are deliberately NOT touched yet — same
-// registry-status-derived invariant as MULTI_CITY_IDS above (qa/live-city-lists-sync.mjs
-// requires them to equal exactly the live-city set). Add "washington"/"united states" to all
-// four in the same commit as the status flip.
+// brisbane-dogfood MULTI_CITY_IDS/available) were added to all four in the same commit as the
+// status flip — qa/live-city-lists-sync.mjs enforces they equal exactly the live-city set.
 
 console.log(
-  "washington-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded MARC/VRE out-product (Tim, 20 Sep 2026), 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, Line + terminus direction model, Metro Center and Downtown never a direction token, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, missing-key throws before any fetch, Perth Australia green)"
+  "washington-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section recorded MARC/VRE out-product (Tim, 20 Sep 2026), 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, Line + terminus direction model, Metro Center and Downtown never a direction token, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, dispatch/dogfood next-train wired end-to-end against mocked real fixture data, missing-key still refuses rather than falling back, Perth Australia green)"
 );
