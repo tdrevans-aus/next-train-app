@@ -398,6 +398,22 @@ function resetWidgetHelpDialog() {
   if (manual) {
     manual.hidden = true;
   }
+  const steps = document.getElementById("widget-help-steps");
+  if (steps) {
+    steps.hidden = true;
+  }
+}
+
+function syncWidgetHelpShowStepsButton() {
+  const showStepsBtn = document.getElementById("widget-help-show-steps-btn");
+  const steps = document.getElementById("widget-help-steps");
+  const pinFirst = document.getElementById("widget-help-pin-first");
+  if (!showStepsBtn) {
+    return;
+  }
+  const stepsVisible = Boolean(steps) && steps.hidden === false;
+  const offeringPin = Boolean(pinFirst) && pinFirst.hidden === false;
+  showStepsBtn.hidden = stepsVisible || !offeringPin || !isIosWidgetPlatform();
 }
 
 function setWidgetHelpMode(mode) {
@@ -428,6 +444,7 @@ function setWidgetHelpMode(mode) {
   if (doneBtn) {
     doneBtn.className = hasWidget ? "btn-primary" : "btn-secondary";
   }
+  syncWidgetHelpShowStepsButton();
 }
 
 async function getWidgetInstanceCount() {
@@ -445,7 +462,19 @@ async function getWidgetInstanceCount() {
   }
 }
 
+function showWidgetHelpSteps() {
+  const steps = document.getElementById("widget-help-steps");
+  if (steps) {
+    steps.hidden = false;
+  }
+  syncWidgetHelpShowStepsButton();
+}
+
 function showWidgetHelpManual() {
+  if (isIosWidgetPlatform()) {
+    showWidgetHelpSteps();
+    return;
+  }
   const manual = document.getElementById("widget-help-manual");
   if (manual) {
     manual.hidden = false;
@@ -1750,6 +1779,7 @@ function initWidgetUi() {
   });
 
   document.getElementById("widget-help-pin-btn")?.addEventListener("click", requestPinWidget);
+  document.getElementById("widget-help-show-steps-btn")?.addEventListener("click", showWidgetHelpSteps);
   document.getElementById("widget-help-add-another-btn")?.addEventListener("click", requestPinWidget);
   document.getElementById("widget-help-done-btn")?.addEventListener("click", () => {
     const dialog = document.getElementById("widget-help-dialog");
@@ -1807,6 +1837,7 @@ window.nextTrainWidget = {
   getWidgetTransparentBg,
   refreshNativeWidgetMenuItems,
   requestPinWidget,
+  showWidgetHelpSteps,
   showMenuChromeHint,
   showReminderCoachNotNowHint,
   refreshWidgetDebugPanel,
