@@ -567,14 +567,37 @@ assert(
 // Commuter Rail (unlike Adelaide's/Melbourne's frequent metro service) can genuinely have no
 // Greenbush departure from Braintree at some times of day (confirmed live 22 Sep 2026 — Braintree
 // carried only a Fall River/New Bedford Line trip at check time) so asserting non-null would be
-// flaky on schedule, not on code. Assert the mechanism instead: any Commuter Rail trip actually
-// on the Braintree board must resolve through the same canonical-label path proven above.
-const braintreeCrTrip = braintreeBoard.trips.find((t) => t.lineId === "commuter-rail");
-if (braintreeCrTrip) {
-  assert(
-    braintreeCrTrip.destination.startsWith("South Station ("),
-    `a live Commuter Rail trip from Braintree must already carry the canonical hub-bound label, got "${braintreeCrTrip.destination}"`
-  );
+// flaky on schedule, not on code.
+//
+// docs/jim-brief-boston-braintree-hub-label-regression.md (25 Sep 2026): the previous version of
+// this assertion asserted every live Commuter Rail trip observed at Braintree must be hub-bound
+// ("South Station (...)") — wrong, not just flaky. Braintree is mid-line (Old Colony shared
+// trackage, not itself a hub), so it genuinely sees BOTH inbound (hub-bound) and outbound
+// (far-terminus-bound) trips — confirmed live 25 Sep 2026: MBTA trip
+// FBWMLConstruction-859759-1017 has direction_id 0 and headsign "Kingston", i.e. a real
+// South-Station-to-Kingston departure a Braintree rider boards to continue *outbound* — its
+// correct label is the bare terminus "Kingston", not a hub label. mapCommuterRailDestination()
+// was never the regression; the gate's assumption was. Assert the mechanism instead, against
+// each trip's own real headsign (independent of destination's own derivation, so this can't
+// just echo the same bug back): a hub headsign ("South Station"/"North Station") must produce
+// the disambiguated hub label, and the route's own outbound-terminus headsign must produce the
+// bare terminus — this is exactly the wrong-terminus-pair failure mode that shipped in #440.
+for (const trip of braintreeBoard.trips.filter((t) => t.lineId === "commuter-rail")) {
+  const route = Object.values(COMMUTER_RAIL_ROUTES).find((r) => r.longName === trip.routeLongName);
+  assert(route, `Braintree Commuter Rail trip has unrecognized route longName "${trip.routeLongName}"`);
+  const headsign = trip.stopHeadsign;
+  const [outboundTerminus, hubTerminus] = route.termini;
+  if (headsign === hubTerminus) {
+    assert(
+      trip.destination === `${hubTerminus} (${route.longName})`,
+      `hub-bound Braintree Commuter Rail trip (headsign "${headsign}") must carry the canonical disambiguated hub label, got "${trip.destination}"`
+    );
+  } else if (headsign === outboundTerminus) {
+    assert(
+      trip.destination === outboundTerminus,
+      `outbound Braintree Commuter Rail trip (headsign "${headsign}") must carry the bare terminus label, got "${trip.destination}"`
+    );
+  }
 }
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
