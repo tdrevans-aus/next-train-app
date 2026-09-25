@@ -892,6 +892,18 @@ body.region-setup-active .ad-remove-link-wrap {
   color: var(--muted);
 }
 
+.widget-help-steps {
+  margin: 0.75rem 0 0;
+  padding-left: 1.35rem;
+  list-style: decimal;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.widget-help-steps li + li {
+  margin-top: 0.35rem;
+}
+
 .widget-help-footer {
   display: flex;
   flex-direction: column;
@@ -899,6 +911,7 @@ body.region-setup-active .ad-remove-link-wrap {
 }
 
 #widget-help-dialog #widget-help-pin-btn,
+#widget-help-dialog #widget-help-show-steps-btn,
 #widget-help-dialog #widget-help-add-another-btn,
 #widget-help-dialog #widget-help-done-btn {
   width: 100%;
