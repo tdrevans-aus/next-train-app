@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -26,7 +26,7 @@
         { id: "brisbane", name: "Brisbane", timeZone: "Australia/Brisbane" },
         { id: "canberra", name: "Canberra", timeZone: "Australia/Sydney" },
         { id: "gold-coast", name: "Gold Coast", timeZone: "Australia/Brisbane" },
-        { id: "melbourne", name: "Melbourne", timeZone: "Australia/Melbourne", comingSoon: true },
+        { id: "melbourne", name: "Melbourne", timeZone: "Australia/Melbourne" },
         { id: "newcastle", name: "Newcastle", timeZone: "Australia/Sydney" },
         { id: "perth", name: "Perth", timeZone: "Australia/Perth" },
         { id: "sydney", name: "Sydney", timeZone: "Australia/Sydney" },
@@ -117,9 +117,9 @@
         { id: "bart", name: "BART (San Francisco Bay Area)", timeZone: "America/Los_Angeles", comingSoon: true },
         { id: "boston", name: "Boston", timeZone: "America/New_York" },
         { id: "chicago", name: "Chicago", timeZone: "America/Chicago", comingSoon: true },
-        // docs/washington-d1/ — same Coming Soon shape (PR #418/#420 US wave 2
-        // pattern). status stays "planned" in the registry until a flip PR.
-        { id: "washington", name: "Washington, D.C.", timeZone: "America/New_York", comingSoon: true },
+        // Flipped live 25 Sep 2026 (docs/washington-d1/mark-qa-note.md,
+        // docs/jim-brief-washington-live-gate.md) — comingSoon dropped, same as Boston's flip.
+        { id: "washington", name: "Washington, D.C.", timeZone: "America/New_York" },
       ],
     },
     {
@@ -147,6 +147,10 @@
     "gold-coast": { minLat: -28.13, maxLat: -27.90, minLng: 153.32, maxLng: 153.46 },
     brisbane: { minLat: -28.2, maxLat: -27.0, minLng: 152.6, maxLng: 153.6 },
     adelaide: { minLat: -35.3, maxLat: -34.55, minLng: 138.35, maxLng: 138.85 },
+    // Melbourne (docs/melbourne-d1/jim-handoff.md, 22 Sep 2026) — comingSoon in the picker,
+    // box derived from lib/cities/melbourne/stations.json's 220 catalogued stations
+    // (lat -38.374..-37.579, lng 144.661..145.507) with a small margin.
+    melbourne: { minLat: -38.43, maxLat: -37.52, minLng: 144.60, maxLng: 145.56 },
     "uk-london-tfl": { minLat: 51.28, maxLat: 51.7, minLng: -0.52, maxLng: 0.35 },
     canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
     stockholm: { minLat: 58.85, maxLat: 59.60, minLng: 17.50, maxLng: 18.40 },

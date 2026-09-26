@@ -14,6 +14,8 @@ Where `docs/<country>-ledger.md` exists (see `docs/country-lane.md`), add a ledg
 
 Two board-eligibility checks are part of the checklist (`docs/board-eligibility-rule.md`): (1) the city's oracle report has a Board eligibility section with no `undecided` rows; (2) the adapter's filtering matches the verdicts — sample a board and confirm a service marked `in` appears and services marked `out-*` do not. A walk-up service silently missing from an in-catalog station's board is a hard fail, same severity as a hub-lock violation.
 
+Also part of the checklist (added 20 Sep 2026, after Boston flipped live with its subway still built from static GTFS and `realtime: false` — docs/jim-brief-boston-subway-live-predictions.md): board-level `realtime` is true and every mode on the board is built from live data, not a schedule. Sample the rider-facing `/api/board` and `/api/directions` endpoints, not only the adapter's `fetchStationBoard()` in isolation — a mode can look live when called directly and still be schedule-only in the actual response path.
+
 ## Input
 Read the wired adapter, its tests, and the city's `docs/<city>-d1/` pack. Don't read other cities' history to form an opinion on this one.
 

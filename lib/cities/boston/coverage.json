@@ -4,7 +4,7 @@
   "covered": [
     {
       "label": "Subway (Red, Orange, Blue, Green B/C/D/E, Mattapan)",
-      "detail": "All 125 rapid-transit stations, full network."
+      "detail": "All 125 rapid-transit stations, full network. Live MBTA V3 predictions only - a train only appears once MBTA is actually predicting it, never backfilled from the printed timetable."
     },
     {
       "label": "Commuter Rail",

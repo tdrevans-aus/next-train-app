@@ -1,0 +1,27 @@
+{
+  "region": "melbourne",
+  "updated": "2026-09-22",
+  "covered": [
+    {
+      "label": "Metro Trains (all 17 lines - Alamein, Belgrave, Craigieburn, Cranbourne, Frankston, Glen Waverley, Hurstbridge, Lilydale, Mernda, Pakenham, Racecourse, Sandringham, Stony Point, Sunbury, Upfield, Werribee, Williamstown)",
+      "detail": "All 220 stations, full network. Live only - a train only appears once the Transport Victoria Open Data Portal is actually reporting real-time data for it, never backfilled from the printed timetable. Racecourse only runs on race days/event days."
+    },
+    {
+      "label": "V/Line regional trains (Geelong, Ballarat, Bendigo, Seymour, Traralgon, Echuca, Ararat, Maryborough, Shepparton, Bairnsdale, Swan Hill)",
+      "detail": "Shown alongside Metro Trains at the shared city and regional stations these services call at (Southern Cross, Flinders Street, Richmond, Caulfield, Clayton, Dandenong, Pakenham, North Melbourne, Broadmeadows, Footscray, Sunshine). No separate booking or reservation needed to board these."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "V/Line Albury and Warrnambool services",
+      "detail": "Excluded - every seat on these two services is compulsorily reserved."
+    },
+    {
+      "label": "Trams, buses, SkyBus, Melbourne Airport Rail, Suburban Rail Loop",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "220 Metro Trains stations, plus V/Line regional trains shown at 11 shared stations.",
+  "notes": "Some trains on the loop-capable lines run via the underground City Loop and some run direct - the board shows \"via City Loop\" only at Flinders Street, Southern Cross, Flagstaff, Melbourne Central and Parliament, where it changes what stop is next. Sunbury, Cranbourne and Pakenham run through the Metro Tunnel and no longer serve Flinders Street or the City Loop."
+}

@@ -9,7 +9,10 @@
       ],
       "aliases": [],
       "lat": 42.39583,
-      "lng": -71.141287
+      "lng": -71.141287,
+      "mbtaStopIds": [
+        "place-alfcl"
+      ]
     },
     {
       "name": "Davis",
@@ -18,7 +21,10 @@
       ],
       "aliases": [],
       "lat": 42.39674,
-      "lng": -71.121815
+      "lng": -71.121815,
+      "mbtaStopIds": [
+        "place-davis"
+      ]
     },
     {
       "name": "Porter",
@@ -27,7 +33,10 @@
       ],
       "aliases": [],
       "lat": 42.3884,
-      "lng": -71.119149
+      "lng": -71.119149,
+      "mbtaStopIds": [
+        "place-portr"
+      ]
     },
     {
       "name": "Harvard",
@@ -36,7 +45,10 @@
       ],
       "aliases": [],
       "lat": 42.373362,
-      "lng": -71.118956
+      "lng": -71.118956,
+      "mbtaStopIds": [
+        "place-harsq"
+      ]
     },
     {
       "name": "Central",
@@ -45,7 +57,10 @@
       ],
       "aliases": [],
       "lat": 42.365486,
-      "lng": -71.103802
+      "lng": -71.103802,
+      "mbtaStopIds": [
+        "place-cntsq"
+      ]
     },
     {
       "name": "Kendall/MIT",
@@ -54,7 +69,10 @@
       ],
       "aliases": [],
       "lat": 42.3624908,
-      "lng": -71.0861765
+      "lng": -71.0861765,
+      "mbtaStopIds": [
+        "place-knncl"
+      ]
     },
     {
       "name": "Charles/MGH",
@@ -63,7 +81,10 @@
       ],
       "aliases": [],
       "lat": 42.361166,
-      "lng": -71.070628
+      "lng": -71.070628,
+      "mbtaStopIds": [
+        "place-chmnl"
+      ]
     },
     {
       "name": "Park Street",
@@ -77,7 +98,10 @@
       "aliases": [],
       "hub": true,
       "lat": 42.3563946,
-      "lng": -71.0624242
+      "lng": -71.0624242,
+      "mbtaStopIds": [
+        "place-pktrm"
+      ]
     },
     {
       "name": "Downtown Crossing",
@@ -87,7 +111,10 @@
       ],
       "aliases": [],
       "lat": 42.355518,
-      "lng": -71.060225
+      "lng": -71.060225,
+      "mbtaStopIds": [
+        "place-dwnxg"
+      ]
     },
     {
       "name": "South Station",
@@ -96,7 +123,10 @@
       ],
       "aliases": [],
       "lat": 42.352271,
-      "lng": -71.055242
+      "lng": -71.055242,
+      "mbtaStopIds": [
+        "place-sstat"
+      ]
     },
     {
       "name": "Broadway",
@@ -105,7 +135,10 @@
       ],
       "aliases": [],
       "lat": 42.342622,
-      "lng": -71.056967
+      "lng": -71.056967,
+      "mbtaStopIds": [
+        "place-brdwy"
+      ]
     },
     {
       "name": "Andrew",
@@ -114,7 +147,10 @@
       ],
       "aliases": [],
       "lat": 42.330154,
-      "lng": -71.057655
+      "lng": -71.057655,
+      "mbtaStopIds": [
+        "place-andrw"
+      ]
     },
     {
       "name": "JFK/UMass",
@@ -123,7 +159,10 @@
       ],
       "aliases": [],
       "lat": 42.320685,
-      "lng": -71.052391
+      "lng": -71.052391,
+      "mbtaStopIds": [
+        "place-jfk"
+      ]
     },
     {
       "name": "Savin Hill",
@@ -132,7 +171,10 @@
       ],
       "aliases": [],
       "lat": 42.31129,
-      "lng": -71.053331
+      "lng": -71.053331,
+      "mbtaStopIds": [
+        "place-shmnl"
+      ]
     },
     {
       "name": "Fields Corner",
@@ -141,7 +183,10 @@
       ],
       "aliases": [],
       "lat": 42.300093,
-      "lng": -71.061667
+      "lng": -71.061667,
+      "mbtaStopIds": [
+        "place-fldcr"
+      ]
     },
     {
       "name": "Shawmut",
@@ -150,7 +195,10 @@
       ],
       "aliases": [],
       "lat": 42.2931258,
-      "lng": -71.065738
+      "lng": -71.065738,
+      "mbtaStopIds": [
+        "place-smmnl"
+      ]
     },
     {
       "name": "Ashmont",
@@ -160,7 +208,10 @@
       ],
       "aliases": [],
       "lat": 42.28452,
-      "lng": -71.063777
+      "lng": -71.063777,
+      "mbtaStopIds": [
+        "place-asmnl"
+      ]
     },
     {
       "name": "North Quincy",
@@ -169,7 +220,10 @@
       ],
       "aliases": [],
       "lat": 42.275275,
-      "lng": -71.029583
+      "lng": -71.029583,
+      "mbtaStopIds": [
+        "place-nqncy"
+      ]
     },
     {
       "name": "Wollaston",
@@ -178,7 +232,10 @@
       ],
       "aliases": [],
       "lat": 42.2665139,
-      "lng": -71.0203369
+      "lng": -71.0203369,
+      "mbtaStopIds": [
+        "place-wlsta"
+      ]
     },
     {
       "name": "Quincy Center",
@@ -187,7 +244,10 @@
       ],
       "aliases": [],
       "lat": 42.251809,
-      "lng": -71.005409
+      "lng": -71.005409,
+      "mbtaStopIds": [
+        "place-qnctr"
+      ]
     },
     {
       "name": "Quincy Adams",
@@ -196,7 +256,10 @@
       ],
       "aliases": [],
       "lat": 42.233391,
-      "lng": -71.007153
+      "lng": -71.007153,
+      "mbtaStopIds": [
+        "place-qamnl"
+      ]
     },
     {
       "name": "Braintree",
@@ -205,7 +268,10 @@
       ],
       "aliases": [],
       "lat": 42.2078543,
-      "lng": -71.0011385
+      "lng": -71.0011385,
+      "mbtaStopIds": [
+        "place-brntn"
+      ]
     },
     {
       "name": "Oak Grove",
@@ -214,7 +280,10 @@
       ],
       "aliases": [],
       "lat": 42.43668,
-      "lng": -71.071097
+      "lng": -71.071097,
+      "mbtaStopIds": [
+        "place-ogmnl"
+      ]
     },
     {
       "name": "Malden Center",
@@ -223,7 +292,10 @@
       ],
       "aliases": [],
       "lat": 42.426632,
-      "lng": -71.07411
+      "lng": -71.07411,
+      "mbtaStopIds": [
+        "place-mlmnl"
+      ]
     },
     {
       "name": "Wellington",
@@ -232,7 +304,10 @@
       ],
       "aliases": [],
       "lat": 42.40237,
-      "lng": -71.077082
+      "lng": -71.077082,
+      "mbtaStopIds": [
+        "place-welln"
+      ]
     },
     {
       "name": "Assembly",
@@ -241,7 +316,10 @@
       ],
       "aliases": [],
       "lat": 42.392811,
-      "lng": -71.077257
+      "lng": -71.077257,
+      "mbtaStopIds": [
+        "place-astao"
+      ]
     },
     {
       "name": "Sullivan Sq",
@@ -252,7 +330,10 @@
         "Sullivan Square"
       ],
       "lat": 42.383975,
-      "lng": -71.076994
+      "lng": -71.076994,
+      "mbtaStopIds": [
+        "place-sull"
+      ]
     },
     {
       "name": "Community College",
@@ -261,7 +342,10 @@
       ],
       "aliases": [],
       "lat": 42.373622,
-      "lng": -71.069533
+      "lng": -71.069533,
+      "mbtaStopIds": [
+        "place-ccmnl"
+      ]
     },
     {
       "name": "North Station",
@@ -272,7 +356,10 @@
       ],
       "aliases": [],
       "lat": 42.365577,
-      "lng": -71.06129
+      "lng": -71.06129,
+      "mbtaStopIds": [
+        "place-north"
+      ]
     },
     {
       "name": "Haymarket",
@@ -283,7 +370,10 @@
       ],
       "aliases": [],
       "lat": 42.363021,
-      "lng": -71.05829
+      "lng": -71.05829,
+      "mbtaStopIds": [
+        "place-haecl"
+      ]
     },
     {
       "name": "State",
@@ -293,7 +383,10 @@
       ],
       "aliases": [],
       "lat": 42.358978,
-      "lng": -71.057598
+      "lng": -71.057598,
+      "mbtaStopIds": [
+        "place-state"
+      ]
     },
     {
       "name": "Chinatown",
@@ -302,7 +395,10 @@
       ],
       "aliases": [],
       "lat": 42.352547,
-      "lng": -71.062752
+      "lng": -71.062752,
+      "mbtaStopIds": [
+        "place-chncl"
+      ]
     },
     {
       "name": "Tufts Medical Ctr",
@@ -313,7 +409,10 @@
         "Tufts Medical Center"
       ],
       "lat": 42.349662,
-      "lng": -71.063917
+      "lng": -71.063917,
+      "mbtaStopIds": [
+        "place-tumnl"
+      ]
     },
     {
       "name": "Back Bay",
@@ -322,7 +421,10 @@
       ],
       "aliases": [],
       "lat": 42.34735,
-      "lng": -71.075727
+      "lng": -71.075727,
+      "mbtaStopIds": [
+        "place-bbsta"
+      ]
     },
     {
       "name": "Mass. Ave",
@@ -333,7 +435,10 @@
         "Massachusetts Avenue"
       ],
       "lat": 42.341512,
-      "lng": -71.083423
+      "lng": -71.083423,
+      "mbtaStopIds": [
+        "place-masta"
+      ]
     },
     {
       "name": "Ruggles",
@@ -342,7 +447,10 @@
       ],
       "aliases": [],
       "lat": 42.336377,
-      "lng": -71.088961
+      "lng": -71.088961,
+      "mbtaStopIds": [
+        "place-rugg"
+      ]
     },
     {
       "name": "Roxbury Crossing",
@@ -351,7 +459,10 @@
       ],
       "aliases": [],
       "lat": 42.331397,
-      "lng": -71.095451
+      "lng": -71.095451,
+      "mbtaStopIds": [
+        "place-rcmnl"
+      ]
     },
     {
       "name": "Jackson Sq",
@@ -362,7 +473,10 @@
         "Jackson Square"
       ],
       "lat": 42.323132,
-      "lng": -71.099592
+      "lng": -71.099592,
+      "mbtaStopIds": [
+        "place-jaksn"
+      ]
     },
     {
       "name": "Stony Brook",
@@ -371,7 +485,10 @@
       ],
       "aliases": [],
       "lat": 42.317062,
-      "lng": -71.104248
+      "lng": -71.104248,
+      "mbtaStopIds": [
+        "place-sbmnl"
+      ]
     },
     {
       "name": "Green St",
@@ -382,7 +499,10 @@
         "Green Street"
       ],
       "lat": 42.310525,
-      "lng": -71.107414
+      "lng": -71.107414,
+      "mbtaStopIds": [
+        "place-grnst"
+      ]
     },
     {
       "name": "Forest Hills",
@@ -391,7 +511,10 @@
       ],
       "aliases": [],
       "lat": 42.300713,
-      "lng": -71.113943
+      "lng": -71.113943,
+      "mbtaStopIds": [
+        "place-forhl"
+      ]
     },
     {
       "name": "Wonderland",
@@ -400,7 +523,10 @@
       ],
       "aliases": [],
       "lat": 42.41342,
-      "lng": -70.991648
+      "lng": -70.991648,
+      "mbtaStopIds": [
+        "place-wondl"
+      ]
     },
     {
       "name": "Revere Beach",
@@ -409,7 +535,10 @@
       ],
       "aliases": [],
       "lat": 42.4078425,
-      "lng": -70.9925332
+      "lng": -70.9925332,
+      "mbtaStopIds": [
+        "place-rbmnl"
+      ]
     },
     {
       "name": "Beachmont",
@@ -418,7 +547,10 @@
       ],
       "aliases": [],
       "lat": 42.3975423,
-      "lng": -70.9923194
+      "lng": -70.9923194,
+      "mbtaStopIds": [
+        "place-bmmnl"
+      ]
     },
     {
       "name": "Suffolk Downs",
@@ -427,7 +559,10 @@
       ],
       "aliases": [],
       "lat": 42.3905007,
-      "lng": -70.9971226
+      "lng": -70.9971226,
+      "mbtaStopIds": [
+        "place-sdmnl"
+      ]
     },
     {
       "name": "Orient Heights",
@@ -436,7 +571,10 @@
       ],
       "aliases": [],
       "lat": 42.386867,
-      "lng": -71.004736
+      "lng": -71.004736,
+      "mbtaStopIds": [
+        "place-orhte"
+      ]
     },
     {
       "name": "Wood Island",
@@ -445,7 +583,10 @@
       ],
       "aliases": [],
       "lat": 42.3796403,
-      "lng": -71.0228654
+      "lng": -71.0228654,
+      "mbtaStopIds": [
+        "place-wimnl"
+      ]
     },
     {
       "name": "Airport",
@@ -454,7 +595,10 @@
       ],
       "aliases": [],
       "lat": 42.374262,
-      "lng": -71.030395
+      "lng": -71.030395,
+      "mbtaStopIds": [
+        "place-aport"
+      ]
     },
     {
       "name": "Maverick",
@@ -463,7 +607,10 @@
       ],
       "aliases": [],
       "lat": 42.3691186,
-      "lng": -71.0395296
+      "lng": -71.0395296,
+      "mbtaStopIds": [
+        "place-mvbcl"
+      ]
     },
     {
       "name": "Aquarium",
@@ -472,7 +619,10 @@
       ],
       "aliases": [],
       "lat": 42.359784,
-      "lng": -71.051652
+      "lng": -71.051652,
+      "mbtaStopIds": [
+        "place-aqucl"
+      ]
     },
     {
       "name": "Gov't Center",
@@ -487,7 +637,10 @@
         "Government Center"
       ],
       "lat": 42.359705,
-      "lng": -71.059215
+      "lng": -71.059215,
+      "mbtaStopIds": [
+        "place-gover"
+      ]
     },
     {
       "name": "Bowdoin",
@@ -496,7 +649,10 @@
       ],
       "aliases": [],
       "lat": 42.361365,
-      "lng": -71.062037
+      "lng": -71.062037,
+      "mbtaStopIds": [
+        "place-bomnl"
+      ]
     },
     {
       "name": "Boylston",
@@ -508,7 +664,10 @@
       ],
       "aliases": [],
       "lat": 42.35302,
-      "lng": -71.06459
+      "lng": -71.06459,
+      "mbtaStopIds": [
+        "place-boyls"
+      ]
     },
     {
       "name": "Arlington",
@@ -520,7 +679,10 @@
       ],
       "aliases": [],
       "lat": 42.351902,
-      "lng": -71.070893
+      "lng": -71.070893,
+      "mbtaStopIds": [
+        "place-armnl"
+      ]
     },
     {
       "name": "Copley",
@@ -532,7 +694,10 @@
       ],
       "aliases": [],
       "lat": 42.349974,
-      "lng": -71.077447
+      "lng": -71.077447,
+      "mbtaStopIds": [
+        "place-coecl"
+      ]
     },
     {
       "name": "Hynes Convention Ctr",
@@ -545,7 +710,10 @@
         "Hynes Convention Center"
       ],
       "lat": 42.347888,
-      "lng": -71.087903
+      "lng": -71.087903,
+      "mbtaStopIds": [
+        "place-hymnl"
+      ]
     },
     {
       "name": "Kenmore",
@@ -556,7 +724,10 @@
       ],
       "aliases": [],
       "lat": 42.348949,
-      "lng": -71.095169
+      "lng": -71.095169,
+      "mbtaStopIds": [
+        "place-kencl"
+      ]
     },
     {
       "name": "Blandford St",
@@ -567,7 +738,10 @@
         "Blandford Street"
       ],
       "lat": 42.349293,
-      "lng": -71.100258
+      "lng": -71.100258,
+      "mbtaStopIds": [
+        "place-bland"
+      ]
     },
     {
       "name": "BU East",
@@ -578,7 +752,10 @@
         "Boston University East"
       ],
       "lat": 42.349735,
-      "lng": -71.103889
+      "lng": -71.103889,
+      "mbtaStopIds": [
+        "place-buest"
+      ]
     },
     {
       "name": "BU Central",
@@ -589,7 +766,10 @@
         "Boston University Central"
       ],
       "lat": 42.350082,
-      "lng": -71.106865
+      "lng": -71.106865,
+      "mbtaStopIds": [
+        "place-bucen"
+      ]
     },
     {
       "name": "Amory St",
@@ -600,7 +780,10 @@
         "Amory Street"
       ],
       "lat": 42.350992,
-      "lng": -71.114748
+      "lng": -71.114748,
+      "mbtaStopIds": [
+        "place-amory"
+      ]
     },
     {
       "name": "Babcock St",
@@ -611,7 +794,10 @@
         "Babcock Street"
       ],
       "lat": 42.351616,
-      "lng": -71.119924
+      "lng": -71.119924,
+      "mbtaStopIds": [
+        "place-babck"
+      ]
     },
     {
       "name": "Packard's Corner",
@@ -620,7 +806,10 @@
       ],
       "aliases": [],
       "lat": 42.351967,
-      "lng": -71.125031
+      "lng": -71.125031,
+      "mbtaStopIds": [
+        "place-brico"
+      ]
     },
     {
       "name": "Harvard Ave",
@@ -631,7 +820,10 @@
         "Harvard Avenue"
       ],
       "lat": 42.350243,
-      "lng": -71.131355
+      "lng": -71.131355,
+      "mbtaStopIds": [
+        "place-harvd"
+      ]
     },
     {
       "name": "Griggs St",
@@ -642,7 +834,10 @@
         "Griggs Street"
       ],
       "lat": 42.348545,
-      "lng": -71.134949
+      "lng": -71.134949,
+      "mbtaStopIds": [
+        "place-grigg"
+      ]
     },
     {
       "name": "Allston St",
@@ -653,7 +848,10 @@
         "Allston Street"
       ],
       "lat": 42.348701,
-      "lng": -71.137955
+      "lng": -71.137955,
+      "mbtaStopIds": [
+        "place-alsgr"
+      ]
     },
     {
       "name": "Warren St",
@@ -664,7 +862,10 @@
         "Warren Street"
       ],
       "lat": 42.348343,
-      "lng": -71.140457
+      "lng": -71.140457,
+      "mbtaStopIds": [
+        "place-wrnst"
+      ]
     },
     {
       "name": "Washington St",
@@ -675,7 +876,10 @@
         "Washington Street"
       ],
       "lat": 42.343864,
-      "lng": -71.142853
+      "lng": -71.142853,
+      "mbtaStopIds": [
+        "place-wascm"
+      ]
     },
     {
       "name": "Sutherland Rd",
@@ -686,7 +890,10 @@
         "Sutherland Road"
       ],
       "lat": 42.341614,
-      "lng": -71.146202
+      "lng": -71.146202,
+      "mbtaStopIds": [
+        "place-sthld"
+      ]
     },
     {
       "name": "Chiswick Rd",
@@ -697,7 +904,10 @@
         "Chiswick Road"
       ],
       "lat": 42.340805,
-      "lng": -71.150711
+      "lng": -71.150711,
+      "mbtaStopIds": [
+        "place-chswk"
+      ]
     },
     {
       "name": "Chestnut Hill Ave",
@@ -708,7 +918,10 @@
         "Chestnut Hill Avenue"
       ],
       "lat": 42.338169,
-      "lng": -71.15316
+      "lng": -71.15316,
+      "mbtaStopIds": [
+        "place-chill"
+      ]
     },
     {
       "name": "South St",
@@ -719,7 +932,10 @@
         "South Street"
       ],
       "lat": 42.3396,
-      "lng": -71.157661
+      "lng": -71.157661,
+      "mbtaStopIds": [
+        "place-sougr"
+      ]
     },
     {
       "name": "Boston College",
@@ -728,7 +944,10 @@
       ],
       "aliases": [],
       "lat": 42.340081,
-      "lng": -71.166769
+      "lng": -71.166769,
+      "mbtaStopIds": [
+        "place-lake"
+      ]
     },
     {
       "name": "St. Mary's St",
@@ -736,10 +955,14 @@
         "green-c"
       ],
       "aliases": [
-        "St. Mary's Street"
+        "St. Mary's Street",
+        "Saint Mary's Street"
       ],
       "lat": 42.345974,
-      "lng": -71.107353
+      "lng": -71.107353,
+      "mbtaStopIds": [
+        "place-smary"
+      ]
     },
     {
       "name": "Hawes St",
@@ -750,7 +973,10 @@
         "Hawes Street"
       ],
       "lat": 42.344906,
-      "lng": -71.111145
+      "lng": -71.111145,
+      "mbtaStopIds": [
+        "place-hwsst"
+      ]
     },
     {
       "name": "Kent St",
@@ -761,7 +987,10 @@
         "Kent Street"
       ],
       "lat": 42.344074,
-      "lng": -71.114197
+      "lng": -71.114197,
+      "mbtaStopIds": [
+        "place-kntst"
+      ]
     },
     {
       "name": "St. Paul St",
@@ -769,10 +998,14 @@
         "green-c"
       ],
       "aliases": [
-        "St. Paul Street"
+        "St. Paul Street",
+        "Saint Paul Street"
       ],
       "lat": 42.343327,
-      "lng": -71.116997
+      "lng": -71.116997,
+      "mbtaStopIds": [
+        "place-stpul"
+      ]
     },
     {
       "name": "Coolidge Corner",
@@ -781,7 +1014,10 @@
       ],
       "aliases": [],
       "lat": 42.342116,
-      "lng": -71.121263
+      "lng": -71.121263,
+      "mbtaStopIds": [
+        "place-cool"
+      ]
     },
     {
       "name": "Summit Ave",
@@ -792,7 +1028,10 @@
         "Summit Avenue"
       ],
       "lat": 42.34111,
-      "lng": -71.12561
+      "lng": -71.12561,
+      "mbtaStopIds": [
+        "place-sumav"
+      ]
     },
     {
       "name": "Brandon Hall",
@@ -801,7 +1040,10 @@
       ],
       "aliases": [],
       "lat": 42.340023,
-      "lng": -71.129082
+      "lng": -71.129082,
+      "mbtaStopIds": [
+        "place-bndhl"
+      ]
     },
     {
       "name": "Fairbanks St",
@@ -812,7 +1054,10 @@
         "Fairbanks Street"
       ],
       "lat": 42.339725,
-      "lng": -71.131073
+      "lng": -71.131073,
+      "mbtaStopIds": [
+        "place-fbkst"
+      ]
     },
     {
       "name": "Washington Sq",
@@ -823,7 +1068,10 @@
         "Washington Square"
       ],
       "lat": 42.339394,
-      "lng": -71.13533
+      "lng": -71.13533,
+      "mbtaStopIds": [
+        "place-bcnwa"
+      ]
     },
     {
       "name": "Tappan St",
@@ -834,7 +1082,10 @@
         "Tappan Street"
       ],
       "lat": 42.338459,
-      "lng": -71.138702
+      "lng": -71.138702,
+      "mbtaStopIds": [
+        "place-tapst"
+      ]
     },
     {
       "name": "Dean Rd",
@@ -845,7 +1096,10 @@
         "Dean Road"
       ],
       "lat": 42.337656,
-      "lng": -71.142156
+      "lng": -71.142156,
+      "mbtaStopIds": [
+        "place-denrd"
+      ]
     },
     {
       "name": "Englewood Ave",
@@ -856,7 +1110,10 @@
         "Englewood Avenue"
       ],
       "lat": 42.337104,
-      "lng": -71.144852
+      "lng": -71.144852,
+      "mbtaStopIds": [
+        "place-engav"
+      ]
     },
     {
       "name": "Cleveland Circle",
@@ -865,7 +1122,10 @@
       ],
       "aliases": [],
       "lat": 42.336142,
-      "lng": -71.149326
+      "lng": -71.149326,
+      "mbtaStopIds": [
+        "place-clmnl"
+      ]
     },
     {
       "name": "Union Sq",
@@ -876,7 +1136,10 @@
         "Union Square"
       ],
       "lat": 42.377359,
-      "lng": -71.094761
+      "lng": -71.094761,
+      "mbtaStopIds": [
+        "place-unsqu"
+      ]
     },
     {
       "name": "Lechmere",
@@ -886,7 +1149,10 @@
       ],
       "aliases": [],
       "lat": 42.371572,
-      "lng": -71.076584
+      "lng": -71.076584,
+      "mbtaStopIds": [
+        "place-lech"
+      ]
     },
     {
       "name": "Science Park/West End",
@@ -896,7 +1162,10 @@
       ],
       "aliases": [],
       "lat": 42.366664,
-      "lng": -71.067666
+      "lng": -71.067666,
+      "mbtaStopIds": [
+        "place-spmnl"
+      ]
     },
     {
       "name": "Fenway",
@@ -905,7 +1174,10 @@
       ],
       "aliases": [],
       "lat": 42.345403,
-      "lng": -71.104213
+      "lng": -71.104213,
+      "mbtaStopIds": [
+        "place-fenwy"
+      ]
     },
     {
       "name": "Longwood",
@@ -914,7 +1186,10 @@
       ],
       "aliases": [],
       "lat": 42.341702,
-      "lng": -71.109956
+      "lng": -71.109956,
+      "mbtaStopIds": [
+        "place-longw"
+      ]
     },
     {
       "name": "Brookline Village",
@@ -923,7 +1198,10 @@
       ],
       "aliases": [],
       "lat": 42.332608,
-      "lng": -71.116857
+      "lng": -71.116857,
+      "mbtaStopIds": [
+        "place-bvmnl"
+      ]
     },
     {
       "name": "Brookline Hills",
@@ -932,7 +1210,10 @@
       ],
       "aliases": [],
       "lat": 42.331316,
-      "lng": -71.126683
+      "lng": -71.126683,
+      "mbtaStopIds": [
+        "place-brkhl"
+      ]
     },
     {
       "name": "Beaconsfield",
@@ -941,7 +1222,10 @@
       ],
       "aliases": [],
       "lat": 42.335765,
-      "lng": -71.140455
+      "lng": -71.140455,
+      "mbtaStopIds": [
+        "place-bcnfd"
+      ]
     },
     {
       "name": "Reservoir",
@@ -950,7 +1234,10 @@
       ],
       "aliases": [],
       "lat": 42.335088,
-      "lng": -71.148758
+      "lng": -71.148758,
+      "mbtaStopIds": [
+        "place-rsmnl"
+      ]
     },
     {
       "name": "Chestnut Hill",
@@ -959,7 +1246,10 @@
       ],
       "aliases": [],
       "lat": 42.326753,
-      "lng": -71.164699
+      "lng": -71.164699,
+      "mbtaStopIds": [
+        "place-chhil"
+      ]
     },
     {
       "name": "Newton Centre",
@@ -968,7 +1258,10 @@
       ],
       "aliases": [],
       "lat": 42.329443,
-      "lng": -71.192414
+      "lng": -71.192414,
+      "mbtaStopIds": [
+        "place-newto"
+      ]
     },
     {
       "name": "Newton Highlands",
@@ -977,7 +1270,10 @@
       ],
       "aliases": [],
       "lat": 42.322381,
-      "lng": -71.205509
+      "lng": -71.205509,
+      "mbtaStopIds": [
+        "place-newtn"
+      ]
     },
     {
       "name": "Eliot",
@@ -986,7 +1282,10 @@
       ],
       "aliases": [],
       "lat": 42.319045,
-      "lng": -71.216684
+      "lng": -71.216684,
+      "mbtaStopIds": [
+        "place-eliot"
+      ]
     },
     {
       "name": "Waban",
@@ -995,7 +1294,10 @@
       ],
       "aliases": [],
       "lat": 42.325845,
-      "lng": -71.230609
+      "lng": -71.230609,
+      "mbtaStopIds": [
+        "place-waban"
+      ]
     },
     {
       "name": "Woodland",
@@ -1004,7 +1306,10 @@
       ],
       "aliases": [],
       "lat": 42.332902,
-      "lng": -71.243362
+      "lng": -71.243362,
+      "mbtaStopIds": [
+        "place-woodl"
+      ]
     },
     {
       "name": "Riverside",
@@ -1013,7 +1318,10 @@
       ],
       "aliases": [],
       "lat": 42.337352,
-      "lng": -71.252685
+      "lng": -71.252685,
+      "mbtaStopIds": [
+        "place-river"
+      ]
     },
     {
       "name": "Medford/Tufts",
@@ -1022,7 +1330,10 @@
       ],
       "aliases": [],
       "lat": 42.407975,
-      "lng": -71.117044
+      "lng": -71.117044,
+      "mbtaStopIds": [
+        "place-mdftf"
+      ]
     },
     {
       "name": "Ball Sq",
@@ -1033,7 +1344,10 @@
         "Ball Square"
       ],
       "lat": 42.399889,
-      "lng": -71.111003
+      "lng": -71.111003,
+      "mbtaStopIds": [
+        "place-balsq"
+      ]
     },
     {
       "name": "Magoun Sq",
@@ -1044,7 +1358,10 @@
         "Magoun Square"
       ],
       "lat": 42.393682,
-      "lng": -71.1063879
+      "lng": -71.1063879,
+      "mbtaStopIds": [
+        "place-mgngl"
+      ]
     },
     {
       "name": "Gilman Sq",
@@ -1055,7 +1372,10 @@
         "Gilman Square"
       ],
       "lat": 42.387928,
-      "lng": -71.096766
+      "lng": -71.096766,
+      "mbtaStopIds": [
+        "place-gilmn"
+      ]
     },
     {
       "name": "East Somerville",
@@ -1064,7 +1384,10 @@
       ],
       "aliases": [],
       "lat": 42.379467,
-      "lng": -71.086625
+      "lng": -71.086625,
+      "mbtaStopIds": [
+        "place-esomr"
+      ]
     },
     {
       "name": "Prudential",
@@ -1073,7 +1396,10 @@
       ],
       "aliases": [],
       "lat": 42.34557,
-      "lng": -71.081696
+      "lng": -71.081696,
+      "mbtaStopIds": [
+        "place-prmnl"
+      ]
     },
     {
       "name": "Symphony",
@@ -1082,7 +1408,10 @@
       ],
       "aliases": [],
       "lat": 42.342687,
-      "lng": -71.085056
+      "lng": -71.085056,
+      "mbtaStopIds": [
+        "place-symcl"
+      ]
     },
     {
       "name": "Northeastern",
@@ -1093,7 +1422,10 @@
         "Northeastern University"
       ],
       "lat": 42.340401,
-      "lng": -71.088806
+      "lng": -71.088806,
+      "mbtaStopIds": [
+        "place-nuniv"
+      ]
     },
     {
       "name": "Museum of Fine Arts",
@@ -1102,7 +1434,10 @@
       ],
       "aliases": [],
       "lat": 42.337711,
-      "lng": -71.095512
+      "lng": -71.095512,
+      "mbtaStopIds": [
+        "place-mfa"
+      ]
     },
     {
       "name": "Longwood Medical Area",
@@ -1111,7 +1446,10 @@
       ],
       "aliases": [],
       "lat": 42.33596,
-      "lng": -71.100052
+      "lng": -71.100052,
+      "mbtaStopIds": [
+        "place-lngmd"
+      ]
     },
     {
       "name": "Brigham Circle",
@@ -1120,7 +1458,10 @@
       ],
       "aliases": [],
       "lat": 42.334229,
-      "lng": -71.104609
+      "lng": -71.104609,
+      "mbtaStopIds": [
+        "place-brmnl"
+      ]
     },
     {
       "name": "Fenwood Rd",
@@ -1131,7 +1472,10 @@
         "Fenwood Road"
       ],
       "lat": 42.333706,
-      "lng": -71.105728
+      "lng": -71.105728,
+      "mbtaStopIds": [
+        "place-fenwd"
+      ]
     },
     {
       "name": "Mission Park",
@@ -1140,7 +1484,10 @@
       ],
       "aliases": [],
       "lat": 42.333195,
-      "lng": -71.109756
+      "lng": -71.109756,
+      "mbtaStopIds": [
+        "place-mispk"
+      ]
     },
     {
       "name": "Riverway",
@@ -1149,7 +1496,10 @@
       ],
       "aliases": [],
       "lat": 42.331684,
-      "lng": -71.111931
+      "lng": -71.111931,
+      "mbtaStopIds": [
+        "place-rvrwy"
+      ]
     },
     {
       "name": "Back of the Hill",
@@ -1158,7 +1508,10 @@
       ],
       "aliases": [],
       "lat": 42.330139,
-      "lng": -71.111313
+      "lng": -71.111313,
+      "mbtaStopIds": [
+        "place-bckhl"
+      ]
     },
     {
       "name": "Heath St",
@@ -1169,7 +1522,10 @@
         "Heath Street"
       ],
       "lat": 42.328316,
-      "lng": -71.110252
+      "lng": -71.110252,
+      "mbtaStopIds": [
+        "place-hsmnl"
+      ]
     },
     {
       "name": "Cedar Grove",
@@ -1178,7 +1534,10 @@
       ],
       "aliases": [],
       "lat": 42.279629,
-      "lng": -71.060394
+      "lng": -71.060394,
+      "mbtaStopIds": [
+        "place-cedgr"
+      ]
     },
     {
       "name": "Butler",
@@ -1187,7 +1546,10 @@
       ],
       "aliases": [],
       "lat": 42.272429,
-      "lng": -71.062519
+      "lng": -71.062519,
+      "mbtaStopIds": [
+        "place-butlr"
+      ]
     },
     {
       "name": "Milton",
@@ -1196,7 +1558,10 @@
       ],
       "aliases": [],
       "lat": 42.270349,
-      "lng": -71.067266
+      "lng": -71.067266,
+      "mbtaStopIds": [
+        "place-miltt"
+      ]
     },
     {
       "name": "Central Ave",
@@ -1207,7 +1572,10 @@
         "Central Avenue"
       ],
       "lat": 42.270027,
-      "lng": -71.073444
+      "lng": -71.073444,
+      "mbtaStopIds": [
+        "place-cenav"
+      ]
     },
     {
       "name": "Valley Rd",
@@ -1218,7 +1586,10 @@
         "Valley Road"
       ],
       "lat": 42.268347,
-      "lng": -71.081343
+      "lng": -71.081343,
+      "mbtaStopIds": [
+        "place-valrd"
+      ]
     },
     {
       "name": "Capen St",
@@ -1229,7 +1600,10 @@
         "Capen Street"
       ],
       "lat": 42.267563,
-      "lng": -71.087338
+      "lng": -71.087338,
+      "mbtaStopIds": [
+        "place-capst"
+      ]
     },
     {
       "name": "Mattapan",
@@ -1238,7 +1612,10 @@
       ],
       "aliases": [],
       "lat": 42.26762,
-      "lng": -71.092486
+      "lng": -71.092486,
+      "mbtaStopIds": [
+        "place-matt"
+      ]
     }
   ]
 }

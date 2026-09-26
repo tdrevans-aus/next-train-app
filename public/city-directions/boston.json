@@ -88,14 +88,14 @@
     "Green Line E + Medford/Tufts"
   ],
   "Braintree": [
-    "Fall River/New Bedford Line + Fall River or New Bedford",
-    "Fall River/New Bedford Line + South Station",
-    "Greenbush Line + Greenbush",
-    "Greenbush Line + South Station",
-    "Kingston Line + Kingston",
-    "Kingston Line + South Station",
+    "Fall River or New Bedford",
+    "Greenbush",
+    "Kingston",
     "Red Line + Alewife",
-    "Red Line + Ashmont"
+    "Red Line + Ashmont",
+    "South Station (Fall River/New Bedford Line)",
+    "South Station (Greenbush Line)",
+    "South Station (Kingston Line)"
   ],
   "Brandon Hall": [
     "Green Line C + Cleveland Circle",
@@ -235,13 +235,13 @@
     "Red Line + Braintree"
   ],
   "Forest Hills": [
-    "Franklin/Foxboro Line + Forge Park/495 or Foxboro",
-    "Franklin/Foxboro Line + South Station",
-    "Needham Line + Needham Heights",
-    "Needham Line + South Station",
+    "Forge Park/495 or Foxboro",
+    "Needham Heights",
     "Orange Line + Oak Grove",
-    "Providence/Stoughton Line + South Station",
-    "Providence/Stoughton Line + Stoughton or Wickford Junction"
+    "South Station (Franklin/Foxboro Line)",
+    "South Station (Needham Line)",
+    "South Station (Providence/Stoughton Line)",
+    "Stoughton or Wickford Junction"
   ],
   "Gilman Sq": [
     "Green Line E + Heath St",
@@ -302,15 +302,15 @@
     "Orange Line + Oak Grove"
   ],
   "JFK/UMass": [
-    "Fall River/New Bedford Line + Fall River or New Bedford",
-    "Fall River/New Bedford Line + South Station",
-    "Greenbush Line + Greenbush",
-    "Greenbush Line + South Station",
-    "Kingston Line + Kingston",
-    "Kingston Line + South Station",
+    "Fall River or New Bedford",
+    "Greenbush",
+    "Kingston",
     "Red Line + Alewife",
     "Red Line + Ashmont",
-    "Red Line + Braintree"
+    "Red Line + Braintree",
+    "South Station (Fall River/New Bedford Line)",
+    "South Station (Greenbush Line)",
+    "South Station (Kingston Line)"
   ],
   "Kendall/MIT": [
     "Red Line + Alewife",
@@ -391,16 +391,16 @@
     "Red Line + Braintree"
   ],
   "North Station": [
-    "Fitchburg Line + Wachusett",
     "Green Line D + Riverside",
     "Green Line D + Union Sq",
     "Green Line E + Heath St",
     "Green Line E + Medford/Tufts",
-    "Haverhill Line + Haverhill",
-    "Lowell Line + Lowell",
-    "Newburyport/Rockport Line + Newburyport or Rockport",
+    "Haverhill",
+    "Lowell",
+    "Newburyport or Rockport",
     "Orange Line + Forest Hills",
-    "Orange Line + Oak Grove"
+    "Orange Line + Oak Grove",
+    "Wachusett"
   ],
   "Northeastern": [
     "Green Line E + Heath St",
@@ -493,17 +493,17 @@
     "Green Line B + Gov't Center"
   ],
   "South Station": [
-    "Fairmount Line + Fairmount",
-    "Fall River/New Bedford Line + Fall River or New Bedford",
-    "Framingham/Worcester Line + Worcester",
-    "Franklin/Foxboro Line + Forge Park/495 or Foxboro",
-    "Greenbush Line + Greenbush",
-    "Kingston Line + Kingston",
-    "Needham Line + Needham Heights",
-    "Providence/Stoughton Line + Stoughton or Wickford Junction",
+    "Fairmount",
+    "Fall River or New Bedford",
+    "Forge Park/495 or Foxboro",
+    "Greenbush",
+    "Kingston",
+    "Needham Heights",
     "Red Line + Alewife",
     "Red Line + Ashmont",
-    "Red Line + Braintree"
+    "Red Line + Braintree",
+    "Stoughton or Wickford Junction",
+    "Worcester"
   ],
   "St. Mary's St": [
     "Green Line C + Cleveland Circle",
