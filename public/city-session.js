@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -68,6 +68,15 @@
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+      ],
+    },
+    {
+      // Denmark: first Danish region, flipped live 26 Sep 2026 (Tim's decision,
+      // docs/jim-brief-copenhagen-flip.md, docs/copenhagen-d1/mark-qa-note.md).
+      id: "dk",
+      name: "Denmark",
+      regions: [
+        { id: "copenhagen", name: "Copenhagen", timeZone: "Europe/Copenhagen" },
       ],
     },
     {
@@ -155,6 +164,13 @@
     canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
     stockholm: { minLat: 58.85, maxLat: 59.60, minLng: 17.50, maxLng: 18.40 },
     goteborg: { minLat: 57.55, maxLat: 57.85, minLng: 11.75, maxLng: 12.25 },
+    // Copenhagen (docs/jim-brief-copenhagen-flip.md, 26 Sep 2026) — box covers the Metro M1-M4
+    // network plus the four shared S-tog/DSB/Öresundståg stations (København H, Nørreport,
+    // Nørrebro, Nordhavn), approx lat 55.60-55.73, lng 12.45-12.65, with a small margin. Listed
+    // before malmo below: malmo's own box (12.60-15.55 lng) slightly overlaps Copenhagen's
+    // eastern edge, so Copenhagen must be checked first for hintCityFromCoords to resolve
+    // correctly there, same containment-order rule as the UK boxes further down.
+    copenhagen: { minLat: 55.58, maxLat: 55.75, minLng: 12.40, maxLng: 12.68 },
     malmo: { minLat: 55.30, maxLat: 56.75, minLng: 12.60, maxLng: 15.55 },
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },

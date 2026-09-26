@@ -1,0 +1,31 @@
+{
+  "region": "copenhagen",
+  "updated": "2026-09-26",
+  "covered": [
+    {
+      "label": "Metro (M1, M2, M3, M4)",
+      "detail": "All 44 Metro stations, full network."
+    },
+    {
+      "label": "S-tog (A, B, Bx, C, E, F, H)",
+      "detail": "Shown at Nørreport, Nørrebro, København H and Nordhavn, where it shares a station with the Metro. Nordhavn does not get the H line (H doesn't stop there)."
+    },
+    {
+      "label": "DSB Regional, InterCity, InterCityLyn and Öresundståg (to Malmö/Lund)",
+      "detail": "Shown at Nørreport, Nørrebro, København H and Nordhavn only, where they share a station with the Metro."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "EuroCity (to Hamburg), SJ X2000 (to Stockholm), České dráhy ComfortJet (to Prague)",
+      "detail": "Excluded - booking a seat is compulsory."
+    },
+    {
+      "label": "Harbour buses (Havnebus)",
+      "detail": "Not covered - these are buses, not trains."
+    }
+  ],
+  "stations": "44 Metro stations, plus S-tog/DSB/Öresundståg at 4 of them.",
+  "notes": "Schedule times only - no live Rejseplanen API key is registered yet, so times are the printed timetable, not real-time running information. Kongens Nytorv is the M1/M2/M3/M4 hub and never has S-tog or DSB trains; M3 (Cityringen) is a ring with no end stop, so its direction is shown as clockwise/counter-clockwise rather than a destination."
+}

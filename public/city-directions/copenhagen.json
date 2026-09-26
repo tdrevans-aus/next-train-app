@@ -1,0 +1,243 @@
+{
+  "Aksel Møllers Have": [
+    "M3 + København H (Metro)"
+  ],
+  "Amager Strand": [
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Amagerbro": [
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Bella Center": [
+    "M1 + Vanløse",
+    "M1 + Vestamager"
+  ],
+  "Christianshavn": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "DR Byen": [
+    "M1 + Vanløse",
+    "M1 + Vestamager"
+  ],
+  "Enghave Brygge": [
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Enghave Plads": [
+    "M3 + København H (Metro)"
+  ],
+  "Fasanvej": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Femøren": [
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Flintholm": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Forum": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Frederiksberg": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse",
+    "M3 + København H (Metro)"
+  ],
+  "Frederiksberg Allé": [
+    "M3 + København H (Metro)"
+  ],
+  "Gammel Strand": [
+    "M3 + København H (Metro)",
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Havneholmen": [
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Islands Brygge": [
+    "M1 + Vanløse",
+    "M1 + Vestamager"
+  ],
+  "Kastrup": [
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "København H": [
+    "A + Hillerød",
+    "A + Køge",
+    "B + Farum",
+    "B + Høje Taastrup",
+    "C + Frederikssund",
+    "C + Klampenborg",
+    "InterCity + Esbjerg St.",
+    "InterCity + Fredericia St.",
+    "InterCity + København H",
+    "InterCity + Østerport St.",
+    "InterCityLyn + CPH Lufthavn",
+    "InterCityLyn + Aarhus H",
+    "M3 + København H (Metro)",
+    "M4 + København S",
+    "M4 + Orientkaj",
+    "Regionaltog + Helsingør St.",
+    "Regionaltog + Holbæk St.",
+    "Regionaltog + Kalundborg St.",
+    "Regionaltog + København H",
+    "Regionaltog + Køge St.",
+    "Regionaltog + Nykøbing F St.",
+    "Regionaltog + Næstved St.",
+    "Regionaltog + Roskilde St.",
+    "Regionaltog + Østerport St.",
+    "Öresundståg + Göteborg C",
+    "Öresundståg + Karlskrona",
+    "Öresundståg + Älmhult",
+    "Öresundståg + Østerport"
+  ],
+  "København S": [
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Kongens Nytorv": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse",
+    "M3 + København H (Metro)",
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Lergravsparken": [
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Lindevang": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Marmorkirken": [
+    "M3 + København H (Metro)",
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Mozarts Plads": [
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Nordhavn": [
+    "A + Hillerød",
+    "A + Køge",
+    "B + Farum",
+    "B + Høje Taastrup",
+    "C + Frederikssund",
+    "C + Klampenborg",
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Nørrebro": [
+    "F + Hellerup",
+    "F + København S",
+    "M3 + København H (Metro)"
+  ],
+  "Nørrebros Runddel": [
+    "M3 + København H (Metro)"
+  ],
+  "Nørreport": [
+    "A + Hillerød",
+    "A + Køge",
+    "B + Farum",
+    "B + Høje Taastrup",
+    "C + Frederikssund",
+    "C + Klampenborg",
+    "InterCity + Esbjerg St.",
+    "InterCity + Fredericia St.",
+    "InterCity + Østerport St.",
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse",
+    "Regionaltog + Helsingør St.",
+    "Regionaltog + Holbæk St.",
+    "Regionaltog + Køge St.",
+    "Regionaltog + Næstved St.",
+    "Regionaltog + Roskilde St.",
+    "Regionaltog + Østerport St.",
+    "Öresundståg + Göteborg C",
+    "Öresundståg + Karlskrona",
+    "Öresundståg + Älmhult",
+    "Öresundståg + Østerport"
+  ],
+  "Nuuks Plads": [
+    "M3 + København H (Metro)"
+  ],
+  "Ørestad": [
+    "M1 + Vanløse",
+    "M1 + Vestamager"
+  ],
+  "Øresund": [
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Orientkaj": [
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Østerport": [
+    "M3 + København H (Metro)",
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Poul Henningsens Plads": [
+    "M3 + København H (Metro)"
+  ],
+  "Rådhuspladsen": [
+    "M3 + København H (Metro)",
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Skjolds Plads": [
+    "M3 + København H (Metro)"
+  ],
+  "Sluseholmen": [
+    "M4 + København S",
+    "M4 + Orientkaj"
+  ],
+  "Sundby": [
+    "M1 + Vanløse",
+    "M1 + Vestamager"
+  ],
+  "Trianglen": [
+    "M3 + København H (Metro)"
+  ],
+  "Vanløse": [
+    "M1 + Vanløse",
+    "M1 + Vestamager",
+    "M2 + Lufthavnen",
+    "M2 + Vanløse"
+  ],
+  "Vestamager": [
+    "M1 + Vanløse",
+    "M1 + Vestamager"
+  ],
+  "Vibenshus Runddel": [
+    "M3 + København H (Metro)"
+  ]
+}
