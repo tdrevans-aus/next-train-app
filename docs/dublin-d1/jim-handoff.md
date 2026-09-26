@@ -2,7 +2,20 @@ Dublin D1 + research pack. City stays **planned** until Jim wires testers live. 
 
 Drop later (Jim D2): `qa/fixtures/dublin/published-network.json`. Research pack is `docs/dublin-d1/`: `published-network.json`, `oracle-clash-report.md`, `hazard-pack.md`, `direction-model-memo.md`, `jim-handoff.md` (this file).
 
-D1 = official **Luas Network Map** PNG (DatoCMS asset 225949/1784119177, linked from https://www.luas.ie/luas-map/), hand-transcribed from the rendered image by this pack — the oracle report explicitly deferred station-array transcription to this step. **Not generated from GTFS.** Static NTA GTFS zip verified 200 (no key) by the oracle report — do not use it to build stations[].
+D1 = official **Luas Network Map** PNG (DatoCMS asset 225949/1784119177, linked from https://www.luas.ie/luas-map/), hand-transcribed from the rendered image by this pack — the oracle report explicitly deferred station-array transcription to this step. **Not generated from GTFS.** Do not use GTFS to build stations[].
+
+**Static GTFS source corrected 26 Sep 2026** (`docs/jim-brief-dublin-luas-source-fix.md`,
+`docs/dublin-d1/luas-static-source.md`): the NTA's national `GTFS_All.zip` does **not** contain
+Luas — filtering it for "luas" only matches Dublin Bus routes that name Luas stops as points of
+interest, not actual tram service (route_type 0). Luas's real static feed is the dedicated
+`https://www.transportforireland.ie/transitData/Data/GTFS_LUAS.zip` (no key, verified via
+Transitland and the Mobility Database). `scripts/trim-dublin-gtfs.mjs` now points at this URL
+(overridable via `DUBLIN_GTFS_URL`) and keeps its tram routes (route_type 0 or 900) directly
+rather than filtering by name, since the source feed should already be Luas-only.
+`qa/verify-dublin-gtfs-snapshot.mjs` fails the publish if the result ever holds more than 4
+routes or any non-tram route_type. **License:** CC BY 4.0 — "Contains Irish Government Data
+licensed under a Creative Commons Attribution 4.0 International (CC BY 4.0) licence." Attribution
+is required wherever this data is served; no UI copy has been added for this in this pack.
 
 Two colour lines, no printed route numbers: **Red** — two southwestern branches forking at **Belgard** (Saggart via Fettercairn/Cheeverstown/Citywest Campus/Fortunestown, 29 stops end-to-end; Tallaght via Cookstown/Hospital, 27 stops end-to-end; 24-stop common trunk east to The Point) — **32 unique stops total**. **Green** — Broombridge to Brides Glen, **35 unique stops**, including a **one-way city-centre loop** between Parnell and Trinity. **67 unique Luas stops total** across both lines.
 
@@ -33,13 +46,14 @@ repository secret), copied from the same-named Vercel project env vars:
 
 - `BLOB_READ_WRITE_TOKEN` — required. Without it the workflow fails immediately with a clear
   "secret not set" error rather than a cryptic upload failure.
-- `NTA_API_KEY` — not required for this workflow (Dublin's static `GTFS_All.zip` download from
-  transportforireland.ie needs no key; only the *realtime* NTA GTFS-RT v2 feed does). Wired into
-  the workflow's env anyway in case a future trim step needs it. Safe to add or skip.
+- `NTA_API_KEY` — not required for this workflow (Dublin's static `GTFS_LUAS.zip`
+  download from transportforireland.ie needs no key; only the *realtime* NTA GTFS-RT v2 feed
+  does). Wired into the workflow's env anyway in case a future trim step needs it. Safe to add
+  or skip.
 
 **To publish (one click):** GitHub → Actions tab → "Publish GTFS snapshot" workflow → "Run
-workflow" → `city: dublin` → Run. It runs `scripts/trim-dublin-gtfs.mjs` (national NTA zip →
-Luas-only Red+Green), publishes the trimmed zip via
+workflow" → `city: dublin` → Run. It runs `scripts/trim-dublin-gtfs.mjs` (dedicated Luas GTFS
+feed, trimmed to a small local fixture), publishes the trimmed zip via
 `scripts/publish-gtfs-fixture-to-blob.mjs dublin`, then runs
 `qa/verify-dublin-gtfs-snapshot.mjs` (a standalone check — `qa/gtfs-live-blob-snapshot-integrity.mjs`
 only covers `status: "live"` cities, and Dublin stays `planned`) to confirm the published blob is
