@@ -54,6 +54,7 @@ const SMOKE_SCRIPTS = [
   "brisbane-dogfood-gate.mjs",
   "dogfood-mount-race-gate.mjs",
   "location-permission-web-copy.mjs",
+  "geo-native-shell.mjs",
   "donotgroup-picker-disambiguation.mjs",
   "directions-error-messaging.mjs",
   "sydney-dogfood-gate.mjs",

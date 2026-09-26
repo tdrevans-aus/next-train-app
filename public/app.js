@@ -5458,27 +5458,6 @@ async function configureOutboundJourney(journey, nearestStation, inboundJourney 
   });
 }
 
-async function getGeolocationPosition() {
-  console.log("[App] getGeolocationPosition starting...");
-  const options = { timeout: 15000, maximumAge: 60000 };
-
-  try {
-    return await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        ...options,
-        enableHighAccuracy: false,
-      });
-    });
-  } catch {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        ...options,
-        enableHighAccuracy: true,
-      });
-    });
-  }
-}
-
 /**
  * Region hint for a GPS fix: nearest live-feed station (across every region in
  * the rider's country) wins over the first CITY_BOUNDS box that contains them.
@@ -8120,7 +8099,6 @@ function initNearbyModeFromModule() {
     isRateLimitedError,
     enrichTrip,
     findNearestStation,
-    getGeolocationPosition,
     getAppGeolocationPosition,
     readLastKnownPosition,
     writeLastKnownPosition,
@@ -8659,6 +8637,7 @@ window.nextTrainApp = {
   writeLastNearbyStationCache,
   clearLastNearbyStationCache,
   findNearestStation,
+  getAppGeolocationPosition,
   leaveByArmedForDisplayedTrip,
   preferredHintForJourney,
   tripMatchesPreferredOrLater,

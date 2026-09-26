@@ -1703,7 +1703,11 @@ async function tickNearbyRelocate() {
   let nextDelayMs = NEARBY_RELOCATE_IDLE_MS;
 
   try {
-    const getPosition = deps.getAppGeolocationPosition ?? deps.getGeolocationPosition;
+    // jim-brief-ios-webkit-location-prompt: getAppGeolocationPosition is the only
+    // position source now — it routes through window.NextTrainGeo (Capacitor bridge)
+    // in the native shell and navigator.geolocation on plain web, never the other
+    // way around.
+    const getPosition = deps.getAppGeolocationPosition;
     if (typeof getPosition !== "function") {
       return;
     }
