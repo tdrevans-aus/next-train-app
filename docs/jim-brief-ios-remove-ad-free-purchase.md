@@ -62,6 +62,20 @@ no page content visible beneath it; the last list row can still be scrolled clea
 visual change. Verify on an iPhone simulator Release build (headless `simctl`, screenshot before
 and after, include both in the PR description) and on an iPad simulator.
 
+## Follow-up after Mark's QA of PR #461 (26 Sep) — push to the same branch
+
+Mark passed #461 except one miss: `public/about.html` (~lines 93–97, "Ads & remove ads" section)
+still says "In the Android or iOS app, you can remove ads with a one-time purchase from Menu when
+that option is available. We never see your card details — Google Play or the App Store handles
+payment." That page ships inside the iOS app and is the App Store support URL. Change it to:
+"In the Android app, you can remove ads with a one-time purchase from Menu when that option is
+available. We never see your card details — Google Play handles payment." Grep `public/` for any
+other copy that still offers remove-ads on iOS or mentions the App Store handling a purchase
+(excluding `ad-free-purchase.js`'s iOS-guarded toasts) and fix the same way. Commit onto
+`jim/ios-remove-ad-free-purchase` so it lands in PR #461; no new PR. Rerun
+`node qa/ios-no-ad-free.mjs`; no full smoke needed for a static-copy-only follow-up (CLAUDE.md
+"No suite at all" for static copy with no script binding).
+
 ## Acceptance criteria
 
 - New `qa/ios-no-ad-free.mjs` (register in `SMOKE_SCRIPTS`): stub a native Capacitor shell with
