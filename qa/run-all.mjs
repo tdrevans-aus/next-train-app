@@ -608,15 +608,6 @@ const KNOWN_RED_SCRIPTS = new Set([
   // this path. Needs a product decision on copy/placement; out of scope for
   // this triage.
   "nearby-location-hint-keeps-cache.mjs",
-  // Real gap: both scripts assert against `template-wizard-step-3`, which no
-  // longer exists in public/index.html — the "Active hours" wizard step was
-  // removed/consolidated at some point (current steps: name, step-1 station,
-  // step-2 target train, step-reminder) and defaultFrom/defaultUntil now
-  // auto-derive from the target time (journeyWindowAroundTarget). Rewriting
-  // these correctly needs current wizard-step knowledge this triage doesn't
-  // have with confidence; flagged for a dedicated brief rather than guessed.
-  "template-wizard-hours-zindex.mjs",
-  "template-wizard-skip.mjs",
 ]);
 
 function classifyResult(scriptName, code, { timedOut = false, timeoutMs = 0 } = {}) {
