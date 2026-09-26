@@ -21,4 +21,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install chromium --with-deps
+      # Runs early in its own short step log, isolated from the flood of
+      # [dev-server] request lines the main step below produces under
+      # QA_VERBOSE, so this script's own output survives the GitHub job log
+      # API's ~5,000-line truncation. continue-on-error so this step can never
+      # turn the job red on its own — the main test:web:ci step below still
+      # runs and reports this script's real result in its own summary.
+      # docs/jim-brief-nightly-blob-integrity-visibility.md, 26 Sep 2026.
+      - name: gtfs-live-blob-snapshot-integrity (diagnostic, non-blocking)
+        run: node qa/gtfs-live-blob-snapshot-integrity.mjs
+        continue-on-error: true
       - run: npm run test:web:ci
