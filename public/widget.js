@@ -398,6 +398,46 @@ function resetWidgetHelpDialog() {
   if (manual) {
     manual.hidden = true;
   }
+  configureWidgetHelpCopy();
+}
+
+function configureWidgetHelpCopy() {
+  const manual = document.getElementById("widget-help-manual");
+  const tip = document.querySelector("#widget-help-pin-first .widget-help-tip");
+  const pinBtn = document.getElementById("widget-help-pin-btn");
+  const addAnotherBtn = document.getElementById("widget-help-add-another-btn");
+
+  if (isIosWidgetPlatform()) {
+    if (manual) {
+      manual.innerHTML =
+        "<strong>How to add on iPhone or iPad:</strong> Go to your Home Screen. Touch and hold an empty area until apps jiggle (or a menu appears). Tap <strong>+</strong> in the corner, search for <strong>Next Train</strong>, pick a size, then tap <strong>Add Widget</strong>.";
+    }
+    if (tip) {
+      tip.textContent =
+        "Works on the Home Screen and Today View. Long-press the widget to resize or move it.";
+    }
+    if (pinBtn && !pinBtn.hidden) {
+      pinBtn.textContent = "Show steps";
+    }
+    if (addAnotherBtn && !addAnotherBtn.hidden) {
+      addAnotherBtn.textContent = "Show steps";
+    }
+    return;
+  }
+
+  if (manual) {
+    manual.innerHTML =
+      "<strong>Or add manually:</strong> Go to your Android home screen. Long-press an empty area and choose <strong>Widgets</strong>. Find <strong>Next Train</strong> and drag the widget onto your home screen.";
+  }
+  if (tip) {
+    tip.textContent = "Long-press to resize for a roomier layout.";
+  }
+  if (pinBtn && !pinBtn.hidden) {
+    pinBtn.textContent = "Add widget";
+  }
+  if (addAnotherBtn && !addAnotherBtn.hidden) {
+    addAnotherBtn.textContent = "Add another";
+  }
 }
 
 function setWidgetHelpMode(mode) {
@@ -428,6 +468,7 @@ function setWidgetHelpMode(mode) {
   if (doneBtn) {
     doneBtn.className = hasWidget ? "btn-primary" : "btn-secondary";
   }
+  configureWidgetHelpCopy();
 }
 
 async function getWidgetInstanceCount() {
@@ -446,9 +487,11 @@ async function getWidgetInstanceCount() {
 }
 
 function showWidgetHelpManual() {
+  configureWidgetHelpCopy();
   const manual = document.getElementById("widget-help-manual");
   if (manual) {
     manual.hidden = false;
+    manual.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 }
 
