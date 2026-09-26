@@ -1,24 +1,28 @@
 /**
- * Copenhagen adapter/dispatch wiring gate. Wired by Jim (dogfood module, dispatch
- * switch-cases) ahead of Mark's flip call — registry status stays `planned`
- * (assertCityLive("copenhagen") must still fail, 501) per CLAUDE.md's flip-follow-through
- * split (30 Aug 2026, corrected same day): the status flip itself, MULTI_CITY_IDS addition to
- * live-city-api.js, and the mount/persistence-list additions
- * (brisbane-dogfood.js/journey-model.js) all land in Mark's own flip commit, not here — see
- * docs/copenhagen-d1/jim-handoff.md. Replaces qa/copenhagen-planned-gate.mjs (retired; every
- * assertion it made is carried forward below, plus the new dispatch/dogfood coverage).
+ * Copenhagen flip follow-through gate. Rewritten 26 Sep 2026
+ * (docs/jim-brief-copenhagen-flip.md) to assert LIVE state — Copenhagen flipped
+ * `status: "live"` on Tim's explicit decision in chat, recorded in the brief, after Mark's own
+ * QA pass (docs/copenhagen-d1/mark-qa-note.md) could not re-verify the live Rejseplanen fetch
+ * from his sandbox (proxy 403) and so did not call this "fully green" itself; the flip instead
+ * rests on CI evidence that the live half of this very gate passed on a real Actions runner
+ * (docs/copenhagen-d1/ci-live-evidence.md — PR #448's release run and master CI, both green).
+ * Mirrors qa/boston-dogfood-gate.mjs's/qa/washington-dogfood-gate.mjs's post-flip shape. The old
+ * pre-flip assertions (assertCityLive must fail, status === "planned", isMultiCity() === false)
+ * are removed, not left disabled.
  *
  * Metro M1-M4 + S-tog + DSB Regional/InterCity/InterCityLyn + Öresundståg, all via the
- * shared Rejseplanen national platform. Static GTFS only (no key required) — this gate does
- * live-fetch the real national GTFS.zip (unlike the retired planned-gate, which deliberately
- * did not) because that is the only way to catch the two silent-exclusion defects this pass
- * found and fixed (see lib/cities/copenhagen/marketing-directions.js's classifyDsbService/
- * resolveTerminus comments, confirmed live 20 Sep 2026): Regionaltog/InterCity/InterCityLyn
- * were being dropped from every board because the real feed carries their codes on
- * route_short_name (RE/IC/ICL), not route_long_name/route_desc as the D1-era heuristic
- * assumed, and M2's "Lufthavnen" terminus didn't fold-match the live headsign
- * "Københavns Lufthavn St. (Metro)". One nationwide GTFS.zip download, cached in-process —
- * same cost class as any other GTFS-static smoke-tier gate (e.g. qa/malmo-dogfood-gate.mjs).
+ * shared Rejseplanen national platform. Static GTFS only (no key required) — this gate live-
+ * fetches the real national GTFS.zip because that is the only way to catch the two silent-
+ * exclusion defects a previous pass found and fixed (see
+ * lib/cities/copenhagen/marketing-directions.js's classifyDsbService/resolveTerminus comments,
+ * confirmed live 20 Sep 2026): Regionaltog/InterCity/InterCityLyn were being dropped from every
+ * board because the real feed carries their codes on route_short_name (RE/IC/ICL), not
+ * route_long_name/route_desc as the D1-era heuristic assumed, and M2's "Lufthavnen" terminus
+ * didn't fold-match the live headsign "Københavns Lufthavn St. (Metro)". One nationwide
+ * GTFS.zip download, cached in-process — same cost class as any other GTFS-static smoke-tier
+ * gate (e.g. qa/malmo-dogfood-gate.mjs). This live half needs outbound access to
+ * rejseplanen.info; it is not reachable from every sandbox (see the CI-evidence doc above) but
+ * runs fine in CI and any networked environment.
  *
  * Usage: node qa/copenhagen-dogfood-gate.mjs
  */
@@ -70,12 +74,13 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
+// Flipped live 26 Sep 2026 (Tim's decision, docs/jim-brief-copenhagen-flip.md); assertCityLive
+// must now succeed.
 const live = assertCityLive("copenhagen");
-assert(live?.ok === false, "assertCityLive(copenhagen) must fail — status stays planned pre-flip");
-assert(live?.status === 501, "copenhagen must be 501 planned");
+assert(live?.ok === true, "assertCityLive(copenhagen) must succeed now that copenhagen is live");
 
 const entry = getCity("copenhagen");
-assert(entry?.status === "planned", "copenhagen registry status must be planned");
+assert(entry?.status === "live", "copenhagen registry status must be live");
 assert(entry?.adapterReady === true, "copenhagen adapterReady must be true");
 assert(entry?.displayName === "Copenhagen", "copenhagen display name must be Copenhagen");
 assert(entry?.timeZone === "Europe/Copenhagen", "copenhagen timezone must be Europe/Copenhagen");
@@ -87,8 +92,7 @@ for (const forbiddenId of ["denmark", "rejseplanen", "aarhus", "cph"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Not yet in MULTI_CITY_IDS — that addition lands in Mark's flip commit, not here.
-assert(isMultiCity("copenhagen") === false, "copenhagen must NOT be in MULTI_CITY_IDS pre-flip");
+assert(isMultiCity("copenhagen") === true, "copenhagen must be in MULTI_CITY_IDS now that status is live");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/copenhagen-d1");
@@ -104,7 +108,9 @@ for (const name of [
 
 const network = JSON.parse(readFileSync(join(d1Dir, "published-network.json"), "utf8"));
 assert(network.city === "copenhagen", "D1 city id must be copenhagen");
-assert(network.status === "planned", "D1 pack stays planned");
+// The D1 pack's own published-network.json still says "planned" — it's a point-in-time
+// research artifact, not re-stamped on flip (same as washington-d1/brussels-d1's D1 packs).
+assert(network.status === "planned", "D1 pack itself is a point-in-time artifact and stays planned");
 assert(network.printedInnerCityNames?.lock === COPENHAGEN_HUB, `D1 lock must be ${COPENHAGEN_HUB}`);
 
 const metroLines = network.lines.filter((line) => line.mapGroup === "Metro");
@@ -302,8 +308,8 @@ assert(
   "Kongens Nytorv (Metro-only hub, zero rail/S-tog transfer) must only ever offer Metro chips"
 );
 
-// The dispatch switch-case (not yet gated by MULTI_CITY_IDS, safe per the file-header note in
-// live-city-api.js) must return the exact same chips as calling the dogfood harness directly.
+// The dispatch switch-case (now gated live via MULTI_CITY_IDS) must return the exact same
+// chips as calling the dogfood harness directly.
 const dispatched = await getMultiCityDirections("copenhagen", COPENHAGEN_HUB);
 assert(
   JSON.stringify(dispatched.directions) === JSON.stringify(hubPack.directions),
@@ -351,11 +357,9 @@ assert(
   "dispatched next-train destination must equal the chosen chip"
 );
 
-// Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
-// brisbane-dogfood MULTI_CITY_IDS/available) are deliberately NOT touched yet — same
-// registry-status-derived invariant as MULTI_CITY_IDS above (qa/live-city-lists-sync.mjs
-// requires them to equal exactly the live-city set). Add "copenhagen"/"denmark" to all four
-// in the same commit as the status flip.
+// Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS, brisbane-dogfood
+// MULTI_CITY_IDS/available, app.js/city-session.js copies) are now updated in this same flip
+// commit — qa/live-city-lists-sync.mjs checks they equal exactly the live-city set.
 
 // Probe plumbing: local express only; Vercel dev board must 404 regardless.
 const previous = process.env.ALLOW_CITY_PROBES;
@@ -388,5 +392,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "copenhagen-dogfood-gate: ok (planned/501, adapterReady, not yet in MULTI_CITY_IDS, dispatch switch-cases wired and tested end to end against a live GTFS.zip pull, D1 pack, Board eligibility section all-in incl. SJ/České dráhy, 44 stations, hub Kongens Nytorv Metro-only, Nordhavn 5-line/Nørreport 6-line H2 correction enforced, EuroCity/SJ/České dráhy/bus excluded live, RE/IC/ICL short-code classification fix confirmed live (previously silently dropped), Lufthavnen live-headsign alias fix confirmed live, M3 clockwise/counter-clockwise direction model, Perth Australia green)"
+  "copenhagen-dogfood-gate: ok (live, adapterReady, in MULTI_CITY_IDS, dispatch switch-cases wired and tested end to end against a live GTFS.zip pull, D1 pack, Board eligibility section all-in incl. SJ/České dráhy, 44 stations, hub Kongens Nytorv Metro-only, Nordhavn 5-line/Nørreport 6-line H2 correction enforced, EuroCity/SJ/České dráhy/bus excluded live, RE/IC/ICL short-code classification fix confirmed live (previously silently dropped), Lufthavnen live-headsign alias fix confirmed live, M3 clockwise/counter-clockwise direction model, Perth Australia green)"
 );
