@@ -11,3 +11,11 @@ capacitor-cordova-ios-plugins
 # Generated Config files
 App/App/capacitor.config.json
 App/App/config.xml
+
+# Xcode archives / build output
+build/
+
+# Signing material - never commit
+*.p12
+*.mobileprovision
+*.cer
