@@ -703,7 +703,14 @@ async function main() {
     if (retried && status === "PASS") note = "passed on retry";
     else if (retried) note = `${note}, failed twice`;
     const elapsedSec = Math.round(elapsedMs / 1000);
-    results.push({ scriptName, status, code, note, elapsedSec });
+    results.push({
+      scriptName,
+      status,
+      code,
+      note,
+      elapsedSec,
+      output: status === "FAIL" ? output : "",
+    });
     const suffix = `${status}${note ? ` (${note})` : ""} · ${elapsedSec}s`;
     if (fullLine) {
       console.log(`→ ${scriptName}${limitLabelFor(scriptName)} … ${suffix}`);
@@ -777,6 +784,23 @@ async function main() {
   for (const row of results) {
     const pad = row.scriptName.padEnd(36);
     console.log(`${pad} ${row.status}${row.note ? `  ${row.note}` : ""}`);
+  }
+
+  /**
+   * Failure details — printed last (after the summary table) on purpose, so
+   * a FAIL script's own output survives log truncation (e.g. GitHub Actions'
+   * ~5,000-line job log API cap). Only FAIL (not PASS, not KNOWN-RED) — a
+   * KNOWN-RED script's tail already prints inline above when it happens, and
+   * repeating it here would just push real failures further from the end of
+   * the log. docs/jim-brief-nightly-blob-integrity-visibility.md, 26 Sep 2026.
+   */
+  const failedWithOutput = results.filter((r) => r.status === "FAIL" && r.output && r.output.trim());
+  if (failedWithOutput.length > 0) {
+    console.log("\n--- Failure details ---");
+    for (const row of failedWithOutput) {
+      console.log(`\n${row.scriptName}${row.note ? ` (${row.note})` : ""}:`);
+      console.log(tailOutput(row.output, 60));
+    }
   }
 
   if (fail > 0) {
