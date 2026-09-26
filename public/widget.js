@@ -398,9 +398,18 @@ function resetWidgetHelpDialog() {
   if (manual) {
     manual.hidden = true;
   }
+  const steps = document.getElementById("widget-help-steps");
+  if (steps) {
+    steps.hidden = true;
+  }
   configureWidgetHelpCopy();
 }
 
+// iOS has no numbered-steps paragraph — it shows the numbered
+// #widget-help-steps list instead, revealed by the dedicated
+// #widget-help-show-steps-btn (see syncWidgetHelpShowStepsButton). The
+// pin/add-another buttons can't actually pin a widget on iOS (no such API),
+// so they're hidden there and "Show steps" is the sole reveal mechanism.
 function configureWidgetHelpCopy() {
   const manual = document.getElementById("widget-help-manual");
   const tip = document.querySelector("#widget-help-pin-first .widget-help-tip");
@@ -408,20 +417,17 @@ function configureWidgetHelpCopy() {
   const addAnotherBtn = document.getElementById("widget-help-add-another-btn");
 
   if (isIosWidgetPlatform()) {
-    if (manual) {
-      manual.innerHTML =
-        "<strong>How to add on iPhone or iPad:</strong> Go to your Home Screen. Touch and hold an empty area until apps jiggle (or a menu appears). Tap <strong>+</strong> in the corner, search for <strong>Next Train</strong>, pick a size, then tap <strong>Add Widget</strong>.";
-    }
     if (tip) {
       tip.textContent =
         "Works on the Home Screen and Today View. Long-press the widget to resize or move it.";
     }
-    if (pinBtn && !pinBtn.hidden) {
-      pinBtn.textContent = "Show steps";
+    if (pinBtn) {
+      pinBtn.hidden = true;
     }
-    if (addAnotherBtn && !addAnotherBtn.hidden) {
-      addAnotherBtn.textContent = "Show steps";
+    if (addAnotherBtn) {
+      addAnotherBtn.hidden = true;
     }
+    syncWidgetHelpShowStepsButton();
     return;
   }
 
@@ -438,6 +444,17 @@ function configureWidgetHelpCopy() {
   if (addAnotherBtn && !addAnotherBtn.hidden) {
     addAnotherBtn.textContent = "Add another";
   }
+  syncWidgetHelpShowStepsButton();
+}
+
+function syncWidgetHelpShowStepsButton() {
+  const showStepsBtn = document.getElementById("widget-help-show-steps-btn");
+  const steps = document.getElementById("widget-help-steps");
+  if (!showStepsBtn) {
+    return;
+  }
+  const stepsVisible = Boolean(steps) && steps.hidden === false;
+  showStepsBtn.hidden = stepsVisible || !isIosWidgetPlatform();
 }
 
 function setWidgetHelpMode(mode) {
@@ -486,7 +503,21 @@ async function getWidgetInstanceCount() {
   }
 }
 
+function showWidgetHelpSteps() {
+  configureWidgetHelpCopy();
+  const steps = document.getElementById("widget-help-steps");
+  if (steps) {
+    steps.hidden = false;
+    steps.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+  syncWidgetHelpShowStepsButton();
+}
+
 function showWidgetHelpManual() {
+  if (isIosWidgetPlatform()) {
+    showWidgetHelpSteps();
+    return;
+  }
   configureWidgetHelpCopy();
   const manual = document.getElementById("widget-help-manual");
   if (manual) {
@@ -1793,6 +1824,7 @@ function initWidgetUi() {
   });
 
   document.getElementById("widget-help-pin-btn")?.addEventListener("click", requestPinWidget);
+  document.getElementById("widget-help-show-steps-btn")?.addEventListener("click", showWidgetHelpSteps);
   document.getElementById("widget-help-add-another-btn")?.addEventListener("click", requestPinWidget);
   document.getElementById("widget-help-done-btn")?.addEventListener("click", () => {
     const dialog = document.getElementById("widget-help-dialog");
@@ -1850,6 +1882,7 @@ window.nextTrainWidget = {
   getWidgetTransparentBg,
   refreshNativeWidgetMenuItems,
   requestPinWidget,
+  showWidgetHelpSteps,
   showMenuChromeHint,
   showReminderCoachNotNowHint,
   refreshWidgetDebugPanel,
