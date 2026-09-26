@@ -1,0 +1,137 @@
+# Manual-only workflow: regenerate public/city-directions/<city>.json against live feeds
+# from a GitHub Actions runner, for cities Claude sandboxes can't reach (proxy 403s block
+# many provider feeds — see docs/jim-brief-city-directions-workflow.md, e.g. Copenhagen flip
+# PR #454 stuck on branch flip-copenhagen-live without copenhagen.json).
+#
+# Usage: Actions tab -> "Write city-directions JSON" -> Run workflow, with `city` (the
+# scripts/write-city-directions.mjs `--only=` value) and `branch` (an existing feature
+# branch — never main/master) filled in. If the resulting commit changed
+# public/city-directions/<city>.json, it's pushed to that branch as github-actions[bot].
+#
+# Note: a push made with the default GITHUB_TOKEN does not trigger other workflows (including
+# CI) on that branch. After this workflow pushes, either push an empty/no-op commit to the PR
+# branch yourself, or dispatch `ci.yml` manually (it already supports workflow_dispatch) to get
+# a green check on the new commit.
+name: Write city-directions JSON
+
+on:
+  workflow_dispatch:
+    inputs:
+      city:
+        description: "City id to pass as scripts/write-city-directions.mjs --only=<city>"
+        required: true
+        type: string
+      branch:
+        description: "Existing feature branch to check out and push to (never main/master)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  write-city-directions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CITY: ${{ inputs.city }}
+      BRANCH: ${{ inputs.branch }}
+    steps:
+      - name: Validate inputs
+        run: |
+          if ! [[ "$CITY" =~ ^[a-z0-9-]+$ ]]; then
+            echo "::error::city must match ^[a-z0-9-]+\$"
+            exit 1
+          fi
+          if [[ "$BRANCH" == -* ]] || [[ "$BRANCH" == *..* ]] || ! [[ "$BRANCH" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+            echo "::error::branch must match ^[A-Za-z0-9._/-]+\$, contain no '..', and not start with '-'"
+            exit 1
+          fi
+
+      - name: Refuse main/master
+        run: |
+          if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
+            echo "::error::This workflow only commits to an existing feature branch, never main/master."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Generate city-directions JSON
+        env:
+          NTA_API_KEY: ${{ secrets.NTA_API_KEY }}
+          VIC_OPENDATA_API_KEY: ${{ secrets.VIC_OPENDATA_API_KEY }}
+          TFNSW_API_KEY: ${{ secrets.TFNSW_API_KEY }}
+          ADELAIDE_METRO_API_KEY: ${{ secrets.ADELAIDE_METRO_API_KEY }}
+          DARWIN_LDB_TOKEN: ${{ secrets.DARWIN_LDB_TOKEN }}
+          TFWM_API_APP_ID: ${{ secrets.TFWM_API_APP_ID }}
+          TFWM_API_APP_KEY: ${{ secrets.TFWM_API_APP_KEY }}
+          TFL_APP_KEY: ${{ secrets.TFL_APP_KEY }}
+          AT_API_KEY: ${{ secrets.AT_API_KEY }}
+          METLINK_API_KEY: ${{ secrets.METLINK_API_KEY }}
+          TRANSLINK_API_KEY: ${{ secrets.TRANSLINK_API_KEY }}
+          TRAFIKLAB_GTFS_SWEDEN_KEY: ${{ secrets.TRAFIKLAB_GTFS_SWEDEN_KEY }}
+          TRAFIKLAB_GTFS_SWEDEN_RT_KEY: ${{ secrets.TRAFIKLAB_GTFS_SWEDEN_RT_KEY }}
+          TRAFIKLAB_API_KEY: ${{ secrets.TRAFIKLAB_API_KEY }}
+          TRAFIKLAB_API_KEY_RT: ${{ secrets.TRAFIKLAB_API_KEY_RT }}
+          VASTTRAFIK_CLIENT_ID: ${{ secrets.VASTTRAFIK_CLIENT_ID }}
+          VASTTRAFIK_CLIENT_SECRET: ${{ secrets.VASTTRAFIK_CLIENT_SECRET }}
+          DIGITRANSIT_SUBSCRIPTION_KEY: ${{ secrets.DIGITRANSIT_SUBSCRIPTION_KEY }}
+          STIB_API_KEY: ${{ secrets.STIB_API_KEY }}
+          CTA_TRAIN_TRACKER_KEY: ${{ secrets.CTA_TRAIN_TRACKER_KEY }}
+          BART_API_KEY: ${{ secrets.BART_API_KEY }}
+          WMATA_API_KEY: ${{ secrets.WMATA_API_KEY }}
+          SWIFTLY_API_KEY: ${{ secrets.SWIFTLY_API_KEY }}
+        run: node scripts/write-city-directions.mjs --only="$CITY"
+
+      - name: Verify bundled city-directions
+        run: node qa/bundled-city-directions.mjs
+
+      - name: Check only the target file changed
+        id: diff
+        run: |
+          git status --porcelain > /tmp/status.txt
+          cat /tmp/status.txt
+          expected="public/city-directions/$CITY.json"
+          other_changes=""
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            path="${line:3}"
+            if [[ "$path" == *" -> "* ]]; then
+              old_path="${path%% -> *}"
+              new_path="${path##* -> }"
+              if [ "$old_path" = "$expected" ] || [ "$new_path" = "$expected" ]; then
+                continue
+              fi
+            elif [ "$path" = "$expected" ]; then
+              continue
+            fi
+            other_changes="$other_changes$line"$'\n'
+          done < /tmp/status.txt
+          if [ -n "$other_changes" ]; then
+            echo "::error::Unexpected files changed besides $expected:"
+            echo "$other_changes"
+            exit 1
+          fi
+          if [ -s /tmp/status.txt ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "public/city-directions/$CITY.json"
+          git commit -m "Generate city-directions/$CITY.json in CI"
+          git push origin "HEAD:$BRANCH"

@@ -1,0 +1,78 @@
+# One-click, manual-only publish of a planned city's trimmed GTFS static snapshot to the
+# shared next-train-gtfs Vercel Blob store, so lib/providers/<city>.js's runtime
+# gtfsFixtureBlobUrl() read has something real to fetch (docs/jim-brief-dublin-blob-publish-action.md).
+#
+# workflow_dispatch ONLY — never a schedule, never on push/pull_request. Running this with
+# `city: dublin` and no `BLOB_READ_WRITE_TOKEN`/`NTA_API_KEY` secrets configured has no effect
+# beyond a failed, harmless run (see the "Require secrets" step below); it never runs on its own.
+#
+# `city` is a choice input so more cities can be added later without restructuring the
+# workflow — add the new value to the `options:` list and a case in "Trim GTFS" below.
+name: Publish GTFS snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      city:
+        description: "City to trim + publish (adds a Blob-backed GTFS static snapshot)"
+        required: true
+        type: choice
+        options:
+          - dublin
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-gtfs-snapshot-${{ inputs.city }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      # Fail fast and clearly rather than letting a later step's cryptic
+      # "unauthorized"/network error stand in for a missing secret.
+      - name: Require secrets
+        run: |
+          if [ -z "${BLOB_READ_WRITE_TOKEN}" ]; then
+            echo "::error::BLOB_READ_WRITE_TOKEN is not set as a GitHub Actions secret on this repo. Add it (same value as Vercel's BLOB_READ_WRITE_TOKEN) before running this workflow." >&2
+            exit 1
+          fi
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+
+      # Dublin's static GTFS_All.zip download (transportforireland.ie) needs no API key —
+      # only Dublin's *realtime* NTA GTFS-RT v2 feed does (lib/providers/gtfs/auth.js,
+      # NTA_API_KEY). NTA_API_KEY is intentionally NOT required by this workflow; it's wired
+      # here only in case a future trim script needs it.
+      - name: Trim GTFS (dublin)
+        if: inputs.city == 'dublin'
+        run: node scripts/trim-dublin-gtfs.mjs --out=qa/fixtures/dublin/gtfs
+        env:
+          NTA_API_KEY: ${{ secrets.NTA_API_KEY }}
+
+      - name: Publish to Blob (dublin)
+        if: inputs.city == 'dublin'
+        run: node scripts/publish-gtfs-fixture-to-blob.mjs dublin
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+
+      # qa/gtfs-live-blob-snapshot-integrity.mjs only covers status:"live" cities (derived from
+      # the registry), and dublin stays status:"planned" until Mark/Tim flip it — so it will
+      # never check this city. Run a small standalone equivalent instead (no credentials
+      # needed): fetch the just-published blob back, confirm HTTP 200, a sane zip size, and
+      # that stops.txt actually contains Luas stops (not an empty/synthetic snapshot).
+      - name: Verify published snapshot (dublin)
+        if: inputs.city == 'dublin'
+        run: node qa/verify-dublin-gtfs-snapshot.mjs

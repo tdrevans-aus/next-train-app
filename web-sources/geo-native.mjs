@@ -4,6 +4,10 @@ function isIos() {
   return globalThis.Capacitor?.getPlatform?.() === "ios";
 }
 
+function isNativePlatform() {
+  return Boolean(globalThis.Capacitor?.isNativePlatform?.());
+}
+
 function locationPermissionHelpMessage() {
   if (isIos()) {
     return "Location is off for this visit. Tap Near me and choose While Using the App, or open Settings → Next Train → Location. You can also pick a station below.";
@@ -286,7 +290,12 @@ export async function getCurrentPosition(options = {}) {
     }
   }
 
-  if (navigator.geolocation) {
+  // jim-brief-ios-webkit-location-prompt: never fall back to navigator.geolocation
+  // inside the native shell — WKWebView treats it as a *second*, website-style
+  // permission request layered on top of the native iOS/Android prompt the
+  // Capacitor plugin above already drove. This fallback exists only for the
+  // (non-native) web bundle path, where readNavigatorPosition is the real thing.
+  if (!isNativePlatform() && navigator.geolocation) {
     try {
       return await readNavigatorPosition({
         enableHighAccuracy: preferHighAccuracy,

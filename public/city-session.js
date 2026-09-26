@@ -808,17 +808,31 @@
     // Jim brief: wait for app stability before requesting permissions on cold boot.
     await new Promise((r) => setTimeout(r, 1000));
     try {
-      const pos = await new Promise((resolve, reject) => {
-        if (!navigator.geolocation?.getCurrentPosition) {
-          reject(new Error("no geo"));
-          return;
-        }
-        const isTestActive = sessionStorage.getItem("nextTrainTestMode") === "1" || window.location.search.includes("test=1");
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          timeout: isTestActive ? 2500 : 4000,
-          maximumAge: 300000,
-        });
-      });
+      const isTestActive = sessionStorage.getItem("nextTrainTestMode") === "1" || window.location.search.includes("test=1");
+      const geoOptions = {
+        timeout: isTestActive ? 2500 : 4000,
+        maximumAge: 300000,
+      };
+      // jim-brief-ios-webkit-location-prompt: in the native shell, navigator.geolocation
+      // triggers WebKit's own per-origin "localhost would like to use..." panel on top of
+      // the already-granted native iOS permission. Route through the Capacitor bridge
+      // (window.NextTrainGeo, loaded via geo-bundle.js ahead of this script) instead —
+      // never navigator.geolocation directly — when running inside the app shell.
+      const isNativeShell = Boolean(window.Capacitor?.isNativePlatform?.());
+      const pos = isNativeShell
+        ? await (async () => {
+            if (!window.NextTrainGeo?.getCurrentPosition) {
+              throw new Error("no native geo bridge");
+            }
+            return window.NextTrainGeo.getCurrentPosition(geoOptions);
+          })()
+        : await new Promise((resolve, reject) => {
+            if (!navigator.geolocation?.getCurrentPosition) {
+              reject(new Error("no geo"));
+              return;
+            }
+            navigator.geolocation.getCurrentPosition(resolve, reject, geoOptions);
+          });
       // docs/jim-brief-picker-near-you-nearest-five.md: feed the app-wide
       // last-known-position cache from this GPS-follow fix too, not just
       // app.js's getAppGeolocationPosition — never a new geolocation request,
