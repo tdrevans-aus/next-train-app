@@ -119,6 +119,20 @@
       "vehicle": "BE.NMBS.IC1830",
       "vehicleinfo": { "name": "BE.NMBS.IC1830", "shortname": "IC1830", "number": "1830", "type": "IC" },
       "platform": "3"
+    },
+    {
+      "_source": "synthetic",
+      "_comment": "docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md Part 3: a genuine, boardable IC toward a named corridor destination (Ghent/Bruges/Ostend) — neither Oostende row above qualifies (one canceled, one already-left), so the gate's corridor-grouping end-to-end assertion needs one real row to resolve a next-train.",
+      "id": "9",
+      "station": "Kortrijk",
+      "time": "1789845500",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.IC1840",
+      "vehicleinfo": { "name": "BE.NMBS.IC1840", "shortname": "IC1840", "number": "1840", "type": "IC" },
+      "platform": "5"
     }
   ],
   "gareDuMidi": [

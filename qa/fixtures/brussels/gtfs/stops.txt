@@ -1,0 +1,2 @@
+stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station,wheelchair_boarding
+8041,,ARTS-LOI,,50.845476,4.369121,,,0,7,1

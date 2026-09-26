@@ -3658,6 +3658,16 @@ function isOnTimeStatus(status) {
     .includes("on time");
 }
 
+/**
+ * jim-brief-brussels-scheduled-tail-and-sncb-grouping: a trip whose provider marked it
+ * `realtime: false` carries the literal status word "Scheduled" (train-times-core.js's
+ * enrichTripTiming). Deliberately low-key — see setStatusClass below, which is the only
+ * styling difference; no badge/icon/banner anywhere.
+ */
+function isScheduledStatus(status) {
+  return String(status || "").trim().toLowerCase() === "scheduled";
+}
+
 function renderStatusDisplay(next) {
   if (!statusEl) {
     return;
@@ -3672,7 +3682,10 @@ function renderStatusDisplay(next) {
     return;
   }
 
-  if (isOnTimeStatus(next.status) || !next.scheduledDisplayTime) {
+  if (isOnTimeStatus(next.status) || isScheduledStatus(next.status) || !next.scheduledDisplayTime) {
+    // A "Scheduled" row's scheduledDisplayTime equals its displayTime by construction (it's a
+    // timetable time shown as-is), so the "Sched. HH:MM" sub-line below would just repeat the
+    // time already shown as the big hero time — low-key means one plain word, not a duplicate.
     statusEl.textContent = next.status;
     setStatusClass(statusEl, next.status);
     return;
@@ -3692,9 +3705,13 @@ function renderStatusDisplay(next) {
 }
 
 function setStatusClass(element, statusText) {
-  element.classList.remove("on-time", "delayed");
+  element.classList.remove("on-time", "delayed", "scheduled");
   const normalized = statusText.toLowerCase();
-  if (normalized.includes("on time")) {
+  if (normalized === "scheduled") {
+    // Quiet, not alarming (Tim, 20 Sep 2026): same muted/secondary colour token used
+    // throughout the app, no live indicator, no warning colour — see .scheduled in hero.css.
+    element.classList.add("scheduled");
+  } else if (normalized.includes("on time")) {
     element.classList.add("on-time");
   } else if (normalized.includes("delay") || normalized.includes("late")) {
     element.classList.add("delayed");

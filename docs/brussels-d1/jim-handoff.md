@@ -2,6 +2,204 @@ Brussels D1 + research pack. City stays **planned** until Jim wires testers live
 
 Drop later (Jim D2): qa/fixtures/brussels/published-network.json. Research pack is docs/brussels-d1/: published-network.json, oracle-clash-report.md, hazard-pack.md, direction-model-memo.md, jim-handoff.md.
 
+## Horizon investigation (20 Sep 2026) — docs/jim-brief-brussels-horizon-and-sncb-directions.md Part A
+
+Symptom: the live STIB metro board shows 1-2 trains per direction, 0-14 minutes ahead
+(confirmed again live this pass — Arts-Loi -0 to 14 min, Simonis -0 to 10 min, Gare Centrale
+1-11 min for metro). Investigated every avenue the brief named, in order, with a real
+`STIB_API_KEY` (never committed):
+
+1. **"2 passages per line per stop" — hard dataset property, not a query default.** The
+   WaitingTimes operation's own portal description (`GET
+   https://api-management-opendata-production.developer.azure-api.net/mapi/apis/_api_datasets_stibmivb_rt_WaitingTimes/operations?api-version=2018-06-01-preview`)
+   is titled "Waiting times for the **next two vehicles**... (from StopMonitoring)" — this is
+   StopMonitoring/SIRI's own upstream cap, not something the BMC gateway adds. Verified live at
+   Arts-Loi (point IDs 8041/8042/8401/8402, all 4 lines): every `(pointid, lineid)` row carried
+   **exactly 2** entries in `passingtimes`, and this did not change under any query variant
+   tried — `limit=1000`, `select=*`, per-line `where`, per-single-`pointid` `where` (one point +
+   one line, isolated from every other row), or plain re-fetch. Querying a single platform in
+   isolation does not surface a 3rd/4th passing time that a combined station query was
+   supposedly truncating — there is nothing to surface; the upstream StopMonitoring feed itself
+   only ever tracks the next two approaching vehicles per stop/line. This closes the brief's
+   first bullet: no query parameter widens this.
+2. **VehiclePositions — real, but not a usable ETA source without a day-plus of new work.**
+   `GET .../api/datasets/stibmivb/rt/VehiclePositions?where=lineid="1"` returns, per line, a
+   flat list of `{ directionId, pointId, distanceFromPoint }` entries (`distanceFromPoint` is a
+   binary 0/1, not a distance in metres) — no timestamp, no absolute position, no vehicle
+   identity carried across polls. Deriving a further-out ETA from this would need: (a)
+   reconstructing each line's full ordered point sequence per direction from the static GTFS
+   feed, (b) counting stops between a vehicle's last-seen point and the target station, (c)
+   summing static inter-stop run times, and (d) re-identifying the "same" vehicle across polls
+   with no ID to key on (today's binary distanceFromPoint gives no polling-interval-independent
+   position). That is a genuine multi-day estimation-and-testing effort, not a query tweak — per
+   the brief's instruction, described here and NOT built. If pursued later, the brief requires
+   it ships as an explicitly-flagged derived estimate, never presented as plain "live".
+3. **TravellersInformation — confirmed irrelevant.** Sampled live: every entry is a
+   long-running service-disruption notice (diversions, works, months-long), not a departure
+   time source of any kind.
+4. **Belgian NAP re-checked (STIB's own real-time feed is absent) — confirmed again, more
+   thoroughly than the 29 Aug check.** The oracle report's 29 Aug finding ("no STIB GTFS-RT")
+   was re-verified against the actual National Access Point catalogue this time
+   (`https://www.transportdata.be`, CKAN-based) rather than by guessing endpoints:
+   `GET https://www.transportdata.be/api/3/action/package_search?q=stib` lists exactly 6 STIB
+   datasets on the NAP — Network schedule (NeTEx/XML), Reduced Fares, NeTEx static, Route
+   Planner info service, Basic Common Standard Fares, CO2 Consumption. **None is a real-time
+   feed of any kind** (no GTFS-RT, no SIRI-ET). This is the authoritative Belgian rail/transit
+   open-data registry (the same shape as France's transport.data.gouv.fr) — its absence there is
+   as definitive as this investigation can make it without STIB confirming directly (a Viv
+   outreach question, not this pass's scope).
+
+**Conclusion: no genuine way exists today to raise the live STIB metro horizon above ~2
+passings/direction, 0-14 min ahead — the target (≥4/direction or ≥25 min at Arts-Loi/Simonis)
+is unreachable from any live STIB source without the multi-day VehiclePositions-derivation
+project described above.** Part B (labelled scheduled tail) is therefore the fallback per Tim's
+20 Sep ruling — see the next section for why it was NOT shipped this pass.
+
+## Part B (scheduled tail) — investigated, NOT shipped (20 Sep 2026)
+
+Static GTFS + freshness-safeguard loading (`loadGtfsStatic`, `snapshotCoversToday` in
+`lib/providers/gtfs/static-cache.js`) is ready to reuse exactly as the brief describes. The
+blocker is upstream of that: **`public/` has no visible way to distinguish a scheduled-only row
+from a live one today.** Checked every board-rendering path
+(`renderUpcomingDepartureBoard`/`printedDestinationSuffix` in `public/app.js`): a trip's meta
+line renders `Pl ${platform} · ${status}` where `status` is a delay string ("On Time" / "X min
+late" / "Estimated") — there is no CSS class, badge, or copy anywhere that says "this time is
+from the timetable, not tracked live." `lib/providers/contract.js`'s per-trip `realtime`
+boolean (already used by Brussels' own two live sources, both `mode: "metro"`/`"rail"` trips
+carrying `realtime: true`) is the natural field a tail row would carry `realtime: false` on, but
+nothing in `public/` reads it. Per the brief's explicit instruction ("If there is no visible
+distinction... stop short of shipping the tail... any new copy is Tim's to approve"), Part B is
+**not built** this pass. Building the visible distinction (a "scheduled" badge/class + copy) is
+Tim's call, flagged as an open item.
+
+## Part 1/2/3 — low-key "Scheduled" UI, the scheduled tail, and SNCB corridor grouping (20 Sep 2026, docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md)
+
+Tim's 20 Sep 2026 decisions (made after reading Part A/B/C above): Part A's "unraisable" finding
+is accepted, Brussels stays live; build the scheduled tail behind a deliberately **low-key**
+"Scheduled" UI treatment ("It needs to exist but not be in your face"); the standing rule is
+amended from "no scheduled times" to **scheduled times are never presented as live, and are
+never shown when live data is unavailable**; group SNCB chips "the way the UK Darwin regions do".
+
+**Part 1 — the low-key "Scheduled" treatment (shared UI).** `ProviderTrip.realtime` (contract.js)
+was already an informal per-trip field (Brussels' own live rows already set it `true`) but
+undocumented and unused by any UI. It's now documented, and `enrichTripTiming()`
+(lib/train-times-core.js) forces `status` to the literal word **"Scheduled"** whenever
+`realtime === false`, bypassing the normal on-time/delayed diff (meaningless for a row whose
+live and scheduled times are identical by construction). The word survives to `/api/board` and
+`/api/next-train` JSON via `buildTripPayload()`/`slimTripSummary()`. UI: `setStatusClass()`
+(public/app.js) adds a `.scheduled` class that's just `color: var(--muted)` — the same muted
+token used everywhere else, no icon/badge/banner/pulse (public/styles/hero.css); the hero status
+line (`renderStatusDisplay`) shows the plain word with no "Sched. HH:MM" sub-line (that sub-line
+would just repeat the big time already shown). One new Help sentence in the "Platform & status"
+FAQ (public/index.html): *"Times marked **Scheduled** come from the timetable; everything else
+is live."* See `docs/feature-backlog.md` FB-57 for the amended standing-rule wording. No other
+city's behaviour changed — grep of every static-join board-rendering path found none of them
+currently distinguish a no-realtime-update trip from a live one either (same gap Part B found
+for Brussels before this pass); left as-is per the brief, flagged here for a separate decision.
+
+**Part 2 — the scheduled metro tail (`lib/providers/brussels.js`).** After each direction's own
+last live STIB row, up to 6 further departures (60 minutes ahead cap) are appended from STIB's
+own static GTFS timetable (route_type=1, lines 1/2/5/6 only), each carrying `realtime: false`.
+Reuses the exact live-row `resolveTerminus()`/`marketingLabel()` pipeline, so tail chips are
+identical to live ones. Never before/between a live row for that exact direction — a candidate
+within the dedupe window (90s) of, or before, that direction's own last live departure is
+dropped (`appendScheduledMetroTail()`); a direction with zero live rows this refresh gets its
+full in-window tail (there's nothing for it to come "after", and this code path is only ever
+reached once the live STIB fetch has already succeeded — see file header). Any failure loading
+the static snapshot (network, stale calendar, malformed feed) is caught and the tail is silently
+empty; it never affects the live board. Static data is `loadGtfsStatic({ url:
+gtfsFixtureBlobUrl("brussels") })` — a metro-only (~2.4 MB, trimmed from STIB's own ~16 MB
+network-wide unauthenticated static GTFS discovery zip,
+`scripts/publish-brussels-gtfs-snapshot-to-blob.mjs`, published once to the Vercel Blob store —
+never a per-request or cold zip parse on the request path). Confirmed live 20 Sep 2026: the
+catalog's STIB point IDs (e.g. Arts-Loi 8041/8042/8401/8402) are exactly this static feed's
+`stop_id`s too, and `trip_headsign` values match the live payload's `destination.fr` convention
+exactly ("STOCKEL", "GARE DE L'OUEST", "ELISABETH", ...), including the same overlay/short-turn
+headsigns ("DELTA") that the live filter already drops. `lib/cities/brussels/coverage.json`
+updated to say plainly that the next couple of metro departures are live and later ones (to an
+hour ahead) are timetable times marked Scheduled.
+
+**Part 3 — SNCB chip grouping (`lib/cities/brussels/marketing-directions.js`).** Only the
+long-distance InterCity family (IC/EC/ECD/ICE/ICT) is grouped, into 5 named corridors radiating
+from Brussels:
+
+| Corridor label | Example member destinations |
+|---|---|
+| Antwerp | Antwerp-Central, Antwerp-Berchem |
+| Ghent / Bruges / Ostend | Ghent-Sint-Pieters, Bruges, Oostende, Kortrijk, Blankenberge, Knokke, De Panne, Poperinge |
+| Leuven / Liège | Leuven, Liège-Guillemins, Verviers-Central, Eupen, Landen, Hasselt, Genk, Aachen |
+| Namur / Luxembourg | Namur, Luxembourg (iRail: "Lëtzebuerg"), Arlon, Libramont, Dinant, Ciney |
+| Mons / Charleroi | Mons, Charleroi-Sud, Charleroi-Central, Tournai, Quévy, Binche |
+
+An InterCity trip toward a listed destination collapses to just the corridor label (e.g. "IC +
+Oostende" and "EC + Kortrijk" both become "Ghent / Bruges / Ostend"); an InterCity destination
+matching no corridor (a same-city reversal like Brussels-North/Jette/Schaarbeek, or an
+international edge case like Rotterdam CS) stays its own ungrouped "type + destination" chip
+rather than being force-fit or hidden. **Suburban S/L/P types are deliberately never grouped**:
+each already names one genuine, low-fan-out direction, and — unlike IC destinations, which all
+sit along one shared corridor out of the city — an S-line's two ends run in *opposite*
+directions through Brussels (e.g. S1 is Antwerp<->Nivelles), so grouping across an S-line's own
+destinations the way IC destinations are grouped would put two opposite-direction trains behind
+one chip — a real correctness bug (wrong-way boarding), not a cosmetic one. Metro chips are
+listed before SNCB chips (previously interleaved alphabetically — fixed as part of this pass),
+and metro/SNCB are never merged into each other (doNotGroup-by-mode, unchanged).
+
+**Live-verified 20 Sep 2026 at Gare Centrale** (iRail's own live snapshot varies minute to
+minute — these are one snapshot's counts, not a fixed number): ungrouped SNCB chips **32** ->
+grouped **21** (roughly a third fewer); combined with Gare Centrale's own 4 metro chips (only
+lines 1/5 call there), total chips **36 -> 25**. This falls short of the "roughly 8-12" target
+in Tim's brief. Getting further down would need also folding S/L/P into the same corridors
+(geometrically safe to do — each S-line's two real termini already land in two *different*
+corridors or one corridor + one ungrouped same-city stop in the current live data, so it
+wouldn't repeat the opposite-direction risk above) but was left out of this pass: it changes
+what a suburban rider sees more than an IC rider (their local-only stop might not be served by
+whichever train happens to be earliest in a merged corridor bucket), which felt like a call worth
+flagging rather than making silently. **Open item for Tim**: fold S/L/P into the corridor table
+too (would likely land close to the 8-12 target), or accept the current ~21-25 IC-only-grouped
+count as the shipped shape. Chip **stability**: corridor grouping is deterministic (same
+destination always maps to the same corridor label) and, if anything, more stable than the
+ungrouped chips it replaces — a corridor chip stays present as long as *any* train toward it is
+in iRail's live window, where an individual destination chip could disappear if that one station
+specifically has no departure in the next hour; full determinism isn't claimed since the
+underlying data is still live-derived (same posture Copenhagen's DSB chips already accepted).
+
+## SNCB/NMBS directions in the rider-facing API (Part C, 20 Sep 2026)
+
+`/api/directions` previously returned only the 4 metro "line + terminus" chips at every
+station — SNCB rows existed in `fetchStationBoard()`'s `board.trips` (mode: "rail") but never
+reached a direction chip, so a rider could never pick an SNCB destination even though the board
+itself already showed SNCB departures. Fixed: `getBrusselsDogfoodDirections()`
+(`lib/cities/brussels/dogfood-next-train.js`) now also fetches iRail directly (not via
+`fetchStationBoard()`, so a directions listing never depends on STIB's own uptime) at the three
+shared stations and adds one chip per distinct `(vehicle type, destination)` pair actually
+running live — e.g. `"IC + Oostende"`, `"S10 + Aalst"` — via a new `sncbDirectionLabel()` /
+`tripMatchesSncbDirectionChip()` pair in `lib/cities/brussels/marketing-directions.js`.
+doNotGroup-by-mode: SNCB chips are never compared against or merged with a metro chip (two
+separate matcher functions, joined only by `getBrusselsDogfoodNextTrain`'s filter). Live-derived
+rather than a fixed enumeration — same call Copenhagen already made for its own DSB
+Regional/InterCity chips (no printed SNCB line map exists to enumerate from, and the network-wide
+destination fan-out is too large to hand-maintain). iRail down degrades directions silently to
+metro-only chips (no error), matching the board's own partial-source posture.
+
+**Direction-model choice, flagged for Tim:** grouped by vehicle type + destination (`"IC +
+Oostende"`), matching the Stockholm/Malmö/Oslo "+" convention. Live-verified 20 Sep 2026: Gare
+Centrale returns 8 metro chips + **30** SNCB chips in one snapshot (mostly `IC + <dest>` — the
+InterCity network fans out to ~20 distinct stations from Brussels within an hour). This is a lot
+more than a UK Darwin region ever shows (London Waterloo tops out at 15, using "destination
+(operator)"), because Brussels is a national hub, not one operator's suburban fan-out. Two
+options considered: (1) **ship as-is** (chosen) — every chip is a real, live, walk-up-boardable
+service; capping or collapsing it would either hide real destinations or misrepresent train type,
+and Copenhagen already accepted the same "large, live-derived, not hand-curated" shape for its
+own DSB chips; (2) collapse to destination-only chips (drop the type prefix) — rejected, this
+would only reduce the *type* dimension, not the destination count that's actually large, while
+losing useful IC-vs-S-train context UK Darwin's own "(operator)" suffix preserves for its
+smaller-scale equivalent. Ship (1); if the chip count is a rider-facing UX problem in practice,
+that is a picker-UI question for Tim/Mark to revisit with real usage data, not a data-model fix.
+
+`lib/cities/brussels/coverage.json` already accurately described SNCB as a second live source
+shown separately from metro (written at flip time) — no change was needed there; the gap was
+purely `/api/directions` not matching what `coverage.json` already promised.
+
 ## Flip follow-through (20 Sep 2026)
 
 Dogfood wiring landed ahead of the flip, status stays `planned`:
