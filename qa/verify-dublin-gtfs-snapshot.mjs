@@ -119,8 +119,12 @@ async function main() {
   }
 
   const stopsText = readEntryText(files, stopsKey).toLowerCase();
-  if (!stopsText.includes("luas")) {
-    throw new Error("stops.txt does not mention Luas anywhere — this does not look like the trimmed Dublin Luas snapshot.");
+  // The dedicated Luas feed (GTFS_LUAS.zip) names stops plainly ("Abbey Street"), without the
+  // word "Luas", so check for the Red and Green line termini instead. The route_type check
+  // below is what rules out non-Luas routes.
+  const missingTermini = ["tallaght", "broombridge"].filter((name) => !stopsText.includes(name));
+  if (missingTermini.length > 0) {
+    throw new Error(`stops.txt is missing Luas termini (${missingTermini.join(", ")}) — this does not look like the Dublin Luas snapshot.`);
   }
 
   const problems = inspectRoutesAndStops(files);
