@@ -18,7 +18,9 @@ import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const MIN_BYTES = 5 * 1024;
 const MAX_ALLOWED_ROUTES = 4;
-const ALLOWED_ROUTE_TYPE = "0"; // tram / light rail
+// Tram / light rail: GTFS extended route type 900 is the more specific code some feeds use in
+// place of the basic route_type 0 for tram service — accept either.
+const ALLOWED_ROUTE_TYPES = new Set(["0", "900"]);
 
 function findEntry(files, name) {
   return Object.keys(files).find((entry) => entry === name || entry.endsWith(`/${name}`)) ?? null;
@@ -86,11 +88,12 @@ function inspectRoutesAndStops(files) {
     problems.push(`routes.txt has ${routes.length} rows, expected at most ${MAX_ALLOWED_ROUTES} (Luas Red + Green, plus headroom).`);
   }
 
-  const badTypeRoutes = routes.filter((route) => (route.route_type ?? "") !== ALLOWED_ROUTE_TYPE);
+  const badTypeRoutes = routes.filter((route) => !ALLOWED_ROUTE_TYPES.has(route.route_type ?? ""));
   if (badTypeRoutes.length > 0) {
     const ids = badTypeRoutes.map((route) => route.route_id).join(", ");
+    const allowed = [...ALLOWED_ROUTE_TYPES].join(" or ");
     problems.push(
-      `routes.txt has ${badTypeRoutes.length} route(s) with route_type != ${ALLOWED_ROUTE_TYPE} (tram/light rail): ${ids}.`
+      `routes.txt has ${badTypeRoutes.length} route(s) with route_type not in {${allowed}} (tram/light rail): ${ids}.`
     );
   }
 

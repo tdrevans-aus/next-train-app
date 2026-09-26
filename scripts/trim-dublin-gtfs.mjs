@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 /**
- * D2 — Trim the NTA's national GTFS_All.zip (all Irish operators, ~160MB) down to Luas
- * (Red + Green light rail) only, so lib/providers/dublin.js's runtime loadGtfsStatic() call
- * never has to fetch/parse the full national feed on the request path (same reasoning as
- * lib/gtfs-refresh.js's Amsterdam/Rotterdam OVapi retirement — a ~230MB nationwide feed OOM'd a
- * Hobby-plan function; NTA's feed is smaller but still far too large for a per-request fetch).
+ * D2 — Trim NTA's dedicated Luas GTFS feed (google_transit_luas.zip) down to a small local
+ * fixture, so lib/providers/dublin.js's runtime loadGtfsStatic() call never has to fetch/parse a
+ * larger feed on the request path (same reasoning as lib/gtfs-refresh.js's Amsterdam/Rotterdam
+ * OVapi retirement — a ~230MB nationwide feed OOM'd a Hobby-plan function).
+ *
+ * Source corrected 26 Sep 2026 (docs/jim-brief-dublin-luas-source-fix.md,
+ * docs/dublin-d1/luas-static-source.md): NTA's national GTFS_All.zip does NOT contain Luas —
+ * filtering it for "luas" only matches Dublin Bus routes that name Luas stops as points of
+ * interest, not actual tram service (route_type 0). Luas is published separately at
+ * https://www.transportforireland.ie/transitData/google_transit_luas.zip (no key, CC BY 4.0 —
+ * "Contains Irish Government Data licensed under a Creative Commons Attribution 4.0
+ * International (CC BY 4.0) licence"). Override with the DUBLIN_GTFS_URL env var or --url= if
+ * the source ever needs to change again. Luas has been operated by KeolisAmey since 1 Sep 2026
+ * (previously Transdev).
  *
  * Output is published to the next-train-gtfs Vercel Blob store at gtfs/dublin.zip
  * (scripts/publish-gtfs-fixture-to-blob.mjs's pathname convention) — NOT run automatically here
@@ -12,14 +21,15 @@
  * this session — docs/dublin-d1/jim-handoff.md). Once published, lib/providers/dublin.js reads
  * it via gtfsFixtureBlobUrl("dublin"), same pattern as lib/providers/melbourne.js.
  *
- * Luas's real GTFS route_id / agency_id scheme is UNVERIFIED against a live payload
- * (docs/dublin-d1/published-network.json — gtfsRouteIdsIfKnown deliberately left empty). This
- * trim filters by route_long_name/route_short_name containing "luas" (case-insensitive) as the
- * most conservative signal available without having downloaded the feed — confirm the actual
- * agency_id/route_id values against a real snapshot before relying on this in production, and
- * tighten the filter to agency_id if the NTA feed carries a dedicated Luas agency row.
+ * Since the source feed should already be Luas-only, this trim keeps all of its tram routes
+ * (route_type 0, or the extended tram code 900) rather than filtering by name — confirm the
+ * actual agency_id/route_id values against a real snapshot before relying on this in
+ * production (docs/dublin-d1/published-network.json — gtfsRouteIdsIfKnown deliberately left
+ * empty). qa/verify-dublin-gtfs-snapshot.mjs checks the published result stays small
+ * (at most 4 routes, all route_type 0 or 900).
  *
  * Usage: node scripts/trim-dublin-gtfs.mjs [--url=<gtfs-zip-url>]
+ * (or set DUBLIN_GTFS_URL to override the default source URL)
  */
 
 import { mkdirSync, writeFileSync } from "fs";
@@ -32,7 +42,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const outArg = process.argv.find((arg) => arg.startsWith("--out="));
 const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/dublin/gtfs");
-const DEFAULT_URL = "https://www.transportforireland.ie/transitData/Data/GTFS_All.zip";
+const DEFAULT_URL =
+  process.env.DUBLIN_GTFS_URL || "https://www.transportforireland.ie/transitData/google_transit_luas.zip";
 
 function readZipText(files, name) {
   const key = name in files ? name : Object.keys(files).find((entry) => entry.endsWith(`/${name}`));
@@ -57,10 +68,13 @@ function toCsv(rows, columns) {
   return `${header}\n${body}\n`;
 }
 
+// The source feed is Luas-only, so keep every tram route it publishes rather than filtering by
+// name: route_type 0 is the standard GTFS tram/light-rail code, 900 is the extended code some
+// feeds use in its place.
+const TRAM_ROUTE_TYPES = new Set(["0", "900"]);
+
 function isLuasRoute(route) {
-  const short = String(route.route_short_name || "").toLowerCase();
-  const long = String(route.route_long_name || "").toLowerCase();
-  return short.includes("luas") || long.includes("luas") || /\bred\b|\bgreen\b/.test(long);
+  return TRAM_ROUTE_TYPES.has(String(route.route_type ?? ""));
 }
 
 /**
@@ -184,10 +198,13 @@ node scripts/publish-gtfs-fixture-to-blob.mjs dublin
 
 ## Trim rules
 
-- Routes whose route_short_name/route_long_name mentions "luas", "red", or "green" (UNVERIFIED
-  against a live NTA payload — confirm and tighten to agency_id before flip; see file header)
+- Routes with route_type 0 (tram/light rail) or the extended tram code 900 — the dedicated Luas
+  feed should already contain nothing else (confirm against a real snapshot; see file header)
 - Trips, stop_times, calendar rows restricted to included Luas services
 - Parent stations and all child platform stops retained for used Luas stops
+
+Contains Irish Government Data licensed under a Creative Commons Attribution 4.0 International
+(CC BY 4.0) licence.
 `;
   writeFileSync(join(OUT_DIR, "README.md"), readme);
 
