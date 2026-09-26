@@ -63,3 +63,47 @@ runs it from the Actions tab.
 
 Once published, `gtfsFixtureBlobUrl("dublin")` resolves to real data and Dublin's D2 static-data
 dependency is unblocked, ahead of (not instead of) the separate live-flip QA gate.
+
+## Realtime/static trip_id join check (added 26 Sep 2026)
+
+Mark's offline QA note (`mark/dublin-qa-note`) flagged one thing it couldn't prove: whether NTA
+GTFS-RT v2 TripUpdates `trip_id`s actually join to the published Luas snapshot's `trip_id`s. If
+they don't, the live board comes back empty even though everything else is wired correctly.
+Sandboxes can't reach NTA or the blob store to check this directly (`NTA_API_KEY` exists only in
+Vercel and, since 26 Sep 2026, as a GitHub Actions secret) — see
+`docs/jim-brief-dublin-rt-join-check.md`.
+
+`qa/dublin-rt-join-check.mjs` closes that gap: it fetches the published snapshot
+(`lib/providers/dublin.js`'s `loadDublinStatic()`) and the live NTA TripUpdates feed (same URL,
+`ntaAuthHeaders`/`readNtaApiKey` from `lib/providers/gtfs/auth.js`, and `fetchTripUpdates` +
+`indexTripUpdates` from `lib/providers/gtfs/realtime.js` — no reimplemented fetch/decode logic),
+and reports:
+
+- total TripUpdates in the feed;
+- how many of those are countable as Luas specifically — trip descriptors carry `route_id`, and
+  the published snapshot's route_ids are Luas-only, so a match is tellable; if no TripUpdate in
+  the feed carries a `route_id` at all, it falls back to counting over *all* TripUpdates and says
+  so explicitly, since NTA's feed spans every Irish operator and untellable-route counting would
+  otherwise be meaningless;
+- how many of the countable pool resolve against the snapshot's `trips.txt`, and the resulting
+  share;
+- 5 sample matched and 5 sample unmatched `trip_id`s, for manual inspection.
+
+It fails (non-zero exit) if the resolved share is below
+`STALE_RESOLVED_SHARE_THRESHOLD` (`lib/providers/gtfs/board.js`, currently 0.5) once the countable
+pool is at least `STALE_MIN_JUDGABLE_TRIP_UPDATES` (currently 20) — the same thresholds
+`buildBoardForStops`'s runtime staleness check uses, so a red run here means the live board would
+genuinely come back empty or near-empty against the currently published snapshot.
+
+With no `NTA_API_KEY` set, it exits 0 and prints `skipped: no key` — safe in a local smoke run.
+It is **not** registered in `qa/run-all.mjs` (it needs real network + a real key neither sandboxes
+nor the default CI job have); instead it's wired into
+`.github/workflows/publish-gtfs-snapshot.yml`, added as a step after the existing
+`verify-dublin-gtfs-snapshot.mjs` check, for `city: dublin` runs, using the `NTA_API_KEY` GitHub
+Actions secret. That workflow also gained a `check_only` boolean input (default `false`): set it
+to skip the trim + publish steps and just re-run the verify + join-check steps against whatever is
+already published — useful to re-prove the join after Vercel Blob has been touched, or on demand,
+without republishing.
+
+This check does not flip Dublin live and does not change `lib/providers/dublin.js`'s behaviour —
+it only tells us, from CI, whether the join Mark's offline QA couldn't reach actually resolves.

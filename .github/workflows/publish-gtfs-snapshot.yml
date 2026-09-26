@@ -19,6 +19,11 @@ on:
         type: choice
         options:
           - dublin
+      check_only:
+        description: "Skip trim + publish; only run the post-publish check(s) against what's already published"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -44,6 +49,7 @@ jobs:
       # Fail fast and clearly rather than letting a later step's cryptic
       # "unauthorized"/network error stand in for a missing secret.
       - name: Require secrets
+        if: inputs.check_only != true
         run: |
           if [ -z "${BLOB_READ_WRITE_TOKEN}" ]; then
             echo "::error::BLOB_READ_WRITE_TOKEN is not set as a GitHub Actions secret on this repo. Add it (same value as Vercel's BLOB_READ_WRITE_TOKEN) before running this workflow." >&2
@@ -57,13 +63,13 @@ jobs:
       # NTA_API_KEY). NTA_API_KEY is intentionally NOT required by this workflow; it's wired
       # here only in case a future trim script needs it.
       - name: Trim GTFS (dublin)
-        if: inputs.city == 'dublin'
+        if: inputs.city == 'dublin' && inputs.check_only != true
         run: node scripts/trim-dublin-gtfs.mjs --out=qa/fixtures/dublin/gtfs
         env:
           NTA_API_KEY: ${{ secrets.NTA_API_KEY }}
 
       - name: Publish to Blob (dublin)
-        if: inputs.city == 'dublin'
+        if: inputs.city == 'dublin' && inputs.check_only != true
         run: node scripts/publish-gtfs-fixture-to-blob.mjs dublin
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
@@ -73,6 +79,16 @@ jobs:
       # never check this city. Run a small standalone equivalent instead (no credentials
       # needed): fetch the just-published blob back, confirm HTTP 200, a sane zip size, and
       # that stops.txt actually contains Luas stops (not an empty/synthetic snapshot).
+      # check_only still runs this — it's what proves the *already-published* snapshot is sane.
       - name: Verify published snapshot (dublin)
         if: inputs.city == 'dublin'
         run: node qa/verify-dublin-gtfs-snapshot.mjs
+
+      # Proves NTA GTFS-RT v2 TripUpdates trip_ids actually join to the published snapshot's
+      # trip_ids — sandboxes can't reach NTA or the blob store, so this only ever runs here,
+      # where NTA_API_KEY is available as a secret (docs/jim-brief-dublin-rt-join-check.md).
+      - name: Check realtime/static trip_id join (dublin)
+        if: inputs.city == 'dublin'
+        run: node qa/dublin-rt-join-check.mjs
+        env:
+          NTA_API_KEY: ${{ secrets.NTA_API_KEY }}
