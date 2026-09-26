@@ -140,8 +140,16 @@ function syncAdBannerScrollPadding() {
 
   if (nativeActive) {
     document.body.classList.add("native-ad-banner");
+    // iOS's banner sits with margin: 0 (see web-sources/ads-native.mjs) —
+    // it needs less bottom-padding clearance than Android's margin-72
+    // layout. This class swaps --ad-scroll-padding to the smaller iOS
+    // value; Android is untouched.
+    if (window.Capacitor?.getPlatform?.() === "ios") {
+      document.body.classList.add("native-ad-banner-ios");
+    }
   } else {
     document.body.classList.remove("native-ad-banner");
+    document.body.classList.remove("native-ad-banner-ios");
   }
 }
 

@@ -397,11 +397,12 @@ var NextTrainAdsNative = (() => {
       initializeForTesting: admobTestMode
     });
     const adId = admobTestMode ? GOOGLE_TEST_BANNER_ID : bannerConfig.admobBannerId;
+    const margin = window.Capacitor?.getPlatform?.() === "ios" ? 0 : 72;
     await admobClient.showBanner({
       adId,
       adSize: "ADAPTIVE_BANNER",
       position: "BOTTOM_CENTER",
-      margin: 72,
+      margin,
       isTesting: admobTestMode
     });
     bannerMounted = true;

@@ -24,8 +24,12 @@
 
     if (nativeActive) {
       document.body.classList.add("native-ad-banner");
+      if (window.Capacitor?.getPlatform?.() === "ios") {
+        document.body.classList.add("native-ad-banner-ios");
+      }
     } else {
       document.body.classList.remove("native-ad-banner");
+      document.body.classList.remove("native-ad-banner-ios");
     }
   }
 

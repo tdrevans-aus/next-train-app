@@ -173,6 +173,16 @@ body.native-ad-banner .app-body {
   padding-bottom: calc(var(--safe-bottom) + var(--ad-scroll-padding));
 }
 
+/* iOS shows the banner at margin: 0 (right above the safe area), not
+   Android's margin: 72 — it needs much less bottom clearance, and the
+   fuller Android value left page content peeking out below the banner
+   (docs/jim-brief-ios-remove-ad-free-purchase.md, Part B). Overriding the
+   custom property here flows through every --ad-scroll-padding consumer
+   (app body, static pages, dialogs) without duplicating each selector. */
+body.native-ad-banner-ios {
+  --ad-scroll-padding: 4.5rem;
+}
+
 @media (max-height: 760px) {
   .app {
     gap: 0.65rem;
