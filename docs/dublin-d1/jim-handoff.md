@@ -8,7 +8,7 @@ D1 = official **Luas Network Map** PNG (DatoCMS asset 225949/1784119177, linked 
 `docs/dublin-d1/luas-static-source.md`): the NTA's national `GTFS_All.zip` does **not** contain
 Luas — filtering it for "luas" only matches Dublin Bus routes that name Luas stops as points of
 interest, not actual tram service (route_type 0). Luas's real static feed is the dedicated
-`https://www.transportforireland.ie/transitData/google_transit_luas.zip` (no key, verified via
+`https://www.transportforireland.ie/transitData/Data/GTFS_LUAS.zip` (no key, verified via
 Transitland and the Mobility Database). `scripts/trim-dublin-gtfs.mjs` now points at this URL
 (overridable via `DUBLIN_GTFS_URL`) and keeps its tram routes (route_type 0 or 900) directly
 rather than filtering by name, since the source feed should already be Luas-only.
@@ -46,7 +46,7 @@ repository secret), copied from the same-named Vercel project env vars:
 
 - `BLOB_READ_WRITE_TOKEN` — required. Without it the workflow fails immediately with a clear
   "secret not set" error rather than a cryptic upload failure.
-- `NTA_API_KEY` — not required for this workflow (Dublin's static `google_transit_luas.zip`
+- `NTA_API_KEY` — not required for this workflow (Dublin's static `GTFS_LUAS.zip`
   download from transportforireland.ie needs no key; only the *realtime* NTA GTFS-RT v2 feed
   does). Wired into the workflow's env anyway in case a future trim step needs it. Safe to add
   or skip.

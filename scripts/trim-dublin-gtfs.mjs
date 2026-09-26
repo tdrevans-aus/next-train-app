@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * D2 — Trim NTA's dedicated Luas GTFS feed (google_transit_luas.zip) down to a small local
+ * D2 — Trim NTA's dedicated Luas GTFS feed (GTFS_LUAS.zip) down to a small local
  * fixture, so lib/providers/dublin.js's runtime loadGtfsStatic() call never has to fetch/parse a
  * larger feed on the request path (same reasoning as lib/gtfs-refresh.js's Amsterdam/Rotterdam
  * OVapi retirement — a ~230MB nationwide feed OOM'd a Hobby-plan function).
@@ -9,7 +9,7 @@
  * docs/dublin-d1/luas-static-source.md): NTA's national GTFS_All.zip does NOT contain Luas —
  * filtering it for "luas" only matches Dublin Bus routes that name Luas stops as points of
  * interest, not actual tram service (route_type 0). Luas is published separately at
- * https://www.transportforireland.ie/transitData/google_transit_luas.zip (no key, CC BY 4.0 —
+ * https://www.transportforireland.ie/transitData/Data/GTFS_LUAS.zip (no key, CC BY 4.0 —
  * "Contains Irish Government Data licensed under a Creative Commons Attribution 4.0
  * International (CC BY 4.0) licence"). Override with the DUBLIN_GTFS_URL env var or --url= if
  * the source ever needs to change again. Luas has been operated by KeolisAmey since 1 Sep 2026
@@ -43,7 +43,7 @@ const ROOT = join(__dirname, "..");
 const outArg = process.argv.find((arg) => arg.startsWith("--out="));
 const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/dublin/gtfs");
 const DEFAULT_URL =
-  process.env.DUBLIN_GTFS_URL || "https://www.transportforireland.ie/transitData/google_transit_luas.zip";
+  process.env.DUBLIN_GTFS_URL || "https://www.transportforireland.ie/transitData/Data/GTFS_LUAS.zip";
 
 function readZipText(files, name) {
   const key = name in files ? name : Object.keys(files).find((entry) => entry.endsWith(`/${name}`));
