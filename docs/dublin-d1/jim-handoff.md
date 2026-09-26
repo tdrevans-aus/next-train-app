@@ -19,3 +19,33 @@ C2/C3: (1) Separate city dublin, agency Luas (Keolis/NTA). Do not invent city=du
 **Live boards: NTA GTFS-RT v2 keyed later — not a D1 blocker.** Portal https://developer.nationaltransport.ie/. Header `x-api-key`. This pack made no keyed calls and did not paste a key. D1 stays planned. assertCityLive("dublin") must fail.
 
 §3 rec: colour + terminus (`Red + Tallaght`, `Red + Saggart`, `Green + Broombridge`, `Green + Brides Glen`). Abbey Street is a hub stop string, never a direction token. Hold D5 on the Parnell/Trinity direction-exclusive question above. Jim owns D2–D6. When Jim wires, testers can pick city id **dublin**. Do not flip from this pack — that's Jim/Mark's job once QA is green.
+
+## Publishing the Luas GTFS static snapshot (added, docs/jim-brief-dublin-blob-publish-action.md)
+
+`lib/providers/dublin.js` reads its static Luas-only GTFS from
+`gtfsFixtureBlobUrl("dublin")` (the shared next-train-gtfs Vercel Blob store), and that path has
+never been published — publishing needs `BLOB_READ_WRITE_TOKEN` (network access to Vercel Blob)
+and Claude sandboxes have neither. A one-click GitHub Action now does it instead:
+`.github/workflows/publish-gtfs-snapshot.yml`.
+
+**Two GitHub repo secrets Tim must add** (Settings → Secrets and variables → Actions → New
+repository secret), copied from the same-named Vercel project env vars:
+
+- `BLOB_READ_WRITE_TOKEN` — required. Without it the workflow fails immediately with a clear
+  "secret not set" error rather than a cryptic upload failure.
+- `NTA_API_KEY` — not required for this workflow (Dublin's static `GTFS_All.zip` download from
+  transportforireland.ie needs no key; only the *realtime* NTA GTFS-RT v2 feed does). Wired into
+  the workflow's env anyway in case a future trim step needs it. Safe to add or skip.
+
+**To publish (one click):** GitHub → Actions tab → "Publish GTFS snapshot" workflow → "Run
+workflow" → `city: dublin` → Run. It runs `scripts/trim-dublin-gtfs.mjs` (national NTA zip →
+Luas-only Red+Green), publishes the trimmed zip via
+`scripts/publish-gtfs-fixture-to-blob.mjs dublin`, then runs
+`qa/verify-dublin-gtfs-snapshot.mjs` (a standalone check — `qa/gtfs-live-blob-snapshot-integrity.mjs`
+only covers `status: "live"` cities, and Dublin stays `planned`) to confirm the published blob is
+a real, non-empty snapshot whose `stops.txt` actually contains Luas stops. The workflow is
+`workflow_dispatch`-only — it never runs on a schedule or on push, and has no effect until someone
+runs it from the Actions tab.
+
+Once published, `gtfsFixtureBlobUrl("dublin")` resolves to real data and Dublin's D2 static-data
+dependency is unblocked, ahead of (not instead of) the separate live-flip QA gate.
