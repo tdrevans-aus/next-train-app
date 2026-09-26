@@ -103,18 +103,14 @@ struct NextTrainWidgetView: View {
         let mutedStyle = isFullColor ? AnyShapeStyle(appearance.muted) : AnyShapeStyle(.secondary)
         let textStyle = isFullColor ? AnyShapeStyle(appearance.text) : AnyShapeStyle(.primary)
         let accentStyle = isFullColor ? AnyShapeStyle(appearance.accent) : AnyShapeStyle(.primary)
-        let leaveStyle: AnyShapeStyle
-        if !isFullColor {
-            leaveStyle = AnyShapeStyle(.primary)
-        } else if late {
-            leaveStyle = AnyShapeStyle(appearance.late)
-        } else if urgent {
-            leaveStyle = AnyShapeStyle(appearance.leaveUrgent)
-        } else {
-            leaveStyle = AnyShapeStyle(appearance.muted)
-        }
+        let leaveStyle: AnyShapeStyle = {
+            if !isFullColor { return AnyShapeStyle(.primary) }
+            if late { return AnyShapeStyle(appearance.late) }
+            if urgent { return AnyShapeStyle(appearance.leaveUrgent) }
+            return AnyShapeStyle(appearance.muted)
+        }()
 
-        Link(destination: widgetURL()) {
+        return Link(destination: widgetURL()) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
