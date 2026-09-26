@@ -132,6 +132,44 @@
   const countryStationsCache = new Map();
   const COUNTRY_CACHE_KEY_PREFIX = "nextTrainCountryStations:";
   const COUNTRY_CACHE_TTL_MS = 60 * 60 * 1000;
+  // Shown when Region is "All" and the country-wide list never arrives.
+  // A silent fall-through to the active region's catalog (Adelaide, after
+  // picking Australia) looks like a successful All result.
+  const COUNTRY_STATIONS_LOAD_ERROR = "Couldn't load all stations";
+
+  /**
+   * Same resolution as public/app.js apiUrl()/getApiOrigin(). A relative
+   * `/api/...` URL is correct on the web (the page and the API share an
+   * origin) and wrong in the Capacitor webview, which has no Vercel host —
+   * the request dies inside the app and the picker used to keep the one
+   * region it already had mounted. deps.apiUrl is that function, wired from
+   * app.js. The branch below matches it only if loadCountryStations runs
+   * before init (the Near me region hint calls this export directly).
+   */
+  function isNativeApiClient() {
+    if (window.location.hostname === "localhost" && window.location.port === "") {
+      return true;
+    }
+    return Boolean(window.Capacitor?.isNativePlatform?.());
+  }
+
+  function apiUrlFor(path) {
+    if (typeof deps.apiUrl === "function") {
+      return deps.apiUrl(path);
+    }
+    const dogfoodOrigin = window.NextTrainBrisbaneDogfood?.isActive?.()
+      ? String(window.NextTrainBrisbaneDogfood.getOrigin?.() || "").replace(/\/$/, "")
+      : "";
+    if (dogfoodOrigin) {
+      return `${dogfoodOrigin}${path}`;
+    }
+    if (isNativeApiClient()) {
+      const origin =
+        window.NextTrainCitySession?.VERCEL_ORIGIN || "https://next-train-app.vercel.app";
+      return `${origin}${path}`;
+    }
+    return path;
+  }
 
   function readCountryCacheFromStorage(countryId) {
     try {
@@ -160,6 +198,26 @@
     }
   }
 
+  function invalidateCountryStationsCache() {
+    countryStationsCache.clear();
+    try {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(COUNTRY_CACHE_KEY_PREFIX)) {
+          keys.push(key);
+        }
+      }
+      for (const key of keys) {
+        localStorage.removeItem(key);
+      }
+    } catch {
+      /* storage unavailable */
+    }
+    detailStationCombobox?.clearLocalStationsCache?.();
+    nearbyStationCombobox?.clearLocalStationsCache?.();
+  }
+
   /** Fetches (or returns cached) { countryId, regions, stations, fetchedAt } for a country. */
   async function loadCountryStations(countryId) {
     const id = String(countryId || "").trim().toLowerCase();
@@ -175,8 +233,9 @@
       countryStationsCache.set(id, fromStorage);
       return fromStorage;
     }
+    const url = apiUrlFor(`/api/country-stations?country=${encodeURIComponent(id)}`);
     try {
-      const response = await fetch(`/api/country-stations?country=${encodeURIComponent(id)}`);
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`country-stations ${response.status}`);
       }
@@ -191,7 +250,7 @@
       writeCountryCacheToStorage(id, payload);
       return payload;
     } catch (error) {
-      console.warn("Could not load /api/country-stations", error);
+      console.warn("Could not load country stations", url, error);
       return inMemory || null;
     }
   }
@@ -378,6 +437,9 @@
     // "Choose station" combobox (detail picker) goes country-wide; the
     // nearby-mode manual override keeps searching the active region only.
     let countryData = null;
+    // True only after a country-wide fetch returned nothing (network error,
+    // non-OK, or unreadable body) — not merely "still loading".
+    let countryLoadFailed = false;
     let selectedValue = "";
     let activeIndex = -1;
     let suppressBlurClose = false;
@@ -515,15 +577,18 @@
 
       // Country-wide catalog for the primary "Choose station" combobox
       // (docs/jim-brief-country-wide-station-picker.md). The legacy
-      // single-region list above still loads in parallel as a fallback for
-      // when the country fetch fails or the active region has no country
-      // mapping (renderList falls back to it when countryData is empty).
+      // single-region list above is the fallback when a specific Region is
+      // selected, or when this country has no id. Region "All" does not use
+      // that fallback: a failed country fetch would otherwise paint the
+      // active region's stations (the first open region after a country
+      // change) and look like a complete result.
       const countryId = String(window.NextTrainCitySession?.readSavedCountry?.() || "").toLowerCase();
       const countryPromise =
         countryData && countryData.countryId === countryId
           ? Promise.resolve(countryData)
           : loadCountryStations(countryId).then((data) => {
               countryData = data;
+              countryLoadFailed = Boolean(countryId) && !data;
               return countryData;
             });
 
@@ -534,9 +599,29 @@
       localStationsCache = null;
       localCacheCity = "";
       countryData = null;
+      countryLoadFailed = false;
+    }
+
+    function countryWideListUnavailable() {
+      return isDetailPicker && countryLoadFailed && !activeRegionFilter();
+    }
+
+    function renderCountryLoadError() {
+      list.innerHTML = "";
+      activeIndex = -1;
+      const empty = document.createElement("li");
+      empty.className = "station-combobox-empty";
+      empty.dataset.countryLoadError = "true";
+      empty.textContent = COUNTRY_STATIONS_LOAD_ERROR;
+      empty.setAttribute("aria-disabled", "true");
+      list.appendChild(empty);
     }
 
     function renderList(query = "") {
+      if (countryWideListUnavailable()) {
+        renderCountryLoadError();
+        return;
+      }
       if (isDetailPicker && countryData?.stations?.length) {
         renderCountryList(query);
         return;
@@ -1222,6 +1307,7 @@
     getStationsList,
     getNearbyStationsList,
     loadCountryStations,
+    invalidateCountryStationsCache,
     getStationsCache,
     getNearbyStationsCache,
     replaceStationsCache,

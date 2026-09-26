@@ -183,6 +183,7 @@ const SMOKE_SCRIPTS = [
   "release-prep-step-order-gate.mjs",
   "security-headers-gate.mjs",
   "api-500-no-error-echo.mjs",
+  "native-country-stations.mjs",
   "country-wide-picker.mjs",
   "bundled-city-directions.mjs",
   "lane-lock-shared-worktree.mjs",
