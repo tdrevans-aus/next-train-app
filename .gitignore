@@ -60,3 +60,6 @@ docs/*.pdf
 # needed its own PR.
 docs/expansion-tracker/lane-locks.json
 docs/expansion-tracker/lane-locks.json.mutex
+
+# Agent worktrees (Claude Code isolation)
+.claude/worktrees/

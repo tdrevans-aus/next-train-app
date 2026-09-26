@@ -69,3 +69,49 @@ Build steps for Tim:
    fill, not this bug. The device log will show `Ads` SDK lines either way.
 
 Tag after merge: `v3.0.4` (and `v3.0.3` on the commit 27 was built from, if wanted).
+
+---
+
+## App Store (iOS) — 3.0.4 (28)
+
+**Track:** App Store public release (aligned with Play **3.0.4** / `versionCode` **28**)  
+**Prior iOS build in repo:** 2.5.7 (23) — this upload is the full **3.x** product line.
+
+### App Store Connect — What’s New (paste)
+
+**Release name (optional):**
+```
+3.0.4 — Live boards in 34 regions
+```
+
+**What’s New:**
+```
+Welcome to Next Train on iPhone.
+
+• Live train departures for 34 cities and regions across Australia, the UK, Sweden, Finland and Norway
+• Save your commute and see when to walk out the door, delays included
+• Near me opens the board for your closest station
+• Search any station in your country by name
+• Leave-by reminders and a home-screen widget
+• Free with ads. One purchase removes them, no subscription
+
+Unofficial transit companion — always check station boards.
+```
+
+### iOS build (Tim / Jon)
+
+```bash
+cd ~/Projects/next-train-app
+git pull origin master   # 3.0.4 @ versionCode 28
+npm run setup:mac        # or: npm install && npm run cap:sync:ios
+```
+
+1. Open `ios/App/App.xcworkspace` in Xcode.
+2. Confirm **Version** `3.0.4` and **Build** `28` on **App** and **NextTrainWidget** targets.
+3. Signing: **Distribution** certificate + App Store profile for `com.tdrevans.nexttrain`.
+4. Destination: **Any iOS Device (arm64)** → **Product → Archive** → **Distribute App** → App Store Connect.
+5. After processing: attach What's New above; IAP `com.tdrevans.nexttrain.adfree` must match ASC.
+
+**Gates before archive:** `npm run test:web:release` (or at minimum `npm run test:smoke` + `node qa/ads-init-after-deferred-load.mjs`).
+
+**Device smoke (~20 min):** Near me board loads; save a route; widget matches hero; banner appears on Near me within a few seconds; Remove ads opens StoreKit.
