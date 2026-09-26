@@ -33,3 +33,15 @@ reach those feeds.
 - The YAML parses, and the workflow is manual-only.
 - `node qa/run-all.mjs --smoke` passes, apart from named environmental failures.
 - The PR links this brief. No background loops.
+
+## Round 2: Mark QA FAIL on PR #455 (26 Sep 2026). Fix on the same branch `jim/city-directions-workflow`
+1. **Script injection.** `${{ inputs.city }}` and `${{ inputs.branch }}` are pasted directly into
+   `run:` in 4 places: the refuse-master step, the generate step, the diff-guard step and the push step.
+   Map them once via `env:` (`CITY`, `BRANCH`) and use `"$CITY"`/`"$BRANCH"` everywhere.
+   Add an early validation step: CITY must match `^[a-z0-9-]+$`, and BRANCH must match
+   `^[A-Za-z0-9._/-]+$`, contain no `..` and not start with `-`. Otherwise fail with `::error::`.
+2. **Single-file guard does substring matching.** `grep -v -F "$expected"` treats any porcelain
+   line *containing* the path as expected (e.g. `<city>.json.bak`). Parse each line's path
+   (`${line:3}`; for a rename `old -> new`, take both sides) and compare it for **exact** equality
+   with `public/city-directions/$CITY.json`. Anything else fails the job.
+Everything else passed: manual trigger, main/master refusal, `--only=` flag, secrets through env, docs.
