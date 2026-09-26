@@ -31,7 +31,7 @@ var NextTrainGeo = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // node_modules/@capacitor/geolocation/dist/esm/web.js
+  // ../../../node_modules/@capacitor/geolocation/dist/esm/web.js
   var web_exports = {};
   __export(web_exports, {
     Geolocation: () => Geolocation,
@@ -39,7 +39,7 @@ var NextTrainGeo = (() => {
   });
   var import_core, GeolocationWeb, Geolocation;
   var init_web = __esm({
-    "node_modules/@capacitor/geolocation/dist/esm/web.js"() {
+    "../../../node_modules/@capacitor/geolocation/dist/esm/web.js"() {
       import_core = __require("@capacitor/core");
       GeolocationWeb = class extends import_core.WebPlugin {
         constructor() {
@@ -143,10 +143,10 @@ var NextTrainGeo = (() => {
     resetLocationPermissionCache: () => resetLocationPermissionCache
   });
 
-  // node_modules/@capacitor/geolocation/dist/esm/index.js
+  // ../../../node_modules/@capacitor/geolocation/dist/esm/index.js
   var import_core2 = __require("@capacitor/core");
 
-  // node_modules/@capacitor/synapse/dist/synapse.mjs
+  // ../../../node_modules/@capacitor/synapse/dist/synapse.mjs
   function s(t) {
     t.CapacitorUtils.Synapse = new Proxy(
       {},
@@ -193,7 +193,7 @@ var NextTrainGeo = (() => {
     typeof window > "u" || (window.CapacitorUtils = window.CapacitorUtils || {}, window.Capacitor !== void 0 && !t ? s(window) : window.cordova !== void 0 && u(window));
   }
 
-  // node_modules/@capacitor/geolocation/dist/esm/index.js
+  // ../../../node_modules/@capacitor/geolocation/dist/esm/index.js
   var Geolocation2 = (0, import_core2.registerPlugin)("Geolocation", {
     web: () => Promise.resolve().then(() => (init_web(), web_exports)).then((m) => new m.GeolocationWeb())
   });
@@ -202,6 +202,9 @@ var NextTrainGeo = (() => {
   // web-sources/geo-native.mjs
   function isIos() {
     return globalThis.Capacitor?.getPlatform?.() === "ios";
+  }
+  function isNativePlatform() {
+    return Boolean(globalThis.Capacitor?.isNativePlatform?.());
   }
   function locationPermissionHelpMessage() {
     if (isIos()) {
@@ -418,7 +421,7 @@ var NextTrainGeo = (() => {
         lastError = error;
       }
     }
-    if (navigator.geolocation) {
+    if (!isNativePlatform() && navigator.geolocation) {
       try {
         return await readNavigatorPosition({
           enableHighAccuracy: preferHighAccuracy,
