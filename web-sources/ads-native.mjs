@@ -188,11 +188,18 @@ export async function showNativeBanner(config) {
 
   const adId = admobTestMode ? GOOGLE_TEST_BANNER_ID : bannerConfig.admobBannerId;
 
+  // 72 clears Android's bottom chrome / nav bar. On iOS that same margin
+  // leaves a band of page content visible below the banner (it sits well
+  // above the safe area rather than right on top of it) — the plugin
+  // already respects the safe area on iOS, so no extra margin is needed
+  // there (docs/jim-brief-ios-remove-ad-free-purchase.md, Part B).
+  const margin = window.Capacitor?.getPlatform?.() === "ios" ? 0 : 72;
+
   await admobClient.showBanner({
     adId,
     adSize: "ADAPTIVE_BANNER",
     position: "BOTTOM_CENTER",
-    margin: 72,
+    margin,
     isTesting: admobTestMode,
   });
 

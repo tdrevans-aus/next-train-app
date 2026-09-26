@@ -185,6 +185,7 @@ const SMOKE_SCRIPTS = [
   "country-wide-picker.mjs",
   "bundled-city-directions.mjs",
   "lane-lock-shared-worktree.mjs",
+  "ios-no-ad-free.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

@@ -29,8 +29,18 @@ function nativeStoreName() {
   return nativePlatform() === "ios" ? "App Store" : "Google Play";
 }
 
+// iOS ships with no ad-free purchase at all (Apple GST/ABN registration isn't
+// worth it for the expected revenue) — Android keeps it unchanged. This gate
+// is the single source of truth: every entry point below (menu rendering,
+// the under-banner link, the paywall dialog, and the native purchase bridge
+// itself) is guarded by it, so nothing on iOS ever calls into
+// NativePurchases.
+function isIosNativeApp() {
+  return isNativeApp() && nativePlatform() === "ios";
+}
+
 function webAdFreeHint() {
-  return "Remove ads is available in the Android or iOS app.";
+  return "Remove ads is available in the Android app.";
 }
 
 function nativeBillingUnavailableToast() {
@@ -53,7 +63,7 @@ function hasNativePurchaseBridge() {
 }
 
 function shouldShowPurchaseControls() {
-  if (!isNativeApp() || entitled) {
+  if (!isNativeApp() || entitled || isIosNativeApp()) {
     return false;
   }
   return hasNativePurchaseBridge() || billingAvailable;
@@ -161,7 +171,7 @@ function loadScriptOnce(src) {
 async function loadNativePurchaseBridge() {
   await waitForCapacitor();
 
-  if (!window.Capacitor) {
+  if (!window.Capacitor || isIosNativeApp()) {
     return null;
   }
 
@@ -180,7 +190,7 @@ async function loadNativePurchaseBridge() {
 }
 
 async function ensureNativeBridge() {
-  if (!isNativeApp()) {
+  if (!isNativeApp() || isIosNativeApp()) {
     return null;
   }
 
@@ -276,6 +286,16 @@ function renderMenuAdFree() {
   setHidden(statusRow, true);
   setHidden(billingHint, true);
 
+  if (isIosNativeApp()) {
+    // No ad-free purchase on iOS at all — the whole Menu section stays
+    // hidden, including both hints and restore.
+    setHidden(section, true);
+    setHidden(webHint, true);
+    setHidden(restoreBtn, true);
+    syncPurchaseLinkVisibility();
+    return;
+  }
+
   if (!isNativeApp()) {
     setHidden(section, false);
     setHidden(webHint, false);
@@ -370,7 +390,7 @@ async function queryStoreEntitlement() {
 }
 
 async function refreshEntitlement({ silent = false } = {}) {
-  if (!isNativeApp()) {
+  if (!isNativeApp() || isIosNativeApp()) {
     applyEntitlement(false, { notifyAds: false });
     return false;
   }
@@ -399,6 +419,16 @@ async function initAdFreePurchase() {
   } catch {
     productId = DEFAULT_PRODUCT_ID;
     listPrice = DEFAULT_LIST_PRICE;
+  }
+
+  if (isIosNativeApp()) {
+    // iOS: no purchase controls, no product lookup, no NativePurchases
+    // bridge load at all — ensureNativeBridge() also short-circuits this,
+    // but skip calling it here too so nothing on the iOS init path even
+    // attempts it. Force not-entitled even if an old cache entry exists.
+    billingAvailable = false;
+    applyEntitlement(false, { notifyAds: false });
+    return { entitled: false, billingAvailable: false };
   }
 
   if (!isNativeApp()) {
@@ -463,6 +493,12 @@ function openNativeStyleDialog(dialog) {
 
 async function openRemoveAdsDialog() {
   await ensureInit();
+
+  if (isIosNativeApp()) {
+    // The paywall can't be opened by any path on iOS — there's nothing to
+    // sell there.
+    return;
+  }
 
   if (entitled) {
     showToast("Ads are already removed");
@@ -542,6 +578,10 @@ function closeNativeStyleDialog(dialog) {
 async function purchaseAdFree() {
   await ensureInit();
 
+  if (isIosNativeApp()) {
+    return;
+  }
+
   if (entitled) {
     showToast("Ads are already removed");
     return;
@@ -589,7 +629,7 @@ async function purchaseAdFree() {
 async function restoreAdFreePurchase() {
   await ensureInit();
 
-  if (!isNativeApp()) {
+  if (!isNativeApp() || isIosNativeApp()) {
     return;
   }
 
