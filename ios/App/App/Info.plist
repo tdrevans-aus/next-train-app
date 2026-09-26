@@ -35,12 +35,12 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-2659068072900088~2367537790</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Next Train uses your location to find the nearest Transperth station and show nearby departures.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Next Train uses your location to find the nearest Transperth station and show nearby departures.</string>
+	<string>Next Train uses your location to find the nearest station and show its departures.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Next Train uses this identifier to show relevant ads. You can change this anytime in Settings.</string>
 	<key>SKAdNetworkItems</key>
@@ -271,7 +271,7 @@
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UIRequiresFullScreen</key>
 	<true/>
