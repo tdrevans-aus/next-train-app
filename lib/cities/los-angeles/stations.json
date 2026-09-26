@@ -1,0 +1,866 @@
+{
+  "city": "los-angeles",
+  "agency": "LA Metro",
+  "source": "docs/los-angeles-d1/published-network.json (hand-transcribed official Metro Rail & Busway map, printed May 2026)",
+  "hubLock": "7th St/Metro Ctr",
+  "stations": [
+    {
+      "id": "pomona-north",
+      "name": "Pomona North",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "la-verne-fairplex",
+      "name": "La Verne/Fairplex",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "san-dimas",
+      "name": "San Dimas",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "glendora",
+      "name": "Glendora",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "apu-citrus-college",
+      "name": "APU/Citrus College",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "azusa-downtown",
+      "name": "Azusa Downtown",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "irwindale",
+      "name": "Irwindale",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "duarte-city-of-hope",
+      "name": "Duarte/City of Hope",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "monrovia",
+      "name": "Monrovia",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "arcadia",
+      "name": "Arcadia",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "sierra-madre-villa",
+      "name": "Sierra Madre Villa",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "allen",
+      "name": "Allen",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "lake",
+      "name": "Lake",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "memorial-park",
+      "name": "Memorial Park",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "del-mar",
+      "name": "Del Mar",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "fillmore",
+      "name": "Fillmore",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "south-pasadena",
+      "name": "South Pasadena",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "highland-park",
+      "name": "Highland Park",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "southwest-museum",
+      "name": "Southwest Museum",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "heritage-sq",
+      "name": "Heritage Sq",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "Heritage Square"
+      ]
+    },
+    {
+      "id": "lincoln-cypress",
+      "name": "Lincoln/Cypress",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "chinatown",
+      "name": "Chinatown",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "union-station",
+      "name": "Union Station",
+      "lines": [
+        "A",
+        "B",
+        "D"
+      ],
+      "doNotGroupNote": "A/B/D transfer building. NOT the 7th St/Metro Ctr hub. Metrolink/Amtrak/FlyAway are transfers, not D1 stops (doNotGroup)."
+    },
+    {
+      "id": "little-tokyo-arts-dist",
+      "name": "Little Tokyo/Arts Dist",
+      "lines": [
+        "A",
+        "E"
+      ],
+      "aliases": [
+        "Little Tokyo/Arts District"
+      ]
+    },
+    {
+      "id": "historic-broadway",
+      "name": "Historic Broadway",
+      "lines": [
+        "A",
+        "E"
+      ],
+      "doNotGroupNote": "A/E only. NOT Pershing Square."
+    },
+    {
+      "id": "grand-av-arts-bunker-hill",
+      "name": "Grand Av Arts/Bunker Hill",
+      "lines": [
+        "A",
+        "E"
+      ],
+      "aliases": [
+        "Grand Avenue Arts/Bunker Hill"
+      ],
+      "doNotGroupNote": "A x E; distinct from Grand/LATTC and Civic Ctr/Grand Park (doNotGroup)."
+    },
+    {
+      "id": "7th-st-metro-ctr",
+      "name": "7th St/Metro Ctr",
+      "lines": [
+        "A",
+        "B",
+        "D",
+        "E"
+      ],
+      "aliases": [
+        "7th Street/Metro Center"
+      ],
+      "doNotGroupNote": "Hub lock (A x B x D x E). NOT Union Station, Civic Ctr/Grand Park, Pershing Square, or Historic Broadway."
+    },
+    {
+      "id": "pico",
+      "name": "Pico",
+      "lines": [
+        "A",
+        "E"
+      ],
+      "doNotGroupNote": "A x E. NOT Pico/Aliso."
+    },
+    {
+      "id": "grand-lattc",
+      "name": "Grand/LATTC",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "Grand/LA Trade-Tech College"
+      ],
+      "doNotGroupNote": "A only; distinct from LATTC/Ortho Institute (E) and Grand Av Arts/Bunker Hill (doNotGroup)."
+    },
+    {
+      "id": "san-pedro-st",
+      "name": "San Pedro St",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "washington",
+      "name": "Washington",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "vernon",
+      "name": "Vernon",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "slauson",
+      "name": "Slauson",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "florence",
+      "name": "Florence",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "firestone",
+      "name": "Firestone",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "103rd-st-watts-towers",
+      "name": "103rd St/Watts Towers",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "103rd Street/Watts Towers"
+      ]
+    },
+    {
+      "id": "willowbrook-rosa-parks",
+      "name": "Willowbrook/Rosa Parks",
+      "lines": [
+        "A",
+        "C"
+      ],
+      "aliases": [
+        "Rosa Parks/Willowbrook"
+      ],
+      "doNotGroupNote": "A x C shared stop."
+    },
+    {
+      "id": "compton",
+      "name": "Compton",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "artesia",
+      "name": "Artesia",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "del-amo",
+      "name": "Del Amo",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "wardlow",
+      "name": "Wardlow",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "willow-st",
+      "name": "Willow St",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "Willow Street"
+      ]
+    },
+    {
+      "id": "pacific-coast-hwy",
+      "name": "Pacific Coast Hwy",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "anaheim-st",
+      "name": "Anaheim St",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "Anaheim Street"
+      ]
+    },
+    {
+      "id": "5th-st",
+      "name": "5th St",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "5th Street"
+      ]
+    },
+    {
+      "id": "1st-st",
+      "name": "1st St",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "1st Street"
+      ]
+    },
+    {
+      "id": "downtown-long-beach",
+      "name": "Downtown Long Beach",
+      "lines": [
+        "A"
+      ]
+    },
+    {
+      "id": "pacific-av",
+      "name": "Pacific Av",
+      "lines": [
+        "A"
+      ],
+      "aliases": [
+        "Pacific Avenue"
+      ],
+      "doNotGroupNote": "A Line Long Beach clockwise loop stop, not a second south terminus (doNotGroup vs Downtown Long Beach)."
+    },
+    {
+      "id": "north-hollywood",
+      "name": "North Hollywood",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "universal-city-studio-city",
+      "name": "Universal City/Studio City",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "hollywood-highland",
+      "name": "Hollywood/Highland",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "hollywood-vine",
+      "name": "Hollywood/Vine",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "hollywood-western",
+      "name": "Hollywood/Western",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "vermont-sunset",
+      "name": "Vermont/Sunset",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "vermont-santa-monica",
+      "name": "Vermont/Santa Monica",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "vermont-beverly",
+      "name": "Vermont/Beverly",
+      "lines": [
+        "B"
+      ]
+    },
+    {
+      "id": "wilshire-vermont",
+      "name": "Wilshire/Vermont",
+      "lines": [
+        "B",
+        "D"
+      ],
+      "doNotGroupNote": "B x D branch point (B continues to North Hollywood, D continues west)."
+    },
+    {
+      "id": "westlake-macarthur-park",
+      "name": "Westlake/MacArthur Park",
+      "lines": [
+        "B",
+        "D"
+      ]
+    },
+    {
+      "id": "pershing-square",
+      "name": "Pershing Square",
+      "lines": [
+        "B",
+        "D"
+      ],
+      "doNotGroupNote": "B/D only. NOT Historic Broadway."
+    },
+    {
+      "id": "civic-ctr-grand-park",
+      "name": "Civic Ctr/Grand Park",
+      "lines": [
+        "B",
+        "D"
+      ],
+      "aliases": [
+        "Civic Center/Grand Park"
+      ],
+      "doNotGroupNote": "B/D only. NOT 7th St/Metro Ctr. NOT East LA Civic Ctr."
+    },
+    {
+      "id": "norwalk",
+      "name": "Norwalk",
+      "lines": [
+        "C"
+      ]
+    },
+    {
+      "id": "lakewood-bl",
+      "name": "Lakewood Bl",
+      "lines": [
+        "C"
+      ],
+      "aliases": [
+        "Lakewood Blvd",
+        "Lakewood Boulevard"
+      ]
+    },
+    {
+      "id": "lynwood",
+      "name": "Lynwood",
+      "lines": [
+        "C"
+      ]
+    },
+    {
+      "id": "avalon",
+      "name": "Avalon",
+      "lines": [
+        "C"
+      ]
+    },
+    {
+      "id": "harbor-fwy",
+      "name": "Harbor Fwy",
+      "lines": [
+        "C"
+      ],
+      "aliases": [
+        "Harbor Freeway"
+      ]
+    },
+    {
+      "id": "vermont-athens",
+      "name": "Vermont/Athens",
+      "lines": [
+        "C"
+      ]
+    },
+    {
+      "id": "crenshaw",
+      "name": "Crenshaw",
+      "lines": [
+        "C"
+      ],
+      "doNotGroupNote": "C only; distinct from Expo/Crenshaw (E x K) (doNotGroup)."
+    },
+    {
+      "id": "hawthorne-lennox",
+      "name": "Hawthorne/Lennox",
+      "lines": [
+        "C"
+      ]
+    },
+    {
+      "id": "aviation-imperial",
+      "name": "Aviation/Imperial",
+      "lines": [
+        "C"
+      ],
+      "doNotGroupNote": "C only; distinct from Aviation/Century (doNotGroup)."
+    },
+    {
+      "id": "aviation-century",
+      "name": "Aviation/Century",
+      "lines": [
+        "C",
+        "K"
+      ],
+      "doNotGroupNote": "C x K shared stop."
+    },
+    {
+      "id": "lax-metro-transit-center",
+      "name": "LAX/Metro Transit Center",
+      "lines": [
+        "C",
+        "K"
+      ],
+      "doNotGroupNote": "C west terminus; K through stop. Transfer to FlyAway/airport people movers, not a D1 stop (doNotGroup)."
+    },
+    {
+      "id": "wilshire-normandie",
+      "name": "Wilshire/Normandie",
+      "lines": [
+        "D"
+      ]
+    },
+    {
+      "id": "wilshire-western",
+      "name": "Wilshire/Western",
+      "lines": [
+        "D"
+      ]
+    },
+    {
+      "id": "wilshire-la-brea",
+      "name": "Wilshire/La Brea",
+      "lines": [
+        "D"
+      ]
+    },
+    {
+      "id": "wilshire-fairfax",
+      "name": "Wilshire/Fairfax",
+      "lines": [
+        "D"
+      ]
+    },
+    {
+      "id": "wilshire-la-cienega",
+      "name": "Wilshire/La Cienega",
+      "lines": [
+        "D"
+      ]
+    },
+    {
+      "id": "downtown-santa-monica",
+      "name": "Downtown Santa Monica",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "17th-st-smc",
+      "name": "17th St/SMC",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "26th-st-bergamot",
+      "name": "26th St/Bergamot",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "expo-bundy",
+      "name": "Expo/Bundy",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "expo-sepulveda",
+      "name": "Expo/Sepulveda",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "westwood-rancho-park",
+      "name": "Westwood/Rancho Park",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "palms",
+      "name": "Palms",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "culver-city",
+      "name": "Culver City",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "la-cienega-jefferson",
+      "name": "La Cienega/Jefferson",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "expo-la-brea",
+      "name": "Expo/La Brea",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "farmdale",
+      "name": "Farmdale",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "expo-crenshaw",
+      "name": "Expo/Crenshaw",
+      "lines": [
+        "E",
+        "K"
+      ],
+      "doNotGroupNote": "E x K terminus for K. NOT Crenshaw (C)."
+    },
+    {
+      "id": "expo-western",
+      "name": "Expo/Western",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "expo-vermont",
+      "name": "Expo/Vermont",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "expo-park-usc",
+      "name": "Expo Park/USC",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "jefferson-usc",
+      "name": "Jefferson/USC",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "lattc-ortho-institute",
+      "name": "LATTC/Ortho Institute",
+      "lines": [
+        "E"
+      ],
+      "aliases": [
+        "LA Trade-Tech College/Ortho Institute"
+      ],
+      "doNotGroupNote": "E only; distinct from Grand/LATTC (A) (doNotGroup)."
+    },
+    {
+      "id": "pico-aliso",
+      "name": "Pico/Aliso",
+      "lines": [
+        "E"
+      ],
+      "doNotGroupNote": "E only; distinct E-family name from Pico (doNotGroup)."
+    },
+    {
+      "id": "mariachi-plaza",
+      "name": "Mariachi Plaza",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "soto",
+      "name": "Soto",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "indiana",
+      "name": "Indiana",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "maravilla",
+      "name": "Maravilla",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "east-la-civic-ctr",
+      "name": "East LA Civic Ctr",
+      "lines": [
+        "E"
+      ],
+      "aliases": [
+        "East LA Civic Center"
+      ],
+      "doNotGroupNote": "E only; different place from Civic Ctr/Grand Park (doNotGroup)."
+    },
+    {
+      "id": "atlantic",
+      "name": "Atlantic",
+      "lines": [
+        "E"
+      ]
+    },
+    {
+      "id": "martin-luther-king-jr",
+      "name": "Martin Luther King Jr",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "leimert-park",
+      "name": "Leimert Park",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "hyde-park",
+      "name": "Hyde Park",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "fairview-heights",
+      "name": "Fairview Heights",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "downtown-inglewood",
+      "name": "Downtown Inglewood",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "westchester-veterans",
+      "name": "Westchester/Veterans",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "mariposa",
+      "name": "Mariposa",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "el-segundo",
+      "name": "El Segundo",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "douglas",
+      "name": "Douglas",
+      "lines": [
+        "K"
+      ]
+    },
+    {
+      "id": "redondo-beach",
+      "name": "Redondo Beach",
+      "lines": [
+        "K"
+      ]
+    }
+  ]
+}
