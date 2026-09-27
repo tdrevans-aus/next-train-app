@@ -95,3 +95,37 @@ The report also never mentioned **O'Connell Upper** as a stop name (only "O'Conn
 ## What I did not do
 
 No generator, no GTFS station-array build, no stopIds, no live city flip, no product edit, no DART deep-dive (v2, out of scope), no bus analysis (out of mode), no adapter code, no API key used or pasted (this pack made no GTFS-RT calls — the static network-map PNG fetch used no key and is a public CC BY 4.0 asset per the oracle report's license findings).
+
+## Correction, 27 Sep 2026 (Jim, docs/jim-brief-dublin-connolly-realtime-gap.md) — H4's Connolly flag resolved
+
+H4's "flagged for Tim to confirm" note on Connolly (dogleg, treated as inline stop) is superseded by a
+live-feed finding: **Connolly has no real-time coverage in the NTA GTFS-RT v2 feed at all**, resolved
+as a genuine feed gap, not an alias/ID problem.
+
+Investigated live against the real NTA feed during Dublin Sunday daytime service (Luas running,
+~08:45-08:57 Europe/Dublin, 27 Sep 2026, multiple polls a few minutes apart, `NTA_API_KEY` from
+`.env.local`):
+
+- Both of Connolly's static stop_ids (`8220GA00423`/`8220GA00424`, confirmed from the published
+  snapshot's `stops.txt`) never once appeared in a `stopTimeUpdate` anywhere in the live feed — not
+  in a whole-feed scan (0 of ~9,000+ stopTimeUpdates across ~1,300-1,400 entities, checked twice a few
+  minutes apart), and not for any of five sample trip_ids scheduled to call there.
+- Ruled out an alias/ID mismatch directly: took a Red trip actually confirmed live in the feed
+  (trip `5858_2528`) whose static stop sequence runs `… George's Dock (8220GA00427) → Connolly
+  (8220GA00423) → Busáras (8220GA00420) …`. Its live `stopTimeUpdate` array goes straight from
+  George's Dock to Busáras — Connolly's slot is simply absent, while both neighbours resolve
+  correctly under their own stop_ids. Connolly is not reported under a different id.
+- Ruled out "RT omits first/last stop of a trip": Connolly is a common-trunk stop, never a Red
+  terminus (termini are Saggart/Tallaght/The Point, published-network.json) — this isn't a
+  terminal-omission artifact.
+- Ruled out ordinary single-poll noise: every *other* static stop that showed 0 RT coverage in a
+  given poll was one direction of a same-name stop_id pair (the other direction/id for that same
+  stop had live coverage in the same poll — normal timing asymmetry between inbound/outbound
+  platforms). Connolly is the only stop where **both** ids were absent, every time.
+
+Per docs/board-eligibility-rule.md ("filter stations into the app, never trains off a board silently"),
+Connolly is removed from `lib/cities/dublin/stations.json` (67 → 66 catalog stations) for v1, with a
+`notCovered` entry and rider copy in `lib/cities/dublin/coverage.json`. This does not change the
+published-network.json historical record above (still 67 Luas stops network-wide) — the catalog is
+what the product serves; Connolly remains a real, physically-served Luas stop that the NTA feed just
+never confirms in real time.

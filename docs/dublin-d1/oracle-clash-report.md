@@ -106,3 +106,19 @@ D1 stations arrays **hand-transcribed from official Luas Red Line and Green Line
 ## What I did not do
 
 No line-map generation, no station hand-transcription from maps (will be done in D1 pack), no GTFS station arrays, no live city flip, no GitHub PR, no adapter code, no stopIds in the published JSON, no DART deep-dive (v2 scope), no Dublin Bus / Bus Éireann / Go-Ahead analysis (out-of-mode).
+
+## Correction, 27 Sep 2026 (Jim, docs/jim-brief-dublin-connolly-realtime-gap.md) — Board eligibility: Connolly `out-feed`
+
+Add a fifth verdict row to the Board eligibility table above, for a Luas stop specifically (not a
+different service): **Connolly Luas stop — `out-feed`**. Connolly is walk-up boardable Luas light
+rail like every other Red Line stop (same operator, same fare system, no reservation, no check-in
+barrier) — the exclusion is not a boarding-contract failure, it's that the NTA GTFS-RT v2 feed never
+carries a `stopTimeUpdate` for either of Connolly's two static stop_ids (`8220GA00423`/`8220GA00424`),
+confirmed against multiple live polls during Dublin Sunday daytime service, 27 Sep 2026, including a
+direct side-by-side of one live-confirmed trip's actual stop sequence (Connolly's slot is missing
+between George's Dock and Busáras, both of which resolve correctly) — full evidence in
+`hazard-pack.md`'s "Correction, 27 Sep 2026" entry. Per docs/board-eligibility-rule.md, a station with
+no confirmable real-time service is filtered out of the app (`lib/cities/dublin/stations.json`,
+67 → 66 stations) with a `notCovered` entry (`lib/cities/dublin/coverage.json`) rather than shipped
+with a silently empty board. This does not change the Red Line's `in` verdict for its other 31
+catalog stations, and does not affect the `out-product`/`out-mode` verdicts for DART/buses above.

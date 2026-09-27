@@ -108,6 +108,60 @@ without republishing.
 This check does not flip Dublin live and does not change `lib/providers/dublin.js`'s behaviour —
 it only tells us, from CI, whether the join Mark's offline QA couldn't reach actually resolves.
 
+## Connolly real-time gap — resolved as branch B (filtered), 27 Sep 2026
+
+`docs/jim-brief-dublin-connolly-realtime-gap.md`, off Mark's `mark/dublin-flip-3` RED note
+(`fetchStationBoard("Connolly")` returns 0 trips on every poll while all 66 other stations are
+non-empty). Investigated live during Dublin Sunday daytime service (Luas running,
+~08:45-08:57 Europe/Dublin, `NTA_API_KEY` real key, `.env.local`), across three separate polls of
+the full `api.nationaltransport.ie/gtfsr/v2/TripUpdates` feed (~1,300-1,400 entities,
+~9,000+ stopTimeUpdates each):
+
+- Both Connolly stop_ids (`8220GA00423`/`8220GA00424`, from the published snapshot's `stops.txt`)
+  never appeared in any stopTimeUpdate, in any poll. A direct trip-level check (live-confirmed
+  trip `5858_2528`, static sequence `… George's Dock → Connolly → Busáras …`) showed the live
+  array skipping straight from George's Dock to Busáras — Connolly's slot is simply absent, not
+  aliased under a different id (both neighbours resolve correctly under their own ids).
+- Ruled out "RT omits terminal stops" (Connolly is common-trunk, never a Red terminus) and
+  ordinary single-poll noise (every *other* stop that showed 0 coverage in a given poll was one
+  direction of a same-name pair, with the paired id covered in the same poll — Connolly is the
+  only stop where both ids were absent every time).
+- Did not find a specific NTA developer-portal known-issue notice naming Connolly (no web-fetch
+  tool available in this session to search developer.nationaltransport.ie directly) — the
+  evidence above is decisive on its own regardless.
+- **Branch A (alias fix) ruled out** — this is a genuine, permanent feed gap (branch B), not a
+  resolvable-by-aliasing id mismatch.
+
+**Applied branch B**, per `docs/board-eligibility-rule.md`: removed Connolly from
+`lib/cities/dublin/stations.json` (67 → 66 stations, Red 32 → 31), added a `notCovered` entry +
+rider copy to `lib/cities/dublin/coverage.json` ("Connolly Luas stop — no real-time data from the
+NTA feed; use Busáras"), appended dated Corrections to `hazard-pack.md` (H4) and
+`oracle-clash-report.md` (Board eligibility, new `out-feed` verdict row) — existing lines
+untouched. Connolly is never a Red terminus (termini are Saggart/Tallaght/The Point,
+`published-network.json`), so there was no "trip terminating at Connolly" chip to preserve on
+upstream boards. Updated `qa/dublin-dogfood-gate.mjs` (66 stations, 31 Red, asserts Connolly is
+absent from the catalog/dogfood list and present in `coverage.json`'s `notCovered`) and added
+`qa/dublin-all-stations-live-sweep.mjs` (all 66 catalog stations return >= 1 trip in one sweep
+during live service; skips gracefully with no key or outside service hours; one bounded retry,
+past the 20s TripUpdates cache TTL, for a station empty on the first poll, since a low-frequency
+terminus can legitimately have no imminent stopTimeUpdate pushed yet — confirmed live this
+session with Brides Glen, which went empty → non-empty across two polls ~2 minutes apart with no
+code change, a materially different shape from Connolly's permanent, every-poll, every-trip
+zero). Full live sweep result: 66/66 stations >= 1 trip (122 trips total in the passing poll).
+Dublin stays `status: "planned"` — this is not a flip.
+
+**Separate issue noticed, not fixed here (out of this brief's scope):** while investigating
+Brides Glen's transient empty poll, one live trip (`5858_1372` at Brides Glen) came back with
+`liveDeparture: "1970-01-01T00:00:00.000Z"` (`displayTime: "01:00"`) instead of a real time, while
+`scheduledDeparture`/`scheduledDisplayTime` were correct (`09:15`). This looks like
+`lib/providers/gtfs/realtime.js`'s `indexTripUpdates()`/`lib/providers/gtfs/board.js`'s
+`collectTripsForServiceDay()` treating a decoded protobuf `departure.time` of `0` (a plausible
+default value for an unset int64 field, not truly absent) as `!= null` and using it as a real
+Unix timestamp, rather than falling back to `delaySec`. Not Dublin-specific — any adapter reading
+`rtStop.departureSec` the same way could hit this whenever a real feed sends a delay-only
+stopTimeUpdate with no absolute time. Did not investigate or fix further (shared `gtfs/` code,
+outside this brief's Connolly scope) — flagging for a dedicated brief.
+
 ## Flip follow-through (Jim, 27 Sep 2026) — appended, not rewritten
 
 Closed every gap in `docs/dublin-d1/mark-qa-note.md`'s RED verdict. Dublin stays
