@@ -41,3 +41,23 @@ and has at least one chip against a fixture made from the real stop names (or th
 live-city-lists-sync, coverage-notes-gate and `--smoke` pass apart from named environmental
 failures. Push to `flip-dublin-live`. The top-level session reruns the generator afterwards.
 No background loops.
+
+## Round 3: bare line chips (27 Sep, after 79f47d9)
+The generator now covers 67/67 stations (commit c494b73, `public/city-directions/dublin.json`), but
+**every station also gets a bare `Red` or `Green` chip**, e.g. Abbey Street:
+`["Red", "Red + Saggart", "Red + Tallaght", "Red + The Point"]`, Sandyford:
+`["Green", "Green + Brides Glen", "Green + Broombridge"]`. The direction-model memo (§1, line 7)
+forbids this: "Do not print a bare 'Red' or 'Green' chip without the terminus."
+Do:
+1. Find which static trips produce a line-only label in `directionsFromStatic()`: short-workings,
+   trips whose last stop isn't a recognised terminus, blank headsigns, etc. Log counts by
+   headsign / last-stop name in the gate so the cause is visible.
+2. Map short-workings to the terminus of their direction (per the memo / hazard-pack), or drop
+   trips whose direction genuinely can't be resolved. Never emit a bare line chip. Apply the same
+   rule to the live board path, if it can produce one.
+3. Add gate assertions: no chip anywhere equals just "Red"/"Green"; Belgard and every trunk
+   station east of it has both `Red + Tallaght` and `Red + Saggart`; Tallaght has only
+   `Red + The Point`.
+4. Delete `public/city-directions/dublin.json` from the branch in the same commit (it will be
+   regenerated), or leave it for the top-level session to regenerate. Say which.
+Push to flip-dublin-live (no force). No background loops.
