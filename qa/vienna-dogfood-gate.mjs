@@ -1,8 +1,10 @@
 /**
- * Vienna flip follow-through gate. Vienna stays `status: "planned"` (Mark/Tim's flip call) but
- * the dogfood module, live-city-api.js dispatch switch-cases, and this gate are wired ahead of
- * that per the flip-follow-through guardrail (Chicago/BART/Washington shape) so no second pass
- * is needed once Mark's QA pass is green.
+ * Vienna flip follow-through gate. Rewritten 27 Sep 2026 (Mark's flip QA, second pass, after
+ * docs/jim-brief-vienna-u2-hub-bound-direction.md's U2 fix) to assert LIVE state — Vienna
+ * flipped `status: "live"` per Mark's fully-green QA pass (docs/vienna-d1/mark-qa-note.md).
+ * Mirrors qa/washington-dogfood-gate.mjs's post-flip shape. The old pre-flip assertions
+ * (assertCityLive must fail, status === "planned", isMultiCity() === false) are removed, not
+ * left disabled.
  *
  * Deliberately does NOT call the live Wiener Linien OGD Realtime Monitor
  * (www.wienerlinien.at/ogd_realtime/monitor) — this is a smoke-tier gate, not a network test.
@@ -62,13 +64,12 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity + status — Vienna stays planned; only the flip changes this.
+// Registry identity + status — Vienna flipped live 27 Sep 2026; assertCityLive must now succeed.
 const live = assertCityLive("vienna");
-assert(live?.ok === false, "assertCityLive(vienna) must fail");
-assert(live?.status === 501, "vienna must be 501 planned");
+assert(live?.ok === true, "assertCityLive(vienna) must succeed now that vienna is live");
 
 const entry = getCity("vienna");
-assert(entry?.status === "planned", "vienna registry status must be planned");
+assert(entry?.status === "live", "vienna registry status must be live");
 assert(entry?.adapterReady === true, "vienna adapterReady must be true");
 assert(entry?.displayName === "Vienna", "vienna display name must be Vienna");
 assert(entry?.timeZone === "Europe/Vienna", "vienna timezone must be Europe/Vienna");
@@ -77,8 +78,8 @@ for (const forbiddenId of ["wien", "at-vienna", "austria"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dogfood dispatch is wired ahead of the flip — NOT in MULTI_CITY_IDS yet.
-assert(isMultiCity("vienna") === false, "vienna must NOT be in MULTI_CITY_IDS while status stays planned");
+// Dogfood dispatch is wired and vienna is now in MULTI_CITY_IDS (the flip commit).
+assert(isMultiCity("vienna") === true, "vienna must be in MULTI_CITY_IDS now that status is live");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/vienna-d1");
@@ -316,8 +317,8 @@ const hubPack = getViennaDogfoodDirections(VIENNA_HUB);
 assert(hubPack.source === "vienna-marketing-ends", "directions source must be vienna-marketing-ends");
 assert(JSON.stringify(hubPack.directions.sort()) === JSON.stringify(karlsplatzLabels.sort()), "dogfood directions must match marketingLabelsForStation");
 
-// The production dispatch entry exists and returns the same chips as the dogfood harness, even
-// though vienna is deliberately not in MULTI_CITY_IDS yet.
+// The production dispatch entry exists and returns the same chips as the dogfood harness, now
+// that vienna is live and in MULTI_CITY_IDS.
 const dispatchedDirections = await getMultiCityDirections("vienna", VIENNA_HUB);
 assert(
   JSON.stringify(dispatchedDirections.directions.sort()) === JSON.stringify(karlsplatzLabels.sort()),
@@ -345,5 +346,5 @@ assert(VIENNA_TIMEZONE === "Europe/Vienna", "VIENNA_TIMEZONE must be Europe/Vien
 assert(WIENER_LINIEN_LINE_NAME_TO_LINE.U1 === "u1", "line-name map must classify the monitor's own U1 label");
 
 console.log(
-  "vienna-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded, 99 stations each with lat/lng and live-verified RBL ids, hub Karlsplatz U1xU2xU4 with U2's single terminating direction, line+terminus direction model, Karlsplatz never a direction token, monitor URL never sends SENDER, tram/night-bus rows dropped even when present in a monitor payload, unknown-station throws before any fetch, Perth Australia green)"
+  "vienna-dogfood-gate: ok (live/status flipped 27 Sep 2026, MULTI_CITY_IDS/mount/persistence lists updated, D1 pack, Board eligibility section recorded, 99 stations each with lat/lng and live-verified RBL ids, hub Karlsplatz U1xU2xU4 with U2's hub-bound + terminating directions both wired (Seestadt board fix), line+terminus direction model, Karlsplatz never a generic direction token, monitor URL never sends SENDER, tram/night-bus rows dropped even when present in a monitor payload, unknown-station throws before any fetch, Perth Australia green)"
 );
