@@ -1,0 +1,410 @@
+{
+  "Aderklaaer Straße": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Alaudagasse": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Alser Straße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Alte Donau": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Alterlaa": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Altes Landgut": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Am Schöpfwerk": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Aspern Nord": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Aspernstraße": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Bahnhof Meidling": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Braunschweiggasse": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Burggasse-Stadthalle": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Donauinsel": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Donaumarina": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Donauspital": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Donaustadtbrücke": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Dresdner Straße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Enkplatz": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Erdberg": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Erlaaer Straße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Floridsdorf": [
+    "U6 + Siebenhirten"
+  ],
+  "Friedensbrücke": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Gasometer": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Großfeldsiedlung": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Gumpendorfer Straße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Handelskai": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Hardeggasse": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Hausfeldstraße": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Heiligenstadt": [
+    "U4 + Hütteldorf"
+  ],
+  "Herrengasse": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Hietzing": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Hütteldorf": [
+    "U4 + Heiligenstadt"
+  ],
+  "Hütteldorfer Straße": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Jägerstraße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Johnstraße": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Josefstädter Straße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Kagran": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Kagraner Platz": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Kaisermühlen-VIC": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Kardinal-Nagl-Platz": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Karlsplatz": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa",
+    "U2 + Seestadt",
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Kendlerstraße": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Keplerplatz": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Kettenbrückengasse": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Krieau": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Landstraße": [
+    "U3 + Ottakring",
+    "U3 + Simmering",
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Längenfeldgasse": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf",
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Leopoldau": [
+    "U1 + Oberlaa"
+  ],
+  "Lina-Loos-Platz": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Margaretengürtel": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Meidling Hauptstraße": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Messe-Prater": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Michelbeuern-AKH": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Museumsquartier": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Nestroyplatz": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Neubaugasse": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Neue Donau": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Neulaa": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Niederhofstraße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Nußdorfer Straße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Ober St. Veit": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Oberlaa": [
+    "U1 + Leopoldau"
+  ],
+  "Ottakring": [
+    "U3 + Simmering"
+  ],
+  "Perfektastraße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Pilgramgasse": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Praterstern": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa",
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Rathaus": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Rennbahnweg": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Reumannplatz": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Rochusgasse": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Roßauer Lände": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Schlachthausgasse": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Schönbrunn": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Schottenring": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz",
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Schottentor": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Schwedenplatz": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa",
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Schweglerstraße": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Seestadt": [
+    "U2 + Karlsplatz"
+  ],
+  "Siebenhirten": [
+    "U6 + Floridsdorf"
+  ],
+  "Simmering": [
+    "U3 + Ottakring"
+  ],
+  "Spittelau": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf",
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Stadion": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Stadlau": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Stadtpark": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Stephansplatz": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa",
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Stubentor": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Südtiroler Platz-Hauptbahnhof": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Taborstraße": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz"
+  ],
+  "Taubstummengasse": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Thaliastraße": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Troststraße": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Tscherttegasse": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Unter St. Veit": [
+    "U4 + Heiligenstadt",
+    "U4 + Hütteldorf"
+  ],
+  "Volkstheater": [
+    "U2 + Seestadt",
+    "U2 + Karlsplatz",
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Vorgartenstraße": [
+    "U1 + Leopoldau",
+    "U1 + Oberlaa"
+  ],
+  "Währinger Straße-Volksoper": [
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Westbahnhof": [
+    "U3 + Ottakring",
+    "U3 + Simmering",
+    "U6 + Floridsdorf",
+    "U6 + Siebenhirten"
+  ],
+  "Zieglergasse": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ],
+  "Zippererstraße": [
+    "U3 + Ottakring",
+    "U3 + Simmering"
+  ]
+}
