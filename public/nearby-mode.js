@@ -117,6 +117,49 @@
     return readNearbyCity();
   }
 
+  /**
+   * docs/jim-brief-dublin-honest-empty-state.md — the vehicle noun for the honest empty-state
+   * copy comes from the active city's registered mode (window.CityManifest, built server-side
+   * from lib/providers/registry.js), not a hardcoded "trains": a tram/light-rail city (Dublin's
+   * Luas, Gold Coast, Newcastle) reads "trams", everything else keeps "trains". Falls back to
+   * "trains" whenever the manifest hasn't loaded a city yet (e.g. still `planned`) rather than
+   * guessing.
+   */
+  function nearbyModeVehicleNoun(cityId) {
+    const modes = window.CityManifest?.get?.(cityId)?.modes;
+    if (Array.isArray(modes) && modes.some((m) => m === "tram" || m === "light_rail")) {
+      return "trams";
+    }
+    return "trains";
+  }
+
+  /**
+   * docs/jim-brief-dublin-honest-empty-state.md — true only when EVERY direction on the current
+   * station board is empty, all of them for the same reason: a live-only provider's additive
+   * `emptyReason: "no-live-predictions"` field, meaning the static schedule says service should
+   * be running but the real-time feed had nothing to say for this stop right now (a feed gap,
+   * not "no service"). A station with even one direction still showing a `next` train, or an
+   * empty direction that ISN'T flagged this way (outside service hours, a planned closure, a
+   * feed-wide outage — those already have their own handling), never matches.
+   */
+  function boardHonestEmptyReason(entries) {
+    if (!Array.isArray(entries) || entries.length === 0) {
+      return null;
+    }
+    let reason = null;
+    for (const entry of entries) {
+      if (entry?.data?.next) {
+        return null;
+      }
+      const entryReason = entry?.data?.emptyReason ?? null;
+      if (entryReason !== "no-live-predictions") {
+        return null;
+      }
+      reason = entryReason;
+    }
+    return reason;
+  }
+
   function readActiveTimeZone() {
     const city = readNearbyCity();
     return window.NextTrainCitySession?.regionById?.(city)?.region?.timeZone || "Australia/Perth";
@@ -2425,6 +2468,54 @@ function renderNearbyBoard({ stale = false } = {}) {
     // those arrivals with the explanation instead of a bare "No upcoming trains". A
     // genuinely empty board (no arrivalsOnly on boardData) falls through unchanged below.
     if (renderTerminusArrivalsBoard(boardData)) {
+      if (nearbyDirectionsEl) {
+        nearbyDirectionsEl.hidden = false;
+      }
+      renderNearbyDirectionsList();
+      updateSwipeHint();
+      updateSwipeCues();
+      maybeScheduleOnboarding();
+      return;
+    }
+
+    // docs/jim-brief-dublin-honest-empty-state.md: a well-formed board with zero trips in
+    // every direction, where the provider says service should genuinely be running (a live
+    // feed gap, not "no service") gets an honest explanation instead of a bare "No upcoming
+    // trains" — which reads as "app broken" to a rider. Never for planned/retired cities (they
+    // never reach this render path — the existing 501), feed errors (the existing 503 path,
+    // handled before boardData exists), outside-service-hours boards (no emptyReason set), or a
+    // station with only one empty direction while another still has a train (boardHonestEmptyReason
+    // returns null unless every entry is empty this way).
+    const honestEmptyReason = boardHonestEmptyReason(nearbyBoard?.entries);
+    if (honestEmptyReason === "no-live-predictions") {
+      setLastRenderedNext(null);
+      setHeroUrgency("calm");
+      if (deps.heroDepartLabelEl) {
+        deps.heroDepartLabelEl.textContent = "Next Train";
+      }
+      if (deps.departCountdownEl) {
+        deps.departCountdownEl.textContent = "—";
+      }
+      if (deps.departDisplayTimeEl) {
+        deps.departDisplayTimeEl.textContent = "No live predictions for this stop right now";
+      }
+      if (deps.heroScheduledTimeEl) {
+        const noun = nearbyModeVehicleNoun(readNearbyCity());
+        deps.heroScheduledTimeEl.textContent =
+          `${noun.charAt(0).toUpperCase()}${noun.slice(1)} are running but the operator's live feed has no times for this stop at the moment. Try again in a minute or check a nearby stop.`;
+        deps.heroScheduledTimeEl.hidden = false;
+      }
+      if (deps.platformEl) {
+        deps.platformEl.textContent = "—";
+      }
+      if (deps.statusEl) {
+        deps.statusEl.textContent = "—";
+      }
+      if (deps.followingSectionEl) {
+        deps.followingSectionEl.hidden = true;
+      }
+      hideUpcomingDepartureBoard();
+      hideTerminusArrivalsBoard();
       if (nearbyDirectionsEl) {
         nearbyDirectionsEl.hidden = false;
       }

@@ -162,6 +162,7 @@ const SMOKE_SCRIPTS = [
   "bart-planned-gate.mjs",
   "los-angeles-planned-gate.mjs",
   "dublin-dogfood-gate.mjs",
+  "honest-empty-state.mjs",
   "chicago-dogfood-gate.mjs",
   "vienna-dogfood-gate.mjs",
   "washington-dogfood-gate.mjs",
