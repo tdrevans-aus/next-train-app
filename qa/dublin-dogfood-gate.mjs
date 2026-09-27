@@ -108,14 +108,21 @@ for (const service of ["DART", "Dublin Bus", "Bus Éireann", "Go-Ahead Ireland"]
 }
 
 const stations = listCatalogStations();
-assert(stations.length === 67, `catalog must have 67 stations, got ${stations.length}`);
+// 66, not the D1 pack's 67 — Connolly is filtered out of the catalog (docs/jim-brief-
+// dublin-connolly-realtime-gap.md): the live NTA GTFS-RT v2 feed never carries a
+// stopTimeUpdate for either of Connolly's two stop_ids, confirmed against multiple live
+// polls during Dublin Sunday daytime service, 27 Sep 2026 (docs/dublin-d1/jim-handoff.md
+// appended entry). Per docs/board-eligibility-rule.md, filter the station rather than ship a
+// silently empty board.
+assert(stations.length === 66, `catalog must have 66 stations (Connolly filtered, see coverage.json), got ${stations.length}`);
 const byName = new Map(stations.map((s) => [s.name, s]));
 assert(byName.has(DUBLIN_HUB), `catalog must lock ${DUBLIN_HUB}`);
 assert(byName.get(DUBLIN_HUB)?.hub === true, "hub entry must carry hub:true");
+assert(!byName.has("Connolly"), "Connolly must NOT be in the catalog — no real-time coverage in the NTA feed");
 
 const redStations = stations.filter((s) => s.lines.includes("red"));
 const greenStations = stations.filter((s) => s.lines.includes("green"));
-assert(redStations.length === 32, `Red must have 32 unique stops, got ${redStations.length}`);
+assert(redStations.length === 31, `Red must have 31 unique stops with Connolly filtered, got ${redStations.length}`);
 assert(greenStations.length === 35, `Green must have 35 unique stops, got ${greenStations.length}`);
 
 // Coordinates (flip follow-through, docs/dublin-d1/jim-handoff.md) — every station
@@ -143,7 +150,8 @@ assert(isForbiddenCollapseName("City") === true, "City must never resolve as a s
 assert(isForbiddenCollapseName("dub") === true, "invented city token dub must be forbidden");
 assert(isForbiddenHubProxy("Marlborough") === true, "Marlborough must never stand in for the Abbey Street hub identity");
 assert(isForbiddenHubProxy("O'Connell - GPO") === true, "O'Connell - GPO must never stand in for the Abbey Street hub identity");
-assert(isForbiddenHubProxy("Connolly") === true, "Connolly must never stand in for the Abbey Street hub identity (DART interchange, no Green access)");
+assert(isForbiddenHubProxy("Connolly") === true, "Connolly must never stand in for the Abbey Street hub identity (DART interchange, no Green access) — still enforced even though Connolly is no longer a catalog station");
+assert(resolveCatalogEntry("Connolly") === null, "Connolly must not resolve as a catalog station — filtered for lack of NTA real-time coverage");
 assert(isForbiddenHubProxy(DUBLIN_HUB) === false, "the hub itself is not its own proxy violation");
 assert(foldKey("O'Connell - GPO") !== "", "foldKey must fold punctuation");
 assert(canonicalStationName("O'Connell GPO") === "O'Connell - GPO", "canonicalStationName must resolve the O'Connell - GPO alias");
@@ -201,7 +209,8 @@ assert(missingKeyThrew, "fetchStationBoard must throw MissingNtaApiKeyError when
 
 // Dogfood station list comes from the catalog, not a live parse.
 const dogfoodStations = listDublinDogfoodStations();
-assert(dogfoodStations.length === 67, `dogfood stations must be the 67 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 66, `dogfood stations must be the 66 catalog names (Connolly filtered), got ${dogfoodStations.length}`);
+assert(!dogfoodStations.some((row) => row.name === "Connolly"), "Connolly must not appear in the dogfood station list");
 assert(dogfoodStations.some((row) => row.name === DUBLIN_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodStations.every((row) => typeof row.lat === "number" && typeof row.lng === "number"), "every dogfood station must carry lat/lng");
 
@@ -259,6 +268,7 @@ const coverage = JSON.parse(readFileSync(join(ROOT, "lib/cities/dublin/coverage.
 assert(coverage.region === "dublin", "coverage.json region must be dublin");
 assert(coverage.covered.some((c) => /Luas/.test(c.label)), "coverage.json must record Luas as covered");
 assert(coverage.notCovered.some((c) => /DART|Iarnr/.test(c.label)), "coverage.json must explicitly record DART/Iarnród Éireann as not covered");
+assert(coverage.notCovered.some((c) => /Connolly/.test(c.label)), "coverage.json must explicitly record Connolly as not covered — no real-time data from the NTA feed");
 
 // Picker/country-regions surfaces: NOT added ahead of the flip — a planned city gets
 // no picker entry at all, live or "Coming Soon" (Tim, 27 Sep 2026: "It's either in or
@@ -284,5 +294,5 @@ assert(!manifestCityIds.includes("dublin"), "the /api/cities manifest must not l
 assert(Boolean(CITY_BOUNDS.dublin), "lib/cities/city-bounds.js must carry a dublin box");
 
 console.log(
-  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses out), 67 stations with real lat/lng inside CITY_BOUNDS, hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART out, Perth Australia green)"
+  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses/Connolly out), 66 stations (Connolly filtered — no NTA real-time coverage) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly out, Perth Australia green)"
 );

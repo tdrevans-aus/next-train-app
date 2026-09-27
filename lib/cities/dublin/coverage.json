@@ -4,11 +4,15 @@
   "covered": [
     {
       "label": "Luas Red and Green Lines",
-      "detail": "All 67 Luas tram stops, full network, live NTA GTFS-RT predictions only - a tram only appears once the realtime feed is actually confirming it, never backfilled from the printed timetable."
+      "detail": "66 of 67 Luas tram stops, live NTA GTFS-RT predictions only - a tram only appears once the realtime feed is actually confirming it, never backfilled from the printed timetable."
     }
   ],
   "partial": [],
   "notCovered": [
+    {
+      "label": "Connolly Luas stop",
+      "detail": "No real-time data from the NTA feed; use Busaras."
+    },
     {
       "label": "DART / Iarnrod Eireann (commuter and intercity rail)",
       "detail": "Not covered - Luas only, in this version."
@@ -18,6 +22,6 @@
       "detail": "Not a rail app."
     }
   ],
-  "stations": "67 Luas stops across the Red and Green Lines.",
-  "notes": "Abbey Street is the Red Line hub; the Green Line interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a short walk away, not the same stop."
+  "stations": "66 Luas stops across the Red and Green Lines (Connolly excluded - no real-time coverage in the NTA feed, see notCovered).",
+  "notes": "Abbey Street is the Red Line hub; the Green Line interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a short walk away, not the same stop. Connolly (Red trunk, between George's Dock and Busaras) is filtered out of v1: the live NTA GTFS-RT v2 TripUpdates feed never carries a stopTimeUpdate for either of Connolly's two stop_ids (8220GA00423/8220GA00424), confirmed against multiple live polls during Dublin Sunday daytime service on 27 Sep 2026 - a real Red trip's own live stopTimeUpdate array skips straight from George's Dock to Busaras, omitting Connolly's slot entirely, while both neighbouring stops resolve correctly under their own stop_ids. Per docs/board-eligibility-rule.md, a station with no confirmable real-time service is filtered out of the app rather than shown with a silently empty board."
 }
