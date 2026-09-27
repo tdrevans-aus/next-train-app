@@ -197,3 +197,110 @@ empty board (`trips: [], realtime: true, nextServiceDate: "2026-09-28"`), not an
 fetch itself succeeded (173 TripUpdates entities, ~1.9s). Re-running during Dublin daytime service
 hours would be the way to see actual non-empty per-direction trip counts; that's Mark's to redo
 against this branch same as his RED note flagged for the RT-join sample size.
+
+## Red Cow intermittent empty board — investigated, classified 2b (feed behaviour), NOT fixed (27 Sep 2026)
+
+Brief: docs/jim-brief-dublin-red-cow-intermittent-gap.md. Mark's RED note on mark/dublin-flip-4
+(docs/dublin-d1/mark-qa-note.md) found Red Cow's board empty while all 65 other stations had
+trips, reproduced 4 times, and distinguished it from the permanent Connolly gap (#478) because Red
+Cow works sometimes.
+
+### Method
+
+Foreground polling loop (scratch-poll-red-cow.mjs, not committed — scratch), no background
+process, run to completion in two blocking batches (15 + 15 iterations, ~33s apart on average
+including fetch time, well past the 20s TripUpdates cache TTL): Red Cow plus two controls
+(Kingswood, Kylemore — the Red-trunk neighbours either side, per the brief). One live NTA
+GTFS-RT v2 TripUpdates fetch per poll, shared across all three stations. Per poll, per station:
+resolved static stop_ids (via the same resolveCatalogEntry + findRailStopIdsForName path
+lib/providers/dublin.js uses), how many realtime stopTimeUpdates named each stop_id, static
+stop_times.txt row count at those ids, and fetchStationBoard()'s resulting board size. Total run:
+31 polls (poll 0 + batches of 15+15) spanning 08:35:43-08:52:23 UTC (~09:35-09:52 Europe/Dublin,
+Sunday, Luas running) — a bit over 15 minutes end to end, well past the 20s cache window on every
+single poll.
+
+### Confirmed the stop_id resolution is correct (rules out the 2a alias-fold hypothesis)
+
+Red Cow resolves to 8230GA00353/8230GA00354. Cross-checked directly against the static stops.txt
+rows: both stop_ids have stop_name: "Red Cow", no parent_station. This is exact name matching, not
+a fuzzy/alias hit — Red Cow has no aliases in the catalog and none are needed. Kingswood ->
+8230GA00350/8230GA00351 (stop_name: "Kingswood"), Kylemore -> 8220GA00356/8220GA00357, both
+likewise confirmed correct. No id in the 8230GA0035x block is ambiguous between stations. Static
+stop_times.txt row counts for Red Cow (1261) are in the same order of magnitude as Kingswood
+(1298) and Kylemore (1261) — Red Cow is scheduled exactly as often as its neighbours; this is not
+a horizon/nextServiceDate issue either (all three had staticRows > 1000 throughout, i.e. plenty of
+scheduled trips inside the 180-minute board horizon at every single poll).
+
+### Poll table (summary; full 31-poll log kept in scratch, not committed)
+
+| Poll range | Time (UTC) | Red Cow rtHits (353,354) | Red Cow board | Kingswood board | Kylemore board |
+|---|---|---|---|---|---|
+| 0-8 (9 polls, ~08:35:43-08:40:36, ~5 min) | | (0,0) every poll | 0 (empty) every poll | 3 every poll | 1 every poll |
+| 9-29 (21 polls, ~08:41:09-08:51:48, ~10.5 min) | | (1,0) every poll | 1 every poll | 3 every poll | 1 every poll |
+| 30 (final, 08:52:21) | | (0,0) | 0 (empty) | 3 | 0 (empty) |
+
+Kingswood (control) never once had an empty board across all 31 polls, and never went below 3
+trips. Kylemore (control) was non-empty for 30/31 polls, then also went empty at poll 30 — the
+same instant Red Cow did, while Kingswood was unaffected. For every empty-board poll, the raw
+TripUpdates snapshot (scratch-snapshots/poll-N-<Station>.json) shows matchingEntities: [] —
+literally no entity in the ~1650-1800-entity feed carried a stopTimeUpdate naming that station's
+stop_ids at that instant, not even one with schedule_relationship SKIPPED/NO_DATA that our
+indexTripUpdates() was silently mishandling. Entity counts stayed in the normal 1644-1801 range
+throughout (no truncated-fetch signature, no HTTP anomaly) — feed size didn't correlate with the
+gap.
+
+### Classification: 2b — feed behaviour, not our code
+
+- Not 2a (adapter/helper bug). Stop_id resolution is exactly right (verified against stops.txt by
+  name, not by our own fuzzy match); horizon/static-schedule counts are normal and in line with
+  the two controls; indexTripUpdates() correctly finds zero matching entities because there
+  genuinely are zero in the raw feed at those polls, not because it's dropping SKIPPED/NO_DATA
+  rows it shouldn't (there were no such rows to drop — the stop simply isn't mentioned by any
+  trip's stopTimeUpdate array); no cache/truncation artifact (entity counts normal, fetches >=30s
+  apart, past the 20s TTL every time).
+- Not 2c (real-world gap/diversion). Kingswood, immediately adjacent on the same Red trunk, had a
+  stable 3-trip board on literally every poll across the full 15+ minutes — the Red Line was
+  running normally throughout. Red Cow itself got a real hit on stop 353 for 21 straight polls
+  (9-29) before reverting to empty at poll 30, and Kylemore — a different station entirely — also
+  went empty at that exact same poll while Kingswood didn't. A genuine service gap/diversion
+  doesn't explain two different, non-adjacent-in-time stations going empty at the same single
+  poll while a third stays fully served throughout.
+- 2b (feed behaviour) fits the evidence: NTA's TripUpdates feed intermittently omits a given
+  stop's stopTimeUpdate row for some trips passing through it, for periods of several minutes at a
+  time, independent of whether the line is actually running there (Kingswood being the outlier
+  that never dropped out in this 15-minute window doesn't mean it never does — Connolly's PR #478
+  precedent already showed this feed's per-stop coverage is uneven station to station). This
+  matches the brief's suspected mechanism: the feed likely carries a limited look-ahead window of
+  stopTimeUpdate rows per trip, and which stops fall inside that window shifts poll to poll.
+
+### Options for Tim (per the brief; no product change made, no PR opened)
+
+1. Make the empty state honest. When a catalog station's board is empty but the static schedule
+   says service should be running (nextServiceDate resolves to today, i.e. this isn't an
+   overnight/pre-service gap), show "No live Luas predictions for this stop right now" instead of
+   a blank board indistinguishable from "nothing scheduled." Rider-facing copy/UX change ->
+   tim-review: yes per the bug-fix lane. Recommended — this is genuinely intermittent (Red Cow
+   flipped from empty to 1-trip to empty again inside 17 minutes), so filtering it out like
+   Connolly would be wrong (a permanently-absent station is a different problem from a station
+   that is intermittently under-reported by the feed but is definitely served), and holding all of
+   Dublin for this is disproportionate to a feed artifact that self-resolves within single-digit
+   minutes and doesn't stop other stations from displaying correctly.
+2. Filter Red Cow out like Connolly. Wrong per the brief's own steer and this evidence: Red Cow
+   got a real, correctly-attributed live trip in 21 of 31 polls — removing an in-scope Red trunk
+   stop because of a transient reporting gap would make the catalog materially less useful for
+   exactly the riders most likely to want it (Red Cow is a trunk stop every westbound Red tram
+   calls at, not a low-frequency terminus).
+3. Hold Dublin until NTA confirms coverage. Disproportionate for a self-resolving,
+   station-varying feed characteristic that (per Connolly's earlier finding and this one) appears
+   to be a normal property of this feed rather than a fixable defect on NTA's side to "confirm" —
+   there's no reason to expect a support ticket would change the feed's look-ahead window
+   behaviour, and this would stall the whole city over something option 1 handles honestly.
+
+Recommendation: option 1. It's a UX/copy change (not silently dropping a real station), it matches
+the walk-up board-eligibility rule in spirit (the station stays in-catalog and shown, just with an
+honest "nothing live right now" state instead of an indistinguishable blank), and it generalises
+past Red Cow to any station this feed characteristic affects next — which per the poll-30
+Kylemore result could be any of them, not just Red Cow.
+
+No code changed as a result of this investigation (per the brief: 2b/2c means report, don't fix).
+Status stays planned. No PR opened.
