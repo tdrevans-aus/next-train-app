@@ -33,6 +33,7 @@ import {
   listCatalogStations,
   fetchStationBoard,
   directionsFromStatic,
+  resolveTripTerminus,
 } from "../lib/providers/dublin.js";
 import { MissingNtaApiKeyError } from "../lib/providers/gtfs/auth.js";
 import {
@@ -148,8 +149,10 @@ assert(mapLineTerminusDestination("Saggart", "red") === "Red + Saggart", "direct
 assert(mapLineTerminusDestination("Broombridge", "green") === "Green + Broombridge", "direction chip must be colour + terminus");
 assert(mapLineTerminusDestination("Brides Glen", "green") === "Green + Brides Glen", "direction chip must be colour + terminus");
 // Abbey Street (hub) must NEVER appear as a direction — it isn't in either line's termini list.
-assert(mapLineTerminusDestination(DUBLIN_HUB, "red") === "Red", "Abbey Street must never appear as a direction token");
-assert(mapLineTerminusDestination("City", "green") === "Green", "City must never appear as a direction token");
+// Round 3 (docs/jim-brief-dublin-flip-fixes.md): mapLineTerminusDestination() returns null,
+// never a bare colour label, when the destination can't be resolved to a known terminus.
+assert(mapLineTerminusDestination(DUBLIN_HUB, "red") === null, "Abbey Street must never appear as a direction token, not even as a bare colour");
+assert(mapLineTerminusDestination("City", "green") === null, "City must never appear as a direction token, not even as a bare colour");
 
 // Route colour classification (route_short_name/route_long_name/route_color, UNVERIFIED against
 // a live NTA payload — see lib/providers/dublin.js file header).
@@ -317,6 +320,135 @@ assert(stationsWithChips === 67, `all 67 catalog stations must resolve at least 
 const abbeyChips = directionsFromStatic({ stopIds: byName.get(DUBLIN_HUB).stopIds, staticData: fixtureStatic, stationName: DUBLIN_HUB });
 assert(abbeyChips.every((c) => c.startsWith("Red")), "Abbey Street must never show a Green chip, even from the static fixture");
 
+// --- Round 3 (27 Sep 2026, docs/jim-brief-dublin-flip-fixes.md): every station in the real
+// generated public/city-directions/dublin.json (commit c494b73) also got a bare "Red"/"Green"
+// chip alongside its proper colour+terminus chips — short-workings, blank headsigns, and trips
+// whose headsign fell back to a non-terminus route_long_name string all fell through
+// mapLineTerminusDestination()'s old bare-colour fallback. Build a fixture with both well-formed
+// trips (a full termini set per trunk station, so the "Belgard/trunk has both branches" assertion
+// means something) and deliberately unresolvable ones, and prove the fixed code never surfaces a
+// bare chip while still logging every dropped trip so the cause stays visible.
+
+// Common Red trunk, Belgard -> The Point (docs/dublin-d1/direction-model-memo.md "Red Line branch
+// handling"): every tram on this stretch is labelled by its own far terminus, so a trunk station
+// must be able to show both Tallaght- and Saggart-bound chips, plus The Point.
+const RED_TRUNK_EAST_OF_BELGARD = [
+  "Belgard", "Kingswood", "Red Cow", "Kylemore", "Bluebell", "Blackhorse", "Drimnagh",
+  "Goldenbridge", "Suir Road", "Rialto", "Fatima", "James's", "Heuston", "Museum", "Smithfield",
+  "Four Courts", "Jervis", "Abbey Street", "Busáras", "Connolly", "George's Dock",
+  "Mayor Square - NCI", "Spencer Dock", "The Point",
+];
+
+function makeRoundThreeFixture() {
+  const stopTimesByStopId = new Map();
+  const tripsById = new Map();
+  const routesById = new Map();
+  const stopsById = new Map();
+  routesById.set("route-red", { route_id: "route-red", route_short_name: "Red" });
+  let tripSeq = 0;
+  let seq = 0;
+
+  function addTrip({ stationName, headsign, lastStopName }) {
+    const entry = byName.get(stationName);
+    const tripId = `r3-trip-${tripSeq++}`;
+    tripsById.set(tripId, { trip_id: tripId, route_id: "route-red", trip_headsign: headsign ?? "" });
+    for (const stopId of entry.stopIds) {
+      seq += 1;
+      const list = stopTimesByStopId.get(stopId) ?? [];
+      list.push({ trip_id: tripId, stop_id: stopId, stop_sequence: String(seq) });
+      stopTimesByStopId.set(stopId, list);
+      stopsById.set(stopId, { stop_id: stopId, stop_name: entry.feedName ?? entry.name });
+    }
+    // The trip's real last stop, for the lastStop fallback in resolveTripTerminus() — a station
+    // not otherwise on this trip's stop_times, so the fallback has to look it up by name.
+    if (lastStopName) {
+      const lastEntry = byName.get(lastStopName);
+      seq += 1;
+      for (const stopId of lastEntry.stopIds) {
+        const list = stopTimesByStopId.get(stopId) ?? [];
+        list.push({ trip_id: tripId, stop_id: stopId, stop_sequence: String(seq) });
+        stopTimesByStopId.set(stopId, list);
+        stopsById.set(stopId, { stop_id: stopId, stop_name: lastEntry.feedName ?? lastEntry.name });
+      }
+    }
+  }
+
+  // Well-formed: every trunk station sees all three Red termini.
+  for (const stationName of RED_TRUNK_EAST_OF_BELGARD) {
+    addTrip({ stationName, headsign: "Tallaght" });
+    addTrip({ stationName, headsign: "Saggart" });
+    addTrip({ stationName, headsign: "The Point" });
+  }
+  // Tallaght (branch terminus) only ever sees the far end, The Point.
+  addTrip({ stationName: "Tallaght", headsign: "The Point" });
+
+  // Genuinely unresolvable short-working: blank headsign, real last stop is an ordinary
+  // non-terminus stop (Red Cow) — must be dropped, never a bare "Red" chip.
+  addTrip({ stationName: "Belgard", headsign: "", lastStopName: "Red Cow" });
+
+  // Recoverable short-working: blank headsign, but the trip's real last stop IS a known
+  // terminus (Tallaght) — resolveTripTerminus() must recover "Tallaght" from the last stop.
+  addTrip({ stationName: "Belgard", headsign: "", lastStopName: "Tallaght" });
+
+  return { stopTimesByStopId, tripsById, routesById, stopsById };
+}
+
+const round3Static = makeRoundThreeFixture();
+const unresolved = [];
+const allRound3Chips = [];
+for (const stationName of [...RED_TRUNK_EAST_OF_BELGARD, "Tallaght"]) {
+  const entry = byName.get(stationName);
+  const chips = directionsFromStatic({
+    stopIds: entry.stopIds,
+    staticData: round3Static,
+    stationName,
+    onUnresolved: (info) => unresolved.push({ stationName, ...info }),
+  });
+  allRound3Chips.push(...chips);
+  assert(
+    !chips.includes("Red") && !chips.includes("Green"),
+    `${stationName} must never show a bare "Red"/"Green" chip (direction-model-memo.md §1 line 7), got ${JSON.stringify(chips)}`
+  );
+}
+assert(
+  !allRound3Chips.some((chip) => chip === "Red" || chip === "Green"),
+  "no Dublin chip anywhere may be exactly \"Red\" or \"Green\""
+);
+
+for (const stationName of RED_TRUNK_EAST_OF_BELGARD) {
+  const entry = byName.get(stationName);
+  const chips = directionsFromStatic({ stopIds: entry.stopIds, staticData: round3Static, stationName });
+  assert(chips.includes("Red + Tallaght"), `${stationName} (trunk) must chip Red + Tallaght`);
+  assert(chips.includes("Red + Saggart"), `${stationName} (trunk) must chip Red + Saggart`);
+}
+
+const tallaghtChips = directionsFromStatic({
+  stopIds: byName.get("Tallaght").stopIds,
+  staticData: round3Static,
+  stationName: "Tallaght",
+});
+assert(
+  tallaghtChips.length === 1 && tallaghtChips[0] === "Red + The Point",
+  `Tallaght must show only Red + The Point, got ${JSON.stringify(tallaghtChips)}`
+);
+
+// The Red Cow short-working must have been dropped with a logged reason (cause stays visible),
+// and the blank-headsign/last-stop-Tallaght trip must have resolved via the last-stop fallback
+// rather than logging as unresolved.
+assert(
+  unresolved.some((u) => u.stationName === "Belgard" && u.lastStopName === "Red Cow"),
+  "the Red Cow short-working must be logged as unresolved, not silently dropped"
+);
+assert(
+  resolveTripTerminus(
+    { headsign: "", lineId: "red", tripId: "r3-trip-lookup", staticData: round3Static },
+    {}
+  ) === null,
+  "resolveTripTerminus must return null (never a guess) when neither headsign nor last stop resolves"
+);
+const belgardChips = directionsFromStatic({ stopIds: byName.get("Belgard").stopIds, staticData: round3Static, stationName: "Belgard" });
+assert(belgardChips.includes("Red + Tallaght"), "Belgard must still recover Red + Tallaght from the last-stop fallback trip");
+
 console.log(
-  "dublin-dogfood-gate: ok (live, adapterReady, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 67 stations (Red 32 / Green 35), hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Abbey Street/City never a direction token, Green city-centre loop direction-exclusivity guard (O'Connell - GPO/O'Connell Upper northbound-only, Marlborough southbound-only), missing-key and unknown-station both throw without network, all 67 catalog stations resolve real GTFS stop_ids and get >=1 static-derived direction chip, Perth Australia green)"
+  "dublin-dogfood-gate: ok (live, adapterReady, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 67 stations (Red 32 / Green 35), hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Abbey Street/City never a direction token, Green city-centre loop direction-exclusivity guard (O'Connell - GPO/O'Connell Upper northbound-only, Marlborough southbound-only), missing-key and unknown-station both throw without network, all 67 catalog stations resolve real GTFS stop_ids and get >=1 static-derived direction chip, Round 3: no bare Red/Green chip anywhere, trunk stations show both Tallaght/Saggart branches, Tallaght shows only The Point, short-workings recovered via last-stop fallback or dropped with a logged reason, Perth Australia green)"
 );
