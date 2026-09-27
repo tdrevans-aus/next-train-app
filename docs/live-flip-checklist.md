@@ -143,7 +143,10 @@ service genuinely runs (docs/jim-brief-dublin-honest-empty-state.md, Red Cow/Kyl
 findings) — an empty in-catalog station passes the sweep **only** when the rider-facing
 `/api/board` response for it carries the honest-empty-state signal (the provider's additive
 `emptyReason: "no-live-predictions"` field, which the shared UI renders as "No live
-predictions for this stop right now" rather than a bare blank board). A station that stays
-empty across every poll in the sweep's window, honest-empty banner or not, is a real
-per-station coverage gap — the Connolly shape — and needs its own `coverage.json` verdict
+predictions for this stop right now" rather than a bare blank board). Permanent means never
+observed non-empty across runs (docs/dublin-d1/live-sweep-log.jsonl, docs/jim-brief-dublin-
+sweep-evidence-memory.md), not merely empty in this run — a station that stays empty for the
+whole of one run can still be a long intermittent gap (the Broombridge shape) if it has been
+seen non-empty on an earlier or later run within the evidence window; only a station never
+once observed non-empty is the Connolly shape, and needs its own `coverage.json` verdict
 (filtered out with a rider-facing note) rather than flipping live still showing it.
