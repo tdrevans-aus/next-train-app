@@ -16,11 +16,10 @@
  * country-wide picker) and asserts country-regions.js's CITY_COUNTRY matches
  * it exactly in both directions: every picker region has a matching
  * country-regions.js entry, and every country-regions.js entry names a real
- * registry city and has a matching picker region. (Planned cities in
- * countries the picker doesn't cover yet — e.g. Osaka, Hong Kong, Brussels,
- * Copenhagen, Boston — are out of scope for this feature entirely, so
- * they're correctly absent from both tables; this gate leaves them alone
- * rather than demanding entries that don't belong.)
+ * registry city and has a matching picker region. (Planned cities — e.g.
+ * Osaka, Dublin, BART, Chicago — are out of scope for this feature entirely
+ * until they flip live, so they're correctly absent from both tables; this
+ * gate leaves them alone rather than demanding entries that don't belong.)
  *
  * A picker region is in or out, never a third "Coming Soon" state (Tim,
  * 27 Sep 2026: "It's either in or out."; docs/jim-brief-no-coming-soon-picker.md):

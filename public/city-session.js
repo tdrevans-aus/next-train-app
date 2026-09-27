@@ -109,17 +109,6 @@
       ],
     },
     {
-      // Ireland: flip follow-through ahead of Mark's QA re-run (docs/dublin-d1/jim-handoff.md,
-      // docs/dublin-d1/mark-qa-note.md) — comingSoon in the picker, same "flip-readiness
-      // scaffolding, not a bare planned-city add" precedent as Boston/Brussels/US wave 2.
-      // Dublin stays out of MULTI_CITY_IDS below until the actual status-flip commit.
-      id: "ie",
-      name: "Ireland",
-      regions: [
-        { id: "dublin", name: "Dublin", timeZone: "Europe/Dublin", comingSoon: true },
-      ],
-    },
-    {
       id: "no",
       name: "Norway",
       regions: [
@@ -214,9 +203,12 @@
     // (lat 48.130117-48.277555, lng 16.260728-16.508502), with a small margin. No overlap
     // with any other city's box (Brussels/Copenhagen are the nearest and both far off).
     vienna: { minLat: 48.10, maxLat: 48.30, minLng: 16.22, maxLng: 16.55 },
-    // Dublin (docs/dublin-d1/jim-handoff.md flip follow-through) — comingSoon in the picker,
-    // box derived from lib/cities/dublin/stations.json's 67 catalogued stations (all 67 now
-    // carry real lat/lng, matched by name against the published NTA GTFS snapshot's
+    // Dublin (docs/dublin-d1/jim-handoff.md flip follow-through) — still planned, not in the
+    // picker (docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026: cities are in or out, no
+    // "Coming Soon" row); this box exists ahead of the flip solely to satisfy
+    // qa/live-city-lists-sync.mjs's CITY_BOUNDS-for-every-live-city check, same as Hong Kong
+    // below. Box derived from lib/cities/dublin/stations.json's 67 catalogued stations (all 67
+    // now carry real lat/lng, matched by name against the published NTA GTFS snapshot's
     // stops.txt: lat 53.242-53.372, lng -6.438..-6.143) with a small margin. Doesn't overlap
     // any other region's box, so its position here doesn't affect containment order.
     dublin: { minLat: 53.20, maxLat: 53.40, minLng: -6.48, maxLng: -6.10 },
@@ -618,9 +610,9 @@
     const city = String(readStore().savedCity || "").toLowerCase();
     const found = regionById(city);
     // No matching picker region at all (e.g. a retired city — release-1 scope cut,
-    // 7 Sep 2026) degrades the same way a not-yet-open region does: fall through to
-    // the caller's default rather than surfacing a city the app can no longer resolve.
-    if (!found || found.region.comingSoon) {
+    // 7 Sep 2026): fall through to the caller's default rather than surfacing a
+    // city the app can no longer resolve.
+    if (!found) {
       return "";
     }
     return city;
@@ -710,16 +702,13 @@
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...readStore(), ...patch }));
   }
 
-  // No region has this flag set true any more except Dublin — a real "not
-  // live yet" gate, not a "Coming Soon" render (Tim, 27 Sep 2026: "It's
-  // either in or out."; docs/jim-brief-no-coming-soon-picker.md). Dublin's
-  // own flip PR (#470) removes it; once that merges no region ever carries
-  // this flag again and this whole function can go.
+  // A picker region is in the COUNTRIES table or it isn't — no "Coming Soon"
+  // third state any more (Tim, 27 Sep 2026: "It's either in or out.";
+  // docs/jim-brief-no-coming-soon-picker.md). This is now just a null guard
+  // for a region that may not resolve (e.g. an unknown/retired city id);
+  // kept as a named helper since it's called from many places below.
   function isRegionOpen(region) {
-    if (!region || region.comingSoon) {
-      return false;
-    }
-    return true;
+    return Boolean(region);
   }
 
   function firstOpenRegion(countryId) {
