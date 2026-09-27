@@ -71,3 +71,25 @@ service to model. Line + terminus is sufficient everywhere in v1 scope.
    Badner Bahn, but no primary source pulled for this pack confirms the name. Doesn't affect the
    direction model either way (Badner Bahn is out-product regardless), but flagged in case it
    turns out to be a real station this pack should have included under a different printed name.
+
+## Correction, 27 Sep 2026 (docs/jim-brief-vienna-u2-hub-bound-direction.md)
+
+Section 2's framing above ("only one live direction, not two" at Karlsplatz, "Karlsplatz is not
+a valid outbound destination from anywhere else in the network") answered Open §3 question 1
+incorrectly for every station *other than* Karlsplatz itself. Mark's flip QA found `/api/board`
+and `/api/directions` silently empty at Seestadt — U2's own printed terminus — despite six real
+live departures there (docs/vienna-d1/mark-qa-note.md).
+
+Corrected framing: the hub lock (never a *bare/generic* hub token as a direction — no "Karlsplatz"
+standing in for "City"/"Zentrum") does not forbid a *line-qualified* hub-bound chip. Every U2 train
+from Seestadt genuinely runs towards Karlsplatz, so Karlsplatz is U2's other real, live, printed
+terminus, exactly as valid a direction token as Seestadt when written as "U2 + Karlsplatz" — the
+same "line + terminus" shape used everywhere else in this pack, never a bare "Karlsplatz"/"City"/
+"Zentrum" chip. Precedent for a line-qualified hub-bound chip: Adelaide/Melbourne's city-bound
+chips are "<hub station> (<line> line)" (PRs #439/#441).
+
+Karlsplatz itself is unaffected: it still only has one live U2 platform (`towards: "Seestadt"`,
+RBL 4202), so it still only ever offers "U2 + Seestadt" — the self-terminus skip in
+`marketingLabelsForStation` continues to guarantee no self-loop "U2 + Karlsplatz" chip there.
+U1 and U4 are untouched; neither gains a Karlsplatz chip. See
+`lib/cities/vienna/marketing-directions.js`'s file header for the code-level correction.
