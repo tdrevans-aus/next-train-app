@@ -17,9 +17,13 @@
  *      NOT remove).
  *  (c) no hardcoded city-id list survives in public/*.js outside the accessor module
  *      (public/city-manifest.js) — a static grep for the six retired list names.
- *  (d) public/city-manifest.seed.json equals what scripts/write-city-manifest.mjs would
- *      produce right now, so a stale seed (e.g. a flip that forgot to regenerate it) fails
- *      smoke instead of shipping a bundle that doesn't match the registry.
+ *  (d) public/city-manifest.seed.json AND public/city-manifest.seed.js both equal what
+ *      scripts/write-city-manifest.mjs would produce right now, so a stale seed (e.g. a flip
+ *      that forgot to regenerate it, or regenerated only one of the two files) fails smoke
+ *      instead of shipping a bundle that doesn't match the registry. The two files are
+ *      checked independently — one being fresh does not excuse the other being stale, since
+ *      city-manifest.js reads seed.js synchronously and only ever falls back to seed.json
+ *      over the network, so a stale seed.js is the one most likely to go unnoticed.
  *
  * Offline pure-Node gate — no dev server. Usage: node qa/live-city-lists-sync.mjs
  */
@@ -28,6 +32,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { CITIES } from "../lib/providers/registry.js";
 import { MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
+import { renderCityManifestSeedFiles } from "../scripts/write-city-manifest.mjs";
 import { buildCityManifest } from "../lib/cities/city-manifest.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -99,18 +104,33 @@ for (const entry of publicJsFiles) {
   }
 }
 
-// (d) public/city-manifest.seed.json equals what scripts/write-city-manifest.mjs would
-// produce right now — a flip that forgot to regenerate it ships a stale seed instead of
-// failing loudly.
-const seedPath = join(ROOT, "public", "city-manifest.seed.json");
+// (d) public/city-manifest.seed.json AND public/city-manifest.seed.js both equal what
+// scripts/write-city-manifest.mjs would produce right now — a flip that forgot to regenerate
+// one or both ships a stale seed instead of failing loudly. Checked byte-for-byte against
+// renderCityManifestSeedFiles() (the same pure function the writer script itself uses), not
+// just semantically (e.g. re-parsed JSON equality), so a seed.js regenerated from a stale
+// manifest snapshot — or hand-edited — fails even if its JSON payload happens to still parse
+// to something plausible.
+const expectedSeed = renderCityManifestSeedFiles(manifest);
+const seedJsonPath = join(ROOT, "public", "city-manifest.seed.json");
+const seedJsPath = join(ROOT, "public", "city-manifest.seed.js");
 try {
-  const seedOnDisk = JSON.parse(readFileSync(seedPath, "utf8"));
+  const seedJsonOnDisk = readFileSync(seedJsonPath, "utf8");
   check(
-    JSON.stringify(seedOnDisk) === JSON.stringify(manifest),
+    seedJsonOnDisk === expectedSeed.json,
     "public/city-manifest.seed.json is stale — run `node scripts/write-city-manifest.mjs` and commit the result"
   );
 } catch (error) {
-  check(false, `public/city-manifest.seed.json: could not read/parse (${error.message})`);
+  check(false, `public/city-manifest.seed.json: could not read (${error.message})`);
+}
+try {
+  const seedJsOnDisk = readFileSync(seedJsPath, "utf8");
+  check(
+    seedJsOnDisk === expectedSeed.js,
+    "public/city-manifest.seed.js is stale — run `node scripts/write-city-manifest.mjs` and commit the result (both seed.json and seed.js must be regenerated together)"
+  );
+} catch (error) {
+  check(false, `public/city-manifest.seed.js: could not read (${error.message})`);
 }
 
 if (failures > 0) {

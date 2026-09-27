@@ -6,8 +6,10 @@
  *      fake live city makes it appear in window.CityManifest with zero client code change.
  *  (b) after a first successful load, blocking the network and reloading still shows the
  *      cached cities (localStorage nextTrainCityManifest survives an offline reload).
- *  (c) clearing storage AND blocking the network still shows the bundled seed's cities
- *      (public/city-manifest.seed.json).
+ *  (c) clearing storage AND blocking the network still shows the bundled seed's cities —
+ *      public/city-manifest.seed.js's synchronous window.__CITY_MANIFEST_SEED__ embed, with
+ *      public/city-manifest.seed.json as the (redundant once seed.js has already applied,
+ *      but still exercised) network-blocked fallback fetch target.
  *  (d) a saved journey for a city id absent from the (stubbed) manifest still keeps its
  *      cityId — normalizeJourney() never drops it just because a hardcoded/derived list
  *      doesn't currently recognise it.

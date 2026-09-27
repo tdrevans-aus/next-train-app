@@ -24,14 +24,14 @@ copy, so a flip is now just: (1) flip `status` in the registry (section 1 below,
 the city's country/region and bounds-box data there if it's the country's first region —
 `lib/cities/country-regions.js`'s `CITY_COUNTRY`/`COUNTRY_NAMES` and
 `lib/cities/city-bounds.js`'s `CITY_BOUNDS`); (2) regenerate the seed via
-`node scripts/write-city-manifest.mjs` and commit `public/city-manifest.seed.json`; (3) keep
+`node scripts/write-city-manifest.mjs` and commit `public/city-manifest.seed.{json,js}`; (3) keep
 `lib/cities/live-city-api.js`'s `MULTI_CITY_IDS` in sync (section 2 below — this one server-side
 list is unchanged, it's the actual authorization gate, not a client copy). Sections 3–6's
 step-by-step instructions are kept below for history/context only — do not follow them for a
 flip after this date. `qa/live-city-lists-sync.mjs` (rewritten the same day) now checks the
 registry, `live-city-api.js`, the built manifest, and that no hardcoded city-id list survives
-in `public/*.js` outside `public/city-manifest.js`, plus that the seed file matches what the
-script would produce right now.
+in `public/*.js` outside `public/city-manifest.js`, plus that both seed files
+(`public/city-manifest.seed.{json,js}`) match what the script would produce right now.
 
 ## 1. Registry — `lib/providers/registry.js`
 

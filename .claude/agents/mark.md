@@ -60,7 +60,7 @@ still real work, just one file instead of four); `node scripts/write-city-direct
 --only=<city>` and its resulting `public/city-directions/<city>.json`
 (`qa/bundled-city-directions.mjs`, smoke tier, fails without it); and
 `node scripts/write-city-manifest.mjs`, committing the regenerated
-`public/city-manifest.seed.json` (`qa/live-city-lists-sync.mjs`'s seed-matches-script check
+`public/city-manifest.seed.{json,js}` (`qa/live-city-lists-sync.mjs`'s seed-matches-script check
 fails without it). `public/app.js`, `public/city-session.js`, `public/brisbane-dogfood.js`, and
 `public/journey-model.js` are **not** touched by a flip any more — if you find yourself editing
 any of them for a flip, stop, you're following stale instructions. Run the smoke suite after
