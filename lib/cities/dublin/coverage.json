@@ -1,0 +1,23 @@
+{
+  "region": "dublin",
+  "updated": "2026-09-27",
+  "covered": [
+    {
+      "label": "Luas Red and Green Lines",
+      "detail": "All 67 Luas tram stops, full network, live NTA GTFS-RT predictions only - a tram only appears once the realtime feed is actually confirming it, never backfilled from the printed timetable."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "DART / Iarnrod Eireann (commuter and intercity rail)",
+      "detail": "Not covered - Luas only, in this version."
+    },
+    {
+      "label": "Dublin Bus, Go-Ahead Ireland, Bus Eireann",
+      "detail": "Not a rail app."
+    }
+  ],
+  "stations": "67 Luas stops across the Red and Green Lines.",
+  "notes": "Abbey Street is the Red Line hub; the Green Line interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a short walk away, not the same stop."
+}

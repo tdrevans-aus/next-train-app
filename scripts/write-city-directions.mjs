@@ -26,7 +26,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
  * Adapter-ready cities that are still `planned` (not in MULTI_CITY_IDS).
  * Their chips are bundled ahead of the live flip; the picker never shows them.
  */
-const EXTRA_BUNDLED_CITY_IDS = [];
+const EXTRA_BUNDLED_CITY_IDS = ["dublin"];
 
 function defaultListBundledStations(city) {
   if (MULTI_CITY_IDS.includes(city)) {

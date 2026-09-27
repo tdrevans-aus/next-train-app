@@ -87,6 +87,17 @@
       ],
     },
     {
+      // Ireland: flip follow-through ahead of Mark's QA re-run (docs/dublin-d1/jim-handoff.md,
+      // docs/dublin-d1/mark-qa-note.md) — comingSoon in the picker, same "flip-readiness
+      // scaffolding, not a bare planned-city add" precedent as Boston/Brussels/US wave 2.
+      // Dublin stays out of MULTI_CITY_IDS below until the actual status-flip commit.
+      id: "ie",
+      name: "Ireland",
+      regions: [
+        { id: "dublin", name: "Dublin", timeZone: "Europe/Dublin", comingSoon: true },
+      ],
+    },
+    {
       id: "no",
       name: "Norway",
       regions: [
@@ -180,6 +191,12 @@
     // (lat 50.812-50.897, lng 4.267-4.465) with a small margin. Doesn't overlap any other
     // region's box, so its position here doesn't affect containment order.
     brussels: { minLat: 50.79, maxLat: 50.92, minLng: 4.24, maxLng: 4.49 },
+    // Dublin (docs/dublin-d1/jim-handoff.md flip follow-through) — comingSoon in the picker,
+    // box derived from lib/cities/dublin/stations.json's 67 catalogued stations (all 67 now
+    // carry real lat/lng, matched by name against the published NTA GTFS snapshot's
+    // stops.txt: lat 53.242-53.372, lng -6.438..-6.143) with a small margin. Doesn't overlap
+    // any other region's box, so its position here doesn't affect containment order.
+    dublin: { minLat: 53.20, maxLat: 53.40, minLng: -6.48, maxLng: -6.10 },
     "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
     // south-wales is listed BEFORE west-of-england so hintCityFromCoords's
     // first-match lookup resolves the Severn-estuary stations correctly:

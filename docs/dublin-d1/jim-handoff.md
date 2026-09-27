@@ -107,3 +107,39 @@ without republishing.
 
 This check does not flip Dublin live and does not change `lib/providers/dublin.js`'s behaviour —
 it only tells us, from CI, whether the join Mark's offline QA couldn't reach actually resolves.
+
+## Flip follow-through (Jim, 27 Sep 2026) — appended, not rewritten
+
+Closed every gap in `docs/dublin-d1/mark-qa-note.md`'s RED verdict. Dublin stays
+`status: "planned"` — this is not a flip.
+
+**Station coordinates.** All 67 catalog stations in `lib/cities/dublin/stations.json` now carry
+real `lat`/`lng`, sourced by name-matching against the published NTA GTFS snapshot's `stops.txt`
+(`gtfs/dublin.zip`, same blob `qa/verify-dublin-gtfs-snapshot.mjs` checks). **Every one of the 67
+matched** — the GTFS snapshot's 128 stop rows collapse to exactly 67 distinct `stop_name` values, a
+1:1 match against the catalog once these printed-name differences are accounted for (GTFS uses a
+more abbreviated form than the catalog's full printed name in 7 cases): `Abbey St.` (catalog
+`Abbey Street`), `Citywest` (`Citywest Campus`), `Broadstone` (`Broadstone - University`), `Mayor
+Square` (`Mayor Square - NCI`), `O'Connell Upr.` (`O'Connell Upper`), `Leopardstown`
+(`Leopardstown Valley`), `Ballyogan` (`Ballyogan Wood`). No station required a guessed coordinate
+and none is exempted the way Chicago's State/Lake was.
+
+**Real bug found and fixed while sourcing those coordinates.** `lib/providers/dublin.js`'s
+`resolveStopIds()` only ever tried a station's canonical catalog `name` against the published
+static snapshot, never its `aliases` — so every one of the 7 abbreviated-name stations above threw
+`Unknown Dublin station` against the real feed, including **Abbey Street, one of this brief's own
+three required check stations**. Two of the seven (`Broadstone - University`/`Mayor Square - NCI`)
+already carried a matching alias in the catalog and still failed, proving the alias fallback
+genuinely didn't exist rather than just being incomplete. Fixed by trying each catalog alias in
+turn after the canonical name misses, and added the missing alias for the other 5 stations
+(`Abbey St.`, `Citywest`, `O'Connell Upr.`, `Leopardstown`, `Ballyogan`). Confirmed against the
+real feed post-fix: `node scripts/write-city-directions.mjs --only=dublin` no longer logs any
+`Unknown Dublin station` warning for any of the 67 (down from 7), and `fetchStationBoard` resolves
+Abbey Street/Tallaght/Sandyford directly (see PR description for the live evidence).
+
+**Live-service-hours caveat.** This session's live verification ran at 01:29 Europe/Dublin
+(2026-09-27), after last trams (~00:30) — every real-feed sample above returned a well-formed
+empty board (`trips: [], realtime: true, nextServiceDate: "2026-09-28"`), not an error. The RT
+fetch itself succeeded (173 TripUpdates entities, ~1.9s). Re-running during Dublin daytime service
+hours would be the way to see actual non-empty per-direction trip counts; that's Mark's to redo
+against this branch same as his RED note flagged for the RT-join sample size.
