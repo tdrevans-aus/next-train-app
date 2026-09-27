@@ -77,6 +77,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-error-redaction.mjs",
   "gtfs-snapshot-freshness.mjs",
   "gtfs-local-snapshot-fixture-freshness.mjs",
+  "gtfs-rt-zero-time-gate.mjs",
   "widget-help-ios-steps.mjs",
   "planned-closure-empty-board.mjs",
   "vancouver-dogfood-gate.mjs",
@@ -339,6 +340,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "gtfs-error-redaction.mjs",
   "gtfs-snapshot-freshness.mjs",
   "gtfs-local-snapshot-fixture-freshness.mjs",
+  "gtfs-rt-zero-time-gate.mjs",
   "widget-help-ios-steps.mjs",
   /**
    * Fetches every live blob-backed city's real published static snapshot
