@@ -1,0 +1,412 @@
+{
+  "Admiralty": [
+    "East Rail + Lo Wu / Lok Ma Chau",
+    "Island + Chai Wan",
+    "Island + Kennedy Town",
+    "South Island + South Horizons",
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Austin": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Causeway Bay": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Central": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Chai Wan": [
+    "Island + Kennedy Town"
+  ],
+  "Che Kung Temple": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Cheung Sha Wan": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Choi Hung": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "City One": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Diamond Hill": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa",
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "East Tsim Sha Tsui": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Exhibition Centre": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Fanling": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Fo Tan": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Fortress Hill": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Hang Hau": [
+    "Tseung Kwan O + North Point",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "Heng Fa Chuen": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Heng On": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Hin Keng": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "HKU": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Ho Man Tin": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa",
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Hong Kong": [
+    "Airport Express + Airport / AsiaWorld-Expo",
+    "Tung Chung + Tung Chung"
+  ],
+  "Hung Hom": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau",
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Jordan": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Kai Tak": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Kam Sheung Road": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Kennedy Town": [
+    "Island + Chai Wan"
+  ],
+  "Kowloon": [
+    "Airport Express + Airport / AsiaWorld-Expo",
+    "Airport Express + Hong Kong",
+    "Tung Chung + Hong Kong",
+    "Tung Chung + Tung Chung"
+  ],
+  "Kowloon Bay": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "Kowloon Tong": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau",
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "Kwai Fong": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Kwai Hing": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Kwun Tong": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "Lai Chi Kok": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Lai King": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan",
+    "Tung Chung + Hong Kong",
+    "Tung Chung + Tung Chung"
+  ],
+  "Lam Tin": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "Lei Tung": [
+    "South Island + Admiralty",
+    "South Island + South Horizons"
+  ],
+  "Lo Wu": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "LOHAS Park": [
+    "Tseung Kwan O + North Point",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "Lok Fu": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "Lok Ma Chau": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Long Ping": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Ma On Shan": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Mei Foo": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan",
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Mong Kok": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa",
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Mong Kok East": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Nam Cheong": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha",
+    "Tung Chung + Hong Kong",
+    "Tung Chung + Tung Chung"
+  ],
+  "Ngau Tau Kok": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "North Point": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "Ocean Park": [
+    "South Island + Admiralty",
+    "South Island + South Horizons"
+  ],
+  "Olympic": [
+    "Tung Chung + Hong Kong",
+    "Tung Chung + Tung Chung"
+  ],
+  "Po Lam": [
+    "Tseung Kwan O + North Point",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "Prince Edward": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa",
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Quarry Bay": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town",
+    "Tseung Kwan O + North Point",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "Racecourse": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Sai Wan Ho": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Sai Ying Pun": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Sha Tin": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Sha Tin Wai": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Sham Shui Po": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Shau Kei Wan": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Shek Kip Mei": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "Shek Mun": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Sheung Shui": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Sheung Wan": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Siu Hong": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "South Horizons": [
+    "South Island + Admiralty"
+  ],
+  "Sung Wong Toi": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Sunny Bay": [
+    "Disneyland Resort + Disneyland Resort",
+    "Tung Chung + Hong Kong",
+    "Tung Chung + Tung Chung"
+  ],
+  "Tai Koo": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Tai Po Market": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Tai Shui Hang": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Tai Wai": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau",
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Tai Wo": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Tai Wo Hau": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Tin Hau": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Tin Shui Wai": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Tiu Keng Leng": [
+    "Kwun Tong + Whampoa",
+    "Tseung Kwan O + North Point",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "To Kwa Wan": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Tseung Kwan O": [
+    "Tseung Kwan O + North Point",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "Tsim Sha Tsui": [
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Tsing Yi": [
+    "Airport Express + Airport / AsiaWorld-Expo",
+    "Airport Express + Hong Kong",
+    "Tung Chung + Hong Kong",
+    "Tung Chung + Tung Chung"
+  ],
+  "Tsuen Wan": [
+    "Tsuen Wan + Central"
+  ],
+  "Tsuen Wan West": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Tuen Mun": [
+    "Tuen Ma + Wu Kai Sha"
+  ],
+  "Tung Chung": [
+    "Tung Chung + Hong Kong"
+  ],
+  "University": [
+    "East Rail + Admiralty",
+    "East Rail + Lo Wu / Lok Ma Chau"
+  ],
+  "Wan Chai": [
+    "Island + Chai Wan",
+    "Island + Kennedy Town"
+  ],
+  "Whampoa": [
+    "Kwun Tong + Tiu Keng Leng"
+  ],
+  "Wong Chuk Hang": [
+    "South Island + Admiralty",
+    "South Island + South Horizons"
+  ],
+  "Wong Tai Sin": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa"
+  ],
+  "Wu Kai Sha": [
+    "Tuen Ma + Tuen Mun"
+  ],
+  "Yau Ma Tei": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa",
+    "Tsuen Wan + Central",
+    "Tsuen Wan + Tsuen Wan"
+  ],
+  "Yau Tong": [
+    "Kwun Tong + Tiu Keng Leng",
+    "Kwun Tong + Whampoa",
+    "Tseung Kwan O + North Point",
+    "Tseung Kwan O + Po Lam / LOHAS Park"
+  ],
+  "Yuen Long": [
+    "Tuen Ma + Tuen Mun",
+    "Tuen Ma + Wu Kai Sha"
+  ]
+}

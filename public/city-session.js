@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen", "vienna"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen", "vienna", "hong-kong"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -95,6 +95,17 @@
       name: "Finland",
       regions: [
         { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki" },
+      ],
+    },
+    {
+      // Hong Kong: flipped live 27 Sep 2026 (Mark's QA re-run after the coordinates fix,
+      // PR #472 + docs/hong-kong-d1/mark-qa-note.md). Board eligibility approved Airport
+      // Express at Hong Kong/Kowloon/Tsing Yi and the Disneyland Resort Line at Sunny Bay
+      // (Tim's decision + walk-up-rule application — see the flip PR's "Decisions for Tim").
+      id: "hk",
+      name: "Hong Kong",
+      regions: [
+        { id: "hong-kong", name: "Hong Kong", timeZone: "Asia/Hong_Kong" },
       ],
     },
     {
