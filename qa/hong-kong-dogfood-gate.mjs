@@ -340,6 +340,81 @@ try {
 }
 assert(disabledDrlThrew, "fetchStationBoard must propagate a disabled-line failure on one of a multi-line station's lines, never silently drop it");
 
+// Concurrency (docs/jim-brief-hong-kong-hub-latency.md): a 4-line station must issue its line
+// fetches concurrently, not sequentially — stub global.fetch with a fixed per-call delay and
+// assert the wall time is ~one delay, not four. Admiralty (TWL x ISL x SIL x EAL) is the only
+// 4-line station in the catalog.
+{
+  const originalFetch = globalThis.fetch;
+  const PER_CALL_DELAY_MS = 200;
+  const callTimestamps = [];
+  const successBody = (lineCode, staCode) => ({
+    sys_time: "2026-09-27 08:37:23",
+    curr_time: "2026-09-27 08:37:07",
+    data: { [`${lineCode}-${staCode}`]: { UP: [], DOWN: [] } },
+    isdelay: "N",
+    status: 1,
+    message: "successful",
+  });
+  globalThis.fetch = async (url) => {
+    callTimestamps.push(Date.now());
+    await new Promise((resolve) => setTimeout(resolve, PER_CALL_DELAY_MS));
+    const parsed = new URL(String(url));
+    const lineCode = parsed.searchParams.get("line");
+    const staCode = parsed.searchParams.get("sta");
+    return { ok: true, json: async () => successBody(lineCode, staCode) };
+  };
+  try {
+    const start = Date.now();
+    await fetchStationBoard(METRO_HUB);
+    const elapsedMs = Date.now() - start;
+    assert(callTimestamps.length === 4, `Admiralty must issue exactly 4 line fetches, got ${callTimestamps.length}`);
+    const spreadMs = Math.max(...callTimestamps) - Math.min(...callTimestamps);
+    assert(spreadMs < PER_CALL_DELAY_MS, `the 4 line fetches must start together (concurrent), spread was ${spreadMs}ms`);
+    assert(
+      elapsedMs < PER_CALL_DELAY_MS * 2,
+      `a 4-line station board must take ~1 delay (${PER_CALL_DELAY_MS}ms) not 4 (sequential would be ~${PER_CALL_DELAY_MS * 4}ms) — took ${elapsedMs}ms`
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+}
+
+// One failing line among several concurrent fetches must still propagate as a failure for the
+// whole board — never a silent partial/empty board with the failed line's directions missing.
+{
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    const parsed = new URL(String(url));
+    const lineCode = parsed.searchParams.get("line");
+    const staCode = parsed.searchParams.get("sta");
+    if (lineCode === "EAL") {
+      return {
+        ok: true,
+        json: async () => ({ resultCode: 0, status: 0, error: { errorCode: "NT-301", errorMsg: "Please type the line-station." } }),
+      };
+    }
+    return {
+      ok: true,
+      json: async () => ({
+        data: { [`${lineCode}-${staCode}`]: { UP: [], DOWN: [] } },
+        isdelay: "N",
+        status: 1,
+        message: "successful",
+      }),
+    };
+  };
+  let oneLineFailureThrew = false;
+  try {
+    await fetchStationBoard(METRO_HUB);
+  } catch (err) {
+    oneLineFailureThrew = err instanceof MtrScheduleError && err.errorCode === "NT-301";
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  assert(oneLineFailureThrew, "one failing line among 4 concurrent fetches must still propagate as a failure for the whole board, never a silent partial board");
+}
+
 // Dogfood station list + directions come from the catalog/route tables, not a live parse.
 const dogfoodStations = listHongKongDogfoodStations();
 assert(dogfoodStations.length === 95, `dogfood stations must be the 95 D1 names, got ${dogfoodStations.length}`);
@@ -398,5 +473,5 @@ const pkg = readFileSync(join(ROOT, "package.json"), "utf8");
 assert(!/"hong-kong"/.test(pkg), "do not add hong-kong scripts or bump version for a live-flip commit");
 
 console.log(
-  "hong-kong-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired and tested end to end without any network call, D1 pack + Board eligibility section recorded, D2 fixture verbatim, 95 stations, Admiralty hub TWLxISLxSILxEAL, AEL at Hong Kong/Kowloon/Tsing Yi + DRL at Sunny Bay live-confirmed dest-code mapping, NT-301/NT-205/isdelay=Y all propagate rather than a silent empty board, unknown-station throws before any fetch, Perth/Sydney/Stockholm/Göteborg green)"
+  "hong-kong-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired and tested end to end without any network call, D1 pack + Board eligibility section recorded, D2 fixture verbatim, 95 stations, Admiralty hub TWLxISLxSILxEAL, AEL at Hong Kong/Kowloon/Tsing Yi + DRL at Sunny Bay live-confirmed dest-code mapping, NT-301/NT-205/isdelay=Y all propagate rather than a silent empty board, unknown-station throws before any fetch, Admiralty's 4 line fetches confirmed concurrent (not sequential) and a single failing line still fails the whole board, Perth/Sydney/Stockholm/Göteborg green)"
 );
