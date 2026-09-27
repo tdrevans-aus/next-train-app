@@ -3,15 +3,6 @@
   "hub": "Abbey Street",
   "stations": [
     {
-      "name": "Saggart",
-      "lines": [
-        "red"
-      ],
-      "aliases": [],
-      "lat": 53.284683,
-      "lng": -6.437788
-    },
-    {
       "name": "Fortunestown",
       "lines": [
         "red"
