@@ -1,0 +1,1318 @@
+{
+  "city": "vienna",
+  "hub": "Karlsplatz",
+  "stations": [
+    {
+      "name": "Aderklaaer Straße",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4183,
+        4188
+      ],
+      "lat": 48.263414,
+      "lng": 16.451616
+    },
+    {
+      "name": "Alaudagasse",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4131,
+        4136
+      ],
+      "lat": 48.153498,
+      "lng": 16.382369
+    },
+    {
+      "name": "Alser Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4606,
+        4623
+      ],
+      "lat": 48.21682,
+      "lng": 16.341828
+    },
+    {
+      "name": "Alte Donau",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4104,
+        4125
+      ],
+      "lat": 48.238052,
+      "lng": 16.424388
+    },
+    {
+      "name": "Alterlaa",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4631,
+        4638
+      ],
+      "lat": 48.150717,
+      "lng": 16.316873
+    },
+    {
+      "name": "Altes Landgut",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4130,
+        4137
+      ],
+      "lat": 48.161842,
+      "lng": 16.383582
+    },
+    {
+      "name": "Am Schöpfwerk",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4630,
+        4639
+      ],
+      "lat": 48.161045,
+      "lng": 16.324468
+    },
+    {
+      "name": "Aspern Nord",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4275,
+        4278
+      ],
+      "lat": 48.234549,
+      "lng": 16.504738
+    },
+    {
+      "name": "Aspernstraße",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4251,
+        4272
+      ],
+      "lat": 48.222601,
+      "lng": 16.474864
+    },
+    {
+      "name": "Bahnhof Meidling",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4614,
+        4615
+      ],
+      "lat": 48.173519,
+      "lng": 16.331394
+    },
+    {
+      "name": "Braunschweiggasse",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4407,
+        4430
+      ],
+      "lat": 48.189392,
+      "lng": 16.295834
+    },
+    {
+      "name": "Burggasse-Stadthalle",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4609,
+        4620
+      ],
+      "lat": 48.203287,
+      "lng": 16.337211
+    },
+    {
+      "name": "Donauinsel",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4108,
+        4121
+      ],
+      "lat": 48.229217,
+      "lng": 16.411335
+    },
+    {
+      "name": "Donaumarina",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4255,
+        4268
+      ],
+      "lat": 48.206269,
+      "lng": 16.431264
+    },
+    {
+      "name": "Donauspital",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4252,
+        4271
+      ],
+      "lat": 48.219558,
+      "lng": 16.465621
+    },
+    {
+      "name": "Donaustadtbrücke",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4256,
+        4267
+      ],
+      "lat": 48.211675,
+      "lng": 16.439938
+    },
+    {
+      "name": "Dresdner Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4642,
+        4649
+      ],
+      "lat": 48.237232,
+      "lng": 16.380065
+    },
+    {
+      "name": "Enkplatz",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4936,
+        4939
+      ],
+      "lat": 48.174709,
+      "lng": 16.414749
+    },
+    {
+      "name": "Erdberg",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4900,
+        4917
+      ],
+      "lat": 48.191402,
+      "lng": 16.414188
+    },
+    {
+      "name": "Erlaaer Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4632,
+        4637
+      ],
+      "lat": 48.142293,
+      "lng": 16.316545
+    },
+    {
+      "name": "Floridsdorf",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4646
+      ],
+      "lat": 48.25622,
+      "lng": 16.400407
+    },
+    {
+      "name": "Friedensbrücke",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4404,
+        4433
+      ],
+      "lat": 48.227835,
+      "lng": 16.363972
+    },
+    {
+      "name": "Gasometer",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4934,
+        4941
+      ],
+      "lat": 48.184859,
+      "lng": 16.417233
+    },
+    {
+      "name": "Großfeldsiedlung",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4184,
+        4189
+      ],
+      "lat": 48.27102,
+      "lng": 16.447874
+    },
+    {
+      "name": "Gumpendorfer Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4611,
+        4618
+      ],
+      "lat": 48.19083,
+      "lng": 16.337566
+    },
+    {
+      "name": "Handelskai",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4643,
+        4648
+      ],
+      "lat": 48.241857,
+      "lng": 16.385675
+    },
+    {
+      "name": "Hardeggasse",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4253,
+        4270
+      ],
+      "lat": 48.221006,
+      "lng": 16.457185
+    },
+    {
+      "name": "Hausfeldstraße",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4274,
+        4279
+      ],
+      "lat": 48.23346,
+      "lng": 16.48568
+    },
+    {
+      "name": "Heiligenstadt",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4402
+      ],
+      "lat": 48.24888,
+      "lng": 16.365984
+    },
+    {
+      "name": "Herrengasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4907,
+        4910
+      ],
+      "lat": 48.209331,
+      "lng": 16.365117
+    },
+    {
+      "name": "Hietzing",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4409,
+        4428
+      ],
+      "lat": 48.187545,
+      "lng": 16.304813
+    },
+    {
+      "name": "Hütteldorf",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4401
+      ],
+      "lat": 48.196968,
+      "lng": 16.260728
+    },
+    {
+      "name": "Hütteldorfer Straße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4928,
+        4933
+      ],
+      "lat": 48.1998,
+      "lng": 16.311411
+    },
+    {
+      "name": "Jägerstraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4641,
+        4650
+      ],
+      "lat": 48.235219,
+      "lng": 16.368697
+    },
+    {
+      "name": "Johnstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4925,
+        4926
+      ],
+      "lat": 48.197614,
+      "lng": 16.320556
+    },
+    {
+      "name": "Josefstädter Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4607,
+        4622
+      ],
+      "lat": 48.21169,
+      "lng": 16.339196
+    },
+    {
+      "name": "Kagran",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4102,
+        4127
+      ],
+      "lat": 48.243233,
+      "lng": 16.43325
+    },
+    {
+      "name": "Kagraner Platz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4181,
+        4186
+      ],
+      "lat": 48.250412,
+      "lng": 16.443405
+    },
+    {
+      "name": "Kaisermühlen-VIC",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [
+        "Kaisermühlen"
+      ],
+      "rbl": [
+        4106,
+        4123
+      ],
+      "lat": 48.23276,
+      "lng": 16.416308
+    },
+    {
+      "name": "Kardinal-Nagl-Platz",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4902,
+        4915
+      ],
+      "lat": 48.197177,
+      "lng": 16.400542
+    },
+    {
+      "name": "Karlsplatz",
+      "lines": [
+        "u1",
+        "u2",
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4109,
+        4120,
+        4202,
+        4416,
+        4421
+      ],
+      "lat": 48.20085,
+      "lng": 16.369283
+    },
+    {
+      "name": "Kendlerstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4929,
+        4932
+      ],
+      "lat": 48.204575,
+      "lng": 16.309148
+    },
+    {
+      "name": "Keplerplatz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4103,
+        4126
+      ],
+      "lat": 48.179276,
+      "lng": 16.376193
+    },
+    {
+      "name": "Kettenbrückengasse",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4418,
+        4419
+      ],
+      "lat": 48.196635,
+      "lng": 16.358088
+    },
+    {
+      "name": "Krieau",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4258,
+        4265
+      ],
+      "lat": 48.214719,
+      "lng": 16.413788
+    },
+    {
+      "name": "Landstraße",
+      "lines": [
+        "u3",
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4412,
+        4425,
+        4904,
+        4913
+      ],
+      "lat": 48.206351,
+      "lng": 16.385224
+    },
+    {
+      "name": "Längenfeldgasse",
+      "lines": [
+        "u4",
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4437,
+        4438,
+        4612,
+        4617
+      ],
+      "lat": 48.184854,
+      "lng": 16.334985
+    },
+    {
+      "name": "Leopoldau",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4190
+      ],
+      "lat": 48.277555,
+      "lng": 16.451782
+    },
+    {
+      "name": "Lina-Loos-Platz",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4273,
+        4280
+      ],
+      "lat": 48.22852,
+      "lng": 16.478597
+    },
+    {
+      "name": "Margaretengürtel",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4415,
+        4422
+      ],
+      "lat": 48.1885,
+      "lng": 16.343054
+    },
+    {
+      "name": "Meidling Hauptstraße",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4413,
+        4424
+      ],
+      "lat": 48.183655,
+      "lng": 16.327851
+    },
+    {
+      "name": "Messe-Prater",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4259,
+        4264
+      ],
+      "lat": 48.217768,
+      "lng": 16.404998
+    },
+    {
+      "name": "Michelbeuern-AKH",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4605,
+        4624
+      ],
+      "lat": 48.2213,
+      "lng": 16.344317
+    },
+    {
+      "name": "Museumsquartier",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4204,
+        4211
+      ],
+      "lat": 48.202886,
+      "lng": 16.361021
+    },
+    {
+      "name": "Nestroyplatz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4114,
+        4115
+      ],
+      "lat": 48.21529,
+      "lng": 16.3855
+    },
+    {
+      "name": "Neubaugasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4918,
+        4923
+      ],
+      "lat": 48.199207,
+      "lng": 16.352496
+    },
+    {
+      "name": "Neue Donau",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4644,
+        4647
+      ],
+      "lat": 48.246407,
+      "lng": 16.394806
+    },
+    {
+      "name": "Neulaa",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4132,
+        4135
+      ],
+      "lat": 48.14561,
+      "lng": 16.386317
+    },
+    {
+      "name": "Niederhofstraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4613,
+        4616
+      ],
+      "lat": 48.180816,
+      "lng": 16.331156
+    },
+    {
+      "name": "Nußdorfer Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4603,
+        4626
+      ],
+      "lat": 48.231306,
+      "lng": 16.352361
+    },
+    {
+      "name": "Ober St. Veit",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4403,
+        4434
+      ],
+      "lat": 48.192246,
+      "lng": 16.276076
+    },
+    {
+      "name": "Oberlaa",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4134
+      ],
+      "lat": 48.142221,
+      "lng": 16.400237
+    },
+    {
+      "name": "Ottakring",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4931
+      ],
+      "lat": 48.21157,
+      "lng": 16.311438
+    },
+    {
+      "name": "Perfektastraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4633,
+        4636
+      ],
+      "lat": 48.136673,
+      "lng": 16.313284
+    },
+    {
+      "name": "Pilgramgasse",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4417,
+        4420
+      ],
+      "lat": 48.192153,
+      "lng": 16.354301
+    },
+    {
+      "name": "Praterstern",
+      "lines": [
+        "u1",
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4112,
+        4117,
+        4260,
+        4263
+      ],
+      "lat": 48.218837,
+      "lng": 16.392484
+    },
+    {
+      "name": "Rathaus",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4205,
+        4210
+      ],
+      "lat": 48.210304,
+      "lng": 16.355469
+    },
+    {
+      "name": "Rennbahnweg",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4182,
+        4187
+      ],
+      "lat": 48.257574,
+      "lng": 16.449595
+    },
+    {
+      "name": "Reumannplatz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4101,
+        4128
+      ],
+      "lat": 48.174864,
+      "lng": 16.377941
+    },
+    {
+      "name": "Rochusgasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4903,
+        4914
+      ],
+      "lat": 48.202428,
+      "lng": 16.391613
+    },
+    {
+      "name": "Roßauer Lände",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4406,
+        4431
+      ],
+      "lat": 48.22235,
+      "lng": 16.367574
+    },
+    {
+      "name": "Schlachthausgasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4901,
+        4916
+      ],
+      "lat": 48.194468,
+      "lng": 16.4067
+    },
+    {
+      "name": "Schönbrunn",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4411,
+        4426
+      ],
+      "lat": 48.186065,
+      "lng": 16.318894
+    },
+    {
+      "name": "Schottenring",
+      "lines": [
+        "u2",
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4201,
+        4214,
+        4408,
+        4429
+      ],
+      "lat": 48.216962,
+      "lng": 16.372079
+    },
+    {
+      "name": "Schottentor",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4203,
+        4212
+      ],
+      "lat": 48.215057,
+      "lng": 16.362867
+    },
+    {
+      "name": "Schwedenplatz",
+      "lines": [
+        "u1",
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4113,
+        4116,
+        4410,
+        4427
+      ],
+      "lat": 48.211878,
+      "lng": 16.378104
+    },
+    {
+      "name": "Schweglerstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4924,
+        4927
+      ],
+      "lat": 48.197695,
+      "lng": 16.328619
+    },
+    {
+      "name": "Seestadt",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4277
+      ],
+      "lat": 48.22609,
+      "lng": 16.508502
+    },
+    {
+      "name": "Siebenhirten",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4635
+      ],
+      "lat": 48.130117,
+      "lng": 16.309812
+    },
+    {
+      "name": "Simmering",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4938
+      ],
+      "lat": 48.170542,
+      "lng": 16.419577
+    },
+    {
+      "name": "Spittelau",
+      "lines": [
+        "u4",
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4439,
+        4440,
+        4627,
+        4651
+      ],
+      "lat": 48.235239,
+      "lng": 16.358319
+    },
+    {
+      "name": "Stadion",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4257,
+        4266
+      ],
+      "lat": 48.210852,
+      "lng": 16.420229
+    },
+    {
+      "name": "Stadlau",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4254,
+        4269
+      ],
+      "lat": 48.219615,
+      "lng": 16.449038
+    },
+    {
+      "name": "Stadtpark",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4414,
+        4423
+      ],
+      "lat": 48.202841,
+      "lng": 16.379692
+    },
+    {
+      "name": "Stephansplatz",
+      "lines": [
+        "u1",
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4111,
+        4118,
+        4906,
+        4911
+      ],
+      "lat": 48.208055,
+      "lng": 16.371565
+    },
+    {
+      "name": "Stubentor",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4905,
+        4912
+      ],
+      "lat": 48.20693,
+      "lng": 16.379266
+    },
+    {
+      "name": "Südtiroler Platz-Hauptbahnhof",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4105,
+        4124
+      ],
+      "lat": 48.187194,
+      "lng": 16.373543
+    },
+    {
+      "name": "Taborstraße",
+      "lines": [
+        "u2"
+      ],
+      "aliases": [],
+      "rbl": [
+        4261,
+        4262
+      ],
+      "lat": 48.219193,
+      "lng": 16.381359
+    },
+    {
+      "name": "Taubstummengasse",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4107,
+        4122
+      ],
+      "lat": 48.193794,
+      "lng": 16.37035
+    },
+    {
+      "name": "Thaliastraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4608,
+        4621
+      ],
+      "lat": 48.20767,
+      "lng": 16.337912
+    },
+    {
+      "name": "Troststraße",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4129,
+        4138
+      ],
+      "lat": 48.168547,
+      "lng": 16.380501
+    },
+    {
+      "name": "Tscherttegasse",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4629,
+        4640
+      ],
+      "lat": 48.164742,
+      "lng": 16.327536
+    },
+    {
+      "name": "Unter St. Veit",
+      "lines": [
+        "u4"
+      ],
+      "aliases": [],
+      "rbl": [
+        4405,
+        4432
+      ],
+      "lat": 48.191081,
+      "lng": 16.286236
+    },
+    {
+      "name": "Volkstheater",
+      "lines": [
+        "u2",
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4206,
+        4209,
+        4908,
+        4909
+      ],
+      "lat": 48.205425,
+      "lng": 16.358481
+    },
+    {
+      "name": "Vorgartenstraße",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [],
+      "rbl": [
+        4110,
+        4119
+      ],
+      "lat": 48.223694,
+      "lng": 16.401166
+    },
+    {
+      "name": "Währinger Straße-Volksoper",
+      "lines": [
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4604,
+        4625
+      ],
+      "lat": 48.225672,
+      "lng": 16.349527
+    },
+    {
+      "name": "Westbahnhof",
+      "lines": [
+        "u3",
+        "u6"
+      ],
+      "aliases": [],
+      "rbl": [
+        4610,
+        4619,
+        4920,
+        4921
+      ],
+      "lat": 48.196396,
+      "lng": 16.338796
+    },
+    {
+      "name": "Zieglergasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4919,
+        4922
+      ],
+      "lat": 48.197144,
+      "lng": 16.346266
+    },
+    {
+      "name": "Zippererstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": [],
+      "rbl": [
+        4935,
+        4940
+      ],
+      "lat": 48.180268,
+      "lng": 16.41191
+    }
+  ]
+}
