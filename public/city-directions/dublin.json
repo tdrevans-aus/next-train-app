@@ -1,348 +1,281 @@
 {
   "Abbey Street": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Balally": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Ballyogan Wood": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Beechwood": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Belgard": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Blackhorse": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Bluebell": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Brides Glen": [
-    "Green",
     "Green + Broombridge"
   ],
   "Broadstone - University": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Broombridge": [
-    "Green",
     "Green + Brides Glen"
   ],
   "Busáras": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Cabra": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Carrickmines": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Central Park": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Charlemont": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Cheeverstown": [
-    "Red",
     "Red + Saggart",
     "Red + The Point"
   ],
   "Cherrywood": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Citywest Campus": [
-    "Red",
     "Red + Saggart",
     "Red + The Point"
   ],
   "Connolly": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght"
   ],
   "Cookstown": [
-    "Red",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Cowper": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Dawson": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Dominick": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Drimnagh": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Dundrum": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Fatima": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Fettercairn": [
-    "Red",
     "Red + Saggart",
     "Red + The Point"
   ],
   "Fortunestown": [
-    "Red",
     "Red + Saggart",
     "Red + The Point"
   ],
   "Four Courts": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "George's Dock": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Glencairn": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Goldenbridge": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Grangegorman": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Harcourt": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Heuston": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Hospital": [
-    "Red",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "James's": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Jervis": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Kilmacud": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Kingswood": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Kylemore": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Laughanstown": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Leopardstown Valley": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Marlborough": [
-    "Green",
     "Green + Brides Glen"
   ],
   "Mayor Square - NCI": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Milltown": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Museum": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "O'Connell - GPO": [
-    "Green",
     "Green + Broombridge"
   ],
   "O'Connell Upper": [
-    "Green",
     "Green + Broombridge"
   ],
   "Parnell": [
-    "Green",
     "Green + Brides Glen"
   ],
   "Phibsborough": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Ranelagh": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Red Cow": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Rialto": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Saggart": [
-    "Red",
     "Red + The Point"
   ],
   "Sandyford": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Smithfield": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Spencer Dock": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "St. Stephen's Green": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Stillorgan": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "Suir Road": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght",
     "Red + The Point"
   ],
   "Tallaght": [
-    "Red",
     "Red + The Point"
   ],
   "The Gallops": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ],
   "The Point": [
-    "Red",
     "Red + Saggart",
     "Red + Tallaght"
   ],
   "Trinity": [
-    "Green",
     "Green + Brides Glen"
   ],
   "Westmoreland": [
-    "Green",
     "Green + Broombridge"
   ],
   "Windy Arbour": [
-    "Green",
     "Green + Brides Glen",
     "Green + Broombridge"
   ]
