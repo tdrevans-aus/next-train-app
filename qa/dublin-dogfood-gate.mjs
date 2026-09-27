@@ -108,22 +108,31 @@ for (const service of ["DART", "Dublin Bus", "Bus Éireann", "Go-Ahead Ireland"]
 }
 
 const stations = listCatalogStations();
-// 66, not the D1 pack's 67 — Connolly is filtered out of the catalog (docs/jim-brief-
-// dublin-connolly-realtime-gap.md): the live NTA GTFS-RT v2 feed never carries a
-// stopTimeUpdate for either of Connolly's two stop_ids, confirmed against multiple live
-// polls during Dublin Sunday daytime service, 27 Sep 2026 (docs/dublin-d1/jim-handoff.md
-// appended entry). Per docs/board-eligibility-rule.md, filter the station rather than ship a
-// silently empty board.
-assert(stations.length === 66, `catalog must have 66 stations (Connolly filtered, see coverage.json), got ${stations.length}`);
+// 65, not the D1 pack's 67 — Connolly and Saggart are filtered out of the catalog
+// (docs/jim-brief-dublin-connolly-realtime-gap.md, docs/jim-brief-dublin-saggart-rialto-gaps.md):
+// the live NTA GTFS-RT v2 feed never carries a stopTimeUpdate for either of Connolly's or
+// Saggart's static stop_ids, confirmed against multiple live polls during Dublin Sunday daytime
+// service, 27 Sep 2026 (docs/dublin-d1/jim-handoff.md appended entries). Per
+// docs/board-eligibility-rule.md, filter the station rather than ship a silently empty board.
+assert(stations.length === 65, `catalog must have 65 stations (Connolly + Saggart filtered, see coverage.json), got ${stations.length}`);
 const byName = new Map(stations.map((s) => [s.name, s]));
 assert(byName.has(DUBLIN_HUB), `catalog must lock ${DUBLIN_HUB}`);
 assert(byName.get(DUBLIN_HUB)?.hub === true, "hub entry must carry hub:true");
 assert(!byName.has("Connolly"), "Connolly must NOT be in the catalog — no real-time coverage in the NTA feed");
+assert(!byName.has("Saggart"), "Saggart must NOT be in the catalog — no real-time coverage in the NTA feed (permanent, out-feed)");
+assert(byName.has("Rialto"), "Rialto must stay in the catalog — confirmed intermittent (10/10 non-empty on a dedicated 10-poll recheck), not permanent");
 
 const redStations = stations.filter((s) => s.lines.includes("red"));
 const greenStations = stations.filter((s) => s.lines.includes("green"));
-assert(redStations.length === 31, `Red must have 31 unique stops with Connolly filtered, got ${redStations.length}`);
+assert(redStations.length === 30, `Red must have 30 unique stops with Connolly + Saggart filtered, got ${redStations.length}`);
 assert(greenStations.length === 35, `Green must have 35 unique stops, got ${greenStations.length}`);
+
+// Saggart is filtered from the catalog/board, but it is still a printed Red Line terminus
+// (LINE_TERMINI.red) — the "Red + Saggart" direction chip must keep appearing at every upstream
+// stop naming where the tram is going, independent of catalog membership (docs/jim-brief-
+// dublin-saggart-rialto-gaps.md item 2: "it names where the tram goes, not a board you can open").
+assert(resolveTerminus("Saggart", "red") === "Saggart", "resolveTerminus must still resolve Saggart as a Red terminus after catalog filtering");
+assert(mapLineTerminusDestination("Saggart", "red") === "Red + Saggart", "the Red + Saggart direction chip must keep working even though Saggart's own board is filtered");
 
 // Coordinates (flip follow-through, docs/dublin-d1/jim-handoff.md) — every station
 // name-matched against the published NTA GTFS snapshot's stops.txt, and inside Dublin's own
@@ -140,7 +149,7 @@ for (const station of stations) {
 // resolveCatalogEntry — exact-match aliasing.
 assert(resolveCatalogEntry(DUBLIN_HUB)?.name === DUBLIN_HUB, "resolveCatalogEntry must resolve the hub by printed name");
 assert(resolveCatalogEntry("Tallaght")?.name === "Tallaght", "must resolve Tallaght");
-assert(resolveCatalogEntry("Saggart")?.name === "Saggart", "must resolve Saggart");
+assert(resolveCatalogEntry("Saggart") === null, "Saggart must not resolve as a catalog station — filtered for lack of NTA real-time coverage (still a valid Red terminus token, see LINE_TERMINI assertions above)");
 assert(resolveCatalogEntry("Broombridge")?.name === "Broombridge", "must resolve Broombridge");
 assert(resolveCatalogEntry("Brides Glen")?.name === "Brides Glen", "must resolve Brides Glen");
 assert(resolveCatalogEntry("Not A Real Station") === null, "resolveCatalogEntry must reject an unknown station");
@@ -156,8 +165,10 @@ assert(isForbiddenHubProxy(DUBLIN_HUB) === false, "the hub itself is not its own
 assert(foldKey("O'Connell - GPO") !== "", "foldKey must fold punctuation");
 assert(canonicalStationName("O'Connell GPO") === "O'Connell - GPO", "canonicalStationName must resolve the O'Connell - GPO alias");
 
-// doNotGroup same-family pairs stay distinct catalog entries.
-assert(byName.get("Tallaght") && byName.get("Saggart"), "Tallaght and Saggart must both exist as distinct Red termini");
+// doNotGroup same-family pairs stay distinct catalog entries. Saggart is filtered from the
+// catalog (out-feed) but Tallaght vs Saggart as distinct Red termini is still enforced at the
+// direction-model level via the resolveTerminus/mapLineTerminusDestination assertions above.
+assert(byName.get("Tallaght"), "Tallaght must exist as a catalog Red terminus");
 assert(byName.get("O'Connell - GPO") && byName.get("O'Connell Upper"), "O'Connell - GPO and O'Connell Upper must both exist as distinct Green stops");
 assert(byName.get("Red Cow") && byName.get("Kingswood") && byName.get("Belgard"), "Red Cow, Kingswood and Belgard must all exist as distinct consecutive Red stops");
 assert(!byName.get("Marlborough")?.lines.includes("red"), "Marlborough must be Green only, never Red");
@@ -209,7 +220,7 @@ assert(missingKeyThrew, "fetchStationBoard must throw MissingNtaApiKeyError when
 
 // Dogfood station list comes from the catalog, not a live parse.
 const dogfoodStations = listDublinDogfoodStations();
-assert(dogfoodStations.length === 66, `dogfood stations must be the 66 catalog names (Connolly filtered), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 65, `dogfood stations must be the 65 catalog names (Connolly + Saggart filtered), got ${dogfoodStations.length}`);
 assert(!dogfoodStations.some((row) => row.name === "Connolly"), "Connolly must not appear in the dogfood station list");
 assert(dogfoodStations.some((row) => row.name === DUBLIN_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodStations.every((row) => typeof row.lat === "number" && typeof row.lng === "number"), "every dogfood station must carry lat/lng");
@@ -269,6 +280,7 @@ assert(coverage.region === "dublin", "coverage.json region must be dublin");
 assert(coverage.covered.some((c) => /Luas/.test(c.label)), "coverage.json must record Luas as covered");
 assert(coverage.notCovered.some((c) => /DART|Iarnr/.test(c.label)), "coverage.json must explicitly record DART/Iarnród Éireann as not covered");
 assert(coverage.notCovered.some((c) => /Connolly/.test(c.label)), "coverage.json must explicitly record Connolly as not covered — no real-time data from the NTA feed");
+assert(coverage.notCovered.some((c) => /Saggart/.test(c.label)), "coverage.json must explicitly record Saggart as not covered — no real-time data from the NTA feed");
 
 // Picker/country-regions surfaces: NOT added ahead of the flip — a planned city gets
 // no picker entry at all, live or "Coming Soon" (Tim, 27 Sep 2026: "It's either in or
@@ -294,5 +306,5 @@ assert(!manifestCityIds.includes("dublin"), "the /api/cities manifest must not l
 assert(Boolean(CITY_BOUNDS.dublin), "lib/cities/city-bounds.js must carry a dublin box");
 
 console.log(
-  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses/Connolly out), 66 stations (Connolly filtered — no NTA real-time coverage) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly out, Perth Australia green)"
+  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses/Connolly/Saggart out), 65 stations (Connolly + Saggart filtered — no NTA real-time coverage; Rialto confirmed intermittent and kept in) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, Red + Saggart direction chip still works upstream, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly + Saggart out, Perth Australia green)"
 );

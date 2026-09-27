@@ -4,7 +4,7 @@
   "covered": [
     {
       "label": "Luas Red and Green Lines",
-      "detail": "66 of 67 Luas tram stops, live NTA GTFS-RT predictions only - a tram only appears once the realtime feed is actually confirming it, never backfilled from the printed timetable."
+      "detail": "65 of 67 Luas tram stops, live NTA GTFS-RT predictions only - a tram only appears once the realtime feed is actually confirming it, never backfilled from the printed timetable."
     }
   ],
   "partial": [],
@@ -12,6 +12,10 @@
     {
       "label": "Connolly Luas stop",
       "detail": "No real-time data from the NTA feed; use Busaras."
+    },
+    {
+      "label": "Saggart Luas stop",
+      "detail": "No real-time data from the NTA feed; use Fortunestown."
     },
     {
       "label": "DART / Iarnrod Eireann (commuter and intercity rail)",
@@ -22,6 +26,6 @@
       "detail": "Not a rail app."
     }
   ],
-  "stations": "66 Luas stops across the Red and Green Lines (Connolly excluded - no real-time coverage in the NTA feed, see notCovered).",
-  "notes": "Abbey Street is the Red Line hub; the Green Line interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a short walk away, not the same stop. Connolly (Red trunk, between George's Dock and Busaras) is filtered out of v1: the live NTA GTFS-RT v2 TripUpdates feed never carries a stopTimeUpdate for either of Connolly's two stop_ids (8220GA00423/8220GA00424), confirmed against multiple live polls during Dublin Sunday daytime service on 27 Sep 2026 - a real Red trip's own live stopTimeUpdate array skips straight from George's Dock to Busaras, omitting Connolly's slot entirely, while both neighbouring stops resolve correctly under their own stop_ids. Per docs/board-eligibility-rule.md, a station with no confirmable real-time service is filtered out of the app rather than shown with a silently empty board. The NTA live feed sometimes has no times for a stop for a few minutes; the app says so rather than showing a blank board."
+  "stations": "65 Luas stops across the Red and Green Lines (Connolly and Saggart excluded - no real-time coverage in the NTA feed, see notCovered).",
+  "notes": "Abbey Street is the Red Line hub; the Green Line interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a short walk away, not the same stop. Connolly (Red trunk, between George's Dock and Busaras) and Saggart (Red Line branch terminus) are filtered out of v1: the live NTA GTFS-RT v2 TripUpdates feed never carries a stopTimeUpdate for either stop's static stop_ids, confirmed against multiple live polls during Dublin Sunday daytime service (Connolly: 27 Sep 2026, three polls; Saggart: 27 Sep 2026, 20/20 polls over 15 min plus a further 6/6-poll corroboration, both against Fortunestown/Citywest Campus controls carrying 2-6 trips every poll on the same branch) - real trips' own live stopTimeUpdate arrays skip straight past these stops, omitting their slots entirely, while both neighbouring stops resolve correctly under their own stop_ids. The 'Red + Saggart' direction chip still appears at every upstream Red stop (Saggart is still a valid printed terminus, per lib/cities/dublin/marketing-directions.js's LINE_TERMINI list, independent of catalog/board membership) - only Saggart's own board is filtered, not the destination it names. Per docs/board-eligibility-rule.md, a station with no confirmable real-time service is filtered out of the app rather than shown with a silently empty board. The NTA live feed sometimes has no times for a stop for a few minutes; the app says so rather than showing a blank board (this covers Rialto, which showed the same shape as Red Cow's known intermittent feed gap on Mark's 3-poll sweep but resolved to 10/10 non-empty polls, 5-7 trips each, on a dedicated 10-poll/60s foreground recheck against Fatima/Suir Road controls on 27 Sep 2026 - kept in the catalog, not filtered)."
 }
