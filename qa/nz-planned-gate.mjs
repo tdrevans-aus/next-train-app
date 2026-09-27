@@ -76,7 +76,7 @@ assert(
   "Do not invent Melling Station while MEL terminates Western Hutt"
 );
 
-// Picker: New Zealand disappears entirely once both its regions are retired — no comingSoon flag.
+// Picker: New Zealand disappears entirely once both its regions are retired — no "Coming Soon" row.
 const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
 assert(!/id:\s*"nz"/.test(citySession), "New Zealand must not appear in the picker at all");
 assert(!/id:\s*"auckland"/.test(citySession), "auckland must not appear in the picker at all");

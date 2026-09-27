@@ -189,14 +189,10 @@ assert(
   !/id:\s*"jp"/.test(session) && !/id:\s*"osaka"/.test(session),
   "picker must not list Japan/Osaka at all (removed from the launch picker 4 Sep 2026; city stays planned in registry)"
 );
-// Anchor moved off melbourne's picker entry (flipped live 22 Sep 2026, comingSoon removed) to
-// bart's — see docs/jim-brief-melbourne-flip-unblock.md.
-assert(
-  /id:\s*"bart",\s*name:\s*"BART \(San Francisco Bay Area\)",\s*timeZone:\s*"America\/Los_Angeles",\s*comingSoon:\s*true/.test(
-    session
-  ),
-  "BART stays Coming Soon"
-);
+// Anchor moved off melbourne's picker entry (flipped live 22 Sep 2026) to BART's absence —
+// BART is key-blocked and has no picker row at all (no "Coming Soon" third state,
+// docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026), see docs/jim-brief-melbourne-flip-unblock.md.
+assert(!/id:\s*"bart"/.test(session), "BART must not appear in the picker at all");
 assert(/id:\s*"stockholm"/.test(session), "Stockholm must remain in the Sweden picker");
 assert(!/id:\s*"japan"/.test(session), "do not invent city=japan in the picker");
 assert(!/id:\s*"tokyo"|id:\s*"fukuoka"|id:\s*"nagoya"|id:\s*"osk"|id:\s*"osaka-metro"/.test(session), "do not start Tokyo / Fukuoka / Nagoya / osk");

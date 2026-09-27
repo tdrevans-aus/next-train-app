@@ -21,9 +21,11 @@ Your output is the adapter file, its tests, and the registry entry. Mark reads t
 
 ## Guardrails
 - One city per invocation, trailing Luke by roughly one city.
-- Don't add a "Coming Soon" picker entry to shared product UI for a new planned city (Tim's call,
-  30 Aug 2026) — go straight from `planned`/`adapterReady` to Mark's flip-PR once QA is green.
-  Existing Coming Soon entries for older cities stay as-is; don't backfill or remove them.
+- Don't add a "Coming Soon" picker entry to shared product UI for a new planned city — a city is
+  in the picker or it isn't, never a third state (Tim, 27 Sep 2026, superseding the 30 Aug 2026
+  call this replaced; docs/jim-brief-no-coming-soon-picker.md) — go straight from
+  `planned`/`adapterReady` to Mark's flip-PR once QA is green, and add its picker entry in that
+  same flip commit, never ahead of it.
 - Before starting, run `node qa/lane-lock.mjs check <country>`. If it's locked by a different region,
   stop and report that back. If free, run
   `node qa/lane-lock.mjs acquire <country> <region> jim <your-branch>` before editing `registry.js`

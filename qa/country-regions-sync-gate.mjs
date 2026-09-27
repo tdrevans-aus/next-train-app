@@ -12,15 +12,22 @@
  * 436 stations from the "All regions" view.
  *
  * This gate derives the expected city -> country map from city-session.js's
- * COUNTRIES table (which already lists every region meant to participate in
- * the country-wide picker, live or "(Coming Soon)") and asserts
- * country-regions.js's CITY_COUNTRY matches it exactly in both directions:
- * every picker region has a matching country-regions.js entry, and every
- * country-regions.js entry names a real registry city and has a matching
- * picker region. (Planned cities in countries the picker doesn't cover yet —
- * e.g. Osaka, Hong Kong, Brussels, Copenhagen, Boston — are out of scope for
- * this feature entirely, so they're correctly absent from both tables; this
- * gate leaves them alone rather than demanding entries that don't belong.)
+ * COUNTRIES table (which lists every region meant to participate in the
+ * country-wide picker) and asserts country-regions.js's CITY_COUNTRY matches
+ * it exactly in both directions: every picker region has a matching
+ * country-regions.js entry, and every country-regions.js entry names a real
+ * registry city and has a matching picker region. (Planned cities in
+ * countries the picker doesn't cover yet — e.g. Osaka, Hong Kong, Brussels,
+ * Copenhagen, Boston — are out of scope for this feature entirely, so
+ * they're correctly absent from both tables; this gate leaves them alone
+ * rather than demanding entries that don't belong.)
+ *
+ * A picker region is in or out, never a third "Coming Soon" state (Tim,
+ * 27 Sep 2026: "It's either in or out."; docs/jim-brief-no-coming-soon-picker.md):
+ * this gate also asserts no picker region carries the (removed) comingSoon
+ * flag, and that every picker region names a `status: "live"` registry city.
+ * A new city gets a picker entry in its own flip commit — never a comingSoon
+ * row ahead of it (Copenhagen #454 precedent).
  *
  * Offline pure-Node gate — no dev server. Usage: node qa/country-regions-sync-gate.mjs
  */
@@ -63,6 +70,20 @@ check(
 const registryIds = new Set(CITIES.map((city) => city.id));
 const registryById = new Map(CITIES.map((city) => [city.id, city]));
 
+// No third "Coming Soon" state, and no picker region for a city that isn't
+// actually live yet (docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026).
+for (const [id, { comingSoon }] of countryByCity) {
+  check(
+    !comingSoon,
+    `picker region "${id}" carries comingSoon — a city is in the picker or it isn't, never "Coming Soon" (docs/jim-brief-no-coming-soon-picker.md)`
+  );
+  const entry = registryById.get(id);
+  check(
+    entry && entry.status === "live",
+    `picker region "${id}" must name a status: "live" registry city (got ${entry ? entry.status : "no registry entry"})`
+  );
+}
+
 // 1. Every picker region (live or Coming Soon) must have a matching
 //    country-regions.js entry, with the same country.
 for (const [id, { country }] of countryByCity) {
@@ -93,7 +114,7 @@ for (const [id, country] of Object.entries(CITY_COUNTRY)) {
   }
   check(
     countryByCity.has(id),
-    `country-regions.js entry "${id}" (${country}) has no matching public/city-session.js picker region — add one (comingSoon if not live yet)`
+    `country-regions.js entry "${id}" (${country}) has no matching public/city-session.js picker region — only add one once the city is status: "live" (never a "Coming Soon" row ahead of the flip)`
   );
 }
 

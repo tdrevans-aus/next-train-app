@@ -196,17 +196,6 @@
     }
   }
 
-  function comingSoonRegionsForCountry(countryId) {
-    const id = String(countryId || "").trim().toLowerCase();
-    const country = (window.NextTrainCitySession?.COUNTRIES ?? []).find((entry) => entry.id === id);
-    if (!country) {
-      return [];
-    }
-    return country.regions
-      .filter((region) => region.comingSoon)
-      .map((region) => ({ id: region.id, name: region.name }));
-  }
-
   async function getStationsList() {
     const city = planningCityId();
     const dogfoodApi = window.NextTrainBrisbaneDogfood;
@@ -627,14 +616,11 @@
       return deps.formatStationLabel(station.name);
     }
 
-    function appendGroupHeader(label, { sticky = false, disabled = false } = {}) {
+    function appendGroupHeader(label, { sticky = false } = {}) {
       const header = document.createElement("li");
       header.className = "station-combobox-group-header";
       if (sticky) {
         header.classList.add("station-combobox-group-header--sticky");
-      }
-      if (disabled) {
-        header.classList.add("station-combobox-group-header--coming-soon");
       }
       header.setAttribute("role", "presentation");
       header.setAttribute("aria-disabled", "true");
@@ -828,10 +814,7 @@
         if (!matches.length) {
           const empty = document.createElement("li");
           empty.className = "station-combobox-empty";
-          const comingSoon = comingSoonRegionsForCountry(countryData?.countryId).map((r) => r.name);
-          empty.textContent = comingSoon.length
-            ? `No match. Coming soon in this country: ${comingSoon.join(", ")}`
-            : "No stations match";
+          empty.textContent = "No stations match";
           empty.setAttribute("aria-disabled", "true");
           list.appendChild(empty);
           appendCoverageRow();
@@ -884,13 +867,6 @@
         // Region already named by the sticky header, so the tag is redundant here.
         appendGroupHeader(group.displayName, { sticky: true });
         appendCountryStationRows(group.stations, { showTag: false, rowCounter });
-      }
-
-      if (!filterRegion) {
-        for (const region of comingSoonRegionsForCountry(countryData?.countryId)) {
-          anyRows = true;
-          appendGroupHeader(`${region.name} (Coming Soon)`, { sticky: true, disabled: true });
-        }
       }
 
       if (!anyRows) {

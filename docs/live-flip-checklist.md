@@ -16,10 +16,10 @@ picker country id (e.g. `se`).
 ## 1. Registry — `lib/providers/registry.js`
 
 - [ ] `status: "planned"` → `status: "live"` on the city's entry.
-- [ ] Rewrite the `notes` tail: drop "Picker Coming Soon. Do not flip live." and record the
-      flip ("Testers live (flipped by Tim <date>); not a store listing.") plus any standing
-      caveat that survives the flip (for Göteborg: "Boards are schedule-only until Trafiklab
-      publishes vt TripUpdates.").
+- [ ] Rewrite the `notes` tail: drop "Not in the picker until live. Do not flip live." (or
+      any older "Picker Coming Soon" wording) and record the flip ("Testers live (flipped by
+      Tim <date>); not a store listing.") plus any standing caveat that survives the flip
+      (for Göteborg: "Boards are schedule-only until Trafiklab publishes vt TripUpdates.").
 
 ## 2. Server API allowlist — `lib/cities/live-city-api.js`
 
@@ -38,8 +38,11 @@ picker country id (e.g. `se`).
 This file keeps **its own copy** of `MULTI_CITY_IDS`, separate from live-city-api's.
 
 - [ ] Add `<city>` to the file-local `MULTI_CITY_IDS`.
-- [ ] Remove `comingSoon: true` from the city's entry in `COUNTRIES` → regions. Leave planned
-      siblings' flags alone (Stockholm stayed `comingSoon: true` next to Göteborg).
+- [ ] Add the city's entry to `COUNTRIES` → regions (or, if it already has one from earlier
+      flip-readiness scaffolding, drop `comingSoon: true` from it). **Since 27 Sep 2026
+      (docs/jim-brief-no-coming-soon-picker.md) a planned city gets no picker entry at all —
+      cities are in or out, never "Coming Soon" — so for a normal new city this is where its
+      picker row is added for the first time, in this flip commit, not before it.**
 
 ## 5. Dogfood mount — `public/brisbane-dogfood.js`  *(missed by the Göteborg flip commit)*
 
@@ -72,20 +75,22 @@ assert about this city:
       `assertCityLive(<city>)?.ok === true`, registry `status === "live"`,
       `isMultiCity(<city>) === true`, and the source-regex checks now *require* the city in
       `LIVE_CITY_IDS` / `NEARBY_MULTI_CITY_IDS` / city-session `MULTI_CITY_IDS`, and require
-      the picker entry *not* comingSoon. Update the header comment and PASS line.
+      the picker entry to exist and not carry `comingSoon`. Update the header comment and PASS
+      line.
 - [ ] **`qa/<city>-line-map-conformance.mjs`**: same inversion of its C0 block
       (`assertCityLive` passes, status live, `isMultiCity` true); update header + PASS line.
 - [ ] **Sibling cities' gates**: any other gate asserting this city stays planned must flip
       that assertion. For Göteborg: `stockholm-dogfood-gate.mjs`
       (`assertCityLive("goteborg")?.ok === true`) and `stockholm-planned-gate.mjs` (its
-      picker regex no longer requires `comingSoon: true` on the Göteborg entry). Find them
-      with `grep -l <city> qa/*.mjs`.
+      picker regex no longer requires `comingSoon: true` on the Göteborg entry, or — since
+      27 Sep 2026 — no longer expects a Göteborg picker row to exist at all pre-flip). Find
+      them with `grep -l <city> qa/*.mjs`.
 - [ ] **`qa/bundled-city-directions.mjs`**: the city moves from the "bundled ahead of the
       flip" comment/tally into the `MULTI_CITY_IDS`-driven count; update the trailing
       console.log tally.
-- [ ] **`qa/region-selection.mjs`**: update the picker-label expectations — country label
-      loses "(Coming Soon)" if this was its first live city, the city's label loses
-      "(Coming Soon)", and `applyCity(<city>)` must now *succeed* (`afterX === "<city>"`).
+- [ ] **`qa/region-selection.mjs`**: update the picker-label expectations — the city's picker
+      row now exists (added in this flip commit, see section 4) and `applyCity(<city>)` must
+      now *succeed* (`afterX === "<city>"`).
 
 ## 8. Verify
 
@@ -98,9 +103,12 @@ assert about this city:
 `qa/live-city-lists-sync.mjs` (in the smoke suite, offline phase) derives the expected live
 set from `lib/providers/registry.js` (`status === "live"`) and asserts all the list copies in
 sections 2–6 agree: live-city-api `MULTI_CITY_IDS`, app.js `LIVE_CITY_IDS` +
-`NEARBY_MULTI_CITY_IDS`, city-session `MULTI_CITY_IDS` + picker `comingSoon` flags,
-brisbane-dogfood `MULTI_CITY_IDS` + `available`, and journey-model `PERSISTED_CITY_IDS` +
-`PERSISTED_COUNTRY_IDS` (via the picker's city→country mapping).
+`NEARBY_MULTI_CITY_IDS`, city-session `MULTI_CITY_IDS` + picker entries (present, not
+`comingSoon`), brisbane-dogfood `MULTI_CITY_IDS` + `available`, and journey-model
+`PERSISTED_CITY_IDS` + `PERSISTED_COUNTRY_IDS` (via the picker's city→country mapping).
+`qa/country-regions-sync-gate.mjs` additionally asserts no picker region ever carries
+`comingSoon` and every picker region names a `status: "live"` registry city
+(docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026).
 
 So in practice: flip the registry status (step 1), run the gate, and it enumerates every list
 still missing the city. Steps 7's per-city gate semantics remain manual — the sync gate
