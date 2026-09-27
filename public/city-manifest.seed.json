@@ -1,0 +1,1213 @@
+{
+  "contractVersion": 2,
+  "cities": [
+    {
+      "id": "sydney",
+      "displayName": "Sydney",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Sydney",
+      "bounds": {
+        "minLat": -34.15,
+        "maxLat": -33.45,
+        "minLng": 150.6,
+        "maxLng": 151.35
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "c5fc8744"
+    },
+    {
+      "id": "newcastle",
+      "displayName": "Newcastle",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Sydney",
+      "bounds": {
+        "minLat": -32.94,
+        "maxLat": -32.91,
+        "minLng": 151.75,
+        "maxLng": 151.8
+      },
+      "modes": [
+        "light_rail"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "1b12687d"
+    },
+    {
+      "id": "perth",
+      "displayName": "Perth",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Perth",
+      "bounds": {
+        "minLat": -32.8,
+        "maxLat": -31.4,
+        "minLng": 115.55,
+        "maxLng": 116.25
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": false,
+      "directionsVersion": null
+    },
+    {
+      "id": "gold-coast",
+      "displayName": "Gold Coast",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Brisbane",
+      "bounds": {
+        "minLat": -28.13,
+        "maxLat": -27.9,
+        "minLng": 153.32,
+        "maxLng": 153.46
+      },
+      "modes": [
+        "light_rail"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "e5eda256"
+    },
+    {
+      "id": "brisbane",
+      "displayName": "Brisbane",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Brisbane",
+      "bounds": {
+        "minLat": -28.2,
+        "maxLat": -27,
+        "minLng": 152.6,
+        "maxLng": 153.6
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "dbe192f8"
+    },
+    {
+      "id": "adelaide",
+      "displayName": "Adelaide",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Adelaide",
+      "bounds": {
+        "minLat": -35.3,
+        "maxLat": -34.55,
+        "minLng": 138.35,
+        "maxLng": 138.85
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "1e1d3c35"
+    },
+    {
+      "id": "melbourne",
+      "displayName": "Melbourne",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Melbourne",
+      "bounds": {
+        "minLat": -38.43,
+        "maxLat": -37.52,
+        "minLng": 144.6,
+        "maxLng": 145.56
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "39624d46"
+    },
+    {
+      "id": "uk-london-tfl",
+      "displayName": "London",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 51.28,
+        "maxLat": 51.7,
+        "minLng": -0.52,
+        "maxLng": 0.35
+      },
+      "modes": [
+        "tube",
+        "elizabeth-line",
+        "dlr",
+        "overground",
+        "tram"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "47bf305c"
+    },
+    {
+      "id": "canberra",
+      "displayName": "Canberra",
+      "status": "live",
+      "country": {
+        "id": "au",
+        "name": "Australia"
+      },
+      "timeZone": "Australia/Sydney",
+      "bounds": {
+        "minLat": -35.32,
+        "maxLat": -35.16,
+        "minLng": 149.1,
+        "maxLng": 149.17
+      },
+      "modes": [
+        "light_rail"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "7650ba4d"
+    },
+    {
+      "id": "stockholm",
+      "displayName": "Stockholm",
+      "status": "live",
+      "country": {
+        "id": "se",
+        "name": "Sweden"
+      },
+      "timeZone": "Europe/Stockholm",
+      "bounds": {
+        "minLat": 58.85,
+        "maxLat": 59.6,
+        "minLng": 17.5,
+        "maxLng": 18.4
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "f078f472"
+    },
+    {
+      "id": "goteborg",
+      "displayName": "Göteborg",
+      "status": "live",
+      "country": {
+        "id": "se",
+        "name": "Sweden"
+      },
+      "timeZone": "Europe/Stockholm",
+      "bounds": {
+        "minLat": 57.55,
+        "maxLat": 57.85,
+        "minLng": 11.75,
+        "maxLng": 12.25
+      },
+      "modes": [
+        "tram",
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "d55ba361"
+    },
+    {
+      "id": "copenhagen",
+      "displayName": "Copenhagen",
+      "status": "live",
+      "country": {
+        "id": "dk",
+        "name": "Denmark"
+      },
+      "timeZone": "Europe/Copenhagen",
+      "bounds": {
+        "minLat": 55.58,
+        "maxLat": 55.75,
+        "minLng": 12.4,
+        "maxLng": 12.68
+      },
+      "modes": [
+        "metro",
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "1a591a8c"
+    },
+    {
+      "id": "malmo",
+      "displayName": "Malmö",
+      "status": "live",
+      "country": {
+        "id": "se",
+        "name": "Sweden"
+      },
+      "timeZone": "Europe/Stockholm",
+      "bounds": {
+        "minLat": 55.3,
+        "maxLat": 56.75,
+        "minLng": 12.6,
+        "maxLng": 15.55
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "58b93d3e"
+    },
+    {
+      "id": "uppsala",
+      "displayName": "Uppsala",
+      "status": "live",
+      "country": {
+        "id": "se",
+        "name": "Sweden"
+      },
+      "timeZone": "Europe/Stockholm",
+      "bounds": {
+        "minLat": 59.3,
+        "maxLat": 60.75,
+        "minLng": 16.8,
+        "maxLng": 18.6
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "4bde25d5"
+    },
+    {
+      "id": "helsinki",
+      "displayName": "Helsinki",
+      "status": "live",
+      "country": {
+        "id": "fi",
+        "name": "Finland"
+      },
+      "timeZone": "Europe/Helsinki",
+      "bounds": {
+        "minLat": 60.13,
+        "maxLat": 60.25,
+        "minLng": 24.62,
+        "maxLng": 25.16
+      },
+      "modes": [
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "16210f7d"
+    },
+    {
+      "id": "oslo",
+      "displayName": "Oslo",
+      "status": "live",
+      "country": {
+        "id": "no",
+        "name": "Norway"
+      },
+      "timeZone": "Europe/Oslo",
+      "bounds": {
+        "minLat": 59.6,
+        "maxLat": 60.25,
+        "minLng": 10.4,
+        "maxLng": 11.2
+      },
+      "modes": [
+        "metro",
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "01605471"
+    },
+    {
+      "id": "brussels",
+      "displayName": "Brussels",
+      "status": "live",
+      "country": {
+        "id": "be",
+        "name": "Belgium"
+      },
+      "timeZone": "Europe/Brussels",
+      "bounds": {
+        "minLat": 50.79,
+        "maxLat": 50.92,
+        "minLng": 4.24,
+        "maxLng": 4.49
+      },
+      "modes": [
+        "metro",
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "f9d64a41"
+    },
+    {
+      "id": "vienna",
+      "displayName": "Vienna",
+      "status": "live",
+      "country": {
+        "id": "at",
+        "name": "Austria"
+      },
+      "timeZone": "Europe/Vienna",
+      "bounds": {
+        "minLat": 48.1,
+        "maxLat": 48.3,
+        "minLng": 16.22,
+        "maxLng": 16.55
+      },
+      "modes": [
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "9c805e4d"
+    },
+    {
+      "id": "hong-kong",
+      "displayName": "Hong Kong",
+      "status": "live",
+      "country": {
+        "id": "hk",
+        "name": "Hong Kong"
+      },
+      "timeZone": "Asia/Hong_Kong",
+      "bounds": {
+        "minLat": 22.21,
+        "maxLat": 22.56,
+        "minLng": 113.91,
+        "maxLng": 114.3
+      },
+      "modes": [
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "a0d974df"
+    },
+    {
+      "id": "uk-west-midlands",
+      "displayName": "West Midlands",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 52.25,
+        "maxLat": 52.7,
+        "minLng": -2.35,
+        "maxLng": -1.45
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "6a7848aa",
+      "feed": "darwin"
+    },
+    {
+      "id": "south-wales",
+      "displayName": "South Wales",
+      "status": "live",
+      "country": {
+        "id": "gb-wls",
+        "name": "Wales"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 51.35,
+        "maxLat": 51.8,
+        "minLng": -4.05,
+        "maxLng": -2.7
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "8d8e6dde",
+      "feed": "darwin"
+    },
+    {
+      "id": "west-of-england",
+      "displayName": "West of England",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 51.2,
+        "maxLat": 51.95,
+        "minLng": -3.15,
+        "maxLng": -2.1
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "0d93b24c",
+      "feed": "darwin"
+    },
+    {
+      "id": "east-midlands",
+      "displayName": "East Midlands",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 52.25,
+        "maxLat": 53.47,
+        "minLng": -2.01,
+        "maxLng": 0.34
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "a09fe756",
+      "feed": "darwin"
+    },
+    {
+      "id": "greater-anglia",
+      "displayName": "East Anglia",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": [
+        {
+          "minLat": 51.72,
+          "maxLat": 52.9,
+          "minLng": -0.3,
+          "maxLng": 1.8
+        },
+        {
+          "minLat": 51.6,
+          "maxLat": 51.7,
+          "minLng": 0.7,
+          "maxLng": 0.9
+        }
+      ],
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "811fb435",
+      "feed": "darwin"
+    },
+    {
+      "id": "greater-manchester",
+      "displayName": "Manchester",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 53.35,
+        "maxLat": 53.7,
+        "minLng": -2.54,
+        "maxLng": -2.01
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "d6f737e1",
+      "feed": "darwin"
+    },
+    {
+      "id": "south-yorkshire",
+      "displayName": "South Yorkshire",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 53.3,
+        "maxLat": 53.62,
+        "minLng": -1.63,
+        "maxLng": -0.95
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "004252b0",
+      "feed": "darwin"
+    },
+    {
+      "id": "north-east",
+      "displayName": "North East (Tyne and Wear)",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 54.85,
+        "maxLat": 55.8,
+        "minLng": -2.1,
+        "maxLng": -1.35
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "d5ed4c2b",
+      "feed": "darwin"
+    },
+    {
+      "id": "liverpool-city-region",
+      "displayName": "Liverpool City Region",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 53.25,
+        "maxLat": 53.7,
+        "minLng": -3.1,
+        "maxLng": -2.55
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "a671f092",
+      "feed": "darwin"
+    },
+    {
+      "id": "solent",
+      "displayName": "Solent (Southampton / Portsmouth)",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 50.75,
+        "maxLat": 51.55,
+        "minLng": -2.3,
+        "maxLng": -0.05
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "982fa5a2",
+      "feed": "darwin"
+    },
+    {
+      "id": "west-yorkshire",
+      "displayName": "West Yorkshire",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 53.55,
+        "maxLat": 53.95,
+        "minLng": -2.4,
+        "maxLng": -1.25
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "5bdcdd06",
+      "feed": "darwin"
+    },
+    {
+      "id": "thames-valley",
+      "displayName": "Thames Valley (Reading / Oxford)",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 51,
+        "maxLat": 52.1,
+        "minLng": -2.25,
+        "maxLng": -0.5
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "0c277893",
+      "feed": "darwin"
+    },
+    {
+      "id": "rest-of-wales",
+      "displayName": "North, Mid & West Wales",
+      "status": "live",
+      "country": {
+        "id": "gb-wls",
+        "name": "Wales"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 51.55,
+        "maxLat": 53.4,
+        "minLng": -5.5,
+        "maxLng": -2.6
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "6b0859ea",
+      "feed": "darwin"
+    },
+    {
+      "id": "glasgow",
+      "displayName": "Glasgow",
+      "status": "live",
+      "country": {
+        "id": "gb-sct",
+        "name": "Scotland"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 55.4,
+        "maxLat": 56.01,
+        "minLng": -4.89,
+        "maxLng": -3.66
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "3b877eb2",
+      "feed": "darwin"
+    },
+    {
+      "id": "edinburgh",
+      "displayName": "Edinburgh",
+      "status": "live",
+      "country": {
+        "id": "gb-sct",
+        "name": "Scotland"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 55.82,
+        "maxLat": 56.06,
+        "minLng": -3.8,
+        "maxLng": -2.51
+      },
+      "modes": [
+        "train",
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "9913dba3",
+      "feed": "darwin"
+    },
+    {
+      "id": "rest-of-scotland",
+      "displayName": "Aberdeen / Inverness / Dundee",
+      "status": "live",
+      "country": {
+        "id": "gb-sct",
+        "name": "Scotland"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 54.9,
+        "maxLat": 58.6,
+        "minLng": -5.9,
+        "maxLng": -2
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "0137c8e1",
+      "feed": "darwin"
+    },
+    {
+      "id": "london-se-national-rail",
+      "displayName": "London & South East National Rail",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 50.7,
+        "maxLat": 51.7,
+        "minLng": -0.51,
+        "maxLng": 1.44
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "d39c38b8",
+      "feed": "darwin"
+    },
+    {
+      "id": "southwest",
+      "displayName": "South West (Devon / Cornwall)",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 50.05,
+        "maxLat": 51.3,
+        "minLng": -5.6,
+        "maxLng": -3
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "c97135ff",
+      "feed": "darwin"
+    },
+    {
+      "id": "cumbria",
+      "displayName": "Cumbria",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 54,
+        "maxLat": 55,
+        "minLng": -3.6,
+        "maxLng": -2.2
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "8042a12e",
+      "feed": "darwin"
+    },
+    {
+      "id": "rest-of-england",
+      "displayName": "Rest of England",
+      "status": "live",
+      "country": {
+        "id": "gb-eng",
+        "name": "England"
+      },
+      "timeZone": "Europe/London",
+      "bounds": {
+        "minLat": 50.6,
+        "maxLat": 54.85,
+        "minLng": -3.6,
+        "maxLng": 1.45
+      },
+      "modes": [
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "46326d71",
+      "feed": "darwin"
+    },
+    {
+      "id": "boston",
+      "displayName": "Boston",
+      "status": "live",
+      "country": {
+        "id": "us",
+        "name": "United States"
+      },
+      "timeZone": "America/New_York",
+      "bounds": {
+        "minLat": 42.15,
+        "maxLat": 42.48,
+        "minLng": -71.3,
+        "maxLng": -70.95
+      },
+      "modes": [
+        "metro",
+        "train"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "b4e00710"
+    },
+    {
+      "id": "washington",
+      "displayName": "Washington, D.C.",
+      "status": "live",
+      "country": {
+        "id": "us",
+        "name": "United States"
+      },
+      "timeZone": "America/New_York",
+      "bounds": {
+        "minLat": 38.72,
+        "maxLat": 39.17,
+        "minLng": -77.55,
+        "maxLng": -76.8
+      },
+      "modes": [
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "0bf31190"
+    }
+  ],
+  "countries": [
+    {
+      "id": "au",
+      "name": "Australia",
+      "regions": [
+        {
+          "id": "adelaide",
+          "name": "Adelaide",
+          "timeZone": "Australia/Adelaide"
+        },
+        {
+          "id": "brisbane",
+          "name": "Brisbane",
+          "timeZone": "Australia/Brisbane"
+        },
+        {
+          "id": "canberra",
+          "name": "Canberra",
+          "timeZone": "Australia/Sydney"
+        },
+        {
+          "id": "gold-coast",
+          "name": "Gold Coast",
+          "timeZone": "Australia/Brisbane"
+        },
+        {
+          "id": "melbourne",
+          "name": "Melbourne",
+          "timeZone": "Australia/Melbourne"
+        },
+        {
+          "id": "newcastle",
+          "name": "Newcastle",
+          "timeZone": "Australia/Sydney"
+        },
+        {
+          "id": "perth",
+          "name": "Perth",
+          "timeZone": "Australia/Perth"
+        },
+        {
+          "id": "sydney",
+          "name": "Sydney",
+          "timeZone": "Australia/Sydney"
+        }
+      ]
+    },
+    {
+      "id": "at",
+      "name": "Austria",
+      "regions": [
+        {
+          "id": "vienna",
+          "name": "Vienna",
+          "timeZone": "Europe/Vienna"
+        }
+      ]
+    },
+    {
+      "id": "be",
+      "name": "Belgium",
+      "regions": [
+        {
+          "id": "brussels",
+          "name": "Brussels",
+          "timeZone": "Europe/Brussels"
+        }
+      ]
+    },
+    {
+      "id": "gb-eng",
+      "name": "England",
+      "regions": [
+        {
+          "id": "cumbria",
+          "name": "Cumbria",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "greater-anglia",
+          "name": "East Anglia",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "east-midlands",
+          "name": "East Midlands",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "liverpool-city-region",
+          "name": "Liverpool City Region",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "uk-london-tfl",
+          "name": "London",
+          "timeZone": "Europe/London"
+        },
+        {
+          "id": "london-se-national-rail",
+          "name": "London & South East National Rail",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "greater-manchester",
+          "name": "Manchester",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "north-east",
+          "name": "North East (Tyne and Wear)",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "rest-of-england",
+          "name": "Rest of England",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "solent",
+          "name": "Solent (Southampton / Portsmouth)",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "southwest",
+          "name": "South West (Devon / Cornwall)",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "south-yorkshire",
+          "name": "South Yorkshire",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "thames-valley",
+          "name": "Thames Valley (Reading / Oxford)",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "uk-west-midlands",
+          "name": "West Midlands",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "west-of-england",
+          "name": "West of England",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "west-yorkshire",
+          "name": "West Yorkshire",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        }
+      ]
+    },
+    {
+      "id": "dk",
+      "name": "Denmark",
+      "regions": [
+        {
+          "id": "copenhagen",
+          "name": "Copenhagen",
+          "timeZone": "Europe/Copenhagen"
+        }
+      ]
+    },
+    {
+      "id": "fi",
+      "name": "Finland",
+      "regions": [
+        {
+          "id": "helsinki",
+          "name": "Helsinki",
+          "timeZone": "Europe/Helsinki"
+        }
+      ]
+    },
+    {
+      "id": "hk",
+      "name": "Hong Kong",
+      "regions": [
+        {
+          "id": "hong-kong",
+          "name": "Hong Kong",
+          "timeZone": "Asia/Hong_Kong"
+        }
+      ]
+    },
+    {
+      "id": "no",
+      "name": "Norway",
+      "regions": [
+        {
+          "id": "oslo",
+          "name": "Oslo",
+          "timeZone": "Europe/Oslo"
+        }
+      ]
+    },
+    {
+      "id": "gb-sct",
+      "name": "Scotland",
+      "regions": [
+        {
+          "id": "rest-of-scotland",
+          "name": "Aberdeen / Inverness / Dundee",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "edinburgh",
+          "name": "Edinburgh",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "glasgow",
+          "name": "Glasgow",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        }
+      ]
+    },
+    {
+      "id": "se",
+      "name": "Sweden",
+      "regions": [
+        {
+          "id": "goteborg",
+          "name": "Göteborg",
+          "timeZone": "Europe/Stockholm"
+        },
+        {
+          "id": "malmo",
+          "name": "Malmö",
+          "timeZone": "Europe/Stockholm"
+        },
+        {
+          "id": "stockholm",
+          "name": "Stockholm",
+          "timeZone": "Europe/Stockholm"
+        },
+        {
+          "id": "uppsala",
+          "name": "Uppsala",
+          "timeZone": "Europe/Stockholm"
+        }
+      ]
+    },
+    {
+      "id": "us",
+      "name": "United States",
+      "regions": [
+        {
+          "id": "boston",
+          "name": "Boston",
+          "timeZone": "America/New_York"
+        },
+        {
+          "id": "washington",
+          "name": "Washington, D.C.",
+          "timeZone": "America/New_York"
+        }
+      ]
+    },
+    {
+      "id": "gb-wls",
+      "name": "Wales",
+      "regions": [
+        {
+          "id": "rest-of-wales",
+          "name": "North, Mid & West Wales",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        },
+        {
+          "id": "south-wales",
+          "name": "South Wales",
+          "timeZone": "Europe/London",
+          "feed": "darwin"
+        }
+      ]
+    }
+  ],
+  "docs": "docs/multi-city-provider-design.md"
+}

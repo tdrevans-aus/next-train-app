@@ -95,12 +95,35 @@ jobs:
       - name: Verify bundled city-directions
         run: node qa/bundled-city-directions.mjs
 
-      - name: Check only the target file changed
+      # Regenerated after city-directions (docs/jim-brief-registry-driven-client.md): each
+      # manifest city's directionsVersion is a content hash of its own city-directions/<id>.json,
+      # so the seed must be rebuilt whenever that file's content just changed.
+      - name: Regenerate city manifest seed
+        run: node scripts/write-city-manifest.mjs
+
+      - name: Check only the expected files changed
         id: diff
         run: |
           git status --porcelain > /tmp/status.txt
           cat /tmp/status.txt
-          expected="public/city-directions/$CITY.json"
+          # scripts/write-city-manifest.mjs always regenerates BOTH seed files together
+          # (renderCityManifestSeedFiles) — seed.js is city-manifest.js's synchronous embed
+          # (docs/jim-brief-registry-driven-client.md follow-up) and must be allow-listed
+          # alongside seed.json, or a real run here fails on "unexpected files changed".
+          expected=(
+            "public/city-directions/$CITY.json"
+            "public/city-manifest.seed.json"
+            "public/city-manifest.seed.js"
+          )
+          is_expected() {
+            local candidate="$1"
+            for path in "${expected[@]}"; do
+              if [ "$candidate" = "$path" ]; then
+                return 0
+              fi
+            done
+            return 1
+          }
           other_changes=""
           while IFS= read -r line; do
             [ -z "$line" ] && continue
@@ -108,16 +131,16 @@ jobs:
             if [[ "$path" == *" -> "* ]]; then
               old_path="${path%% -> *}"
               new_path="${path##* -> }"
-              if [ "$old_path" = "$expected" ] || [ "$new_path" = "$expected" ]; then
+              if is_expected "$old_path" || is_expected "$new_path"; then
                 continue
               fi
-            elif [ "$path" = "$expected" ]; then
+            elif is_expected "$path"; then
               continue
             fi
             other_changes="$other_changes$line"$'\n'
           done < /tmp/status.txt
           if [ -n "$other_changes" ]; then
-            echo "::error::Unexpected files changed besides $expected:"
+            echo "::error::Unexpected files changed besides ${expected[*]}:"
             echo "$other_changes"
             exit 1
           fi
@@ -132,6 +155,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "public/city-directions/$CITY.json"
-          git commit -m "Generate city-directions/$CITY.json in CI"
+          git add "public/city-directions/$CITY.json" "public/city-manifest.seed.json" "public/city-manifest.seed.js"
+          git commit -m "Generate city-directions/$CITY.json + city-manifest.seed.{json,js} in CI"
           git push origin "HEAD:$BRANCH"

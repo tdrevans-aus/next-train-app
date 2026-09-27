@@ -47,18 +47,25 @@ module, and the dispatch switch-cases in `live-city-api.js` (see Jim's guardrail
 missing, flag it back rather than opening an incomplete PR — Helsinki's flip-PR (#164) shipped
 without even its own adapter files committed, and had to be fixed after the fact.
 
-On a new branch, make **one commit** that bundles: the `status` line in `lib/providers/registry.js`
-from `"planned"` to `"live"`, plus the three one-line list additions Jim will have flagged and left
-uncommitted on purpose (`MULTI_CITY_IDS`/the `MultiCityId` typedef in `live-city-api.js`,
-`brisbane-dogfood.js`'s mount + available map, `journey-model.js`'s persisted-city/country lists).
-These three *must* land in the same commit as the status flip, never before it —
-`qa/live-city-lists-sync.mjs` enforces that those lists exactly equal the registry's live-city set,
-so adding a city to them while still `planned` breaks the gate for every other city, and this repo's
-branch protection means that broken state would sit on a real branch, not just locally. In the same
-commit, also run `node scripts/write-city-directions.mjs --only=<city>` and commit the resulting
-`public/city-directions/<city>.json` — `qa/bundled-city-directions.mjs` (smoke tier) fails without it. Run the
-smoke suite after making this commit, not just before, to confirm the bundle is actually
-self-consistent. Then open a PR with your checklist results as the description, **labelled `flip`**
+**Since docs/jim-brief-registry-driven-client.md (27 Sep 2026) the flip commit is one line
+again.** The client no longer bundles its own copy of "which cities exist" — it loads
+`/api/cities`'s manifest (`window.CityManifest`) at runtime — so on a new branch, make **one
+commit** that bundles: the `status` line in `lib/providers/registry.js` from `"planned"` to
+`"live"` (plus, if this is the country's first region, its entry in
+`lib/cities/country-regions.js`'s `CITY_COUNTRY`/`COUNTRY_NAMES` and
+`lib/cities/city-bounds.js`'s `CITY_BOUNDS`); the one server-side list that still must stay in
+sync, `live-city-api.js`'s `MULTI_CITY_IDS`/the `MultiCityId` typedef (this is the actual
+authorization gate `directionsFor`/`getMultiCityNextTrain` use, not a client copy, so it's
+still real work, just one file instead of four); `node scripts/write-city-directions.mjs
+--only=<city>` and its resulting `public/city-directions/<city>.json`
+(`qa/bundled-city-directions.mjs`, smoke tier, fails without it); and
+`node scripts/write-city-manifest.mjs`, committing the regenerated
+`public/city-manifest.seed.{json,js}` (`qa/live-city-lists-sync.mjs`'s seed-matches-script check
+fails without it). `public/app.js`, `public/city-session.js`, `public/brisbane-dogfood.js`, and
+`public/journey-model.js` are **not** touched by a flip any more — if you find yourself editing
+any of them for a flip, stop, you're following stale instructions. Run the smoke suite after
+making this commit, not just before, to confirm the bundle is actually self-consistent. Then
+open a PR with your checklist results as the description, **labelled `flip`**
 (`gh pr create --label flip ...`), and start the description with the line
 "Merges automatically after 12h unless held: add the `hold` label, comment, or close to stop it."
 Never merge that PR yourself and never touch `status` on `main` directly. The decision to flip is

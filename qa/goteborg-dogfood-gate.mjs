@@ -14,7 +14,8 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { assertLiveBoardTripsHaveDisplayTimes } from "../lib/providers/contract.js";
-import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain, MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import {
@@ -149,16 +150,13 @@ for (const row of catalogJson.stations ?? []) {
   }
 }
 
-// Visible to the live app: picker + visibility wiring must include goteborg.
-const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*goteborg/.test(appJs), "goteborg must be in LIVE_CITY_IDS");
-assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*goteborg/.test(appJs), "goteborg must be in NEARBY_MULTI_CITY_IDS");
-const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(/MULTI_CITY_IDS = \[[^\]]*goteborg/.test(citySession), "goteborg must be in city-session MULTI_CITY_IDS");
-assert(
-  !/\{ id: "goteborg"[^}]*comingSoon: true/.test(citySession),
-  "goteborg's city-session entry must not be comingSoon after the flip"
-);
+// Visible to the live app: the /api/cities manifest (which now drives the picker, nearby
+// eligibility, and persistence client-side, docs/jim-brief-registry-driven-client.md) and
+// live-city-api's MULTI_CITY_IDS (the dogfood-mount authorization gate) must both include
+// goteborg now that it's flipped live.
+const manifestCityIds = buildCityManifest().cities.map((c) => c.id);
+assert(manifestCityIds.includes("goteborg"), "goteborg must be in the /api/cities manifest");
+assert(MULTI_CITY_IDS.includes("goteborg"), "goteborg must be in live-city-api MULTI_CITY_IDS");
 
 // Dogfood station list + directions come from the catalog, not GTFS parses.
 const stations = listGoteborgDogfoodStations();

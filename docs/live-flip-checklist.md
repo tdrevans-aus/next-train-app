@@ -13,6 +13,26 @@ agent's (see CLAUDE.md).
 Throughout, `<city>` is the registry city id (e.g. `goteborg`) and `<cc>` is its two-letter
 picker country id (e.g. `se`).
 
+**Superseded by docs/jim-brief-registry-driven-client.md (27 Sep 2026).** Sections 3–6 below
+(the `public/app.js` `LIVE_CITY_IDS`/`NEARBY_MULTI_CITY_IDS` lists, `public/city-session.js`'s
+own `MULTI_CITY_IDS` + `COUNTRIES` table, `public/brisbane-dogfood.js`'s `MULTI_CITY_IDS` +
+`available` map, and `public/journey-model.js`'s `PERSISTED_CITY_IDS`/`PERSISTED_COUNTRY_IDS`)
+no longer exist — the client now loads all of that from the `/api/cities` manifest
+(`window.CityManifest`, built by `lib/cities/city-manifest.js` from the registry,
+`lib/cities/country-regions.js`, and `lib/cities/city-bounds.js`) instead of bundling its own
+copy, so a flip is now just: (1) flip `status` in the registry (section 1 below, plus adding
+the city's country/region and bounds-box data there if it's the country's first region —
+`lib/cities/country-regions.js`'s `CITY_COUNTRY`/`COUNTRY_NAMES` and
+`lib/cities/city-bounds.js`'s `CITY_BOUNDS`); (2) regenerate the seed via
+`node scripts/write-city-manifest.mjs` and commit `public/city-manifest.seed.{json,js}`; (3) keep
+`lib/cities/live-city-api.js`'s `MULTI_CITY_IDS` in sync (section 2 below — this one server-side
+list is unchanged, it's the actual authorization gate, not a client copy). Sections 3–6's
+step-by-step instructions are kept below for history/context only — do not follow them for a
+flip after this date. `qa/live-city-lists-sync.mjs` (rewritten the same day) now checks the
+registry, `live-city-api.js`, the built manifest, and that no hardcoded city-id list survives
+in `public/*.js` outside `public/city-manifest.js`, plus that both seed files
+(`public/city-manifest.seed.{json,js}`) match what the script would produce right now.
+
 ## 1. Registry — `lib/providers/registry.js`
 
 - [ ] `status: "planned"` → `status: "live"` on the city's entry.

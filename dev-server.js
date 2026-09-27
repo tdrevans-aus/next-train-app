@@ -10,15 +10,17 @@ import {
   PERTH_CLUSTER_STATIONS,
 } from "./lib/train-times.js";
 import {
+  CITY_MANIFEST_FIXTURES,
   FIXTURE_CATALOG,
   getFixtureDirections,
   getFixtureNextTrainData,
   listFixtures,
 } from "./lib/fixtures.js";
+import { buildCityManifest } from "./lib/cities/city-manifest.js";
 import { checkRateLimit } from "./lib/api-rate-limit.js";
 import { resolveDirectionsForStation } from "./lib/cities/perth/static-directions.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
-import { listCities, assertCityLive, getCity, CITIES } from "./lib/providers/registry.js";
+import { assertCityLive, getCity, CITIES } from "./lib/providers/registry.js";
 import { isKnownCountry, regionIdsForCountry } from "./lib/cities/country-regions.js";
 import { applyCors } from "./lib/api-cors.js";
 import { isCityProbeAllowed, fetchDevCityBoard } from "./lib/dev-city-board.js";
@@ -132,13 +134,14 @@ app.get("/api/ready", (_req, res) => {
     });
 });
 
-app.get("/api/cities", (_req, res) => {
+app.get("/api/cities", (req, res) => {
   res.setHeader("Cache-Control", "public, s-maxage=300");
-  res.json({
-    contractVersion: 1,
-    cities: listCities(),
-    docs: "docs/multi-city-provider-design.md",
-  });
+  // Dev-server-only fixture support (TESTING.md — never honoured in production):
+  // ?fixture=testville layers a fake extra live city into the manifest with zero
+  // client code change (docs/jim-brief-registry-driven-client.md scenario a).
+  const fixtureId = String(req.query.fixture ?? "").trim().toLowerCase();
+  const extraCities = fixtureId && CITY_MANIFEST_FIXTURES[fixtureId] ? [CITY_MANIFEST_FIXTURES[fixtureId]] : [];
+  res.json(buildCityManifest({ extraCities }));
 });
 
 app.get("/api/next-train", async (req, res) => {

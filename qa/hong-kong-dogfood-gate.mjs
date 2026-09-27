@@ -25,6 +25,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 import {
   METRO_HUB,
   HONG_KONG_TIMEZONE,
@@ -463,11 +464,13 @@ assert(foldKey("Kowloon Station") === "kowloon", "foldKey must strip a trailing 
 
 assert(HONG_KONG_TIMEZONE === "Asia/Hong_Kong", "HONG_KONG_TIMEZONE must be Asia/Hong_Kong");
 
-// Picker + live lists: now populated as part of this same flip commit
-// (qa/live-city-lists-sync.mjs and qa/country-regions-sync-gate.mjs check they equal exactly
-// the live-city set, and are run separately in the flip checklist).
-const session = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(/id:\s*"hong-kong"/.test(session), "picker must now list Hong Kong (flipped live)");
+// Picker + live lists: now populated as part of this same flip commit. The picker is built
+// server-side from the /api/cities manifest (docs/jim-brief-registry-driven-client.md), so
+// check that directly rather than parsing public/city-session.js (qa/live-city-lists-sync.mjs
+// and qa/country-regions-sync-gate.mjs check the full set equals the live-city set exactly,
+// and are run separately in the flip checklist).
+const manifestCityIds = buildCityManifest().cities.map((c) => c.id);
+assert(manifestCityIds.includes("hong-kong"), "picker must now list Hong Kong (flipped live)");
 
 const pkg = readFileSync(join(ROOT, "package.json"), "utf8");
 assert(!/"hong-kong"/.test(pkg), "do not add hong-kong scripts or bump version for a live-flip commit");

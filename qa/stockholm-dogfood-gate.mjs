@@ -8,7 +8,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
-import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import {
@@ -122,24 +123,16 @@ for (const name of MARK_PROBES) {
 }
 assert(!byName.has("Göteborg") && ![...byName.keys()].some((name) => /gothenburg|goteborg/i.test(name)), "Göteborg is not this city");
 
-// Visible to the live app: picker + visibility wiring must include stockholm.
-const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*stockholm/.test(appJs), "stockholm must be in LIVE_CITY_IDS");
-assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*stockholm/.test(appJs), "stockholm must be in NEARBY_MULTI_CITY_IDS");
-const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(
-  /id:\s*"stockholm",\s*name:\s*"Stockholm",\s*timeZone:\s*"Europe\/Stockholm"/.test(citySession),
-  "stockholm must be a picker entry"
-);
-assert(
-  !/id:\s*"stockholm"[^}]*comingSoon:\s*true/.test(citySession),
-  "stockholm's city-session entry must not be comingSoon after the flip"
-);
-assert(
-  /id:\s*"goteborg",\s*name:\s*"Göteborg",\s*timeZone:\s*"Europe\/Stockholm"/.test(citySession),
-  "Göteborg is a separate picker sibling, not merged into Stockholm"
-);
-assert(/MULTI_CITY_IDS = \[[^\]]*stockholm/.test(citySession), "stockholm must be in city-session MULTI_CITY_IDS");
+// Visible to the live app: the /api/cities manifest (which now drives the picker, nearby
+// eligibility, and persistence client-side, docs/jim-brief-registry-driven-client.md) and
+// live-city-api's MULTI_CITY_IDS (the dogfood-mount authorization gate) must both include
+// stockholm now that it's flipped live, with Göteborg present as a separate sibling entry
+// (not merged into Stockholm).
+const manifest = buildCityManifest();
+const manifestCityIds = manifest.cities.map((c) => c.id);
+assert(manifestCityIds.includes("stockholm"), "stockholm must be in the /api/cities manifest");
+assert(manifestCityIds.includes("goteborg"), "Göteborg is a separate manifest entry, not merged into Stockholm");
+assert(MULTI_CITY_IDS.includes("stockholm"), "stockholm must be in live-city-api MULTI_CITY_IDS");
 
 // Dogfood station list + directions come from the catalog.
 const stations = listStockholmDogfoodStations();

@@ -34,6 +34,14 @@ function loadDogfoodApi(delaysByCity) {
     location: { hostname: "next-train.example", port: "" },
     Capacitor: undefined,
     nextTrainStationCombobox: undefined,
+    // brisbane-dogfood.js reads window.CityManifest.isLiveCity() instead of a hardcoded
+    // MULTI_CITY_IDS array (docs/jim-brief-registry-driven-client.md) — this test only
+    // exercises the mount() race itself, not manifest loading, so stub every non-perth id
+    // as live (matching every city this test actually mounts: sydney, adelaide).
+    CityManifest: {
+      isLiveCity: (id) => id !== "perth",
+      directionsVersion: () => null,
+    },
   };
   const sandbox = {
     window: windowObj,

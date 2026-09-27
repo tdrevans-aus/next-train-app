@@ -188,6 +188,8 @@ const SMOKE_SCRIPTS = [
   "bundled-city-directions.mjs",
   "lane-lock-shared-worktree.mjs",
   "ios-no-ad-free.mjs",
+  /** Registry-driven client — docs/jim-brief-registry-driven-client.md. */
+  "registry-driven-client.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

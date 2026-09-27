@@ -7,7 +7,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
-import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { UPPSALA_HUB } from "../lib/cities/uppsala/marketing-directions.js";
@@ -67,22 +68,13 @@ for (const name of [
 const catalogJson = JSON.parse(readFileSync(join(ROOT, "lib/cities/uppsala/stations.json"), "utf8"));
 assert((catalogJson.stations ?? []).length === 19, `19 unique station names, got ${(catalogJson.stations ?? []).length}`);
 
-// Visible to the live app: picker + visibility wiring must include uppsala.
-const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*uppsala/.test(appJs), "uppsala must be in LIVE_CITY_IDS");
-assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*uppsala/.test(appJs), "uppsala must be in NEARBY_MULTI_CITY_IDS");
-const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(/MULTI_CITY_IDS = \[[^\]]*uppsala/.test(citySession), "uppsala must be in city-session MULTI_CITY_IDS");
-assert(
-  !/\{ id: "uppsala"[^}]*comingSoon: true/.test(citySession),
-  "uppsala's city-session entry must not be comingSoon after the flip"
-);
-const brisbaneDogfood = readFileSync(join(ROOT, "public/brisbane-dogfood.js"), "utf8");
-assert(/MULTI_CITY_IDS = \[[^\]]*uppsala/.test(brisbaneDogfood), "uppsala must be in brisbane-dogfood MULTI_CITY_IDS");
-assert(/available: \{[^}]*uppsala: true/.test(brisbaneDogfood), "uppsala must be in brisbane-dogfood available map");
-const journeyModel = readFileSync(join(ROOT, "public/journey-model.js"), "utf8");
-assert(/PERSISTED_CITY_IDS = new Set\(\[[^\]]*"uppsala"/.test(journeyModel), "uppsala must be in journey-model PERSISTED_CITY_IDS");
-assert(/PERSISTED_COUNTRY_IDS = new Set\(\[[^\]]*"se"/.test(journeyModel), "se must be in journey-model PERSISTED_COUNTRY_IDS");
+// Visible to the live app: the /api/cities manifest (which now drives the picker, nearby
+// eligibility, and persistence client-side, docs/jim-brief-registry-driven-client.md) and
+// live-city-api's MULTI_CITY_IDS (the dogfood-mount authorization gate) must both include
+// uppsala now that it's flipped live.
+const manifestCityIds = buildCityManifest().cities.map((c) => c.id);
+assert(manifestCityIds.includes("uppsala"), "uppsala must be in the /api/cities manifest");
+assert(MULTI_CITY_IDS.includes("uppsala"), "uppsala must be in live-city-api MULTI_CITY_IDS");
 
 // Dogfood station list + directions come from the catalog, not GTFS parses.
 const stations = listUppsalaDogfoodStations();

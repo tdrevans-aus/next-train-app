@@ -1,7 +1,13 @@
 import { applyCors } from "../lib/api-cors.js";
-import { listCities } from "../lib/providers/registry.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 
-/** Lists planned/live cities — plumbing for multi-city; no upstream calls. */
+/**
+ * City manifest — the server-side source of truth for "which cities exist" that the
+ * client used to bake into seven hand-maintained list copies
+ * (docs/jim-brief-registry-driven-client.md). contractVersion 2: every live city carries
+ * displayName/country/timeZone/bounds/modes/nearbyEligible/directionsVersion, plus a
+ * `countries` picker tree. No upstream calls — pure registry/static-data plumbing.
+ */
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
     return;
@@ -14,9 +20,5 @@ export default async function handler(req, res) {
   }
 
   res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
-  res.status(200).json({
-    contractVersion: 1,
-    cities: listCities(),
-    docs: "docs/multi-city-provider-design.md",
-  });
+  res.status(200).json(buildCityManifest());
 }
