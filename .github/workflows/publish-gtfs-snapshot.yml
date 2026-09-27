@@ -82,7 +82,7 @@ jobs:
       # check_only still runs this — it's what proves the *already-published* snapshot is sane.
       - name: Verify published snapshot (dublin)
         if: inputs.city == 'dublin'
-        run: node qa/verify-dublin-gtfs-snapshot.mjs
+        run: node qa/verify-dublin-gtfs-snapshot.mjs --print-stops
 
       # Proves NTA GTFS-RT v2 TripUpdates trip_ids actually join to the published snapshot's
       # trip_ids — sandboxes can't reach NTA or the blob store, so this only ever runs here,
