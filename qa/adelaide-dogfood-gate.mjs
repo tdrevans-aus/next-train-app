@@ -20,7 +20,7 @@ import {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 import { readAdelaideMetroApiKey } from "../lib/providers/gtfs/auth.js";
-import { loadAdelaideStatic } from "../lib/providers/adelaide.js";
+import { loadAdelaideStatic, fetchStationBoard } from "../lib/providers/adelaide.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 
@@ -152,6 +152,31 @@ assert(
   "H2: missing key must be an empty string, not a throw"
 );
 
+// docs/jim-brief-adelaide-gate-overnight.md: a hard `next !== null` assertion against the live
+// feed goes red for real during Adelaide's no-service window (~00:00-05:30 ACST) — the #439
+// mechanism this exists to catch is a *matching* bug (a real scheduled trip silently not
+// resolving to its chip), not the absence of any trip at all. Distinguish the two by checking
+// the same live board fetch the dogfood path itself uses, but by the trip's raw routeShortName
+// (BEL) rather than by tripMatchesMarketingChip/isTerminatingAtStation — the very functions the
+// regression check exists to exercise, so re-using them here would just echo the same bug back
+// instead of independently confirming a trip genuinely exists.
+async function assertLegacyNextTrainOrNoService({ label, station, next }) {
+  if (next !== null) {
+    return;
+  }
+  const board = await fetchStationBoard(station);
+  const belairTripsOnBoard = board.trips.filter(
+    (trip) => String(trip.routeShortName || "").toUpperCase() === "BEL"
+  );
+  assert(
+    belairTripsOnBoard.length === 0,
+    `${label} must return a non-null next train — this is the exact production regression from #439 (docs/jim-brief-adelaide-city-bound-rows-missing.md); ${belairTripsOnBoard.length} live Belair-line trip(s) exist on ${station}'s board right now, so a null "next" is a matching bug, not an empty timetable`
+  );
+  console.log(
+    `adelaide-dogfood-gate: ${label} — no Belair line service currently scheduled at ${station} (${board.trips.length} total trips on the board right now); genuine overnight gap, not the #439 regression — skipping the non-null assertion.`
+  );
+}
+
 if (previous === undefined) {
   delete process.env.ALLOW_CITY_PROBES;
 } else {
@@ -177,10 +202,11 @@ assert(
   legacyOutboundNextTrain.config?.destinationLabel === "Belair",
   "legacy label request must echo the canonical destinationLabel"
 );
-assert(
-  legacyOutboundNextTrain.next !== null,
-  'legacy label "Belair line Belair" from Adelaide Railway Station must return a non-null next train'
-);
+await assertLegacyNextTrainOrNoService({
+  label: 'legacy label "Belair line Belair" from Adelaide Railway Station',
+  station: "Adelaide Railway Station",
+  next: legacyOutboundNextTrain.next,
+});
 
 const legacyHubNextTrain = await getMultiCityNextTrain("adelaide", {
   station: "Goodwood",
@@ -192,10 +218,11 @@ assert(
   legacyHubNextTrain.config?.destination === "Adelaide Railway Station (Belair line)",
   `legacy hub-bound label must resolve to canonical "Adelaide Railway Station (Belair line)", got ${legacyHubNextTrain.config?.destination}`
 );
-assert(
-  legacyHubNextTrain.next !== null,
-  'Goodwood towards "Adelaide Railway Station (Belair line)" must return a non-null next train — this is the exact production regression from #439 (docs/jim-brief-adelaide-city-bound-rows-missing.md)'
-);
+await assertLegacyNextTrainOrNoService({
+  label: 'Goodwood towards "Adelaide Railway Station (Belair line)"',
+  station: "Goodwood",
+  next: legacyHubNextTrain.next,
+});
 
 console.log(
   "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips (terminus-only/Perth style), Goodwood's hub-bound chips carry the line name, terminating-here filter, hub-bound chips proven to have real captured trips behind them (city-bound feed destination \"City\" recognised), Osborne short-workings attributed to their line, BART stays planned, snapshot not stale today)"
