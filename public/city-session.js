@@ -197,6 +197,15 @@
     // stops.txt: lat 53.242-53.372, lng -6.438..-6.143) with a small margin. Doesn't overlap
     // any other region's box, so its position here doesn't affect containment order.
     dublin: { minLat: 53.20, maxLat: 53.40, minLng: -6.48, maxLng: -6.10 },
+    // Hong Kong (docs/jim-brief-hong-kong-station-coordinates.md, 27 Sep 2026) — still
+    // planned, not in the picker; this box exists only to satisfy
+    // qa/live-city-lists-sync.mjs's CITY_BOUNDS-for-every-live-city check ahead of the flip.
+    // Box derived from lib/cities/hong-kong/stations.json's 95 catalogued stations, all now
+    // carrying real lat/lng sourced from OpenStreetMap (no official data.gov.hk/MTR coordinate
+    // dataset exists — see coverage.json's notes): lat 22.242-22.528, lng 113.941-114.269,
+    // with a small margin. No other region's box is anywhere near Hong Kong, so containment
+    // order doesn't matter here.
+    "hong-kong": { minLat: 22.21, maxLat: 22.56, minLng: 113.91, maxLng: 114.30 },
     "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
     // south-wales is listed BEFORE west-of-england so hintCityFromCoords's
     // first-match lookup resolves the Severn-estuary stations correctly:
