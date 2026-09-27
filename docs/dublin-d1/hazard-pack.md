@@ -170,3 +170,30 @@ automated sweep was a transient feed-gap sighting, the same shape as Red Cow/Kyl
 intermittent under-reporting (jim-handoff.md, 27 Sep 2026 entry) — not the permanent Connolly/Saggart
 shape. **Rialto is left in the catalog**, covered by the honest empty state (PR #481) for the rare
 poll where the feed briefly has nothing to say for it.
+
+## H8 — NTA per-stop real-time dropout: three observed shapes (added 27 Sep 2026, docs/jim-brief-dublin-sweep-evidence-memory.md)
+
+Across the Connolly/Saggart/Red Cow/Rialto/Marlborough/Broombridge investigations above, the NTA
+GTFS-RT v2 TripUpdates feed's per-stop dropout behaviour resolves into exactly three shapes, and
+telling them apart needs evidence across time, not a single poll:
+
+1. **Permanent (never observed non-empty).** Connolly and Saggart: whole-feed scans and
+   dedicated multi-poll checks, spanning both morning and afternoon sessions the same day, never
+   once found a `stopTimeUpdate` naming either stop's static stop_ids. Filtered out of the catalog
+   (`lib/cities/dublin/stations.json` + `coverage.json` `notCovered`), terminus chip kept where
+   applicable (Saggart).
+2. **Transient (single-poll or few-minutes gap).** Red Cow/Kylemore (~5-10 min at a time,
+   resolving within the same session), Rialto (one narrow 3-poll sweep flagged it; a longer
+   10-poll/60s check found it non-empty throughout). Covered by the honest empty state (PR #481);
+   no catalog action.
+3. **Long intermittent (10+ minutes, up to the ~20-minute shape seen at Marlborough, but observed
+   working at another point the same day).** Broombridge: empty 24/24 polls over ~11 minutes in
+   Mark's QA-6 run, but non-empty ~30 minutes earlier the same day. Marlborough: empty for a full
+   20-minute sweep window, recovered on a 5-poll follow-up minutes later. A single sweep run's own
+   1.5x-headway threshold cannot tell shape 3 apart from shape 1 — both look identical from inside
+   one run. `qa/dublin-all-stations-live-sweep.mjs` now resolves this with an append-only evidence
+   log (`docs/dublin-d1/live-sweep-log.jsonl`): a station is only classified permanent (shape 1) if
+   it has never been observed non-empty in any run logged within the last 7 days; otherwise a
+   >= 1.5x-headway empty run is classified `intermittent-long` (shape 3, passes, honest-empty-state
+   signal still required) rather than failed. No catalog action for shape 3 — Broombridge keeps its
+   own board and its `Green + Broombridge` terminus chip.

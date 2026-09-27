@@ -393,3 +393,42 @@ A re-run of `qa/dublin-all-stations-live-sweep.mjs` a few minutes later (under t
 "uncertain" (empty the whole 9-minute run, headway 7min, but the run ended before reaching its own
 1.5x/~10.5min threshold) rather than failing it — exactly the graceful "re-run to confirm" behaviour
 the new threshold rule is designed to produce for a borderline case, not a hard failure.
+
+## Correction, 27 Sep 2026 (Jim, docs/jim-brief-dublin-sweep-evidence-memory.md) — sweep gained evidence memory; Broombridge is a long intermittent gap, not permanent
+
+Mark's QA-6 note (`docs/dublin-d1/mark-qa-note.md`, run on `mark/dublin-flip-6`) found **Broombridge**
+(the Green Line's northern terminus) continuously empty across 24/24 polls over ~11 minutes
+(~16:21-16:30 Europe/Dublin: 18 automated polls plus a 6-poll foreground corroboration against
+Cabra, its immediate Green neighbour, which stayed non-empty every poll on the same headway) —
+the exact shape the sweep uses to flag Connolly/Saggart as permanent. Mark correctly flagged it
+rather than filtering it himself, and correctly noted it needed a verdict, not an assumption.
+
+It is not permanent. Earlier the same day (~16:00 Europe/Dublin, during PR #484's flip-commit
+rider-path live check), Broombridge returned `Green + Brides Glen` with a real trip (`next` not
+null) — i.e. non-empty, less than half an hour before Mark's 24-empty-poll window began. A single
+sweep run's own 1.5x-headway threshold (Broombridge's own headway is ~5min, so its threshold is
+~7.5min; 11 minutes empty clears it) cannot distinguish "empty this run, but working fine earlier
+today" from "never once worked" — that distinction needs evidence across runs, not just within
+one.
+
+`qa/dublin-all-stations-live-sweep.mjs` now keeps that evidence: every run appends a JSONL record
+to `docs/dublin-d1/live-sweep-log.jsonl` (per-station headway, poll counts, and whether it was
+ever seen non-empty that run). A station continuously empty for >= 1.5x its own headway in the
+current run is classified `intermittent-long` (passes, honest-empty-state signal still required)
+if it has been observed non-empty in any run logged within the last 7 days — Broombridge's case,
+seeded into the log from the evidence above — and only classified permanent (fails) if it has
+never once been observed non-empty in that window, which remains true for Connolly/Saggart (both
+already filtered out of the catalog, so the sweep no longer polls them at all, but their seed
+entries stay in the log for the record).
+
+Per the brief: **Broombridge is not filtered.** It stays in `lib/cities/dublin/stations.json` (65
+stations, unchanged) and keeps appearing as the `Green + Broombridge` terminus chip at every
+upstream Green stop — this is a feed-availability characteristic honest-empty-state (PR #481)
+already covers correctly, not a per-station coverage hole like Connolly/Saggart.
+`lib/cities/dublin/coverage.json`'s intermittent-gap note is updated to say this plainly (some
+stops, including termini such as Broombridge, can go 10+ minutes without live predictions) and
+now names Red Cow, Kylemore, Marlborough, Rialto and Broombridge as the five stations already
+observed in this shape, each confirmed non-empty earlier or later the same day (27 Sep 2026).
+`docs/live-flip-checklist.md` §9 is corrected to say permanent means "never observed non-empty
+across runs" rather than "empty this run" — the wording that led to Mark's understandable
+first-pass PERMANENT classification here.
