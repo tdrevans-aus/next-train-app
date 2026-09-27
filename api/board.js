@@ -19,6 +19,7 @@ import {
   DEFAULT_REFRESH_SECONDS,
 } from "../lib/train-times-server.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
+import { FeedUnavailableError } from "../lib/providers/gtfs/errors.js";
 
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
@@ -105,7 +106,7 @@ export default async function handler(req, res) {
       }
     }
 
-    const entries = await Promise.all(
+    const results = await Promise.all(
       directions.map(async (direction) => {
           try {
             const data = await getMultiCityNextTrain(city, {
@@ -118,15 +119,30 @@ export default async function handler(req, res) {
             return { direction, data };
           } catch (error) {
             console.warn(`[api/board] Failed to fetch ${direction} for ${station}:`, error.message);
-            return null;
+            return { direction, error };
           }
         })
       );
 
+      const entries = results.filter((entry) => entry.data).map(({ direction, data }) => ({ direction, data }));
+
+      // jim-brief-sydney-board-oom-on-429: a feed outage (every direction
+      // failing with FeedUnavailableError) must read as "unavailable", never
+      // as a synthetic empty board — a rider seeing zero trains on a 200
+      // looks like "nothing scheduled", not "come back shortly".
+      const feedFailure = results.find((entry) => entry.error instanceof FeedUnavailableError)?.error;
+      if (entries.length === 0 && feedFailure) {
+        res.status(503).json({
+          error: "Live times are temporarily unavailable — please try again shortly.",
+          code: "PROVIDER_UNAVAILABLE",
+        });
+        return;
+      }
+
       res.status(200).json({
         stationName: station,
         lastUpdated: now.toISOString(),
-        entries: entries.filter(Boolean),
+        entries,
       });
       return;
     }
@@ -183,7 +199,7 @@ export default async function handler(req, res) {
       });
       return;
     }
-    if (error?.name === "MissingDarwinTokenError") {
+    if (error?.name === "MissingDarwinTokenError" || error instanceof FeedUnavailableError) {
       res.status(503).json({
         error: "Live times are temporarily unavailable — please try again shortly.",
         code: "PROVIDER_UNAVAILABLE",
