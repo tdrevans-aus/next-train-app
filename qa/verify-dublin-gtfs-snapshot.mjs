@@ -11,6 +11,12 @@
  * contains Luas stops (not an empty or synthetic snapshot).
  *
  * Usage: node qa/verify-dublin-gtfs-snapshot.mjs
+ *        node qa/verify-dublin-gtfs-snapshot.mjs --print-stops
+ *
+ * `--print-stops` additionally dumps the full stops.txt (stop_id, stop_name) from the
+ * just-published snapshot, one per line, so the real Luas stop names/IDs can be captured
+ * for docs/dublin-d1/ when a sandbox can't reach the blob store directly
+ * (docs/jim-brief-dublin-flip-fixes.md, Fix 1).
  */
 import { unzipSync } from "../lib/vendor/fflate.mjs";
 import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
@@ -100,7 +106,21 @@ function inspectRoutesAndStops(files) {
   return problems;
 }
 
+function printStops(files) {
+  const stopsKey = findEntry(files, "stops.txt");
+  if (!stopsKey) {
+    throw new Error("Published snapshot has no stops.txt.");
+  }
+  const stops = parseCsv(readEntryText(files, stopsKey));
+  console.log(`\n--- stops.txt (${stops.length} rows) ---`);
+  console.log("stop_id | stop_name");
+  for (const stop of stops) {
+    console.log(`${stop.stop_id ?? ""} | ${stop.stop_name ?? ""}`);
+  }
+}
+
 async function main() {
+  const printStopsMode = process.argv.includes("--print-stops");
   const url = gtfsFixtureBlobUrl("dublin");
   const response = await fetch(url);
   if (!response.ok) {
@@ -113,6 +133,11 @@ async function main() {
   }
 
   const files = unzipSync(new Uint8Array(buffer));
+
+  if (printStopsMode) {
+    printStops(files);
+  }
+
   const stopsKey = findEntry(files, "stops.txt");
   if (!stopsKey) {
     throw new Error("Published snapshot has no stops.txt.");
