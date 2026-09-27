@@ -1,202 +1,212 @@
-# Dublin (Luas Red + Green) — pre-flip QA note
+# Dublin (Luas Red + Green) — pre-flip QA note (run 7)
 
 **Verdict: RED. Do not flip. No PR opened.**
 
-Run by Mark on `mark/dublin-flip` (cut from master @ afc44ce), 2026-09-27.
+Run by Mark on `mark/dublin-flip-7` (cut from `origin/master` @ `a50a153`, PR #486 merged —
+live sweep evidence-memory + intermittent-long classification), 2026-09-27, ~16:43–17:09 UTC
+(Sunday afternoon, full Luas service, ~300–325 total live network trips per poll — healthy feed).
 
-## Summary
+This is the first pass since #486 landed the evidence-memory fix for run 6's Broombridge
+blocker. Items 1–3, 5, 6 and the live rider-path spot-check under item 4 are all clean. The
+smoke suite (item 7) surfaced a new, Dublin-specific, genuine blocker that was invisible before
+this run because it only fires for `status: "live"` cities: `qa/coverage-notes-gate.mjs` fails
+against `lib/cities/dublin/coverage.json`'s top-level `notes` field. This blocks the flip on its
+own; everything else is ready.
 
-The adapter itself (`lib/providers/dublin.js`), its D1 pack, and the static/RT feed all check
-out clean — see the green items below. But the **flip follow-through Jim's guardrails require
-before any status-flip PR is opened has not been done**: there is no `qa/dublin-dogfood-gate.mjs`,
-no `lib/cities/dublin/dogfood-next-train.js` module, and — critically — **no `dublin` dispatch
-case in `lib/cities/live-city-api.js`, and `dublin` is not in `MULTI_CITY_IDS`.**
+## 1. Board eligibility (docs/board-eligibility-rule.md)
 
-I verified this is not just a missing-file nitpick — it breaks the actual rider path. `api/board.js`
-and `api/directions.js` only know two shapes: `isMultiCity(city)` (dispatches to
-`getMultiCityDirections`/`getMultiCityNextTrain`, which have per-city `if (cityId === "...")`
-branches) or the hardcoded Perth fallback. Dublin is in neither. Flipping only
-`lib/providers/registry.js`'s `status` to `"live"` would make `assertCityLive("dublin")` pass, but
-`api/board.js` would then fall through to the **Perth-specific branch** (`resolveAllowedStation`,
-which only knows Perth station names) — never touching `lib/providers/dublin.js` at all. I
-confirmed this live against a local dev server (registry still `planned`, so this reproduces the
-current-state failure mode, not a hypothetical):
+PASS. docs/dublin-d1/oracle-clash-report.md Board eligibility section has no undecided rows.
+Six verdict rows: Luas Red `in`, Luas Green `in`, DART `out-product` (v2), Dublin Bus/Bus Eireann/
+Go-Ahead Ireland `out-mode`, Connolly Luas stop `out-feed`, Saggart Luas stop `out-feed`. Boards
+are Luas-only in both the catalog and the live rider-facing response (verified below).
 
-```
-curl "http://localhost:3411/api/board?city=dublin&station=Abbey Street"
--> {"error":"City not implemented yet (planned)", ...}   # correct today, registry still planned
+## 2. Live-only grep on lib/providers/dublin.js
 
-curl "http://localhost:3411/api/directions?city=dublin&station=Abbey Street"
--> {"error":"Unknown station"}   # wrong even today - proves directions dispatch has no dublin
-                                   # case at all, independent of the registry status gate
-```
+PASS. `tripHasRealtimeConfirmation()`/`classifyAndFilterDublinTrips()` require every trip shown
+to carry a real RT `stopTimeUpdate` or trip-level delay; `scheduledCandidates` (schedule-only,
+never shown as live) is kept only to drive the honest-empty-state distinction.
+`MissingNtaApiKeyError` propagates rather than falling back to a timetable board when the key is
+absent. Same live-only posture cited against `lib/providers/melbourne.js` and
+docs/jim-brief-boston-subway-live-predictions.md. One stale comment: the file header still says
+"NTA_API_KEY was NOT available this session" — it *was* available this run (`.env.local` has
+it) — cosmetic only, does not affect behaviour, flagging rather than fixing.
 
-`/api/directions` already proves the gap: it doesn't even go through `assertCityLive`, and it
-still can't find Abbey Street, because `isMultiCity("dublin")` is `false` and the Perth-only
-`resolveDirectionsForStation` doesn't know Luas stations. This is exactly the Helsinki #164 failure
-mode the guardrails call out — a flip PR that ships a status change with no working rider path
-behind it. Per my brief: "If that's missing, flag it back rather than opening an incomplete PR."
+## 3. GTFS snapshot / RT join / all-stations live sweep — PASS
 
-## What's missing (blocking)
+- `node qa/verify-dublin-gtfs-snapshot.mjs` — PASS. 2 routes (Red/Green), 1 agency (LUAS), 128
+  distinct stops used by kept trips, 465,806 bytes, published to blob and fetched 200.
+- `node --env-file=.env.local qa/dublin-rt-join-check.mjs` — PASS. 2,330 total TripUpdates in
+  the live feed; 57 identified as Luas; 57/57 (100%) resolved against the static snapshot. Zero
+  unmatched trip_ids.
+- `node --env-file=.env.local qa/dublin-all-stations-live-sweep.mjs` — **PASS**, exit 0. Full
+  9-minute, 18-poll, headway-aware sweep, ~16:51–17:00 UTC (17:51–18:00 Dublin time), 300–325
+  total live trips per poll throughout (healthy feed, not a quiet period):
 
-- `lib/cities/live-city-api.js`: no `dublin` entry in `MULTI_CITY_IDS`, no `if (cityId ===
-  "dublin")` dispatch case in `getMultiCityDirections`/`getMultiCityNextTrain`.
-- No `lib/cities/dublin/dogfood-next-train.js` (the per-city dogfood module every other
-  live-flipped multi-city relies on - see `melbourne`/`copenhagen`/`boston` equivalents).
-- No `qa/dublin-dogfood-gate.mjs` (the planned gate, `qa/dublin-planned-gate.mjs`, still asserts
-  `status === "planned"` and `assertCityLive("dublin").ok === false` - it would need to be
-  replaced/complemented, not just left in place, once a flip is real).
-- `public/brisbane-dogfood.js`: no `dublin` mount / `available` map entry.
-- `public/journey-model.js`: no `dublin` in the persisted-city list (only `melbourne`,
-  `copenhagen`, etc. appear).
-- No `lib/cities/dublin/coverage.json` (rider-facing coverage copy - "Luas only, DART not
-  covered" - doesn't exist anywhere yet).
-- No `dublin`/`ireland` entry in `lib/cities/country-regions.js`, and no `Ireland` country /
-  `CITY_BOUNDS` box in `public/city-session.js` or `public/app.js`.
-- No `public/city-directions/dublin.json` (never generated - `scripts/write-city-directions.mjs
-  --only=dublin` hasn't been run).
+      dublin-all-stations-live-sweep: ok — every catalog station either had live trips, a long
+      intermittent gap backed by evidence-memory, or a properly-flagged honest empty state
+      within its own 1.5x-headway threshold
 
-None of this is something I can fix myself (flag, don't fix). This is a job for a fresh Jim
-dispatch in bug-fix/flip-follow-through mode, pointed at this note plus
-`docs/dublin-d1/jim-handoff.md`.
+  No station required `intermittent-long`/`uncertain` classification this run — every one of
+  the 65 catalog stations cleared its own headway threshold on live trips alone (checked the
+  script's stdout directly: no `intermittent-long`/`uncertain`/`permanent` line appears anywhere
+  in the run's output). The evidence log (docs/dublin-d1/live-sweep-log.jsonl) gained one more
+  clean entry (`sweep-2026-09-27T16:53:06.033Z`) with three stations showing partial (not
+  continuous) empty polls this run — Tallaght (6/18 non-empty), The Point (5/18), Marlborough
+  (16/18) — all three ended the run with `emptyRunSeconds: 0`, i.e. no ongoing empty streak at
+  cutoff, so none tripped the 1.5x-headway failure condition. Per the updated 27 Sep §9 rule
+  (permanent only if never once observed non-empty in the 7-day evidence window), and given this
+  run's own healthy per-station trip counts throughout, this is unambiguously a clean pass, not
+  a borderline one — Broombridge, Cowper and Marlborough (the three the brief called out by
+  name) all showed live, real-time-confirmed trips on both the sweep and the item-4 spot-check
+  below.
 
-## Checklist results (informational - recorded even though the run stops here)
+## 4. Rider-facing /api/board + /api/directions, flip-commit state
 
-1. **Board eligibility** - GREEN. `docs/dublin-d1/oracle-clash-report.md` has a full Board
-   eligibility section, all four verdicts recorded (`in`/`in`/`out-product`/`out-mode`), no
-   `undecided` rows. Adapter-level filtering matches: `classifyLuasLineId()` returns `null` (drops
-   the trip) for anything that isn't Red/Green by name or hex colour, so a stray DART/bus trip on
-   a shared `stop_id` can never reach a rider even before the mode-cut filter is considered. (Full
-   end-to-end board sampling blocked by item 2 below - the rider-facing dispatch doesn't reach
-   Dublin at all yet, so there is no live board to sample against the real API.)
+Made the flip-commit edits (registry status live, dublin added to MULTI_CITY_IDS/typedef,
+country-regions.js ie/Ireland entries + COUNTRY_ORDER, regenerated city-directions/dublin.json
+via `node --env-file=.env.local scripts/write-city-directions.mjs --only=dublin` [65/65 stations
+with chips] and city-manifest.seed.* via `node scripts/write-city-manifest.mjs` [42 cities, 13
+countries]) in this worktree to exercise the real rider path on a dev server on an explicit free
+port (3011, never 3000 — occupied by another app this session). Reverted all of it once item 7
+turned up the coverage-notes-gate blocker below — nothing in this section should be read as
+"ready to flip"; it is the evidence that the rider path itself is fine and the only problem is
+the coverage.json wording.
 
-2. **Live-only, no static-as-live-time** - GREEN. `grep -n "realtime:\|loadGtfsStatic\|stop_times"
-   lib/providers/dublin.js`:
-   - `loadGtfsStatic` (line 105, via `loadDublinStatic()`) is used only to resolve stop_id/trip_id
-     - never a departure-time source.
-   - `realtime: true` is set unconditionally on the returned board object (line 214) - and
-     backed by `tripHasRealtimeConfirmation()` (lines 132-135), which drops any trip the RT feed
-     didn't actually confirm (no `stop_time_update` for that stop, no trip-level delay) *before*
-     that flag is ever set. No `stop_times` grep hit at all - this adapter never reads a static
-     `stop_times.txt` departure time as a rider-facing time.
-   - Stated explicitly: **no departure TIME in this adapter comes from static GTFS; static is
-     stop-id/trip-id resolution only**, same posture as Melbourne (the Boston-lesson pattern is
-     followed correctly here).
+All ten sampled stations responded well under 3s in steady state (typically ~2.05–2.15s; two
+isolated ~5s outliers — Abbey Street's very first cold call, and one mid-sequence call to The
+Point — both explained by the shared 20s in-process TripUpdates cache TTL being crossed by
+sequential different-station requests spread over ~20s+; this is the same cache every other
+GTFS-RT city here uses, not a new regression, and no call approached a timeout):
 
-3. **Live cross-check against real NTA feed** - GREEN, with a caveat on sample size, and BLOCKED
-   on rider-path sampling.
-   - `NTA_API_KEY` is present and valid in `.env.local` (32 chars).
-   - `node qa/verify-dublin-gtfs-snapshot.mjs` -> **ok**: published snapshot is real
-     (`https://n1sivhxcnzarmc6t.public.blob.vercel-storage.com/gtfs/dublin.zip`, 465,806 bytes),
-     2 routes (Red/Green, `route_type 0`), 1 agency (LUAS), 128 distinct stops used by kept trips.
-   - `node qa/dublin-rt-join-check.mjs` (run with the real key loaded from `.env.local`) ->
-     **5/5 (100%) of tellably-Luas TripUpdates resolved against the published snapshot's
-     `trips.txt`** - every Luas trip_id sampled in the live feed joined cleanly. Below the script's
-     own `STALE_MIN_JUDGABLE_TRIP_UPDATES` (20) threshold to auto-pass/fail on share alone, so it
-     printed "sample too small to judge" rather than "ok" - **not a failure, just an inconclusive
-     sample size**. This is a real-clock-time effect, not a feed problem: the check ran at ~00:59
-     Europe/Dublin (confirmed via `Intl`/`toLocaleString`), and Luas's last trams are typically
-     ~00:30 - the feed is winding down for the night, hence few live Luas TripUpdates versus the
-     254 total (mostly other NTA-covered operators). Re-running this during Dublin daytime service
-     hours would very likely clear the 20-trip threshold; I did not have a way to wait for that
-     window in this session. Recommend Jim/whoever re-runs the flip re-check this at a live-service
-     hour, or trust the `.github/workflows/publish-gtfs-snapshot.yml` CI step (which runs
-     `dublin-rt-join-check.mjs` with real network+key already, presumably at varied times).
-   - **Rider-facing `/api/board` and `/api/directions` sampling could not be done meaningfully** -
-     see the Summary above. I sampled both against a local dev server and confirmed the dispatch
-     gap directly rather than fabricate a "board looked fine" result from calling
-     `fetchStationBoard()` in isolation, which the brief specifically warns against.
+| Station | Result |
+|---|---|
+| Abbey Street | Red / Red + Tallaght / Red + The Point, all realtime true. No Green chip (hub lock holds). (One bare "Red" chip alongside the two terminus chips — an unresolved-terminus trip falling back to the bare line label per `mapLineTerminusDestination`'s designed fallback, not a bug.) |
+| Tallaght | Red + The Point, realtime true. |
+| The Point | Red + Tallaght, realtime true. |
+| Brides Glen | Green + Broombridge, realtime true. |
+| Broombridge | Green + Brides Glen, realtime true, live trip present (not empty this pass). |
+| Belgard | Red + Saggart, Red + Tallaght, Red + The Point all present, all realtime true — fork confirmed correctly. |
+| Sandyford | Green + Brides Glen, realtime true. |
+| Marlborough | Green + Brides Glen only, realtime true (no Red chip, no northbound chip — hub lock and Green loop exclusivity both hold). |
+| Rialto | Red + Tallaght, Red + The Point, both realtime true. |
+| Red Cow | Red + Tallaght, Red + The Point, both realtime true. |
 
-4. **Per-direction trip counts (hub + Tallaght + Sandyford), Green loop direction-exclusivity** -
-   PARTIAL/GREEN at the unit level, **not verifiable end-to-end** for the same dispatch-gap reason.
-   - `qa/dublin-planned-gate.mjs` (PASS) unit-tests the direction guard directly:
-     `isDirectionAllowedAtStop("O'Connell - GPO", "green", "Broombridge") === true` (northbound
-     allowed), `..."Brides Glen") === false` (southbound correctly rejected), and the mirror image
-     for Marlborough (southbound allowed, northbound rejected), plus both directions valid at
-     Trinity/Parnell (the loop's merge points). An unresolved terminus at a direction-exclusive
-     stop falls open (never silently drops a real trip on a guess) - confirmed by
-     `isDirectionAllowedAtStop("O'Connell - GPO", "green", null) === true`.
-   - Could not pull live per-direction trip counts at Abbey Street/Tallaght/Sandyford through the
-     actual board endpoint for the same reason as item 3 - there is no rider-reachable board for
-     Dublin yet. `direction-model-memo.md`'s own open question 5 flags that the Parnell<->Trinity
-     direction-exclusivity is unverified against live GTFS-RT trip patterns (map-only evidence so
-     far); the 100%-but-small RT join sample in item 3 doesn't cover this specifically. Flag this
-     as an item to actually exercise live once the dispatch gap is fixed - the defensive code looks
-     right, but "the guard defends correctly against synthetic data" and "a real Green trip's
-     classified direction actually matches its stop" are different claims.
+- No station offered a chip naming itself (checked every destination string returned against the
+  station being queried; none matched).
+- Green loop exclusivity held: Marlborough southbound-only in the actual sample above; code
+  inspection of `isDirectionAllowedAtStop()`/`GREEN_LOOP_DIRECTION_ONLY` confirms O'Connell -
+  GPO/O'Connell Upper are northbound-only, unchanged from prior passes.
+- `/api/directions?city=dublin&station=Belgard` returned `Red + Saggart`, `Red + Tallaght`,
+  `Red + The Point` — Belgard fork requirement satisfied.
+- Saggart and Connolly both correctly 400 "Unknown station" on `/api/board` (filtered out of the
+  catalog, as designed — not silently empty boards).
+- `/api/coverage-notes?city=dublin` served the current (unfixed) coverage.json verbatim — see
+  item 7, this is the rider-facing surface the gate is protecting.
+- `/api/cities` manifest entry for dublin in the flip-commit state: status live, country id ie
+  name Ireland, timeZone Europe/Dublin, bounds populated, modes light_rail, directionsVersion
+  5054634e — all present and correct.
 
-5. **Hub lock, DST, doNotGroup** - GREEN.
-   - Hub lock: `DUBLIN_HUB = "Abbey Street"`; `mapLineTerminusDestination(DUBLIN_HUB, "red") ===
-     "Red"` (never a direction token) - asserted directly in the planned gate.
-   - `isForbiddenHubProxy()` rejects Marlborough/O'Connell - GPO/O'Connell Upper/Connolly/Busaras/
-     O'Connell Bridge standing in for the hub - asserted in the planned gate.
-   - DST: `DUBLIN_TIME_ZONE = "Europe/Dublin"` (IANA identifier), used directly wherever the
-     adapter does date/time math - no hand-rolled offset table anywhere in
-     `lib/providers/dublin.js` or `lib/cities/dublin/marketing-directions.js`. Matches
-     `hazard-pack.md` H7's recommendation exactly (the oracle report's "no DST since 2024" claim is
-     correctly *not* carried into product code).
-   - doNotGroup pairs from `hazard-pack.md` H1 all hold as distinct catalog entries (asserted in
-     the planned gate): Abbey Street vs Marlborough/O'Connell - GPO/O'Connell Upper; O'Connell -
-     GPO vs O'Connell Upper; Tallaght vs Saggart; Red Cow vs Kingswood vs Belgard (all four exist
-     as separate stations; Marlborough is Green-only, never Red).
+## 5. Hub lock / timezone / doNotGroup
 
-6. **Picker: Ireland/CITY_BOUNDS/country-regions/coverage.json** - **RED**, this is part of the
-   same follow-through gap as the Summary above:
-   - No `Ireland` country, no Dublin `CITY_BOUNDS` box, anywhere in `public/app.js` or
-     `public/city-session.js`.
-   - No `dublin` entry in `lib/cities/country-regions.js`.
-   - No `lib/cities/dublin/coverage.json` at all (rider copy stating "Luas only, DART not
-     covered" doesn't exist yet).
-   - Station lat/lng: **none of Dublin's 67 catalog stations have `lat`/`lng`** in
-     `lib/cities/dublin/stations.json` (checked programmatically - every entry is `{name, lines,
-     aliases}` only). This degrades gracefully rather than crashing (`findNearestStation` in
-     `lib/cities/live-city-api.js` simply skips a station with no `lat`/`lng`, so "Near me" would
-     just never nominate a Dublin station) and matches the **most recent live-flip precedent**:
-     Copenhagen (merged #454, currently live on master) shipped with the exact same gap - no
-     `lat`/`lng` in `lib/cities/copenhagen/stations.json` either. I'm not treating this alone as a
-     blocker given that precedent, but flagging it since the brief listed it explicitly - Jim
-     should decide whether to backfill coordinates in the same follow-through pass as the rest of
-     item 6, or explicitly accept the same gap Copenhagen shipped with.
+PASS. `lib/cities/dublin/marketing-directions.js`: `DUBLIN_HUB = "Abbey Street"`,
+`DUBLIN_TIME_ZONE = "Europe/Dublin"` (IANA, explicit comment against hand-rolling a
+fixed-offset rule). `doNotGroup` pairs enforced via `HUB_PROXY_FORBIDDEN`
+(Marlborough/O'Connell - GPO/O'Connell Upper/Connolly/Busáras/O'Connell Bridge never stand in
+for the hub) and `FORBIDDEN_STATION_TOKENS` (invented city ids, other cities' hub strings,
+generic City/Centre tokens). Confirmed live in the board samples above (Abbey Street never shows
+a Green chip; Marlborough never shows a Red chip).
 
-7. **Gates / smoke** - GREEN, but the "dogfood gate" half of this item doesn't exist yet
-   (see Summary).
-   - `node qa/dublin-planned-gate.mjs` -> PASS (`planned`/501, adapterReady, D1 pack files present,
-     67 stations, hub lock, doNotGroup, direction model, Green loop guard, missing-key/unknown-
-     station both throw pre-network, Perth stays green).
-   - `node qa/live-city-lists-sync.mjs` -> PASS (`39 live cities consistent across registry,
-     live-city-api, app.js, city-session, brisbane-dogfood, journey-model` - confirms dublin is
-     correctly absent from every live list right now, i.e. the *current* state is self-consistent;
-     it does not and cannot check the missing dispatch case above, since that's an
-     unregistered-city gap, not a list-mismatch).
-   - `node qa/run-all.mjs --smoke` -> **PASS, 155/155, 0 FAIL, 621s** (run to completion, not
-     stopped early).
-   - **No `qa/dublin-dogfood-gate.mjs` exists** - this is the missing piece. Per my brief, a flip
-     PR needs this gate (replacing/complementing `dublin-planned-gate.mjs`) passing with the
-     adapter registered live, and it doesn't exist because the dispatch wiring it would exercise
-     doesn't exist either.
+## 6. Registry-driven
 
-## What needs to happen before I re-run this
+PASS (in the flip-commit state, reverted after testing — see item 4 preamble; also confirmed by
+the smoke suite's own registry-driven-client.mjs/live-city-lists-sync.mjs/
+country-regions-sync-gate.mjs runs below, at the same flip-commit state). `/api/cities`
+correctly listed dublin live with Ireland/bounds/directionsVersion/modes as shown above. Editing
+only `lib/providers/registry.js`, `lib/cities/country-regions.js`, `lib/cities/live-city-api.js`,
+plus regenerating `public/city-directions/dublin.json` and
+`public/city-manifest.seed.json/js` was sufficient — no `public/app.js`/`city-session.js`/
+`brisbane-dogfood.js`/`journey-model.js` edit needed. `lib/cities/city-bounds.js` already had the
+Dublin box from a prior pass, untouched this run.
 
-A fresh Jim dispatch (flip-follow-through / bug-fix mode, pointed at this note plus
-`docs/dublin-d1/jim-handoff.md` and the Copenhagen flip PR #454 as the pattern) needs to add:
+## 7. Gates at flip state
 
-1. `dublin` to `MULTI_CITY_IDS` and a real dispatch case in
-   `getMultiCityDirections`/`getMultiCityNextTrain` (`lib/cities/live-city-api.js`) that calls
-   into `lib/providers/dublin.js`.
-2. `lib/cities/dublin/dogfood-next-train.js` (or equivalent) backing that dispatch.
-3. `qa/dublin-dogfood-gate.mjs`, registered in `qa/run-all.mjs`.
-4. `public/brisbane-dogfood.js` mount + `available` map entry, `public/journey-model.js`
-   persisted-city entry, `public/city-directions/dublin.json` (via
-   `scripts/write-city-directions.mjs --only=dublin`).
-5. `lib/cities/dublin/coverage.json`, `lib/cities/country-regions.js` entry, `Ireland`
-   country + `CITY_BOUNDS` box in `public/app.js`/`public/city-session.js`.
-6. A decision (Jim/Tim) on whether to backfill station `lat`/`lng` or ship without it as
-   Copenhagen did.
+- `node qa/dublin-dogfood-gate.mjs` — PASS, both standalone (`status=planned`) and inside the
+  full smoke run at the flip-commit state (`status=live`), confirming it really is
+  status-agnostic per PR #484.
+- `node qa/live-city-lists-sync.mjs` — PASS (flip-commit state, 42 live cities consistent).
+- `node qa/country-regions-sync-gate.mjs` — PASS (flip-commit state, 42 entries consistent).
+- `node qa/registry-driven-client.mjs` — PASS.
+- `node qa/honest-empty-state.mjs` — PASS.
+- `node qa/run-all.mjs --smoke` (PLAIN, flip-commit state, `timeout: 600000`) — **157 PASS, 3
+  FAIL, 160 scripts, 592s.** Three failures:
+  1. **`coverage-notes-gate.mjs` — BLOCKING, Dublin-specific, genuinely new (only checked for
+     `status: "live"` cities, so this never fired against Dublin before this run):
 
-Once that's landed, re-run this checklist - items 3 and 4 in particular need a genuine
-`/api/board`/`/api/directions` sample against a working dispatch, not just the isolated-adapter
-result I could get this time.
+         FAIL: dublin coverage.json reads like pipeline notes, not rider prose
+         (found a D1/oracle/CRS reference)
 
-No process left running: dev server on port 3411 stopped, smoke suite's own dev server exited
-with the suite, `netstat` confirms nothing listening on 3000/3411 at time of writing this note.
+     The offending text is in `lib/cities/dublin/coverage.json`'s top-level `notes` field, which
+     mixes genuinely rider-facing sentences ("Connolly ... use Busaras") with pipeline-internal
+     references that should never reach a rider-facing surface — specifically
+     `docs/dublin-d1/live-sweep-log.jsonl` (the `\bD1\b` match), plus prose written for Jim/Mark's
+     own audit trail ("see docs/dublin-d1/live-sweep-log.jsonl, the evidence log
+     qa/dublin-all-stations-live-sweep.mjs uses to tell this apart from a permanent gap like
+     Connolly/Saggart above"). This same `notes` field is served verbatim by the rider-facing
+     `/api/coverage-notes?city=dublin` endpoint (confirmed in item 4) — so this isn't a
+     lint-only nit, a real rider could see internal pipeline jargon in a coverage explainer. The
+     per-item `covered`/`partial`/`notCovered` `label`/`detail` strings are all clean rider prose
+     already (checked directly); only the top-level free-text `notes` field needs a rewrite.
+     **I did not fix this myself (flag, don't fix, no adapter/data edit made this pass).**
+     Whoever picks this up should rewrite `notes` in plain rider language (the intermittent-gap
+     explanation itself is worth keeping for riders — "some trams don't show live times for a
+     few minutes even though they're running" is legitimate and useful copy — it's the
+     doc-path/city-jargon references that need to go, not the underlying fact) and re-run
+     `node qa/coverage-notes-gate.mjs` to confirm.
+  2. `adelaide-dogfood-gate.mjs` — FAIL, unrelated to Dublin (no Dublin change touches Adelaide
+     code or data). Live-network/time-of-day dependent: "Goodwood towards ... (Belair line) must
+     return a non-null next train ... 1 live Belair-line trip(s) exist ... right now". Re-ran
+     standalone twice, failed identically both times against the live Adelaide feed at this exact
+     moment — consistent with a real-time production-regression flake (explicitly cites #439,
+     the same regression class as the documented Melbourne flake below), not something this
+     branch caused or can fix.
+  3. `melbourne-dogfood-gate.mjs` — FAIL, the documented known time-of-day flake (Melbourne past
+     midnight, Hurstbridge line finished for the night) called out in this run's brief. Re-ran
+     standalone, identical failure both times, consistent with the known flake rather than a new
+     regression.
+  - `no-live-feed-stops-gate.mjs` (the other documented possible flake) did **not** fire this run
+    — passed cleanly (13s).
+  - Every other Dublin-specific gate in the suite (`dublin-dogfood-gate`, `honest-empty-state`,
+    `bundled-city-directions`, `registry-driven-client`, `country-wide-picker`,
+    `live-city-lists-sync`, `country-regions-sync-gate`) passed at the flip-commit state.
+
+## Net
+
+Everything the adapter/pack/D1 investigation owns is clean — items 1–6 are all green, and this
+is the first pass where the live-sweep item (3) is unconditionally clean rather than needing the
+evidence-memory carve-out. The sole blocker is `lib/cities/dublin/coverage.json`'s rider-facing
+`notes` field failing `qa/coverage-notes-gate.mjs` because it leaks pipeline-internal doc-path
+references (`docs/dublin-d1/...`) into copy the rider-facing `/api/coverage-notes` endpoint
+serves verbatim. This gate only runs against `status: "live"` cities, so it was invisible in
+every prior planned-status pass — it is a genuinely new finding for this run, not a repeat of
+anything from runs 1–6. Once the `notes` field is rewritten in plain rider language (keeping the
+useful "trams sometimes don't show live times for a few minutes" fact, dropping the doc-path/
+session-log references), re-run `node qa/coverage-notes-gate.mjs` plus this checklist's items 4,
+6 and 7 to confirm, then this city is ready to flip.
+
+Adelaide and Melbourne dogfood-gate failures are unrelated, live-time-dependent, pre-existing
+flakes (not caused by this branch, no Dublin file touches either city) — noted for visibility,
+not blocking.
+
+I did not make any adapter/catalog/coverage fix myself (flag, don't fix). The working tree at the
+end of this run contains only this note and the sweep script's own append to
+`docs/dublin-d1/live-sweep-log.jsonl` (the evidence log qa/dublin-all-stations-live-sweep.mjs
+writes to regardless of pass/fail, per its own design) — every flip-commit edit made to test
+item 4/6 (registry.js, country-regions.js, live-city-api.js, city-directions/dublin.json,
+city-manifest.seed.*) was reverted (`git checkout --`) once the coverage-notes-gate failure was
+found, confirmed via `git status --short`.
+
+No dev server, background loop, or poll left running — port 3011 (the only port used besides the
+suite's own auto-picked one) is confirmed free (killed the dev-server process and re-checked
+`netstat` before finishing); the worktree is clean at `a50a153` with only this note and the
+sweep-log append staged.
 
