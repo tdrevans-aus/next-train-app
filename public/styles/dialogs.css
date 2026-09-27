@@ -54,7 +54,22 @@ body.native-ad-banner .feedback-dialog.app-native-dialog[open] {
 .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   top: max(0.45rem, env(safe-area-inset-top, 0px));
   bottom: auto;
-  transform: translateX(-50%);
+  /* No `transform` here (docs/jim-brief-detail-picker-dropdown-offset.md):
+   * a `transform` on this element makes it the containing block for any
+   * `position: fixed` descendant — including the detail station picker's
+   * dropdown (public/station-combobox.js), which anchors itself with
+   * viewport-relative coordinates from getBoundingClientRect(). That
+   * containing-block switch silently offset the dropdown by this dialog's
+   * own position instead of the trigger's. `left/right: 0` + `margin-inline:
+   * auto` centers the same `width: min(96vw, 420px)` box (base .journeys-
+   * dialog rule) via ordinary auto-margins, with no containing-block side
+   * effect, so `position: fixed` descendants keep resolving against the
+   * real viewport.
+   */
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  transform: none;
   height: auto;
   max-height: calc(
     100dvh - env(safe-area-inset-top, 0px) - var(--safe-bottom) - 0.7rem

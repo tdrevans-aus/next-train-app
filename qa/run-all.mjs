@@ -42,6 +42,7 @@ const SMOKE_SCRIPTS = [
   "reminders-permission-gate.mjs",
   "template-wizard-coach-overlap.mjs",
   "journey-detail-footer-above-ad.mjs",
+  "detail-picker-dropdown-position.mjs",
   "nearby-content-above-ad.mjs",
   "nearby-pin-notify-label.mjs",
   "static-page-above-ad.mjs",
