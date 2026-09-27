@@ -90,3 +90,75 @@ Luke needs no lane-lock check (per CLAUDE.md: "Luke needs no check" — his whol
 `docs/vienna-d1/`, which no other lane touches). The pack is complete by the shape of every other
 `docs/<city>-d1/` folder (4 files) and every claim in it is sourced. **The adapter build is
 intentionally NOT started** — that's Jim's job (D2–D6), not this pack's.
+
+## Jim (D2 adapter build), 27 Sep 2026 — Live verification
+
+Wired `lib/providers/vienna.js` against the real Wiener Linien OGD Realtime Monitor
+(https://www.wienerlinien.at/ogd_realtime/monitor). No key required — every claim below is a
+genuine live HTTP call made this session, not a fixture or a documentation read.
+
+**Method** (station -> RBL stopId resolution — the monitor takes RBL numbers, not GTFS
+stop_ids and not DIVA station codes, neither of which this pack's D1 sources used):
+
+1. Downloaded Wiener Linien's own public `wienerlinien-ogd-haltepunkte.csv`
+   (StopID;DIVA;StopText;Municipality;MunicipalityID;Longitude;Latitude — a keyless static
+   reference download, not the live feed itself) and folded-name-matched every candidate row
+   against each of the 99 D1 station names/aliases from `published-network.json`.
+2. Queried every candidate RBL against the real monitor endpoint (batched, multiple `stopId`
+   params per request — confirmed the endpoint supports this), and kept a candidate only when
+   the live response's own `lines[].type === "ptMetro"` and `lines[].name` matched that
+   station's expected U1/U2/U3/U4/U6 line(s). This is what filters out the tram/bus/night-bus
+   rows the monitor also returns at several shared-name stops.
+3. Hit a transient rate limit partway through (`messageCode: 316`, `"Abfragelimit erreicht!"`
+   — "query limit reached") — backed off and retried; two stations (Südtiroler
+   Platz-Hauptbahnhof, Messe-Prater) needed a second, narrower pass after the CSV's folded-name
+   match returned only non-metro candidates for them. Both resolved cleanly on retry.
+4. Also captured each RBL's own `locationStop.geometry.coordinates` from the live response
+   (not a separate geocoding source) to populate `lib/cities/vienna/stations.json`'s `lat`/`lng`.
+
+**Result: all 99 D1 stations, all five lines, fully confirmed live** — every catalogued
+station carries at least one RBL whose live response returned a `ptMetro` row for one of its
+expected lines. No station was left partially or wholly unconfirmed.
+
+**Karlsplatz (the hub lock) — independently reconfirmed live**, not just per the D1 pack's
+Wikipedia-sourced claim: its RBL set resolved to exactly 5 platforms — 2 for U1 (rbl 4109
+towards Leopoldau, 4120 towards Oberlaa), 2 for U4 (4416 towards Hütteldorf, 4421 towards
+Heiligenstadt), and exactly **1** for U2 (4202, towards Seestadt — no Karlsplatz-bound U2
+platform exists). This is the live-data confirmation of direction-model-memo.md section 2's
+claim that Karlsplatz is U2's own terminus, not a through-station for it, and that only one
+live U2 direction chip (`U2 + Seestadt`) can ever appear there. Sample live capture, 27 Sep 2026
+~02:00 CEST (Vienna time; DST in effect):
+
+```
+rbl 4109  Karlsplatz  U1  towards Leopoldau  (ptMetro)
+rbl 4120  Karlsplatz  U1  towards Oberlaa    (ptMetro)
+rbl 4202  Karlsplatz  U2  towards Seestadt   (ptMetro)
+rbl 4416  Karlsplatz  U4  towards Hütteldorf (ptMetro)
+rbl 4421  Karlsplatz  U4  towards Heiligenstadt (ptMetro)
+rbl 1680  Karlsplatz U  N46/N62 (ptBusNight — dropped, not U-Bahn)
+rbl 1756  Karlsplatz U  WLB towards Wien Oper (ptTramWLB — dropped, not U-Bahn)
+rbl 5943  Karlsplatz  WLB towards Wiener Neudorf (ptTramWLB — dropped, not U-Bahn)
+```
+
+**Two further stations sampled live via `fetchStationBoard()` itself** (not just the RBL
+resolution pass), confirming the full adapter path end to end, not just URL construction:
+
+- **Stephansplatz** (U1/U3 two-line interchange, not the hub): 19 live trips returned, all
+  U1/U3, first row `U1 + Leopoldau` at display time 02:11 CEST.
+- **Floridsdorf** (U6 north terminus): 5 live trips returned, all `U6 + Siebenhirten`, first
+  row at display time 02:19 CEST.
+
+**RBL candidates that were NOT kept** (tram/bus at a shared name, confirmed live, not
+inferred): at Karlsplatz, `WLB` (Wiener Lokalbahnen tram, `ptTramWLB`) and `N46`/`N62` (night
+buses, `ptBusNight`) both appeared in live monitor responses for RBLs whose `StopText` also
+read "Karlsplatz"/"Karlsplatz U" — none of these were included in the catalog's `rbl` arrays,
+per the oracle report's mode cut (U-Bahn only).
+
+**Not done this session**: no live confirmation of Wiener Linien's static GTFS zip against a
+real payload beyond the route_short_name check already reported in hazard-pack.md (the static
+GTFS is not used as a live-boards source by this adapter at all — see
+`lib/providers/vienna.js` file header); no live confirmation of every one of the 210 unique
+RBL ids' coordinates independently cross-checked against a second geocoding source (all were
+taken from the monitor's own `locationStop.geometry.coordinates`, which is Wiener Linien's own
+data, not third-party); no resolution of the "Schedifkaplatz" naming gap (hazard-pack.md H3 —
+still unresolved, doesn't affect scope since Badner Bahn is out-product regardless).

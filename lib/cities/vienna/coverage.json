@@ -1,0 +1,35 @@
+{
+  "region": "vienna",
+  "updated": "2026-09-27",
+  "covered": [
+    {
+      "label": "U-Bahn (U1, U2, U3, U4, U6)",
+      "detail": "All 99 U-Bahn stations, five lines, live Wiener Linien departures."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "U5",
+      "detail": "Under construction; service opens 2030. Not shown yet."
+    },
+    {
+      "label": "S-Bahn (ÖBB Vienna suburban rail)",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "Badner Bahn (Wiener Lokalbahnen)",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "ÖBB national rail (Regional, Railjet, etc.)",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "Tram, bus",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "99 U-Bahn stations.",
+  "notes": "Karlsplatz is the inner-city hub where U1, U2 and U4 cross; it never appears as a direction. Unlike every other hub in this app, U2 terminates at Karlsplatz rather than passing through it, so only one live U2 direction (towards Seestadt) ever shows there. Data: Wiener Linien – Open Data (CC BY 4.0)."
+}
