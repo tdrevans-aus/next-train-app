@@ -88,6 +88,12 @@ async function runForPlatform(browser, platform) {
   const page = await context.newPage();
   await stubNativeShell(page, platform);
   await page.goto(`${BASE}/?test=1`);
+  // The app only injects its deferred scripts (ad-free-purchase.js among them) after the first
+  // train board fetch settles, and in a native shell that fetch goes to the production API. Kick
+  // the deferred load directly so this gate tests purchase gating, not production latency
+  // (it timed out at 30s on master CI run 36267436761 and every time in a sandbox with no egress).
+  await page.waitForFunction(() => typeof window.NextTrainDeferred?.load === "function");
+  await page.evaluate(() => window.NextTrainDeferred.load());
   await page.waitForFunction(
     () => Boolean(window.NextTrainAdFree) && Boolean(window.Capacitor?.isNativePlatform?.())
   );
