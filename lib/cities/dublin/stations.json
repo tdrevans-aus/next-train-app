@@ -2,97 +2,838 @@
   "city": "dublin",
   "hub": "Abbey Street",
   "stations": [
-    { "name": "Saggart", "lines": ["red"], "aliases": [] },
-    { "name": "Fortunestown", "lines": ["red"], "aliases": [] },
-    { "name": "Citywest Campus", "lines": ["red"], "aliases": [] },
-    { "name": "Cheeverstown", "lines": ["red"], "aliases": [] },
-    { "name": "Fettercairn", "lines": ["red"], "aliases": [] },
-    { "name": "Tallaght", "lines": ["red"], "aliases": [] },
-    { "name": "Hospital", "lines": ["red"], "aliases": [] },
-    { "name": "Cookstown", "lines": ["red"], "aliases": [] },
-    { "name": "Belgard", "lines": ["red"], "aliases": [] },
-    { "name": "Kingswood", "lines": ["red"], "aliases": [] },
-    { "name": "Red Cow", "lines": ["red"], "aliases": [] },
-    { "name": "Kylemore", "lines": ["red"], "aliases": [] },
-    { "name": "Bluebell", "lines": ["red"], "aliases": [] },
-    { "name": "Blackhorse", "lines": ["red"], "aliases": [] },
-    { "name": "Drimnagh", "lines": ["red"], "aliases": [] },
-    { "name": "Goldenbridge", "lines": ["red"], "aliases": [] },
-    { "name": "Suir Road", "lines": ["red"], "aliases": [] },
-    { "name": "Rialto", "lines": ["red"], "aliases": [] },
-    { "name": "Fatima", "lines": ["red"], "aliases": [] },
-    { "name": "James's", "lines": ["red"], "aliases": ["James's Hospital", "James Hospital"] },
-    { "name": "Heuston", "lines": ["red"], "aliases": ["Heuston Station"] },
-    { "name": "Museum", "lines": ["red"], "aliases": [] },
-    { "name": "Smithfield", "lines": ["red"], "aliases": [] },
-    { "name": "Four Courts", "lines": ["red"], "aliases": [] },
-    { "name": "Jervis", "lines": ["red"], "aliases": [] },
+    {
+      "name": "Saggart",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00418",
+        "8230GA00419"
+      ],
+      "feedName": "Saggart"
+    },
+    {
+      "name": "Fortunestown",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00416",
+        "8230GA00415"
+      ],
+      "feedName": "Fortunestown"
+    },
+    {
+      "name": "Citywest Campus",
+      "lines": [
+        "red"
+      ],
+      "aliases": [
+        "Citywest"
+      ],
+      "stopIds": [
+        "8230GA00412",
+        "8230GA00413"
+      ],
+      "feedName": "Citywest"
+    },
+    {
+      "name": "Cheeverstown",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00396",
+        "8230GA00395"
+      ],
+      "feedName": "Cheeverstown"
+    },
+    {
+      "name": "Fettercairn",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00393",
+        "8230GA00392"
+      ],
+      "feedName": "Fettercairn"
+    },
+    {
+      "name": "Tallaght",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00344",
+        "8230GA00345"
+      ],
+      "feedName": "Tallaght"
+    },
+    {
+      "name": "Hospital",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00341",
+        "8230GA00342"
+      ],
+      "feedName": "Hospital"
+    },
+    {
+      "name": "Cookstown",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00338",
+        "8230GA00339"
+      ],
+      "feedName": "Cookstown"
+    },
+    {
+      "name": "Belgard",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00347",
+        "8230GA00348"
+      ],
+      "feedName": "Belgard"
+    },
+    {
+      "name": "Kingswood",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00351",
+        "8230GA00350"
+      ],
+      "feedName": "Kingswood"
+    },
+    {
+      "name": "Red Cow",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8230GA00354",
+        "8230GA00353"
+      ],
+      "feedName": "Red Cow"
+    },
+    {
+      "name": "Kylemore",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00356",
+        "8220GA00357"
+      ],
+      "feedName": "Kylemore"
+    },
+    {
+      "name": "Bluebell",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00361",
+        "8220GA00360"
+      ],
+      "feedName": "Bluebell"
+    },
+    {
+      "name": "Blackhorse",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00364",
+        "8220GA00363"
+      ],
+      "feedName": "Blackhorse"
+    },
+    {
+      "name": "Drimnagh",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00367",
+        "8220GA00366"
+      ],
+      "feedName": "Drimnagh"
+    },
+    {
+      "name": "Goldenbridge",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00370",
+        "8220GA00369"
+      ],
+      "feedName": "Goldenbridge"
+    },
+    {
+      "name": "Suir Road",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00372",
+        "8220GA00373"
+      ],
+      "feedName": "Suir Road"
+    },
+    {
+      "name": "Rialto",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00376",
+        "8220GA00375"
+      ],
+      "feedName": "Rialto"
+    },
+    {
+      "name": "Fatima",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00379",
+        "8220GA00378"
+      ],
+      "feedName": "Fatima"
+    },
+    {
+      "name": "James's",
+      "lines": [
+        "red"
+      ],
+      "aliases": [
+        "James's Hospital",
+        "James Hospital"
+      ],
+      "stopIds": [
+        "8220GA00381",
+        "8220GA00382"
+      ],
+      "feedName": "James's"
+    },
+    {
+      "name": "Heuston",
+      "lines": [
+        "red"
+      ],
+      "aliases": [
+        "Heuston Station"
+      ],
+      "stopIds": [
+        "8220GA00386",
+        "8220GA00387"
+      ],
+      "feedName": "Heuston"
+    },
+    {
+      "name": "Museum",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00389",
+        "8220GA00390"
+      ],
+      "feedName": "Museum"
+    },
+    {
+      "name": "Smithfield",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00398",
+        "8220GA00399"
+      ],
+      "feedName": "Smithfield"
+    },
+    {
+      "name": "Four Courts",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00401",
+        "8220GA00402"
+      ],
+      "feedName": "Four Courts"
+    },
+    {
+      "name": "Jervis",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00404",
+        "8220GA00405"
+      ],
+      "feedName": "Jervis"
+    },
     {
       "name": "Abbey Street",
-      "lines": ["red"],
-      "aliases": [],
+      "lines": [
+        "red"
+      ],
+      "aliases": [
+        "Abbey St."
+      ],
       "hub": true,
-      "hubNote": "Red Line trunk stop between Jervis and Busáras (docs/dublin-d1/hazard-pack.md H6, published-network.json hubLock). Never a direction token. No Green service calls here — the Green interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a ~200 m walk, not a shared platform."
+      "hubNote": "Red Line trunk stop between Jervis and Busáras (docs/dublin-d1/hazard-pack.md H6, published-network.json hubLock). Never a direction token. No Green service calls here — the Green interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a ~200 m walk, not a shared platform.",
+      "stopIds": [
+        "8220GA00409",
+        "8220GA00408"
+      ],
+      "feedName": "Abbey St."
     },
-    { "name": "Busáras", "lines": ["red"], "aliases": [] },
-    { "name": "Connolly", "lines": ["red"], "aliases": [] },
-    { "name": "George's Dock", "lines": ["red"], "aliases": [] },
-    { "name": "Mayor Square - NCI", "lines": ["red"], "aliases": ["Mayor Square"] },
-    { "name": "Spencer Dock", "lines": ["red"], "aliases": [] },
-    { "name": "The Point", "lines": ["red"], "aliases": ["The Point Depot", "3Arena - The Point"] },
-
-    { "name": "Broombridge", "lines": ["green"], "aliases": [] },
-    { "name": "Cabra", "lines": ["green"], "aliases": [] },
-    { "name": "Phibsborough", "lines": ["green"], "aliases": [] },
-    { "name": "Grangegorman", "lines": ["green"], "aliases": [] },
-    { "name": "Broadstone - University", "lines": ["green"], "aliases": ["Broadstone"] },
-    { "name": "Dominick", "lines": ["green"], "aliases": [] },
-    { "name": "Parnell", "lines": ["green"], "aliases": [] },
+    {
+      "name": "Busáras",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00420",
+        "8220GA00421"
+      ],
+      "feedName": "Busáras"
+    },
+    {
+      "name": "Connolly",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00424",
+        "8220GA00423"
+      ],
+      "feedName": "Connolly"
+    },
+    {
+      "name": "George's Dock",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00427",
+        "8220GA00428"
+      ],
+      "feedName": "George's Dock"
+    },
+    {
+      "name": "Mayor Square - NCI",
+      "lines": [
+        "red"
+      ],
+      "aliases": [
+        "Mayor Square"
+      ],
+      "stopIds": [
+        "8220GA00431",
+        "8220GA00430"
+      ],
+      "feedName": "Mayor Square"
+    },
+    {
+      "name": "Spencer Dock",
+      "lines": [
+        "red"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00433",
+        "8220GA00434"
+      ],
+      "feedName": "Spencer Dock"
+    },
+    {
+      "name": "The Point",
+      "lines": [
+        "red"
+      ],
+      "aliases": [
+        "The Point Depot",
+        "3Arena - The Point"
+      ],
+      "stopIds": [
+        "8220GA00437",
+        "8220GA00436"
+      ],
+      "feedName": "The Point"
+    },
+    {
+      "name": "Broombridge",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00459",
+        "8220GA00460"
+      ],
+      "feedName": "Broombridge"
+    },
+    {
+      "name": "Cabra",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00480",
+        "8220GA00469"
+      ],
+      "feedName": "Cabra"
+    },
+    {
+      "name": "Phibsborough",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00456",
+        "8220GA00455"
+      ],
+      "feedName": "Phibsborough"
+    },
+    {
+      "name": "Grangegorman",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00479",
+        "8220GA00452"
+      ],
+      "feedName": "Grangegorman"
+    },
+    {
+      "name": "Broadstone - University",
+      "lines": [
+        "green"
+      ],
+      "aliases": [
+        "Broadstone"
+      ],
+      "stopIds": [
+        "8220GA00481",
+        "8220GA00468"
+      ],
+      "feedName": "Broadstone"
+    },
+    {
+      "name": "Dominick",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00478",
+        "8220GA00467"
+      ],
+      "feedName": "Dominick"
+    },
+    {
+      "name": "Parnell",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00471"
+      ],
+      "feedName": "Parnell"
+    },
     {
       "name": "O'Connell Upper",
-      "lines": ["green"],
-      "aliases": [],
+      "lines": [
+        "green"
+      ],
+      "aliases": [
+        "O'Connell Upr."
+      ],
       "directionOnly": "northbound",
-      "directionOnlyNote": "Only served northbound, towards Broombridge (docs/dublin-d1/hazard-pack.md H4a / direction-model-memo.md). No southbound Green tram calls here — that runs via Marlborough instead."
+      "directionOnlyNote": "Only served northbound, towards Broombridge (docs/dublin-d1/hazard-pack.md H4a / direction-model-memo.md). No southbound Green tram calls here — that runs via Marlborough instead.",
+      "stopIds": [
+        "8220GA00470"
+      ],
+      "feedName": "O'Connell Upr."
     },
     {
       "name": "O'Connell - GPO",
-      "lines": ["green"],
-      "aliases": ["O'Connell GPO", "O'Connell Street - GPO"],
+      "lines": [
+        "green"
+      ],
+      "aliases": [
+        "O'Connell GPO",
+        "O'Connell Street - GPO"
+      ],
       "directionOnly": "northbound",
-      "directionOnlyNote": "Only served northbound, towards Broombridge (docs/dublin-d1/hazard-pack.md H4a / direction-model-memo.md). No southbound Green tram calls here — that runs via Marlborough instead."
+      "directionOnlyNote": "Only served northbound, towards Broombridge (docs/dublin-d1/hazard-pack.md H4a / direction-model-memo.md). No southbound Green tram calls here — that runs via Marlborough instead.",
+      "stopIds": [
+        "8220GA00444"
+      ],
+      "feedName": "O'Connell - GPO"
     },
     {
       "name": "Marlborough",
-      "lines": ["green"],
+      "lines": [
+        "green"
+      ],
       "aliases": [],
       "directionOnly": "southbound",
-      "directionOnlyNote": "Only served southbound, towards Brides Glen (docs/dublin-d1/hazard-pack.md H4a / direction-model-memo.md). No northbound Green tram calls here — that runs via O'Connell - GPO / O'Connell Upper instead."
+      "directionOnlyNote": "Only served southbound, towards Brides Glen (docs/dublin-d1/hazard-pack.md H4a / direction-model-memo.md). No northbound Green tram calls here — that runs via O'Connell - GPO / O'Connell Upper instead.",
+      "stopIds": [
+        "8220GA00034"
+      ],
+      "feedName": "Marlborough"
     },
-    { "name": "Trinity", "lines": ["green"], "aliases": [] },
-    { "name": "Westmoreland", "lines": ["green"], "aliases": [] },
-    { "name": "Dawson", "lines": ["green"], "aliases": [] },
-    { "name": "St. Stephen's Green", "lines": ["green"], "aliases": ["St Stephen's Green"] },
-    { "name": "Harcourt", "lines": ["green"], "aliases": [] },
-    { "name": "Charlemont", "lines": ["green"], "aliases": [] },
-    { "name": "Ranelagh", "lines": ["green"], "aliases": [] },
-    { "name": "Beechwood", "lines": ["green"], "aliases": [] },
-    { "name": "Cowper", "lines": ["green"], "aliases": [] },
-    { "name": "Milltown", "lines": ["green"], "aliases": [] },
-    { "name": "Windy Arbour", "lines": ["green"], "aliases": [] },
-    { "name": "Dundrum", "lines": ["green"], "aliases": [] },
-    { "name": "Balally", "lines": ["green"], "aliases": [] },
-    { "name": "Kilmacud", "lines": ["green"], "aliases": [] },
-    { "name": "Stillorgan", "lines": ["green"], "aliases": [] },
-    { "name": "Sandyford", "lines": ["green"], "aliases": [] },
-    { "name": "Central Park", "lines": ["green"], "aliases": [] },
-    { "name": "Glencairn", "lines": ["green"], "aliases": [] },
-    { "name": "The Gallops", "lines": ["green"], "aliases": [] },
-    { "name": "Leopardstown Valley", "lines": ["green"], "aliases": [] },
-    { "name": "Ballyogan Wood", "lines": ["green"], "aliases": [] },
-    { "name": "Carrickmines", "lines": ["green"], "aliases": [] },
-    { "name": "Laughanstown", "lines": ["green"], "aliases": [] },
-    { "name": "Cherrywood", "lines": ["green"], "aliases": [] },
-    { "name": "Brides Glen", "lines": ["green"], "aliases": [] }
+    {
+      "name": "Trinity",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00035"
+      ],
+      "feedName": "Trinity"
+    },
+    {
+      "name": "Westmoreland",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00443"
+      ],
+      "feedName": "Westmoreland"
+    },
+    {
+      "name": "Dawson",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00441",
+        "8220GA00031"
+      ],
+      "feedName": "Dawson"
+    },
+    {
+      "name": "St. Stephen's Green",
+      "lines": [
+        "green"
+      ],
+      "aliases": [
+        "St Stephen's Green"
+      ],
+      "stopIds": [
+        "8220GA00059",
+        "8220GA00058"
+      ],
+      "feedName": "St. Stephen's Green"
+    },
+    {
+      "name": "Harcourt",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00440",
+        "8220GA00062"
+      ],
+      "feedName": "Harcourt"
+    },
+    {
+      "name": "Charlemont",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00070",
+        "8220GA00071"
+      ],
+      "feedName": "Charlemont"
+    },
+    {
+      "name": "Ranelagh",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00074",
+        "8220GA00075"
+      ],
+      "feedName": "Ranelagh"
+    },
+    {
+      "name": "Beechwood",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00083",
+        "8220GA00084"
+      ],
+      "feedName": "Beechwood"
+    },
+    {
+      "name": "Cowper",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00276",
+        "8220GA00275"
+      ],
+      "feedName": "Cowper"
+    },
+    {
+      "name": "Milltown",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8220GA00278",
+        "8220GA00279"
+      ],
+      "feedName": "Milltown"
+    },
+    {
+      "name": "Windy Arbour",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00282",
+        "8250GA00281"
+      ],
+      "feedName": "Windy Arbour"
+    },
+    {
+      "name": "Dundrum",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00287",
+        "8250GA00286"
+      ],
+      "feedName": "Dundrum"
+    },
+    {
+      "name": "Balally",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00291",
+        "8250GA00292"
+      ],
+      "feedName": "Balally"
+    },
+    {
+      "name": "Kilmacud",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00296",
+        "8250GA00295"
+      ],
+      "feedName": "Kilmacud"
+    },
+    {
+      "name": "Stillorgan",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00297",
+        "8250GA00298"
+      ],
+      "feedName": "Stillorgan"
+    },
+    {
+      "name": "Sandyford",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00293",
+        "8250GA00294"
+      ],
+      "feedName": "Sandyford"
+    },
+    {
+      "name": "Central Park",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00310",
+        "8250GA00311"
+      ],
+      "feedName": "Central Park"
+    },
+    {
+      "name": "Glencairn",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00313",
+        "8250GA00314"
+      ],
+      "feedName": "Glencairn"
+    },
+    {
+      "name": "The Gallops",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00316",
+        "8250GA00317"
+      ],
+      "feedName": "The Gallops"
+    },
+    {
+      "name": "Leopardstown Valley",
+      "lines": [
+        "green"
+      ],
+      "aliases": [
+        "Leopardstown"
+      ],
+      "stopIds": [
+        "8250GA00319",
+        "8250GA00320"
+      ],
+      "feedName": "Leopardstown"
+    },
+    {
+      "name": "Ballyogan Wood",
+      "lines": [
+        "green"
+      ],
+      "aliases": [
+        "Ballyogan"
+      ],
+      "stopIds": [
+        "8250GA00322",
+        "8250GA00323"
+      ],
+      "feedName": "Ballyogan"
+    },
+    {
+      "name": "Carrickmines",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00326",
+        "8250GA00325"
+      ],
+      "feedName": "Carrickmines"
+    },
+    {
+      "name": "Laughanstown",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00330",
+        "8250GA00329"
+      ],
+      "feedName": "Laughanstown"
+    },
+    {
+      "name": "Cherrywood",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00332",
+        "8250GA00333"
+      ],
+      "feedName": "Cherrywood"
+    },
+    {
+      "name": "Brides Glen",
+      "lines": [
+        "green"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "8250GA00335",
+        "8250GA00336"
+      ],
+      "feedName": "Brides Glen"
+    }
   ]
 }

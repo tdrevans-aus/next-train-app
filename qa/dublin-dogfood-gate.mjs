@@ -32,6 +32,7 @@ import {
   resolveCatalogEntry,
   listCatalogStations,
   fetchStationBoard,
+  directionsFromStatic,
 } from "../lib/providers/dublin.js";
 import { MissingNtaApiKeyError } from "../lib/providers/gtfs/auth.js";
 import {
@@ -45,6 +46,7 @@ import {
   isDirectionAllowedAtStop,
   isTerminatingAtStation,
   GREEN_LOOP_DIRECTION_ONLY,
+  LINE_TERMINI,
 } from "../lib/cities/dublin/marketing-directions.js";
 import { getDublinDogfoodDirections, listDublinDogfoodStations } from "../lib/cities/dublin/dogfood-next-train.js";
 
@@ -217,6 +219,104 @@ try {
 }
 assert(apiDispatchThrew, "live-city-api getMultiCityDirections('dublin', ...) must reject an unknown station without any network call");
 
+// --- Fix 1: every catalog station must resolve exact real stop_ids from the published GTFS_LUAS
+// snapshot (docs/dublin-d1/luas-stops-from-feed.md, 128 rows / 67 distinct names, captured in CI
+// 27 Sep 2026). No fuzzy guessing — resolveCatalogEntry/resolveStopIds must find these via
+// catalogEntry.stopIds, baked in from the real feed, not a name-substring match.
+for (const entry of stations) {
+  assert(
+    Array.isArray(entry.stopIds) && entry.stopIds.length > 0,
+    `${entry.name} must carry at least one real GTFS stop_id (docs/jim-brief-dublin-flip-fixes.md fix 1)`
+  );
+  for (const stopId of entry.stopIds) {
+    assert(/^82[235]0GA\d{5}$/.test(stopId), `${entry.name} stop_id "${stopId}" must look like a real Luas GTFS stop_id`);
+  }
+}
+// The 7 names the write-city-directions run (36281571181) reported as "Unknown Dublin station"
+// must now resolve by their catalogued name (resolveCatalogEntry uses entry.name/aliases/stopIds).
+for (const name of [
+  "Abbey Street",
+  "Broadstone - University",
+  "Citywest Campus",
+  "Leopardstown Valley",
+  "Ballyogan Wood",
+  "Mayor Square - NCI",
+  "O'Connell Upper",
+]) {
+  const resolved = resolveCatalogEntry(name);
+  assert(resolved?.stopIds?.length > 0, `${name} must resolve to real stop_ids (was "Unknown Dublin station" in run 36281571181)`);
+}
+// The feed's own spelling must also resolve, via the alias recorded alongside stopIds.
+assert(resolveCatalogEntry("Abbey St.")?.name === "Abbey Street", "feed spelling 'Abbey St.' must resolve to the Abbey Street hub");
+assert(resolveCatalogEntry("Broadstone")?.name === "Broadstone - University", "feed spelling 'Broadstone' must resolve");
+assert(resolveCatalogEntry("Citywest")?.name === "Citywest Campus", "feed spelling 'Citywest' must resolve");
+assert(resolveCatalogEntry("Leopardstown")?.name === "Leopardstown Valley", "feed spelling 'Leopardstown' must resolve");
+assert(resolveCatalogEntry("Ballyogan")?.name === "Ballyogan Wood", "feed spelling 'Ballyogan' must resolve");
+assert(resolveCatalogEntry("Mayor Square")?.name === "Mayor Square - NCI", "feed spelling 'Mayor Square' must resolve");
+assert(resolveCatalogEntry("O'Connell Upr.")?.name === "O'Connell Upper", "feed spelling 'O'Connell Upr.' must resolve");
+
+// --- Fix 2: direction chips must come from the static timetable, not only the live board, so
+// `write-city-directions` never reports "0/67 stations with chips" overnight or during a live
+// outage (run 36281571181). Build a small offline fixture — one synthetic trip per station, per
+// line it belongs to — directly from the real stop_ids/names above (no network, no blob fetch).
+function makeFixtureStaticData(catalogStations) {
+  const stopTimesByStopId = new Map();
+  const tripsById = new Map();
+  const routesById = new Map();
+  routesById.set("route-red", { route_id: "route-red", route_short_name: "Red" });
+  routesById.set("route-green", { route_id: "route-green", route_short_name: "Green" });
+
+  let tripSeq = 0;
+  for (const entry of catalogStations) {
+    for (const lineId of entry.lines) {
+      const termini = LINE_TERMINI[lineId] ?? [];
+      // Pick a terminus this station can genuinely see: not itself, and honouring the Green
+      // city-centre loop's direction-exclusivity guard for the three restricted stops.
+      const required = GREEN_LOOP_DIRECTION_ONLY[entry.name];
+      let terminus = null;
+      if (required === "northbound") {
+        terminus = "Broombridge";
+      } else if (required === "southbound") {
+        terminus = "Brides Glen";
+      } else {
+        terminus = termini.find((t) => t !== entry.name) ?? termini[0];
+      }
+      if (!terminus) {
+        continue;
+      }
+      const tripId = `fixture-trip-${tripSeq++}`;
+      tripsById.set(tripId, { trip_id: tripId, route_id: `route-${lineId}`, trip_headsign: terminus });
+      for (const stopId of entry.stopIds) {
+        const list = stopTimesByStopId.get(stopId) ?? [];
+        list.push({ trip_id: tripId, stop_id: stopId });
+        stopTimesByStopId.set(stopId, list);
+      }
+    }
+  }
+  return { stopTimesByStopId, tripsById, routesById };
+}
+
+const fixtureStatic = makeFixtureStaticData(stations);
+let stationsWithChips = 0;
+for (const entry of stations) {
+  const chips = directionsFromStatic({ stopIds: entry.stopIds, staticData: fixtureStatic, stationName: entry.name });
+  assert(
+    chips.length >= 1,
+    `${entry.name} must get at least one direction chip from the static snapshot fixture (docs/jim-brief-dublin-flip-fixes.md fix 2)`
+  );
+  if (GREEN_LOOP_DIRECTION_ONLY[entry.name] === "northbound") {
+    assert(chips.includes("Green + Broombridge"), `${entry.name} must chip Green + Broombridge (northbound-only)`);
+  }
+  if (GREEN_LOOP_DIRECTION_ONLY[entry.name] === "southbound") {
+    assert(chips.includes("Green + Brides Glen"), `${entry.name} must chip Green + Brides Glen (southbound-only)`);
+  }
+  stationsWithChips += 1;
+}
+assert(stationsWithChips === 67, `all 67 catalog stations must resolve at least one static-derived chip, got ${stationsWithChips}`);
+// Abbey Street (hub) must never show a Green chip even in this fixture.
+const abbeyChips = directionsFromStatic({ stopIds: byName.get(DUBLIN_HUB).stopIds, staticData: fixtureStatic, stationName: DUBLIN_HUB });
+assert(abbeyChips.every((c) => c.startsWith("Red")), "Abbey Street must never show a Green chip, even from the static fixture");
+
 console.log(
-  "dublin-dogfood-gate: ok (live, adapterReady, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 67 stations (Red 32 / Green 35), hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Abbey Street/City never a direction token, Green city-centre loop direction-exclusivity guard (O'Connell - GPO/O'Connell Upper northbound-only, Marlborough southbound-only), missing-key and unknown-station both throw without network, Perth Australia green)"
+  "dublin-dogfood-gate: ok (live, adapterReady, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 67 stations (Red 32 / Green 35), hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Abbey Street/City never a direction token, Green city-centre loop direction-exclusivity guard (O'Connell - GPO/O'Connell Upper northbound-only, Marlborough southbound-only), missing-key and unknown-station both throw without network, all 67 catalog stations resolve real GTFS stop_ids and get >=1 static-derived direction chip, Perth Australia green)"
 );
