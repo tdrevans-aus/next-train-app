@@ -122,3 +122,28 @@ no confirmable real-time service is filtered out of the app (`lib/cities/dublin/
 67 → 66 stations) with a `notCovered` entry (`lib/cities/dublin/coverage.json`) rather than shipped
 with a silently empty board. This does not change the Red Line's `in` verdict for its other 31
 catalog stations, and does not affect the `out-product`/`out-mode` verdicts for DART/buses above.
+
+## Correction, 27 Sep 2026 (Jim, docs/jim-brief-dublin-saggart-rialto-gaps.md) — Board eligibility: Saggart `out-feed`; Rialto confirmed `in`
+
+Add a sixth verdict row to the Board eligibility table above: **Saggart Luas stop — `out-feed`**.
+Same shape as Connolly's row above — Saggart is walk-up boardable Luas light rail like every other
+Red Line stop (it is the branch's own printed terminus), and the exclusion is not a boarding-contract
+failure. Mark's QA of PR #481 found Saggart empty on 20/20 polls over 15 minutes while its same-branch,
+same-headway neighbours (Fortunestown, Citywest Campus) carried 2-6 trips every poll; Jim corroborated
+with a further foreground 6-poll check against the same controls on 27 Sep 2026 (Saggart 0/6, controls
+6/6). An alias check (every RT stop_id seen for a Red-classified trip, diffed against the trimmed
+static snapshot's `stops.txt`) found zero RT-only stop_ids, ruling out a mapping/alias fix in favour
+of filtering — full evidence in `hazard-pack.md`'s matching "Correction, 27 Sep 2026" entry. Per
+docs/board-eligibility-rule.md, Saggart is filtered from `lib/cities/dublin/stations.json` (66 → 65
+stations; Red 31 → 30) with a `notCovered` entry (`lib/cities/dublin/coverage.json`). Because Saggart
+is a printed Red Line terminus name, not just a catalog stop, the "Red + Saggart" direction chip
+still surfaces at every upstream Red stop (`lib/cities/dublin/marketing-directions.js`'s
+`LINE_TERMINI.red` list is independent of catalog membership) — only Saggart's own board is filtered.
+
+**Rialto** was investigated in the same pass (flagged empty on every poll of the automated 3-poll
+sweep, not deep-dived) and does **not** get a Board eligibility row change — a dedicated foreground
+10-poll/60s check against controls Fatima and Suir Road found it non-empty on 10/10 polls (5-7 trips
+each), the same transient-feed-gap shape as Red Cow/Kylemore rather than Connolly/Saggart's permanent
+gap. Rialto's existing `in` verdict (part of the Red Line's 30 remaining catalog stations) stands
+unchanged; it is covered by the honest empty state (PR #481) for any brief poll where the feed has
+nothing to say.

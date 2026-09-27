@@ -304,3 +304,92 @@ Kylemore result could be any of them, not just Red Cow.
 
 No code changed as a result of this investigation (per the brief: 2b/2c means report, don't fix).
 Status stays planned. No PR opened.
+
+## Saggart filtered (permanent, out-feed); Rialto confirmed intermittent, kept in (27 Sep 2026)
+
+Brief: docs/jim-brief-dublin-saggart-rialto-gaps.md, off Mark's QA of PR #481.
+
+**Alias check (done first, per the brief).** Fetched one live NTA GTFS-RT v2 TripUpdates snapshot
+(2,148 entities, Sunday ~13:54 Europe/Dublin, Luas running) alongside the published static snapshot.
+Joined each entity's `trip.tripId` to the static `trips.txt` → `routes.txt` to classify 29 trips as
+Red via `classifyLuasLineId`, then collected every stop_id named in those trips' `stopTimeUpdate`
+arrays: 53 distinct stop_ids, **all 53 present in the static snapshot's `stops.txt`** — zero RT-only
+Red stop_ids found outside the static snapshot. Result: **no mapping/alias problem** — nothing to fix
+in the trim/alias layer; Saggart's and Rialto's static stop_ids are simply never (Saggart) or rarely
+(Rialto) named in a live `stopTimeUpdate`, not present under some other unmapped id.
+
+**Saggart** — confirmed PERMANENT, same Connolly shape. Mark's QA already found 20/20 polls empty
+over 15 min (45s apart) while Fortunestown/Citywest Campus (same branch, same headway) carried 2-6
+trips every poll. Corroborated independently this session: foreground 6-poll/45s loop, same three
+stations, Sunday ~13:04-13:09 Europe/Dublin — Saggart empty 6/6 (`emptyReason: "no-live-predictions"`
+every poll), Fortunestown 6/6 non-empty (3-4 trips), Citywest Campus 6/6 non-empty (3-5 trips).
+Filtered per docs/board-eligibility-rule.md: removed from `lib/cities/dublin/stations.json` (66 → 65
+catalog stations, Red 31 → 30), `notCovered` entry + rider copy added to `lib/cities/dublin/
+coverage.json`, dated Corrections appended to `hazard-pack.md` and `oracle-clash-report.md`'s Board
+eligibility section (`out-feed` verdict). Because Saggart is a printed Red Line terminus name in
+`lib/cities/dublin/marketing-directions.js`'s `LINE_TERMINI.red` list (independent of catalog
+membership), the "Red + Saggart" direction chip keeps appearing at every upstream Red stop — verified
+`mapLineTerminusDestination("Saggart", "red") === "Red + Saggart"` still resolves after the catalog
+removal (asserted in `qa/dublin-dogfood-gate.mjs`). `qa/dublin-dogfood-gate.mjs`'s station/Red counts
+updated to 65/30.
+
+**Rialto** — CONFIRMED intermittent, not permanent; left in the catalog. The automated 3-poll sweep
+(30s apart) had shown it empty on every poll, the same shape reported for Saggart, but Mark flagged
+it as "not deep-dived" and asked for independent confirmation before any filtering decision. Ran a
+dedicated foreground 10-poll/60s loop (well past the 20s TripUpdates cache TTL) against controls
+Fatima and Suir Road, Sunday ~12:54-13:04 UTC (~13:54-14:04 Europe/Dublin):
+
+| Poll | Rialto trips | Fatima trips | Suir Road trips |
+|---|---|---|---|
+| 1 | 6 | 4 | 4 |
+| 2 | 6 | 4 | 4 |
+| 3 | 6 | 4 | 4 |
+| 4 | 6 | 4 | 4 |
+| 5 | 6 | 4 | 4 |
+| 6 | 5 | 3 | 4 |
+| 7 | 6 | 3 | 5 |
+| 8 | 6 | 4 | 4 |
+| 9 | 7 | 3 | 5 |
+| 10 | 7 | 3 | 0 (`no-live-predictions`) |
+
+Rialto: 10/10 polls non-empty (5-7 trips each). Fatima: 10/10 non-empty (3-4 trips each). Suir Road:
+9/10 non-empty, one honest-empty-state poll (the same transient-gap shape documented for Red Cow/
+Kylemore above). Rialto's original empty appearance in the 3-poll sweep was a momentary feed-gap
+sighting, not a permanent per-station coverage hole — no coverage.json change, no catalog removal.
+It stays covered by the honest empty state (PR #481) for any future brief poll where the feed
+genuinely has nothing to say.
+
+**Sweep threshold (Mark's recommendation, applied).** `qa/dublin-all-stations-live-sweep.mjs` is now
+headway-aware: for each catalog station it derives the scheduled headway from the static snapshot's
+`stop_times.txt` for the current service-day hour (median gap between consecutive scheduled
+departures at that stop within the hour window; falls back to 20 minutes when fewer than two rows
+are found), and fails a station only when its empty run spans >= 1.5x that headway (polls spaced at
+max(30s, headway/4), capped so the whole run stays <= 20 minutes) — an empty poll with
+`emptyReason: "no-live-predictions"` inside that window passes, same as the honest-empty-state rule
+elsewhere. This replaces the previous fixed 3-poll/30s-apart/3-consecutive-empty threshold, which is
+exactly what mis-flagged Rialto (a station that resolves to non-empty on essentially every longer
+poll) as a stale gap on a narrower window.
+
+Status stays `planned`. Scratch poll scripts used for this investigation
+(`scratch-alias-check.mjs`, `scratch-poll-rialto.mjs`, `scratch-poll-saggart.mjs`,
+`scratch-marlborough.mjs`, `scratch-poll-marlborough.mjs`) were run in the repo root, are not
+committed, and are deleted after this entry was written.
+
+**Separate finding, noticed while validating the new sweep, NOT fixed here (out of this brief's
+scope).** The first full 65-station sweep run under the new headway-aware threshold (pre-dating
+the 9-minute runtime cap, run at the then-current 20-minute cap) failed on **Marlborough**
+(Green Line, southbound-only direction-exclusive interchange stop, hazard-pack.md H4a) —
+continuously empty (`emptyReason: "no-live-predictions"` every poll) for the entire 20-minute run
+while all other 64 stations had genuine coverage at some point. A dedicated 5-poll/45s follow-up
+check immediately afterwards showed Marlborough recovering (empty on polls 1-3, non-empty on polls
+4-5, ~1-2 trips), while controls O'Connell - GPO/Trinity/Parnell stayed non-empty throughout — so
+this is the same transient-feed-gap shape as Red Cow/Kylemore/Rialto, not a permanent Connolly/
+Saggart-style hole, just a longer-than-usual one (~20-24 minutes) against Marlborough's own fairly
+low ~12-minute scheduled headway (1.5x threshold ~18 min). Not investigated further or filtered —
+out of this brief's Saggart/Rialto scope — but worth a dedicated look given Marlborough is one of
+the three direction-exclusive Green loop stops this pack already flags as its sharpest hazard.
+A re-run of `qa/dublin-all-stations-live-sweep.mjs` a few minutes later (under the corrected
+9-minute runtime cap) passed cleanly with Marlborough non-empty throughout, and flagged Tallaght as
+"uncertain" (empty the whole 9-minute run, headway 7min, but the run ended before reaching its own
+1.5x/~10.5min threshold) rather than failing it — exactly the graceful "re-run to confirm" behaviour
+the new threshold rule is designed to produce for a borderline case, not a hard failure.

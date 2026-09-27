@@ -129,3 +129,44 @@ Connolly is removed from `lib/cities/dublin/stations.json` (67 → 66 catalog st
 published-network.json historical record above (still 67 Luas stops network-wide) — the catalog is
 what the product serves; Connolly remains a real, physically-served Luas stop that the NTA feed just
 never confirms in real time.
+
+## Correction, 27 Sep 2026 (Jim, docs/jim-brief-dublin-saggart-rialto-gaps.md) — Saggart filtered (out-feed, permanent); Rialto confirmed intermittent, kept in
+
+Following the same shape as Connolly above, Mark's QA of PR #481 found **Saggart** (the Red Line's
+south-western branch terminus, via Fettercairn/Cheeverstown/Citywest Campus/Fortunestown) empty on
+20/20 polls over 15 minutes, 45s apart, while Fortunestown and Citywest Campus — the same branch,
+same headway — carried 2-6 trips every poll. Corroborated independently this session with a further
+foreground 6-poll/45s check against the same two controls (Sunday ~13:04-13:09 Europe/Dublin, Luas
+running): Saggart empty 6/6 (`emptyReason: "no-live-predictions"` every poll), Fortunestown and
+Citywest Campus non-empty every poll (3-5 trips each). Same Connolly shape: a real, permanent gap in
+NTA's TripUpdates coverage for this stop, not a transient under-report.
+
+Alias check (per the brief, before filtering): fetched one live TripUpdates snapshot (2,148
+entities), classified 29 trips as Red via the static `trips.txt` → `routes.txt` join, and collected
+every stop_id named in those trips' `stopTimeUpdate` arrays — 53 distinct stop_ids, all 53 present in
+the trimmed static snapshot's `stops.txt`. **No RT-only Red stop_id found outside the static
+snapshot** — this rules out a mapping/alias problem; Saggart's own static stop_ids
+(`8230GA00418`/`8230GA00419`) are simply never named in any live `stopTimeUpdate`, the same shape as
+Connolly, not a resolvable id mismatch.
+
+Per docs/board-eligibility-rule.md, Saggart is removed from `lib/cities/dublin/stations.json` (66 →
+65 catalog stations for v1; Red 31 → 30), with a `notCovered` entry and rider copy in
+`lib/cities/dublin/coverage.json`. Because Saggart is a Red Line **terminus name**, not just a
+catalog stop, `lib/cities/dublin/marketing-directions.js`'s `LINE_TERMINI.red` list still carries the
+literal string `"Saggart"` — `resolveTerminus`/`mapLineTerminusDestination` classify a live trip
+destined for Saggart independently of catalog membership (a substring match against `LINE_TERMINI`
+when the catalog alias lookup misses), so the **"Red + Saggart" direction chip keeps appearing at
+every upstream Red stop** naming where the tram is going, exactly as before — only Saggart's own
+board (a place a rider could try to open) is filtered, per the brief's framing ("it names where the
+tram goes, not a board you can open").
+
+**Rialto**, flagged as empty on every poll of the automated 3-poll sweep (same shape as Saggart on
+that narrower sweep), was NOT deep-dived by Mark and needed independent confirmation before any
+filtering decision. A dedicated foreground 10-poll/60s loop (well past the 20s TripUpdates cache TTL)
+against controls Fatima and Suir Road, Sunday ~12:54-13:04 UTC (~13:54-14:04 Europe/Dublin), found
+Rialto non-empty on **10/10 polls** (5-7 trips each), same as both controls (Fatima 10/10, 3-4 trips;
+Suir Road 9/10, one honest-empty-state poll). Rialto's empty appearance in the original 3-poll
+automated sweep was a transient feed-gap sighting, the same shape as Red Cow/Kylemore's known
+intermittent under-reporting (jim-handoff.md, 27 Sep 2026 entry) — not the permanent Connolly/Saggart
+shape. **Rialto is left in the catalog**, covered by the honest empty state (PR #481) for the rare
+poll where the feed briefly has nothing to say for it.
