@@ -133,3 +133,17 @@ sections 2–6 agree: live-city-api `MULTI_CITY_IDS`, app.js `LIVE_CITY_IDS` +
 So in practice: flip the registry status (step 1), run the gate, and it enumerates every list
 still missing the city. Steps 7's per-city gate semantics remain manual — the sync gate
 checks list membership, not QA assertions.
+
+## 9. GTFS-RT cities — live feed gaps must be honest, not blank
+
+For any GTFS-RT (live-only) city, run that city's all-stations live sweep (e.g.
+`node --env-file=.env.local qa/dublin-all-stations-live-sweep.mjs`) during real service hours
+before flipping. Real-time feeds intermittently omit a stop's data for a few minutes while
+service genuinely runs (docs/jim-brief-dublin-honest-empty-state.md, Red Cow/Kylemore
+findings) — an empty in-catalog station passes the sweep **only** when the rider-facing
+`/api/board` response for it carries the honest-empty-state signal (the provider's additive
+`emptyReason: "no-live-predictions"` field, which the shared UI renders as "No live
+predictions for this stop right now" rather than a bare blank board). A station that stays
+empty across every poll in the sweep's window, honest-empty banner or not, is a real
+per-station coverage gap — the Connolly shape — and needs its own `coverage.json` verdict
+(filtered out with a rider-facing note) rather than flipping live still showing it.

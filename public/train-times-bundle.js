@@ -344,7 +344,16 @@ var NextTrainTimes = (() => {
     // tell us and the board is genuinely empty (e.g. a planned line closure). Every existing
     // caller omits this and gets byte-identical output — it only ever adds `nextServiceDate` to
     // the response, and only when `upcoming` is empty.
-    nextServiceDate = null
+    nextServiceDate = null,
+    // Additive/optional (docs/jim-brief-dublin-honest-empty-state.md): set by a live-only
+    // provider when `upcoming` resolves empty NOT because there's no scheduled service, but
+    // because the real-time feed had nothing to say for this stop right now while the static
+    // schedule says service should be running (e.g. NTA's GTFS-RT intermittently omitting a
+    // stop's stopTimeUpdate rows for a few minutes). Every existing caller omits this and gets
+    // byte-identical output — it only ever adds `emptyReason` to the response, and only when
+    // `upcoming` is empty. Mutually exclusive in practice with `nextServiceDate` (that one means
+    // "no more service today/soon", this one means "service should be running, feed is silent").
+    emptyReason = null
   }) {
     const skip = Math.max(0, Math.floor(Number(skipTrains) || 0));
     const formatLastUpdated = lastUpdated instanceof Date ? lastUpdated.toLocaleString("en-AU", {
@@ -376,6 +385,9 @@ var NextTrainTimes = (() => {
     };
     if (upcomingPayloads.length === 0 && nextServiceDate) {
       response.nextServiceDate = nextServiceDate;
+    }
+    if (upcomingPayloads.length === 0 && emptyReason) {
+      response.emptyReason = emptyReason;
     }
     if (upcomingPayloads.length === 0 && Array.isArray(terminatingTrips) && terminatingTrips.length > 0) {
       const arrivals = terminatingTrips.filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture).slice(0, UPCOMING_TRIP_LIMIT).map((trip) => buildTripPayload(trip, leaveBeforeMinutes, now));

@@ -16,6 +16,8 @@ Two board-eligibility checks are part of the checklist (`docs/board-eligibility-
 
 Also part of the checklist (added 20 Sep 2026, after Boston flipped live with its subway still built from static GTFS and `realtime: false` — docs/jim-brief-boston-subway-live-predictions.md): board-level `realtime` is true and every mode on the board is built from live data, not a schedule. Sample the rider-facing `/api/board` and `/api/directions` endpoints, not only the adapter's `fetchStationBoard()` in isolation — a mode can look live when called directly and still be schedule-only in the actual response path.
 
+Also part of the checklist (added 27 Sep 2026, docs/jim-brief-dublin-honest-empty-state.md): for a GTFS-RT city, run its all-stations live sweep — an empty in-catalog station only passes with the honest empty state present (`emptyReason: "no-live-predictions"` on the rider-facing board), and a station empty on every poll needs a coverage-note exclusion instead (Connolly precedent).
+
 ## Input
 Read the wired adapter, its tests, and the city's `docs/<city>-d1/` pack. Don't read other cities' history to form an opinion on this one.
 
