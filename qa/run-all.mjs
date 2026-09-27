@@ -111,7 +111,7 @@ const SMOKE_SCRIPTS = [
   "malmo-line-map-conformance.mjs",
   "wellington-dogfood-gate.mjs",
   "osaka-planned-gate.mjs",
-  "hong-kong-planned-gate.mjs",
+  "hong-kong-dogfood-gate.mjs",
   "auckland-line-map-conformance.mjs",
   "stockholm-line-map-conformance.mjs",
   "goteborg-line-map-conformance.mjs",

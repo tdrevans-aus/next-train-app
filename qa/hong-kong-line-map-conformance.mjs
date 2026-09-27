@@ -37,7 +37,20 @@ const TERMINI = {
   EAL: ["Admiralty", "Lo Wu / Lok Ma Chau"],
   SIL: ["Admiralty", "South Horizons"],
 };
-const PRINTED_COUNTS = { ISL: 17, TWL: 16, KTL: 17, TKL: 8, TCL: 8, TML: 27, EAL: 16, SIL: 5 };
+const PRINTED_COUNTS = {
+  ISL: 17,
+  TWL: 16,
+  KTL: 17,
+  TKL: 8,
+  TCL: 8,
+  TML: 27,
+  EAL: 16,
+  SIL: 5,
+  // Board-eligibility-approved product lines (Tim, 27 Sep 2026) — restricted to the in-catalog
+  // stations named in the "Board eligibility" section, not full physical route length.
+  AEL: 3,
+  DRL: 1,
+};
 const MARK_PROBES = [
   "Admiralty",
   "Central",
@@ -72,8 +85,10 @@ function main() {
   if (getCity("hong-kong")?.status !== "planned") {
     failures.push("C0: hong-kong registry status must be planned");
   }
-  if (getCity("hong-kong")?.adapterReady !== false) {
-    failures.push("C0: hong-kong adapterReady must be false");
+  // adapterReady flipped true 27 Sep 2026 once the adapter was wired (flip follow-through) —
+  // status stays "planned" until Mark/Tim's flip (checked above via assertCityLive).
+  if (getCity("hong-kong")?.adapterReady !== true) {
+    failures.push("C0: hong-kong adapterReady must be true (adapter is wired; status stays planned)");
   }
   if (isMultiCity("hong-kong")) {
     failures.push("C0: hong-kong must not join MULTI_CITY_IDS until Tim flips live");
@@ -95,20 +110,40 @@ function main() {
   }
 
   const codes = (lineMap.lines ?? []).map((line) => line.number);
-  if (JSON.stringify(codes) !== JSON.stringify(PRINTED_CODES)) {
-    failures.push(`C1: expected ${PRINTED_CODES.join(",")} got ${codes.join(",")}`);
+  // First eight lines are still exactly the D1 urban heavy-rail print. AEL and DRL were added
+  // 27 Sep 2026 as two board-eligibility-approved product lines (Tim's decision,
+  // docs/hong-kong-d1/oracle-clash-report.md "Board eligibility" section) — DIS/Light Rail/HSR
+  // stay fully out, checked below.
+  if (JSON.stringify(codes.slice(0, 8)) !== JSON.stringify(PRINTED_CODES)) {
+    failures.push(`C1: expected ${PRINTED_CODES.join(",")} got ${codes.slice(0, 8).join(",")}`);
+  }
+  if (JSON.stringify(codes.slice(8)) !== JSON.stringify(["AEL", "DRL"])) {
+    failures.push(`C1: expected the two approved product lines AEL,DRL after the eight urban lines, got ${codes.slice(8).join(",")}`);
   }
   const names = (lineMap.lines ?? []).map((line) => line.name);
-  if (JSON.stringify(names) !== JSON.stringify(PRINTED_NAMES)) {
-    failures.push(`C1: expected ${PRINTED_NAMES.join(",")} got ${names.join(",")}`);
+  if (JSON.stringify(names.slice(0, 8)) !== JSON.stringify(PRINTED_NAMES)) {
+    failures.push(`C1: expected ${PRINTED_NAMES.join(",")} got ${names.slice(0, 8).join(",")}`);
   }
   if (
     (lineMap.lines ?? []).some(
-      (line) =>
-        ["AEL", "DIS", "DRL", "LR"].includes(line.number) || /airport express|disneyland|light rail|high speed/i.test(line.name)
+      (line) => line.number === "DIS" || line.number === "LR" || /light rail|high speed/i.test(line.name)
     )
   ) {
-    failures.push("C1: AEL / DIS / Light Rail / HSR must not be a D1 line");
+    failures.push("C1: DIS (station code) / Light Rail / HSR must never be a line-map line");
+  }
+  const ael = (lineMap.lines ?? []).find((line) => line.number === "AEL");
+  const drl = (lineMap.lines ?? []).find((line) => line.number === "DRL");
+  if (JSON.stringify(ael?.stations ?? []) !== JSON.stringify(["Hong Kong", "Kowloon", "Tsing Yi"])) {
+    failures.push(`C1: AEL must be restricted to Hong Kong/Kowloon/Tsing Yi, got ${(ael?.stations ?? []).join(",")}`);
+  }
+  if (JSON.stringify(drl?.stations ?? []) !== JSON.stringify(["Sunny Bay"])) {
+    failures.push(`C1: DRL must be restricted to Sunny Bay only, got ${(drl?.stations ?? []).join(",")}`);
+  }
+  if (JSON.stringify(ael?.termini ?? []) !== JSON.stringify(["Hong Kong", "Airport / AsiaWorld-Expo"])) {
+    failures.push("C1: AEL termini must be Hong Kong / Airport / AsiaWorld-Expo");
+  }
+  if (JSON.stringify(drl?.termini ?? []) !== JSON.stringify(["Sunny Bay", "Disneyland Resort"])) {
+    failures.push("C1: DRL termini must be Sunny Bay / Disneyland Resort");
   }
 
   const catalogNames = (catalog.stations ?? []).map((row) => row.name);
@@ -249,8 +284,10 @@ function main() {
   if (JSON.stringify(lineMap.shortTurnGroups ?? {}) !== "{}") {
     failures.push("C5: shortTurnGroups must stay empty (line+terminus; no nested codes)");
   }
-  if (!(lineMap.laterModes ?? []).includes("Airport Express")) {
-    failures.push("C1: laterModes must name Airport Express as out of v1");
+  // Airport Express and Disneyland Resort Line moved OUT of laterModes 27 Sep 2026 — they are
+  // now approved product lines (restricted stations), not a deferred later mode.
+  if ((lineMap.laterModes ?? []).includes("Airport Express") || (lineMap.laterModes ?? []).includes("Disneyland Resort Line")) {
+    failures.push("C1: Airport Express / Disneyland Resort Line must not be in laterModes anymore — they are approved product lines");
   }
   if (!(lineMap.laterModes ?? []).includes("Light Rail")) {
     failures.push("C1: laterModes must name Light Rail as out of v1");
@@ -312,7 +349,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("hong-kong-line-map-conformance: ok (planned, eight urban heavy-rail lines, Admiralty hub, AEL/DIS/LR/HSR absent, Lo Wu/Lok Ma Chau in, LOHAS Park TKL branch, 95 names)");
+  console.log("hong-kong-line-map-conformance: ok (planned, eight urban heavy-rail lines + AEL at Hong Kong/Kowloon/Tsing Yi + DRL at Sunny Bay (board eligibility, Tim 27 Sep 2026), Admiralty hub, DIS station-code/Light Rail/HSR absent as lines, Lo Wu/Lok Ma Chau in, LOHAS Park TKL branch, 95 names)");
 }
 
 main();

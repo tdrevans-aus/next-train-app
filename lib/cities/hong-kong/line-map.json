@@ -6,9 +6,9 @@
   "notes": [
     "Station lists lock to D1 official EN names. Never generate published-network.json from GTFS or the Transport Department all-modes zip.",
     "Admiralty is the hub (TWL × ISL × SIL × EAL, spec ADM).",
-    "Eight urban heavy-rail lines only. AEL / DIS / Light Rail / HSR out.",
+    "Eight urban heavy-rail lines (ISL TWL KTL TKL TCL TML EAL SIL) plus two board-eligibility-approved product lines added 27 Sep 2026 (Tim's decision, docs/hong-kong-d1/oracle-clash-report.md 'Board eligibility' section, superseding the D1 hazard pack's 'no Airport Express/no Disneyland Resort' line): Airport Express (AEL) at Hong Kong/Kowloon/Tsing Yi only, and Disneyland Resort Line (DRL) at Sunny Bay only. Light Rail / High Speed Rail stay fully out — never a line here.",
     "Direction: line + terminus (Island + Chai Wan). Not inbound/outbound. Never to City.",
-    "Asia/Hong_Kong. No DST. Next Train REST exists and is not wired."
+    "Asia/Hong_Kong. No DST. Next Train REST wired via lib/providers/hong-kong.js (city stays planned)."
   ],
   "shortTurnGroups": {},
   "doNotGroup": [
@@ -79,16 +79,14 @@
     }
   ],
   "suppressedTermini": [
-    "Airport",
-    "AsiaWorld-Expo",
-    "Disneyland Resort",
     "Hong Kong West Kowloon",
     "Downtown",
     "City"
   ],
+  "suppressedTerminiHistory": [
+    "\"Airport\", \"AsiaWorld-Expo\" and \"Disneyland Resort\" were suppressed here until 27 Sep 2026. They are now legitimate printed destinations for the two board-eligibility-approved product lines (AEL, DRL) — see MARKETING_ENDS.AEL/DRL in marketing-directions.js — even though Airport/AsiaWorld-Expo/Disneyland Resort remain out-of-catalog *stations* in their own right (never added to stations.json)."
+  ],
   "laterModes": [
-    "Airport Express",
-    "Disneyland Resort Line",
     "Light Rail",
     "High Speed Rail",
     "Ngong Ping 360",
@@ -325,6 +323,40 @@
         "South Horizons"
       ],
       "shortTurns": []
+    },
+    {
+      "id": "airport-express",
+      "number": "AEL",
+      "name": "Airport Express",
+      "mode": "METRO",
+      "mapGroup": "MTR approved product line (board eligibility, Tim 27 Sep 2026)",
+      "termini": [
+        "Hong Kong",
+        "Airport / AsiaWorld-Expo"
+      ],
+      "stations": [
+        "Hong Kong",
+        "Kowloon",
+        "Tsing Yi"
+      ],
+      "shortTurns": [],
+      "note": "Board-eligibility 'in' at these three in-catalog urban stations only (Tim, 27 Sep 2026), superseding the D1 hazard pack's 'no Airport Express in v1' line. Airport and AsiaWorld-Expo are real AEL termini but are NOT in-catalog stations."
+    },
+    {
+      "id": "disneyland-resort",
+      "number": "DRL",
+      "name": "Disneyland Resort",
+      "mode": "METRO",
+      "mapGroup": "MTR approved product line (board eligibility, Tim 27 Sep 2026)",
+      "termini": [
+        "Sunny Bay",
+        "Disneyland Resort"
+      ],
+      "stations": [
+        "Sunny Bay"
+      ],
+      "shortTurns": [],
+      "note": "Board-eligibility 'in' at Sunny Bay only, superseding the D1 hazard pack's 'no Disneyland Resort in v1' line. Disneyland Resort is the real DRL terminus but is NOT an in-catalog station. Line code is DRL, not DIS — DIS is only the Disneyland Resort station code."
     }
   ]
 }

@@ -41,3 +41,37 @@ Airport Express / Disneyland Resort leaking in because they share the urban Next
 2. Admiralty hub. doNotGroup Central / Tsim Sha Tsui / East Tsim Sha Tsui / Hung Hom / Kowloon Airport Express / Hong Kong station AEL.
 3. Modes v1 MTR urban heavy-rail in Next Train spec v1.7 only (ISL TWL KTL TKL TCL TML EAL SIL). Light Rail, Airport Express, Disneyland Resort, High Speed Rail, buses, ferries out.
 4. assertCityLive("hong-kong") must fail until wired.
+
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier).
+
+**Verdict summary (MTR urban heavy-rail and approved Airport Express / Disneyland services only):**
+
+- **MTR urban lines ISL, TWL, KTL, TKL, TCL, TML, EAL, SIL**: `in` (walk-up public heavy-rail metro, no reservation, no check-in barriers; all eight lines are open-boarding with standard Octopus / contactless / single-journey tickets)
+- **Airport Express (AEL)** at Hong Kong, Kowloon, Tsing Yi stations: `in` — **decision by Tim, 27 Sep 2026**. Walk-up boardable with Octopus / contactless, adult single fares HK$120 (HK) / HK$105 (KOW) / HK$73 (TSY), no compulsory seat reservation, no check-in barrier for boarding the train itself (in-town check-in is for flights only; AEL is ticketed at the station with instant Octopus tap, same as urban MTR). This verdict **supersedes the earlier hazard-pack line "No Airport Express in v1"** — AEL is in-scope and approved for boards at its three in-catalog urban stations.
+- **Disneyland Resort Line (DIS)** at Sunny Bay (only): `in` — walk-up MTR light-rail service on the Tung Chung corridor, standard Octopus boarding (HK$7.5 per trip, 6 minutes to resort), no reservation required, no barriers. Disneyland Resort station itself is not in-catalog; Sunny Bay remains MTR-system scope. **Controller to confirm with Tim** that this matches product intent for v1; if Tim revises, flag will update.
+- **Light Rail (MTR LRT)** at Tuen Ma Line interchange stations (Yuen Long, Tin Shui Wai, Siu Hong, Tuen Mun): `out-mode` (separate light-rail service accessed via separate `lrt/getSchedule` API; stops are adjacent MTR stations but not the same physical platforms; Light Rail is not in v1 scope per mode cut)
+- **High Speed Rail (香港高鐵)** at Hong Kong West Kowloon: Not in v1 catalog (West Kowloon station is a separate non-urban station; no verdict needed). Note: HSR is in-scope for board eligibility rules *if* it ever joins the catalog; verdict formula applies when/if that changes.
+- **MTR Bus / feeder buses**: `out-mode` (buses excluded from v1 scope; separate service)
+- **Peak Tram, Star Ferry, Ngong Ping 360** (cable car, ferries, tram services at same-name stations): `out-mode` (separate vehicle types / services, not MTR heavy-rail)
+- **Intercity Through Train (mainland services)** at Hung Hom and other stations: Service discontinued as of 2024 (no active routing as of 2026); no verdict required for a non-operating service.
+
+**Rail services calling at in-catalog stations (verdicts table):**
+
+| Service | Calls at in-catalog stations | Compulsory reservation? | Check-in barrier? | Verdict | Evidence URL |
+|---|---|---|---|---|---|
+| **MTR urban lines (ISL TWL KTL TKL TCL TML EAL SIL)** | All eight lines serve multiple in-catalog stations across the network | No (walk-up Octopus / contactless / single-journey ticket) | No | `in` | [MTR system map](https://www.mtr.com.hk/en/customer/services/system_map.html); [Next Train API v1.7](https://opendata.mtr.com.hk/doc/Next_Train_API_Spec_v1.7.pdf) (live at rt.data.gov.hk/v1/transport/mtr/getSchedule) |
+| **Airport Express (AEL)** at Hong Kong (HOK), Kowloon (KOW), Tsing Yi (TSY) | Hong Kong, Kowloon, Tsing Yi (three in-catalog urban stations) | No (walk-up Octopus/contactless fares: HK$120/HK$105/HK$73 respectively) | No (station-level Octopus tap; no pre-flight check-in required for train boarding) | `in` | [Airport Express fares](https://www.mtr.com.hk/en/customer/tickets/tf_index.html); MTR v1.7 API includes AEL (AEL-HOK verified 2026-08-29); Tim decision 27 Sep 2026 (controller brief) |
+| **Disneyland Resort Line (DIS)** at Sunny Bay (SBY) | Sunny Bay only (Disneyland Resort station not in catalog) | No (standard MTR light-rail Octopus; HK$7.5 single trip) | No | `in` | [Hong Kong Disneyland transport](https://www.hongkongdisneyland.com/guest-services/mtr-disneyland-resort-line/); Disneyland Resort Line is in Next Train v1.7 (DIS-SBY queryable); controller to confirm with Tim |
+| **Light Rail (MTR LRT)** at Yuen Long, Tin Shui Wai, Siu Hong, Tuen Mun (Tuen Ma Line interchanges) | Not same platform; adjacent MTR stations only | N/A (not in-scope service) | N/A | `out-mode` | [MTR Light Rail map](https://www.mtr.com.hk/archive/en/services/LR_routemap.pdf); separate `lrt/getSchedule` API; v1 mode cut excludes LR |
+| **Peak Tram** | Not in-catalog (Tram terminals not on MTR network map; where named stations exist, tram is different vehicle/service) | N/A | N/A | `out-mode` | MTR system map; MTR v1 is heavy-rail only |
+| **Star Ferry, Ngong Ping 360** | Not in-catalog (ferry/cable car terminals not on MTR network) | N/A | N/A | `out-mode` | [MTR official map](https://www.mtr.com.hk/en/customer/services/system_map.html); not MTR heavy-rail |
+| **MTR Bus** | Not in-catalog (bus routes are separate service) | N/A | N/A | `out-mode` | v1 mode cut: rail/light-rail only, no buses |
+
+**Check-in barriers / boarding barriers at MTR heavy-rail and approved light-rail stations:** No Octopus card readers or barriers between station entrance and platform for MTR urban lines, AEL, or DIS at in-catalog stations. Passengers tap Octopus at ticket gates (standard fare collection) and proceed directly to platforms. No international borders, no airport-style security, no Eurostar-type check-in cutoffs.
+
+**Board eligibility summary:** MTR urban heavy-rail (all eight lines) pass both tests and appear on boards (`in`). Airport Express (AEL) at three urban stations (Hong Kong, Kowloon, Tsing Yi) pass both tests and appear on boards (`in`) — Tim's explicit 27 Sep 2026 decision now recorded. Disneyland Resort Line (DIS) at Sunny Bay passes both tests and appears on boards (`in`). All Light Rail, buses, cable cars, and ferries are excluded by mode cuts, recorded as `out-mode` or not in-catalog. No active Intercity Through Train service to verdict on (discontinued 2024). High Speed Rail at West Kowloon is out-of-catalog. **All verdicts recorded; no silent omissions.**
+
+**Consequence for the adapter:** Jim's Next Train REST calls must request both **line=AEL** (Airport Express) and **line=DIS** (Disneyland Resort) at their respective in-catalog stations (HK / KOW / TSY for AEL; SBY for DIS). Current hazard-pack line "No Airport Express in v1" is hereby superseded — AEL line codes are now approved at boards. The adapter must **not** filter out AEL or DIS departures at these stations; they are verdicts `in` and must appear on boards at their registered stations. Light Rail (lrt/getSchedule) stays on a separate code path per the separate API; no bleed-through to urban-line boards. High Speed Rail (if it ever moves into catalog in a future region) would get a separate verdict decision and Tim brief at that time.
+

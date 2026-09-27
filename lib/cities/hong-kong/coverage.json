@@ -1,0 +1,39 @@
+{
+  "region": "hong-kong",
+  "updated": "2026-09-27",
+  "covered": [
+    {
+      "label": "MTR urban heavy-rail (Island, Tsuen Wan, Kwun Tong, Tseung Kwan O, Tung Chung, Tuen Ma, East Rail, South Island)",
+      "detail": "All 95 catalogued stations, eight lines, live MTR Next Train departures."
+    },
+    {
+      "label": "Airport Express (AEL) at Hong Kong, Kowloon, Tsing Yi",
+      "detail": "Board eligibility verdict 'in' (Tim, 27 Sep 2026) — walk-up boardable, no reservation, no check-in barrier. Live departures toward Airport / AsiaWorld-Expo shown at these three urban stations only."
+    },
+    {
+      "label": "Disneyland Resort Line (DRL) at Sunny Bay",
+      "detail": "Board eligibility verdict 'in' — walk-up boardable, no reservation, no barrier. Live departures toward Disneyland Resort shown at Sunny Bay only."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Light Rail (MTR LRT)",
+      "detail": "Separate feed (lrt/getSchedule) and separate stop identity from the urban heavy-rail network. Not shown yet."
+    },
+    {
+      "label": "High Speed Rail (Hong Kong West Kowloon)",
+      "detail": "Not in catalog — separate non-urban station."
+    },
+    {
+      "label": "MTR Bus, Peak Tram, Star Ferry, Ngong Ping 360",
+      "detail": "Not covered — different vehicle types/services, out-mode."
+    },
+    {
+      "label": "Airport, AsiaWorld-Expo and Disneyland Resort stations",
+      "detail": "Not in catalog. Airport Express / Disneyland Resort Line trains toward these appear as text destinations from their in-catalog boarding stations only, never as a station a rider can pick a board for."
+    }
+  ],
+  "stations": "95 MTR urban heavy-rail stations, plus the board-eligibility-approved Airport Express (3 stations) and Disneyland Resort Line (1 station) product-line calls layered onto existing stations.",
+  "notes": "Admiralty is the inner hub where Tsuen Wan, Island, South Island and East Rail cross; it never appears as a direction. Data: data.gov.hk / MTR Corporation Limited / DATA.GOV.HK — attribution required by the data.gov.hk Terms and Conditions of Use (Version 1.2)."
+}
