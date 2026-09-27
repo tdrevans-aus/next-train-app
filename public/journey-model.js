@@ -117,7 +117,23 @@
     "Providence/Stoughton Line + Stoughton or Wickford Junction": "Stoughton or Wickford Junction",
     "Providence/Stoughton Line + South Station": "South Station (Providence/Stoughton Line)",
     "Airport + Manchester Airport": "Manchester Airport",
-    "Eccles + Eccles": "Eccles"
+    "Eccles + Eccles": "Eccles",
+    "Red Line + Shady Grove": "Shady Grove",
+    "Red Line + Glenmont": "Glenmont",
+    "Orange Line + Vienna/Fairfax-GMU": "Vienna/Fairfax-GMU",
+    "Orange Line + New Carrollton": "New Carrollton",
+    "Blue Line + Franconia-Springfield": "Franconia-Springfield",
+    "Blue Line + Downtown Largo": "Downtown Largo",
+    "Blue Line + Huntington": "Huntington",
+    "Silver Line + Ashburn": "Ashburn",
+    "Silver Line + Downtown Largo": "Downtown Largo",
+    "Silver Line + New Carrollton": "New Carrollton",
+    "Silver Line + Wiehle-Reston East": "Wiehle-Reston East",
+    "Green Line + Greenbelt": "Greenbelt",
+    "Green Line + Branch Av": "Branch Av",
+    "Yellow Line + Huntington": "Huntington",
+    "Yellow Line + Mt Vernon Sq/7th St-Convention Center": "Mt Vernon Sq/7th St-Convention Center",
+    "Yellow Line + Greenbelt": "Greenbelt"
   };
   // DIRECTION-LABEL-ALIASES-GENERATED:END
 
