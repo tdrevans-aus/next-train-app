@@ -1,6 +1,8 @@
 # Stockholm (SL) station catalog
 
-Adapter catalog for `lib/providers/stockholm.js`. **Not** wired to a live board. City stays **planned**. Picker shows **Coming Soon**.
+Adapter catalog for `lib/providers/stockholm.js`. Now live and in the picker (flipped
+`status: "live"` in `lib/providers/registry.js`; no "Coming Soon" third state per
+docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026).
 
 - Inner-city lock: **T-Centralen** (metro, site 9001) ≠ **Stockholm City** (pendeltåg, site 1080) ≠ **Stockholms central** (SJ — not a v1 board hub).
 - **Odenplan** (metro) ≠ **Stockholm Odenplan** (pendeltåg).

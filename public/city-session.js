@@ -60,23 +60,25 @@
         // "Greater Manchester" under G (Tim, 6 Sep 2026). Ids are unchanged; only the
         // label and position moved. United Kingdom split into England/Scotland/Wales
         // countries 7 Sep 2026 (docs/jim-brief-picker-countries-england-scotland-wales.md)
-        // — region ids, timeZones, comingSoon, and feed fields are unchanged.
-        { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "greater-anglia", name: "East Anglia", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        // — region ids, timeZones, and feed fields are unchanged. The "Coming
+        // Soon" flag these regions used to carry (always false) was dropped
+        // 27 Sep 2026 (docs/jim-brief-no-coming-soon-picker.md).
+        { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", feed: "darwin" },
+        { id: "greater-anglia", name: "East Anglia", timeZone: "Europe/London", feed: "darwin" },
+        { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", feed: "darwin" },
+        { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", feed: "darwin" },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
-        { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "greater-manchester", name: "Manchester", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "rest-of-england", name: "Rest of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "southwest", name: "South West (Devon / Cornwall)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", feed: "darwin" },
+        { id: "greater-manchester", name: "Manchester", timeZone: "Europe/London", feed: "darwin" },
+        { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", feed: "darwin" },
+        { id: "rest-of-england", name: "Rest of England", timeZone: "Europe/London", feed: "darwin" },
+        { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", feed: "darwin" },
+        { id: "southwest", name: "South West (Devon / Cornwall)", timeZone: "Europe/London", feed: "darwin" },
+        { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", feed: "darwin" },
+        { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", feed: "darwin" },
+        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", feed: "darwin" },
+        { id: "west-of-england", name: "West of England", timeZone: "Europe/London", feed: "darwin" },
+        { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", feed: "darwin" },
       ],
     },
     {
@@ -92,7 +94,7 @@
       id: "fi",
       name: "Finland",
       regions: [
-        { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
+        { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki" },
       ],
     },
     {
@@ -107,17 +109,6 @@
       ],
     },
     {
-      // Ireland: flip follow-through ahead of Mark's QA re-run (docs/dublin-d1/jim-handoff.md,
-      // docs/dublin-d1/mark-qa-note.md) — comingSoon in the picker, same "flip-readiness
-      // scaffolding, not a bare planned-city add" precedent as Boston/Brussels/US wave 2.
-      // Dublin stays out of MULTI_CITY_IDS below until the actual status-flip commit.
-      id: "ie",
-      name: "Ireland",
-      regions: [
-        { id: "dublin", name: "Dublin", timeZone: "Europe/Dublin", comingSoon: true },
-      ],
-    },
-    {
       id: "no",
       name: "Norway",
       regions: [
@@ -129,9 +120,9 @@
       name: "Scotland",
       regions: [
         // "Scotland (…)" prefix dropped inside a Scotland-only list — redundant (Tim, 6 Sep 2026).
-        { id: "rest-of-scotland", name: "Aberdeen / Inverness / Dundee", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "rest-of-scotland", name: "Aberdeen / Inverness / Dundee", timeZone: "Europe/London", feed: "darwin" },
+        { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", feed: "darwin" },
+        { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", feed: "darwin" },
       ],
     },
     {
@@ -148,17 +139,13 @@
       id: "us",
       name: "United States",
       regions: [
-        // docs/jim-brief-us-flip-readiness.md — Coming Soon only; none of these
-        // are live yet, per the pipeline's "no picker entry for a new planned
-        // city" rule (Tim, 30 Aug 2026) not applying here because Mark's Boston
-        // QA is green and this is the flip-readiness scaffolding, not a bare
-        // planned-city add. Kept comingSoon: true and out of MULTI_CITY_IDS —
-        // status stays "planned" in the registry until a separate flip PR.
-        { id: "bart", name: "BART (San Francisco Bay Area)", timeZone: "America/Los_Angeles", comingSoon: true },
+        // BART and Chicago are key-blocked and not in the picker at all —
+        // no "Coming Soon" row (Tim, 27 Sep 2026: "It's either in or out.";
+        // docs/jim-brief-no-coming-soon-picker.md). They'll get a picker
+        // entry in their own flip commit, same as every other city.
         { id: "boston", name: "Boston", timeZone: "America/New_York" },
-        { id: "chicago", name: "Chicago", timeZone: "America/Chicago", comingSoon: true },
         // Flipped live 25 Sep 2026 (docs/washington-d1/mark-qa-note.md,
-        // docs/jim-brief-washington-live-gate.md) — comingSoon dropped, same as Boston's flip.
+        // docs/jim-brief-washington-live-gate.md) — "Coming Soon" flag dropped, same as Boston's flip.
         { id: "washington", name: "Washington, D.C.", timeZone: "America/New_York" },
       ],
     },
@@ -166,8 +153,8 @@
       id: "gb-wls",
       name: "Wales",
       regions: [
-        { id: "rest-of-wales", name: "North, Mid & West Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "rest-of-wales", name: "North, Mid & West Wales", timeZone: "Europe/London", feed: "darwin" },
+        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", feed: "darwin" },
       ],
     },
   ];
@@ -187,7 +174,7 @@
     "gold-coast": { minLat: -28.13, maxLat: -27.90, minLng: 153.32, maxLng: 153.46 },
     brisbane: { minLat: -28.2, maxLat: -27.0, minLng: 152.6, maxLng: 153.6 },
     adelaide: { minLat: -35.3, maxLat: -34.55, minLng: 138.35, maxLng: 138.85 },
-    // Melbourne (docs/melbourne-d1/jim-handoff.md, 22 Sep 2026) — comingSoon in the picker,
+    // Melbourne (docs/melbourne-d1/jim-handoff.md, 22 Sep 2026) — now live and in the picker,
     // box derived from lib/cities/melbourne/stations.json's 220 catalogued stations
     // (lat -38.374..-37.579, lng 144.661..145.507) with a small margin.
     melbourne: { minLat: -38.43, maxLat: -37.52, minLng: 144.60, maxLng: 145.56 },
@@ -206,7 +193,7 @@
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
     oslo: { minLat: 59.60, maxLat: 60.25, minLng: 10.40, maxLng: 11.20 },
-    // Brussels (docs/jim-brief-brussels-flip-readiness.md, 20 Sep 2026) — comingSoon in the
+    // Brussels (docs/jim-brief-brussels-flip-readiness.md, 20 Sep 2026) — now live and in the
     // picker, box derived from lib/cities/brussels/stations.json's 60 catalogued stations
     // (lat 50.812-50.897, lng 4.267-4.465) with a small margin. Doesn't overlap any other
     // region's box, so its position here doesn't affect containment order.
@@ -216,9 +203,12 @@
     // (lat 48.130117-48.277555, lng 16.260728-16.508502), with a small margin. No overlap
     // with any other city's box (Brussels/Copenhagen are the nearest and both far off).
     vienna: { minLat: 48.10, maxLat: 48.30, minLng: 16.22, maxLng: 16.55 },
-    // Dublin (docs/dublin-d1/jim-handoff.md flip follow-through) — comingSoon in the picker,
-    // box derived from lib/cities/dublin/stations.json's 67 catalogued stations (all 67 now
-    // carry real lat/lng, matched by name against the published NTA GTFS snapshot's
+    // Dublin (docs/dublin-d1/jim-handoff.md flip follow-through) — still planned, not in the
+    // picker (docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026: cities are in or out, no
+    // "Coming Soon" row); this box exists ahead of the flip solely to satisfy
+    // qa/live-city-lists-sync.mjs's CITY_BOUNDS-for-every-live-city check, same as Hong Kong
+    // below. Box derived from lib/cities/dublin/stations.json's 67 catalogued stations (all 67
+    // now carry real lat/lng, matched by name against the published NTA GTFS snapshot's
     // stops.txt: lat 53.242-53.372, lng -6.438..-6.143) with a small margin. Doesn't overlap
     // any other region's box, so its position here doesn't affect containment order.
     dublin: { minLat: 53.20, maxLat: 53.40, minLng: -6.48, maxLng: -6.10 },
@@ -620,9 +610,9 @@
     const city = String(readStore().savedCity || "").toLowerCase();
     const found = regionById(city);
     // No matching picker region at all (e.g. a retired city — release-1 scope cut,
-    // 7 Sep 2026) degrades the same way a comingSoon region does: fall through to the
-    // caller's default rather than surfacing a city the app can no longer resolve.
-    if (!found || found.region.comingSoon) {
+    // 7 Sep 2026): fall through to the caller's default rather than surfacing a
+    // city the app can no longer resolve.
+    if (!found) {
       return "";
     }
     return city;
@@ -712,11 +702,13 @@
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...readStore(), ...patch }));
   }
 
+  // A picker region is in the COUNTRIES table or it isn't — no "Coming Soon"
+  // third state any more (Tim, 27 Sep 2026: "It's either in or out.";
+  // docs/jim-brief-no-coming-soon-picker.md). This is now just a null guard
+  // for a region that may not resolve (e.g. an unknown/retired city id);
+  // kept as a named helper since it's called from many places below.
   function isRegionOpen(region) {
-    if (!region || region.comingSoon) {
-      return false;
-    }
-    return true;
+    return Boolean(region);
   }
 
   function firstOpenRegion(countryId) {
@@ -904,14 +896,16 @@
       return;
     }
     select.replaceChildren();
+    // Cities are in the picker or they aren't — no "Coming Soon" third state
+    // (Tim, 27 Sep 2026; docs/jim-brief-no-coming-soon-picker.md). A country
+    // with no open region has no picker entry at all.
     for (const country of COUNTRIES) {
+      if (!country.regions.some((region) => isRegionOpen(region))) {
+        continue;
+      }
       const option = document.createElement("option");
       option.value = country.id;
       option.textContent = country.name;
-      const hasOpen = country.regions.some((region) => isRegionOpen(region));
-      if (!hasOpen) {
-        option.textContent = `${country.name} (Coming Soon)`;
-      }
       select.append(option);
     }
     select.value = countryId;
@@ -928,24 +922,20 @@
     }
     select.replaceChildren();
     const country = countryById(countryId);
-    const hasOpen = country.regions.some((region) => isRegionOpen(region));
 
     const allOption = document.createElement("option");
     allOption.value = "";
     allOption.textContent = "All";
     select.append(allOption);
 
-    for (const region of country.regions) {
+    // Cities are in the picker or they aren't — no "Coming Soon" third state
+    // (Tim, 27 Sep 2026; docs/jim-brief-no-coming-soon-picker.md). A region
+    // that isn't open yet (isRegionOpen false) is simply omitted here, not
+    // shown disabled with a label.
+    for (const region of country.regions.filter((region) => isRegionOpen(region))) {
       const option = document.createElement("option");
       option.value = region.id;
-      if (region.comingSoon) {
-        option.textContent = `${region.name} (Coming Soon)`;
-        // Keep the label visible when a country has no live city yet (Sweden).
-        // Still disabled beside live siblings (Melbourne next to Perth).
-        option.disabled = hasOpen;
-      } else {
-        option.textContent = region.name;
-      }
+      option.textContent = region.name;
       select.append(option);
     }
 

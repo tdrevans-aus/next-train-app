@@ -31,7 +31,7 @@ assert(!getCity("canada"), "city=canada must not exist");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(typeof fetchStationBoard === "function", "vancouver adapter module must still load");
 
-// Picker: must not list Vancouver or Canada at all — no comingSoon flag either.
+// Picker: must not list Vancouver or Canada at all — no "Coming Soon" row either.
 const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
 assert(!/id:\s*"vancouver"/.test(citySession), "vancouver must not appear in the picker at all");
 assert(!/id:\s*"ca"/.test(citySession), "Canada must disappear from the picker once empty");

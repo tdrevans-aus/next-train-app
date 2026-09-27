@@ -31,8 +31,10 @@ city/region that isn't flipping live in this PR — e.g. every UK region built w
 `DARWIN_LDB_TOKEN` is unset, same as West Midlands/Greater Manchester/Liverpool City Region/East
 Midlands before it) — this is **not** a live flip. Do not ask for the dogfood module, the
 `*-dogfood-gate.mjs`, or the `live-city-api.js` dispatch cases — those are flip-only follow-through
-and don't exist for *any* currently-merged Coming Soon city (check `lib/cities/<that-city>/` on
-master for a precedent if unsure — e.g. `east-midlands` has none of the three). Just open a normal
+and don't exist for *any* currently-merged planned city (check `lib/cities/<that-city>/` on
+master for a precedent if unsure — e.g. `east-midlands` has none of the three; note there's no
+"Coming Soon" picker state any more either, docs/jim-brief-no-coming-soon-picker.md, 27 Sep
+2026). Just open a normal
 PR: your checklist results as the description, no `status` change beyond what's already in the
 commit. (Standing rule as of 31 Aug 2026: the top-level session auto-merges these once you report
 green and the PR is open — it carries no live-flip risk, so it doesn't wait on Tim. You still never

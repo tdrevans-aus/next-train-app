@@ -258,22 +258,26 @@ assert(coverage.region === "dublin", "coverage.json region must be dublin");
 assert(coverage.covered.some((c) => /Luas/.test(c.label)), "coverage.json must record Luas as covered");
 assert(coverage.notCovered.some((c) => /DART|Iarnr/.test(c.label)), "coverage.json must explicitly record DART/Iarnród Éireann as not covered");
 
-// Picker/country-regions surfaces (safe to add ahead of the flip — comingSoon, same
-// "flip-readiness scaffolding" precedent as Boston/Brussels/Chicago, docs/jim-brief-
-// us-flip-readiness.md). Persistence + dogfood-mount whitelists (journey-model
-// PERSISTED_CITY_IDS/COUNTRY_IDS, brisbane-dogfood MULTI_CITY_IDS/available,
-// live-city-api MULTI_CITY_IDS) are deliberately NOT touched yet — same
-// registry-status-derived invariant (qa/live-city-lists-sync.mjs requires them to equal
-// exactly the live-city set). Add "dublin"/"ie" to all four in the same commit as the
-// status flip.
+// Picker/country-regions surfaces: NOT added ahead of the flip — a planned city gets
+// no picker entry at all, live or "Coming Soon" (Tim, 27 Sep 2026: "It's either in or
+// out."; docs/jim-brief-no-coming-soon-picker.md, superseding the earlier "comingSoon
+// flip-readiness scaffolding" precedent this gate used to assert). Persistence +
+// dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
+// brisbane-dogfood MULTI_CITY_IDS/available, live-city-api MULTI_CITY_IDS) are also
+// deliberately NOT touched yet — same registry-status-derived invariant
+// (qa/live-city-lists-sync.mjs requires them to equal exactly the live-city set). Add
+// "dublin"/"ie" to the picker, country-regions.js, and all four lists in the same
+// commit as the status flip.
 const countryRegions = readFileSync(join(ROOT, "lib/cities/country-regions.js"), "utf8");
-assert(/dublin:\s*"ie"/.test(countryRegions), "country-regions.js must map dublin to ie");
-assert(/ie:\s*"Ireland"/.test(countryRegions), "country-regions.js must name ie Ireland");
+assert(!/dublin:\s*"ie"/.test(countryRegions), "country-regions.js must not map dublin to ie until the flip commit");
 
 const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(/id:\s*"dublin",\s*name:\s*"Dublin"/.test(citySession), "city-session.js picker must list Dublin");
+assert(!/id:\s*"dublin",\s*name:\s*"Dublin"/.test(citySession), "city-session.js picker must not list Dublin until the flip commit");
+// CITY_BOUNDS box stays ahead of the flip, same as Hong Kong's — it only satisfies
+// qa/live-city-lists-sync.mjs's per-live-city check once Dublin is live, and is
+// otherwise inert while the city isn't in the picker at all.
 assert(/dublin:\s*\{\s*minLat/.test(citySession), "city-session.js CITY_BOUNDS must carry a dublin box");
 
 console.log(
-  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses out), 67 stations with real lat/lng inside CITY_BOUNDS, hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART out, picker+country-regions wired, Perth Australia green)"
+  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses out), 67 stations with real lat/lng inside CITY_BOUNDS, hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART out, Perth Australia green)"
 );

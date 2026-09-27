@@ -340,14 +340,17 @@ async function run() {
   }
 
   // 6. Melbourne is live and selectable in the Australia picker (flipped live 22 Sep 2026 — see
-  // docs/jim-brief-melbourne-flip-unblock.md); BART takes over as the Coming-Soon / applyCity-
-  // refused regression case this test originally proved for Melbourne (Osaka rows removed from
-  // the picker 4 Sep 2026 — still absent, checked below). Hong Kong flipped live 27 Sep 2026
-  // (docs/hong-kong-d1/mark-qa-note.md) and legitimately joined the picker under country "hk" —
-  // the old "hasHongKong must be false" assertion this test carried pre-flip is removed, not
-  // left disabled, same as the dogfood-gate/line-map-conformance rewrite for that flip.
+  // docs/jim-brief-melbourne-flip-unblock.md); BART takes over as the "not in the picker at
+  // all" / applyCity-refused regression case this test originally proved for Melbourne (Osaka
+  // rows removed from the picker 4 Sep 2026 — still absent, checked below). Hong Kong flipped
+  // live 27 Sep 2026 (docs/hong-kong-d1/mark-qa-note.md) and legitimately joined the picker
+  // under country "hk" — the old "hasHongKong must be false" assertion this test carried
+  // pre-flip is removed, not left disabled, same as the dogfood-gate/line-map-conformance
+  // rewrite for that flip. BART lost its own "Coming Soon" picker row entirely 27 Sep 2026
+  // (docs/jim-brief-no-coming-soon-picker.md — cities are in the picker or they aren't, never
+  // a third state).
   {
-    console.log("  Test 6: Melbourne picker live / BART Coming Soon...");
+    console.log("  Test 6: Melbourne picker live / BART absent from picker...");
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
@@ -392,11 +395,11 @@ async function run() {
       auPicker.melbourneLabel === "Melbourne" &&
       !auPicker.hasJapan &&
       melbourneApplied.savedCity === "melbourne" &&
-      usPicker.bartLabel === "BART (San Francisco Bay Area) (Coming Soon)" &&
+      usPicker.bartLabel === "" &&
       bartApplied.savedCity !== "bart" &&
       (bartApplied.savedCity === "melbourne" || bartApplied.savedCity === "perth" || bartApplied.savedCity === "")
     ) {
-      console.log("    PASS — Melbourne live and selectable, Japan absent; BART Coming Soon and applyCity does not persist");
+      console.log("    PASS — Melbourne live and selectable, Japan absent; BART absent from the picker and applyCity does not persist");
     } else {
       console.error("    FAIL — Melbourne/BART picker / applyCity", { auPicker, melbourneApplied, usPicker, bartApplied });
       process.exitCode = 1;

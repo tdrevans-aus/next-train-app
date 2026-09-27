@@ -1,6 +1,6 @@
 # Osaka (Osaka Metro) station catalog
 
-Official-map catalog for city id `osaka`. **Not** wired to a live board. City stays **planned**. Picker shows **Coming Soon**. `adapterReady` is **false**. Do not flip live.
+Official-map catalog for city id `osaka`. **Not** wired to a live board. City stays **planned**. Not in the picker until live (no "Coming Soon" row, docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026). `adapterReady` is **false**. Do not flip live.
 
 - City id: **osaka**. Display **Osaka**. Not osk. Not osaka-metro. Not kintetsu. Not city=japan. Not Tokyo. Not Keihanshin.
 - Inner-city lock: **Hommachi** (M18 × Y13 × C16). Official transfers are **Yotsubashi + Chuo** only.
