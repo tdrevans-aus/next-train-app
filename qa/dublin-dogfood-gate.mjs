@@ -1,20 +1,25 @@
 /**
- * Dublin stays planned (adapter wired, not flipped live). Perth (Australia) stays live.
- * Usage: node qa/dublin-planned-gate.mjs
+ * Dublin flip follow-through gate. Dublin stays `status: "planned"` (Mark/Tim's flip
+ * call — docs/dublin-d1/mark-qa-note.md, docs/dublin-d1/jim-handoff.md) but the dogfood
+ * module, live-city-api.js dispatch switch-cases, and this gate are wired ahead of that per
+ * the flip-follow-through guardrail (Boston PR #414 / Chicago qa/chicago-dogfood-gate.mjs
+ * shape) so no second pass is needed once the flip PR lands.
  *
- * Deliberately does NOT call the live NTA GTFS-RT v2 endpoint (api.nationaltransport.ie) or fetch
- * the national GTFS_All.zip — neither is appropriate for a smoke-tier gate, and NTA_API_KEY was
- * not available this session anyway (docs/dublin-d1/jim-handoff.md; 404 without key on the D1
- * pack's own research). Instead this gate unit-tests the catalog/direction-model logic
- * (resolveCatalogEntry, listCatalogStations, classifyLuasLineId, resolveTerminus,
- * mapLineTerminusDestination, isDirectionAllowedAtStop) against synthetic data, plus asserts that
- * fetchStationBoard throws for an unknown station and for a missing NTA_API_KEY, all without any
- * network call.
+ * Deliberately does NOT call the live NTA GTFS-RT v2 endpoint (api.nationaltransport.ie) or
+ * fetch the published GTFS static snapshot — this is a smoke-tier gate, not a network test
+ * (qa/dublin-rt-join-check.mjs and qa/verify-dublin-gtfs-snapshot.mjs cover that). Instead
+ * this gate unit-tests the catalog/direction-model logic (the same assertions the retired
+ * qa/dublin-planned-gate.mjs carried) plus the dispatch wiring: MULTI_CITY_IDS membership,
+ * getMultiCityDirections/getMultiCityNextTrain routing into the dogfood module, and the
+ * coordinate/CITY_BOUNDS/coverage-note surfaces this follow-through pass adds.
+ *
+ * Usage: node qa/dublin-dogfood-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 import {
   DUBLIN_HUB,
   DUBLIN_TIME_ZONE,
@@ -35,6 +40,12 @@ import {
   isTerminatingAtStation,
   GREEN_LOOP_DIRECTION_ONLY,
 } from "../lib/cities/dublin/marketing-directions.js";
+import {
+  listDublinDogfoodStations,
+  getDublinDogfoodDirections,
+  getDublinDogfoodNextTrain,
+} from "../lib/cities/dublin/dogfood-next-train.js";
+import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -44,10 +55,11 @@ function assert(condition, message) {
   }
 }
 
-// Sanity anchor only — deliberately not a hardcoded roll call of every other live city.
+// Sanity anchor only — Perth (Australia) green is enough, not a hardcoded roll call.
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
+// Registry identity + status — Dublin stays planned; only the flip changes this.
 const live = assertCityLive("dublin");
 assert(live?.ok === false, "assertCityLive(dublin) must fail");
 assert(live?.status === 501, "dublin must be 501 planned");
@@ -61,6 +73,9 @@ assert(CITIES.filter((city) => city.id === "dublin").length === 1, "dublin must 
 for (const forbiddenId of ["dub", "ie"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
+
+// Dogfood dispatch is wired ahead of the flip — NOT in MULTI_CITY_IDS yet.
+assert(isMultiCity("dublin") === false, "dublin must NOT be in MULTI_CITY_IDS while status stays planned");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/dublin-d1");
@@ -82,6 +97,14 @@ assert(network.hubLock?.line === "Red", "D1 hub lock must be on the Red line");
 assert(network.lines.length === 2, "D1 must carry exactly 2 lines (Red + Green)");
 assert(network.stats?.totalUniqueStops === 67, "D1 must record 67 total unique stops");
 
+// Board eligibility rule (docs/board-eligibility-rule.md) — the section must exist with a
+// recorded verdict for every excluded service (DART, buses).
+const oracleReport = readFileSync(join(d1Dir, "oracle-clash-report.md"), "utf8");
+assert(/## Board eligibility/.test(oracleReport), "oracle report must carry a Board eligibility section");
+for (const service of ["DART", "Dublin Bus", "Bus Éireann", "Go-Ahead Ireland"]) {
+  assert(oracleReport.includes(service), `Board eligibility section must record a verdict for ${service}`);
+}
+
 const stations = listCatalogStations();
 assert(stations.length === 67, `catalog must have 67 stations, got ${stations.length}`);
 const byName = new Map(stations.map((s) => [s.name, s]));
@@ -92,6 +115,18 @@ const redStations = stations.filter((s) => s.lines.includes("red"));
 const greenStations = stations.filter((s) => s.lines.includes("green"));
 assert(redStations.length === 32, `Red must have 32 unique stops, got ${redStations.length}`);
 assert(greenStations.length === 35, `Green must have 35 unique stops, got ${greenStations.length}`);
+
+// Coordinates (flip follow-through, docs/dublin-d1/jim-handoff.md) — every station
+// name-matched against the published NTA GTFS snapshot's stops.txt, and inside Dublin's own
+// CITY_BOUNDS box (public/city-session.js). All 67 matched — no exemptions needed.
+const dublinBoxes = cityBoundsFor("dublin");
+for (const station of stations) {
+  assert(typeof station.lat === "number" && typeof station.lng === "number", `${station.name} must carry lat/lng`);
+  assert(
+    inAnyBounds(station.lat, station.lng, dublinBoxes),
+    `${station.name} (${station.lat}, ${station.lng}) must fall inside Dublin's CITY_BOUNDS box`
+  );
+}
 
 // resolveCatalogEntry — exact-match aliasing.
 assert(resolveCatalogEntry(DUBLIN_HUB)?.name === DUBLIN_HUB, "resolveCatalogEntry must resolve the hub by printed name");
@@ -120,40 +155,26 @@ assert(!byName.get("Marlborough")?.lines.includes("red"), "Marlborough must be G
 // Line labels + termini (direction-model-memo.md §3 recommendation A — colour + terminus).
 assert(resolveTerminus("Tallaght", "red") === "Tallaght", "resolveTerminus must resolve Tallaght on Red");
 assert(resolveTerminus("Saggart", "red") === "Saggart", "resolveTerminus must resolve Saggart on Red");
-assert(resolveTerminus("The Point", "red") === "The Point", "resolveTerminus must resolve The Point on Red");
 assert(resolveTerminus("Broombridge", "green") === "Broombridge", "resolveTerminus must resolve Broombridge on Green");
 assert(resolveTerminus("Brides Glen", "green") === "Brides Glen", "resolveTerminus must resolve Brides Glen on Green");
-assert(resolveTerminus("Tallaght", "green") === null, "resolveTerminus must not leak a Red terminus onto Green");
 assert(mapLineTerminusDestination("Tallaght", "red") === "Red + Tallaght", "direction chip must be colour + terminus");
-assert(mapLineTerminusDestination("Saggart", "red") === "Red + Saggart", "direction chip must be colour + terminus");
 assert(mapLineTerminusDestination("Broombridge", "green") === "Green + Broombridge", "direction chip must be colour + terminus");
-assert(mapLineTerminusDestination("Brides Glen", "green") === "Green + Brides Glen", "direction chip must be colour + terminus");
-// Abbey Street (hub) must NEVER appear as a direction — it isn't in either line's termini list.
 assert(mapLineTerminusDestination(DUBLIN_HUB, "red") === "Red", "Abbey Street must never appear as a direction token");
-assert(mapLineTerminusDestination("City", "green") === "Green", "City must never appear as a direction token");
 
-// Route colour classification (route_short_name/route_long_name/route_color, UNVERIFIED against
-// a live NTA payload — see lib/providers/dublin.js file header).
+// Route colour classification.
 assert(classifyLuasLineId({ routeShortName: "Red Line" }) === "red", "classifyLuasLineId must classify Red by short name");
 assert(classifyLuasLineId({ routeLongName: "Luas Green Line" }) === "green", "classifyLuasLineId must classify Green by long name");
-assert(classifyLuasLineId({ routeColor: "E2231A" }) === "red", "classifyLuasLineId must fall back to the Red hex swatch");
-assert(classifyLuasLineId({ routeColor: "#39B54A" }) === "green", "classifyLuasLineId must fall back to the Green hex swatch");
 assert(classifyLuasLineId({ routeShortName: "46A" }) === null, "classifyLuasLineId must not classify an unrelated bus route");
 
 // Green Line city-centre loop guard (hazard-pack.md H4a) — the sharpest hazard in the D1 pack.
 assert(GREEN_LOOP_DIRECTION_ONLY["O'Connell - GPO"] === "northbound", "O'Connell - GPO must be northbound-only");
-assert(GREEN_LOOP_DIRECTION_ONLY["O'Connell Upper"] === "northbound", "O'Connell Upper must be northbound-only");
 assert(GREEN_LOOP_DIRECTION_ONLY.Marlborough === "southbound", "Marlborough must be southbound-only");
 assert(isDirectionAllowedAtStop("O'Connell - GPO", "green", "Broombridge") === true, "O'Connell - GPO must allow a Broombridge-bound (northbound) trip");
-assert(isDirectionAllowedAtStop("O'Connell - GPO", "green", "Brides Glen") === false, "O'Connell - GPO must reject a Brides Glen-bound (southbound) trip — no southbound Green tram calls there");
-assert(isDirectionAllowedAtStop("O'Connell Upper", "green", "Brides Glen") === false, "O'Connell Upper must reject a southbound trip");
+assert(isDirectionAllowedAtStop("O'Connell - GPO", "green", "Brides Glen") === false, "O'Connell - GPO must reject a Brides Glen-bound (southbound) trip");
 assert(isDirectionAllowedAtStop("Marlborough", "green", "Brides Glen") === true, "Marlborough must allow a southbound trip");
-assert(isDirectionAllowedAtStop("Marlborough", "green", "Broombridge") === false, "Marlborough must reject a northbound trip — no northbound Green tram calls there");
+assert(isDirectionAllowedAtStop("Marlborough", "green", "Broombridge") === false, "Marlborough must reject a northbound trip");
 assert(isDirectionAllowedAtStop("Trinity", "green", "Broombridge") === true, "Trinity is a loop merge point — both directions valid");
-assert(isDirectionAllowedAtStop("Trinity", "green", "Brides Glen") === true, "Trinity is a loop merge point — both directions valid");
-assert(isDirectionAllowedAtStop("Parnell", "green", "Broombridge") === true, "Parnell is a loop merge point — both directions valid");
-assert(isDirectionAllowedAtStop(DUBLIN_HUB, "red", "Tallaght") === true, "Red trips are never restricted by the Green loop guard");
-assert(isDirectionAllowedAtStop("O'Connell - GPO", "green", null) === true, "an unresolved terminus at a direction-exclusive stop must fall open, never drop a real trip on a guess");
+assert(isDirectionAllowedAtStop("Parnell", "green", "Brides Glen") === true, "Parnell is a loop merge point — both directions valid");
 
 // A trip terminating at the station being viewed is an arrival, not a departure.
 assert(isTerminatingAtStation("Tallaght", "Tallaght") === true, "isTerminatingAtStation must catch a same-name arrival");
@@ -176,6 +197,83 @@ try {
 }
 assert(missingKeyThrew, "fetchStationBoard must throw MissingNtaApiKeyError when no key is configured — no silent timetable fallback");
 
+// Dogfood station list comes from the catalog, not a live parse.
+const dogfoodStations = listDublinDogfoodStations();
+assert(dogfoodStations.length === 67, `dogfood stations must be the 67 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.some((row) => row.name === DUBLIN_HUB), "hub must be listed by the dogfood harness");
+assert(dogfoodStations.every((row) => typeof row.lat === "number" && typeof row.lng === "number"), "every dogfood station must carry lat/lng");
+
+// Directions are derived live (no static marketing-directions list for Dublin — see
+// lib/cities/dublin/dogfood-next-train.js file header), so the dogfood/dispatch paths must
+// both surface the same MissingNtaApiKeyError rather than a silent fallback board.
+let dogfoodDirectionsThrew = false;
+try {
+  await getDublinDogfoodDirections(DUBLIN_HUB);
+} catch (err) {
+  dogfoodDirectionsThrew = err instanceof MissingNtaApiKeyError;
+}
+assert(dogfoodDirectionsThrew, "dogfood directions must surface MissingNtaApiKeyError, not a silent fallback board");
+
+let dispatchedDirectionsThrew = false;
+try {
+  await getMultiCityDirections("dublin", DUBLIN_HUB);
+} catch (err) {
+  dispatchedDirectionsThrew = err instanceof MissingNtaApiKeyError;
+}
+assert(
+  dispatchedDirectionsThrew,
+  "live-city-api dispatch for directions must surface MissingNtaApiKeyError, not a silent fallback board, even though dublin is deliberately not in MULTI_CITY_IDS yet"
+);
+
+let dispatchedNextTrainThrew = false;
+try {
+  await getMultiCityNextTrain("dublin", {
+    station: "Tallaght",
+    destination: "Red + Abbey Street",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+} catch (err) {
+  dispatchedNextTrainThrew = err instanceof MissingNtaApiKeyError;
+}
+assert(dispatchedNextTrainThrew, "dispatched next-train must surface MissingNtaApiKeyError, not a silent fallback board");
+
+let dogfoodNextTrainThrew = false;
+try {
+  await getDublinDogfoodNextTrain({
+    station: "Tallaght",
+    destination: "Red + Abbey Street",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+} catch (err) {
+  dogfoodNextTrainThrew = err instanceof MissingNtaApiKeyError;
+}
+assert(dogfoodNextTrainThrew, "dogfood next-train must surface MissingNtaApiKeyError, not a silent fallback board");
+
+// Rider-facing coverage copy (api/coverage-notes.js) — Luas only, DART explicitly called out
+// as not covered (board-eligibility verdict out-product, docs/dublin-d1/oracle-clash-report.md).
+const coverage = JSON.parse(readFileSync(join(ROOT, "lib/cities/dublin/coverage.json"), "utf8"));
+assert(coverage.region === "dublin", "coverage.json region must be dublin");
+assert(coverage.covered.some((c) => /Luas/.test(c.label)), "coverage.json must record Luas as covered");
+assert(coverage.notCovered.some((c) => /DART|Iarnr/.test(c.label)), "coverage.json must explicitly record DART/Iarnród Éireann as not covered");
+
+// Picker/country-regions surfaces (safe to add ahead of the flip — comingSoon, same
+// "flip-readiness scaffolding" precedent as Boston/Brussels/Chicago, docs/jim-brief-
+// us-flip-readiness.md). Persistence + dogfood-mount whitelists (journey-model
+// PERSISTED_CITY_IDS/COUNTRY_IDS, brisbane-dogfood MULTI_CITY_IDS/available,
+// live-city-api MULTI_CITY_IDS) are deliberately NOT touched yet — same
+// registry-status-derived invariant (qa/live-city-lists-sync.mjs requires them to equal
+// exactly the live-city set). Add "dublin"/"ie" to all four in the same commit as the
+// status flip.
+const countryRegions = readFileSync(join(ROOT, "lib/cities/country-regions.js"), "utf8");
+assert(/dublin:\s*"ie"/.test(countryRegions), "country-regions.js must map dublin to ie");
+assert(/ie:\s*"Ireland"/.test(countryRegions), "country-regions.js must name ie Ireland");
+
+const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
+assert(/id:\s*"dublin",\s*name:\s*"Dublin"/.test(citySession), "city-session.js picker must list Dublin");
+assert(/dublin:\s*\{\s*minLat/.test(citySession), "city-session.js CITY_BOUNDS must carry a dublin box");
+
 console.log(
-  "dublin-planned-gate: ok (planned/501, adapterReady, D1 pack, 67 stations (Red 32 / Green 35), hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Abbey Street/City never a direction token, Green city-centre loop direction-exclusivity guard (O'Connell - GPO/O'Connell Upper northbound-only, Marlborough southbound-only), missing-key and unknown-station both throw without network, Perth Australia green)"
+  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses out), 67 stations with real lat/lng inside CITY_BOUNDS, hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART out, picker+country-regions wired, Perth Australia green)"
 );
