@@ -1,0 +1,27 @@
+{
+  "region": "dublin",
+  "updated": "2026-09-26",
+  "covered": [
+    {
+      "label": "Luas Red Line",
+      "detail": "32 stops, two southwestern branches (Tallaght, Saggart) sharing one common trunk east to The Point."
+    },
+    {
+      "label": "Luas Green Line",
+      "detail": "35 stops, Broombridge to Brides Glen, including a one-way city-centre loop (Parnell to Trinity)."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "DART / Iarnród Éireann commuter rail",
+      "detail": "Not covered - out of v1 scope, a future addition."
+    },
+    {
+      "label": "Dublin Bus, Bus Éireann, Go-Ahead Ireland",
+      "detail": "Not covered - these are buses, not trains."
+    }
+  ],
+  "stations": "67 unique Luas stops (Red 32, Green 35).",
+  "notes": "Live running times only, confirmed by the NTA GTFS-RT v2 TripUpdates feed - a trip without realtime confirmation is dropped, never shown as a schedule-only guess. Abbey Street is the Red Line hub and never shows a Green chip (about 200 m walk to the Green interchange). The Green Line's Parnell-Trinity city-centre loop is direction-exclusive: O'Connell - GPO and O'Connell Upper are served northbound-only (towards Broombridge), Marlborough is served southbound-only (towards Brides Glen)."
+}

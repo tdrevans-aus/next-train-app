@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen", "dublin"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -84,6 +84,15 @@
       name: "Finland",
       regions: [
         { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
+      ],
+    },
+    {
+      // Ireland: first Irish region, flipped live 26 Sep 2026 (Tim's decision,
+      // docs/jim-brief-dublin-flip.md, docs/dublin-d1/mark-qa-note.md).
+      id: "ie",
+      name: "Ireland",
+      regions: [
+        { id: "dublin", name: "Dublin", timeZone: "Europe/Dublin" },
       ],
     },
     {
@@ -171,6 +180,10 @@
     // eastern edge, so Copenhagen must be checked first for hintCityFromCoords to resolve
     // correctly there, same containment-order rule as the UK boxes further down.
     copenhagen: { minLat: 55.58, maxLat: 55.75, minLng: 12.40, maxLng: 12.68 },
+    // Dublin (docs/jim-brief-dublin-flip.md, 26 Sep 2026) — box covers the Luas Red + Green
+    // network (greater Dublin area), no overlap with any other CITY_BOUNDS entry so ordering
+    // doesn't matter here.
+    dublin: { minLat: 53.24, maxLat: 53.42, minLng: -6.45, maxLng: -6.05 },
     malmo: { minLat: 55.30, maxLat: 56.75, minLng: 12.60, maxLng: 15.55 },
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
@@ -518,6 +531,11 @@
     "Some of the data used in this product or service is provided by permission of TransLink. TransLink assumes no responsibility for the accuracy or currency of the Data used in this product or service.";
   const RDG_LDB_LINE =
     "Live departure data © Rail Delivery Group, via the Rail Data Marketplace. Times may change — check station displays.";
+  // Dublin (docs/jim-brief-dublin-flip.md, 26 Sep 2026): NTA GTFS static + GTFS-RT v2 data is
+  // "Contains Irish Government Data licensed under a Creative Commons Attribution 4.0
+  // International (CC BY 4.0) licence" (docs/dublin-d1/jim-handoff.md) — attribution required.
+  const NTA_CC_BY_LINE =
+    "Contains Irish Government Data (National Transport Authority) licensed under CC BY 4.0.";
 
   function isDarwinCityId(cityId) {
     const id = String(cityId || "").toLowerCase();
@@ -535,6 +553,9 @@
     }
     if (isDarwinCityId(id)) {
       return { text: RDG_LDB_LINE, required: true };
+    }
+    if (id === "dublin") {
+      return { text: NTA_CC_BY_LINE, required: true };
     }
     return null;
   }
@@ -1196,6 +1217,7 @@
     VANCOUVER_TRANSLINK_DISCLAIMER,
     TFL_OPEN_DATA_LINE,
     RDG_LDB_LINE,
+    NTA_CC_BY_LINE,
     openRegionScreen,
     closeRegionScreen,
     COUNTRIES,

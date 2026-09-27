@@ -1,20 +1,31 @@
 /**
- * Dublin stays planned (adapter wired, not flipped live). Perth (Australia) stays live.
- * Usage: node qa/dublin-planned-gate.mjs
+ * Dublin flip follow-through gate. Rewritten 26 Sep 2026 (docs/jim-brief-dublin-flip.md) to
+ * assert LIVE state — Dublin flipped `status: "live"` on Tim's explicit decision in chat,
+ * recorded in the brief, on the strength of: GTFS_LUAS.zip published to
+ * gtfsFixtureBlobUrl('dublin') (2 routes, agency LUAS, 128 stops,
+ * docs/dublin-d1/ci-snapshot-evidence.md), NTA GTFS-RT v2 TripUpdates matching the static
+ * snapshot 70/70 (100%, CI run 36236001976, PR #464, qa/dublin-rt-join-check.mjs), and
+ * NTA_API_KEY set in Vercel production. Mirrors qa/dublin-planned-gate.mjs's offline-safe
+ * shape — the old pre-flip assertions (assertCityLive must fail, status === "planned",
+ * isMultiCity() === false) are removed, not left disabled. Replaces qa/dublin-planned-gate.mjs.
  *
- * Deliberately does NOT call the live NTA GTFS-RT v2 endpoint (api.nationaltransport.ie) or fetch
- * the national GTFS_All.zip — neither is appropriate for a smoke-tier gate, and NTA_API_KEY was
- * not available this session anyway (docs/dublin-d1/jim-handoff.md; 404 without key on the D1
- * pack's own research). Instead this gate unit-tests the catalog/direction-model logic
- * (resolveCatalogEntry, listCatalogStations, classifyLuasLineId, resolveTerminus,
- * mapLineTerminusDestination, isDirectionAllowedAtStop) against synthetic data, plus asserts that
- * fetchStationBoard throws for an unknown station and for a missing NTA_API_KEY, all without any
- * network call.
+ * Deliberately does NOT call the live NTA GTFS-RT v2 endpoint (api.nationaltransport.ie) or
+ * fetch the national/Luas GTFS zip — this is a smoke-tier gate, offline-safe like every other
+ * city dogfood gate that needs a paid/keyed live feed (e.g. qa/washington-dogfood-gate.mjs).
+ * Instead this gate unit-tests the catalog/direction-model logic (resolveCatalogEntry,
+ * listCatalogStations, classifyLuasLineId, resolveTerminus, mapLineTerminusDestination,
+ * isDirectionAllowedAtStop), the dispatch switch-cases in lib/cities/live-city-api.js, and
+ * asserts that fetchStationBoard throws for an unknown station and for a missing NTA_API_KEY,
+ * all without any network call. Live 70/70 join confirmation lives in CI
+ * (qa/dublin-rt-join-check.mjs), not here.
+ *
+ * Usage: node qa/dublin-dogfood-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
+import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import {
   DUBLIN_HUB,
   DUBLIN_TIME_ZONE,
@@ -35,6 +46,7 @@ import {
   isTerminatingAtStation,
   GREEN_LOOP_DIRECTION_ONLY,
 } from "../lib/cities/dublin/marketing-directions.js";
+import { getDublinDogfoodDirections, listDublinDogfoodStations } from "../lib/cities/dublin/dogfood-next-train.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -48,12 +60,13 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
+// Flipped live 26 Sep 2026 (Tim's decision, docs/jim-brief-dublin-flip.md); assertCityLive must
+// now succeed.
 const live = assertCityLive("dublin");
-assert(live?.ok === false, "assertCityLive(dublin) must fail");
-assert(live?.status === 501, "dublin must be 501 planned");
+assert(live?.ok === true, "assertCityLive(dublin) must succeed now that dublin is live");
 
 const entry = getCity("dublin");
-assert(entry?.status === "planned", "dublin registry status must be planned");
+assert(entry?.status === "live", "dublin registry status must be live");
 assert(entry?.adapterReady === true, "dublin adapterReady must be true");
 assert(entry?.displayName === "Dublin", "dublin display name must be Dublin");
 assert(entry?.timeZone === "Europe/Dublin", "dublin timezone must be Europe/Dublin");
@@ -61,6 +74,8 @@ assert(CITIES.filter((city) => city.id === "dublin").length === 1, "dublin must 
 for (const forbiddenId of ["dub", "ie"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
+
+assert(isMultiCity("dublin") === true, "dublin must be in MULTI_CITY_IDS now that status is live");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/dublin-d1");
@@ -76,7 +91,9 @@ for (const name of [
 
 const network = JSON.parse(readFileSync(join(d1Dir, "published-network.json"), "utf8"));
 assert(network.city === "dublin", "D1 city id must be dublin");
-assert(network.status === "planned", "D1 pack stays planned");
+// The D1 pack's own published-network.json still says "planned" — it's a point-in-time
+// research artifact, not re-stamped on flip (same as washington-d1/copenhagen-d1's D1 packs).
+assert(network.status === "planned", "D1 pack itself is a point-in-time artifact and stays planned");
 assert(network.hubLock?.lock === DUBLIN_HUB, `D1 lock must be ${DUBLIN_HUB}`);
 assert(network.hubLock?.line === "Red", "D1 hub lock must be on the Red line");
 assert(network.lines.length === 2, "D1 must carry exactly 2 lines (Red + Green)");
@@ -176,6 +193,30 @@ try {
 }
 assert(missingKeyThrew, "fetchStationBoard must throw MissingNtaApiKeyError when no key is configured — no silent timetable fallback");
 
+// Dogfood station list comes from the catalog, not a fresh GTFS parse.
+const dogfoodStations = listDublinDogfoodStations();
+assert(dogfoodStations.length === 67, `dogfood stations must be the 67 catalog entries, got ${dogfoodStations.length}`);
+const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
+assert(dogfoodNames.has(DUBLIN_HUB), "hub must be listed by the dogfood harness");
+
+// Dispatch switch-case wiring — offline paths only (missing key / unknown station), same as
+// the direct fetchStationBoard checks above, exercised through live-city-api instead.
+let dispatchedMissingKeyThrew = false;
+try {
+  await getDublinDogfoodDirections("Not A Real Station");
+} catch (err) {
+  dispatchedMissingKeyThrew = true;
+}
+assert(dispatchedMissingKeyThrew, "getMultiCityDirections dispatch must not silently succeed for an unknown station");
+
+let apiDispatchThrew = false;
+try {
+  await getMultiCityDirections("dublin", "Not A Real Station");
+} catch {
+  apiDispatchThrew = true;
+}
+assert(apiDispatchThrew, "live-city-api getMultiCityDirections('dublin', ...) must reject an unknown station without any network call");
+
 console.log(
-  "dublin-planned-gate: ok (planned/501, adapterReady, D1 pack, 67 stations (Red 32 / Green 35), hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Abbey Street/City never a direction token, Green city-centre loop direction-exclusivity guard (O'Connell - GPO/O'Connell Upper northbound-only, Marlborough southbound-only), missing-key and unknown-station both throw without network, Perth Australia green)"
+  "dublin-dogfood-gate: ok (live, adapterReady, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 67 stations (Red 32 / Green 35), hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Abbey Street/City never a direction token, Green city-centre loop direction-exclusivity guard (O'Connell - GPO/O'Connell Upper northbound-only, Marlborough southbound-only), missing-key and unknown-station both throw without network, Perth Australia green)"
 );
