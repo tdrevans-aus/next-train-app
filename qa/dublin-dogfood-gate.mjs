@@ -1,9 +1,15 @@
 /**
- * Dublin flip follow-through gate. Dublin stays `status: "planned"` (Mark/Tim's flip
- * call — docs/dublin-d1/mark-qa-note.md, docs/dublin-d1/jim-handoff.md) but the dogfood
+ * Dublin flip follow-through gate. As of this pass, Dublin still stays `status: "planned"`
+ * (Mark's QA-5 note, docs/dublin-d1/mark-qa-note.md: RED, blocked on the self-terminus chip bug
+ * fixed by this same change — docs/jim-brief-dublin-self-terminus-chip.md) but the dogfood
  * module, live-city-api.js dispatch switch-cases, and this gate are wired ahead of that per
  * the flip-follow-through guardrail (Boston PR #414 / Chicago qa/chicago-dogfood-gate.mjs
  * shape) so no second pass is needed once the flip PR lands.
+ *
+ * Status-agnostic (docs/jim-brief-dublin-self-terminus-chip.md item 3): every assertion below
+ * that depends on registry status reads `entry.status` at runtime and branches, rather than
+ * hardcoding "planned", so Mark's actual flip commit does not need to touch this file at all —
+ * unlike the Melbourne/Chicago precedent, where the flip rewrote the gate's assertions in place.
  *
  * Deliberately does NOT call the live NTA GTFS-RT v2 endpoint (api.nationaltransport.ie) or
  * fetch the published GTFS static snapshot — this is a smoke-tier gate, not a network test
@@ -11,7 +17,12 @@
  * this gate unit-tests the catalog/direction-model logic (the same assertions the retired
  * qa/dublin-planned-gate.mjs carried) plus the dispatch wiring: MULTI_CITY_IDS membership,
  * getMultiCityDirections/getMultiCityNextTrain routing into the dogfood module, and the
- * coordinate/CITY_BOUNDS/coverage-note surfaces this follow-through pass adds.
+ * coordinate/CITY_BOUNDS/coverage-note surfaces this follow-through pass adds. It also runs a
+ * fetchStationBoard()-*pipeline*-level regression test (classifyAndFilterDublinTrips, the exact
+ * function fetchStationBoard() itself calls) against a synthetic RT+static fixture, without
+ * mocking the network fetch fetchStationBoard() makes — see that test for why a same-name
+ * headsign/terminus self-terminus trip previously leaked through as a phantom direction chip
+ * (Mark's QA-5 note).
  *
  * Usage: node qa/dublin-dogfood-gate.mjs
  */
@@ -26,8 +37,11 @@ import {
   resolveCatalogEntry,
   listCatalogStations,
   fetchStationBoard,
+  classifyAndFilterDublinTrips,
 } from "../lib/providers/dublin.js";
 import { MissingNtaApiKeyError } from "../lib/providers/gtfs/auth.js";
+import { indexTripUpdates } from "../lib/providers/gtfs/realtime.js";
+import { buildBoardForStops } from "../lib/providers/gtfs/board.js";
 import {
   foldKey,
   isForbiddenCollapseName,
@@ -61,13 +75,25 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity + status — Dublin stays planned; only the flip changes this.
-const live = assertCityLive("dublin");
-assert(live?.ok === false, "assertCityLive(dublin) must fail");
-assert(live?.status === 501, "dublin must be 501 planned");
-
+// Registry identity + status — status-agnostic: read whatever the registry says right now and
+// assert the invariants that hold for THAT state, rather than hardcoding "planned". This means
+// Mark's eventual flip commit (status "planned" -> "live") needs zero changes to this file.
 const entry = getCity("dublin");
-assert(entry?.status === "planned", "dublin registry status must be planned");
+assert(entry, "dublin must be registered");
+assert(
+  entry.status === "planned" || entry.status === "live",
+  `dublin registry status must be planned or live, got ${entry.status}`
+);
+const dublinIsLive = entry.status === "live";
+
+const live = assertCityLive("dublin");
+if (dublinIsLive) {
+  assert(live?.ok === true, "assertCityLive(dublin) must pass once dublin is live");
+} else {
+  assert(live?.ok === false, "assertCityLive(dublin) must fail while dublin stays planned");
+  assert(live?.status === 501, "dublin must be 501 planned while dublin stays planned");
+}
+
 assert(entry?.adapterReady === true, "dublin adapterReady must be true");
 assert(entry?.displayName === "Dublin", "dublin display name must be Dublin");
 assert(entry?.timeZone === "Europe/Dublin", "dublin timezone must be Europe/Dublin");
@@ -76,8 +102,14 @@ for (const forbiddenId of ["dub", "ie"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dogfood dispatch is wired ahead of the flip — NOT in MULTI_CITY_IDS yet.
-assert(isMultiCity("dublin") === false, "dublin must NOT be in MULTI_CITY_IDS while status stays planned");
+// Dogfood dispatch is wired regardless of status; MULTI_CITY_IDS membership itself must track
+// the registry status exactly (qa/live-city-lists-sync.mjs enforces this globally too).
+assert(
+  isMultiCity("dublin") === dublinIsLive,
+  dublinIsLive
+    ? "dublin must be in MULTI_CITY_IDS now that it is live"
+    : "dublin must NOT be in MULTI_CITY_IDS while status stays planned"
+);
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/dublin-d1");
@@ -201,6 +233,162 @@ assert(isDirectionAllowedAtStop("Parnell", "green", "Brides Glen") === true, "Pa
 assert(isTerminatingAtStation("Tallaght", "Tallaght") === true, "isTerminatingAtStation must catch a same-name arrival");
 assert(isTerminatingAtStation("Tallaght", "Saggart") === false, "isTerminatingAtStation must not flag a genuinely different destination");
 
+// ---------------------------------------------------------------------------------------------
+// Regression: fetchStationBoard()'s real pipeline (classifyAndFilterDublinTrips), exercised
+// end-to-end against a synthetic RT+static fixture (docs/jim-brief-dublin-self-terminus-chip.md
+// item 2; Mark's QA-5 note, docs/dublin-d1/mark-qa-note.md). The unit assertion two lines above
+// only proves isTerminatingAtStation itself is correct when called with two RAW station names —
+// exactly the case that was never broken. It never proved the real fetchStationBoard() pipeline
+// actually calls it that way, and it didn't: the pipeline used to overwrite trip.destination with
+// the mapped "Colour + Terminus" label BEFORE the filter ran, so
+// isTerminatingAtStation("Red + Tallaght", "Tallaght") — the guard's real input — silently never
+// matched. This test builds a buildBoardForStops() board (the same function fetchStationBoard()
+// itself calls) from a synthetic static+RT fixture and feeds it straight into
+// classifyAndFilterDublinTrips() (the exact function fetchStationBoard() calls next), so it
+// catches a regression in the wiring between those two calls, not just in either function alone.
+// ---------------------------------------------------------------------------------------------
+function dublinFixtureStaticData() {
+  const stopIds = ["stop-belgard", "stop-tallaght", "stop-thepoint", "stop-sandyford", "stop-broombridge", "stop-bridesglen"];
+  const stopsById = new Map(stopIds.map((id) => [id, { stop_id: id, platform_code: "" }]));
+
+  const routesById = new Map([
+    ["route-red", { route_id: "route-red", route_short_name: "", route_long_name: "Luas Red Line" }],
+    ["route-green", { route_id: "route-green", route_short_name: "", route_long_name: "Luas Green Line" }],
+  ]);
+
+  // Each trip visits an upstream trunk stop first, then its own terminus — same shape as a real
+  // Luas trip (e.g. Belgard -> Tallaght), so the SAME trip can be asserted both ways: filtered at
+  // its own terminus, but still showing up correctly one stop earlier.
+  const departureTimeOfDay = "23:59:00"; // scheduled well within the near horizon regardless of `now`
+  const tripDefs = [
+    { trip_id: "trip-red-tallaght", route_id: "route-red", trip_headsign: "Tallaght", stopIds: ["stop-belgard", "stop-tallaght"] },
+    { trip_id: "trip-red-thepoint", route_id: "route-red", trip_headsign: "The Point", stopIds: ["stop-belgard", "stop-thepoint"] },
+    { trip_id: "trip-green-broombridge", route_id: "route-green", trip_headsign: "Broombridge", stopIds: ["stop-sandyford", "stop-broombridge"] },
+    { trip_id: "trip-green-bridesglen", route_id: "route-green", trip_headsign: "Brides Glen", stopIds: ["stop-sandyford", "stop-bridesglen"] },
+  ];
+
+  const tripsById = new Map(
+    tripDefs.map((t) => [t.trip_id, { trip_id: t.trip_id, service_id: "WD", route_id: t.route_id, trip_headsign: t.trip_headsign }])
+  );
+
+  const stopTimesByStopId = new Map(stopIds.map((id) => [id, []]));
+  for (const t of tripDefs) {
+    t.stopIds.forEach((stopId, index) => {
+      stopTimesByStopId.get(stopId).push({
+        trip_id: t.trip_id,
+        stop_id: stopId,
+        departure_time: departureTimeOfDay,
+        pickup_type: "0",
+        stop_sequence: index + 1,
+      });
+    });
+  }
+
+  return {
+    stopsById,
+    stopTimesByStopId,
+    tripsById,
+    routesById,
+    calendar: [
+      {
+        service_id: "WD",
+        start_date: "20200101",
+        end_date: "20991231",
+        monday: "1",
+        tuesday: "1",
+        wednesday: "1",
+        thursday: "1",
+        friday: "1",
+        saturday: "1",
+        sunday: "1",
+      },
+    ],
+    calendarDates: [],
+    railTripIds: new Set(tripDefs.map((t) => t.trip_id)),
+    timeZone: "UTC",
+  };
+}
+
+function dublinFixtureRealtimeIndex(now) {
+  const soonEpochSec = Math.floor((now.getTime() + 5 * 60_000) / 1000);
+  const entities = [
+    "trip-red-tallaght",
+    "trip-red-thepoint",
+    "trip-green-broombridge",
+    "trip-green-bridesglen",
+  ].flatMap((tripId) =>
+    [
+      tripId === "trip-red-tallaght" || tripId === "trip-red-thepoint" ? "stop-belgard" : "stop-sandyford",
+      tripId === "trip-red-tallaght" ? "stop-tallaght" : tripId === "trip-red-thepoint" ? "stop-thepoint" : tripId === "trip-green-broombridge" ? "stop-broombridge" : "stop-bridesglen",
+    ].map((stopId) => ({
+      tripUpdate: {
+        trip: { tripId },
+        stopTimeUpdate: [{ stopId, departure: { time: soonEpochSec } }],
+      },
+    }))
+  );
+  return indexTripUpdates(entities);
+}
+
+function testFetchStationBoardPipelineFiltersSelfTerminus() {
+  const now = new Date();
+  const staticData = dublinFixtureStaticData();
+  const realtimeIndex = dublinFixtureRealtimeIndex(now);
+
+  function destinationsAt(stationName, stopId) {
+    const rawTrips = buildBoardForStops({
+      stopIds: [stopId],
+      staticData,
+      realtimeIndex,
+      timeZone: "UTC",
+      now,
+      horizonMinutes: 1440,
+      skipResolvedShareCheck: true,
+    });
+    const { trips, scheduledCandidates } = classifyAndFilterDublinTrips(rawTrips, stationName, realtimeIndex);
+    return {
+      trips: trips.map((t) => t.destination),
+      scheduledCandidates: scheduledCandidates.map((t) => t.destination),
+    };
+  }
+
+  // Self-terminus: a Red trip headsigned "Tallaght" must never appear at Tallaght itself, in
+  // either trips or scheduledCandidates — this is the exact bug Mark found live.
+  const tallaght = destinationsAt("Tallaght", "stop-tallaght");
+  assert(!tallaght.trips.includes("Red + Tallaght"), 'Tallaght board must never show "Red + Tallaght" (self-terminus) in trips');
+  assert(
+    !tallaght.scheduledCandidates.includes("Red + Tallaght"),
+    'Tallaght scheduledCandidates must never show "Red + Tallaght" (self-terminus) — honest-empty-state reads this list too'
+  );
+
+  // The Point: same trip shape, other Red terminus.
+  const thePoint = destinationsAt("The Point", "stop-thepoint");
+  assert(!thePoint.trips.includes("Red + The Point"), 'The Point board must never show "Red + The Point" (self-terminus) in trips');
+  assert(!thePoint.scheduledCandidates.includes("Red + The Point"), 'The Point scheduledCandidates must never show "Red + The Point" (self-terminus)');
+
+  // Green termini: same guard, other line.
+  const broombridge = destinationsAt("Broombridge", "stop-broombridge");
+  assert(!broombridge.trips.includes("Green + Broombridge"), 'Broombridge board must never show "Green + Broombridge" (self-terminus) in trips');
+  assert(!broombridge.scheduledCandidates.includes("Green + Broombridge"), 'Broombridge scheduledCandidates must never show "Green + Broombridge" (self-terminus)');
+
+  const bridesGlen = destinationsAt("Brides Glen", "stop-bridesglen");
+  assert(!bridesGlen.trips.includes("Green + Brides Glen"), 'Brides Glen board must never show "Green + Brides Glen" (self-terminus) in trips');
+  assert(!bridesGlen.scheduledCandidates.includes("Green + Brides Glen"), 'Brides Glen scheduledCandidates must never show "Green + Brides Glen" (self-terminus)');
+
+  // The SAME two Red trips, one stop upstream at the trunk stop Belgard, must still show up
+  // correctly as real, non-self-terminus directions — proves the fix doesn't over-filter.
+  const belgard = destinationsAt("Belgard", "stop-belgard");
+  assert(belgard.trips.includes("Red + Tallaght"), 'Belgard must still show "Red + Tallaght" for a genuinely upstream Tallaght-bound trip');
+  assert(belgard.trips.includes("Red + The Point"), 'Belgard must still show "Red + The Point" for a genuinely upstream The Point-bound trip');
+
+  // Same check for the Green Line's upstream trunk stop Sandyford.
+  const sandyford = destinationsAt("Sandyford", "stop-sandyford");
+  assert(sandyford.trips.includes("Green + Broombridge"), 'Sandyford must still show "Green + Broombridge" for a genuinely upstream trip');
+  assert(sandyford.trips.includes("Green + Brides Glen"), 'Sandyford must still show "Green + Brides Glen" for a genuinely upstream trip');
+}
+
+testFetchStationBoardPipelineFiltersSelfTerminus();
+
 // fetchStationBoard — no network for either of these two failure paths.
 let unknownThrew = false;
 try {
@@ -282,29 +470,38 @@ assert(coverage.notCovered.some((c) => /DART|Iarnr/.test(c.label)), "coverage.js
 assert(coverage.notCovered.some((c) => /Connolly/.test(c.label)), "coverage.json must explicitly record Connolly as not covered — no real-time data from the NTA feed");
 assert(coverage.notCovered.some((c) => /Saggart/.test(c.label)), "coverage.json must explicitly record Saggart as not covered — no real-time data from the NTA feed");
 
-// Picker/country-regions surfaces: NOT added ahead of the flip — a planned city gets
-// no picker entry at all, live or "Coming Soon" (Tim, 27 Sep 2026: "It's either in or
-// out."; docs/jim-brief-no-coming-soon-picker.md, superseding the earlier "comingSoon
-// flip-readiness scaffolding" precedent this gate used to assert). Persistence +
-// dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
-// brisbane-dogfood MULTI_CITY_IDS/available, live-city-api MULTI_CITY_IDS) are also
-// deliberately NOT touched yet — same registry-status-derived invariant
-// (qa/live-city-lists-sync.mjs requires them to equal exactly the live-city set). Add
-// "dublin"/"ie" to the picker, country-regions.js, and all four lists in the same
-// commit as the status flip.
+// Picker/country-regions surfaces: while `status: "planned"`, a city gets no picker entry at
+// all, live or "Coming Soon" (Tim, 27 Sep 2026: "It's either in or out.";
+// docs/jim-brief-no-coming-soon-picker.md, superseding the earlier "comingSoon flip-readiness
+// scaffolding" precedent this gate used to assert). Persistence + dogfood-mount whitelists
+// (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS, brisbane-dogfood MULTI_CITY_IDS/available,
+// live-city-api MULTI_CITY_IDS) are also deliberately not touched while planned — same
+// registry-status-derived invariant qa/live-city-lists-sync.mjs enforces globally (those lists
+// must equal exactly the live-city set). "dublin"/"ie" go into the picker, country-regions.js,
+// and all four lists in the same commit as the status flip — asserted here in whichever
+// direction the current registry status requires, status-agnostic per the brief.
 const countryRegions = readFileSync(join(ROOT, "lib/cities/country-regions.js"), "utf8");
-assert(!/dublin:\s*"ie"/.test(countryRegions), "country-regions.js must not map dublin to ie until the flip commit");
-
 // The picker is now built server-side from the /api/cities manifest
-// (docs/jim-brief-registry-driven-client.md) — a "planned" registry status keeps a city out
-// of it automatically, with nothing left in public/city-session.js to assert against.
+// (docs/jim-brief-registry-driven-client.md) — status drives manifest membership automatically,
+// with nothing left in public/city-session.js to assert against.
 const manifestCityIds = buildCityManifest().cities.map((c) => c.id);
-assert(!manifestCityIds.includes("dublin"), "the /api/cities manifest must not list Dublin until the flip commit (registry status must stay \"planned\")");
-// The bounds box stays ahead of the flip, same as Hong Kong's — it only satisfies
-// qa/live-city-lists-sync.mjs's per-live-city check once Dublin is live, and is
-// otherwise inert while the city isn't in the manifest at all.
+if (dublinIsLive) {
+  assert(/dublin:\s*"ie"/.test(countryRegions), "country-regions.js must map dublin to ie now that it is live");
+  assert(manifestCityIds.includes("dublin"), "the /api/cities manifest must list Dublin now that it is live");
+} else {
+  assert(!/dublin:\s*"ie"/.test(countryRegions), "country-regions.js must not map dublin to ie until the flip commit");
+  assert(
+    !manifestCityIds.includes("dublin"),
+    'the /api/cities manifest must not list Dublin until the flip commit (registry status must stay "planned")'
+  );
+}
+// The bounds box exists ahead of the flip, same as Hong Kong's — it only satisfies
+// qa/live-city-lists-sync.mjs's per-live-city check once Dublin is live, and is otherwise inert
+// while the city isn't in the manifest at all, so this assertion holds in both states.
 assert(Boolean(CITY_BOUNDS.dublin), "lib/cities/city-bounds.js must carry a dublin box");
 
 console.log(
-  "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses/Connolly/Saggart out), 65 stations (Connolly + Saggart filtered — no NTA real-time coverage; Rialto confirmed intermittent and kept in) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, Red + Saggart direction chip still works upstream, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly + Saggart out, Perth Australia green)"
+  `dublin-dogfood-gate: ok (status=${entry.status}, dispatch switch-cases wired, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists tracking registry status (${
+    dublinIsLive ? "live — all four lists must include dublin" : "planned — deliberately deferred to the status-flip commit"
+  }), D1 pack, Board eligibility section recorded (DART/buses/Connolly/Saggart out), 65 stations (Connolly + Saggart filtered — no NTA real-time coverage; Rialto confirmed intermittent and kept in) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, Red + Saggart direction chip still works upstream, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, self-terminus guard fixed (rawDestination/terminus, not the mapped label) and regression-tested end-to-end via classifyAndFilterDublinTrips, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly + Saggart out, Perth Australia green)`
 );
