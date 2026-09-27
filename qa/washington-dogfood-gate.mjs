@@ -13,6 +13,13 @@
  * line's trains, and that a trunk direction with >=2 fixture trains never collapses to
  * upcoming.length === 1.
  *
+ * Corrected again same day (Mark's QA on PR #482): that same PR had added a defensive dedupe step
+ * (dedupeTrainsList(), keyed on Line/DestinationName/Min) which Mark caught silently collapsing
+ * two GENUINELY DIFFERENT Blue trains to Huntington that only differed by `Group` (platform) — a
+ * real, common shape at a two-platform terminus, not a duplicate. The dedupe step is removed
+ * entirely (see lib/providers/washington.js's tripsFromTrainsList()); search "two-platform
+ * terminus" below for the regression fixture.
+ *
  * Unlike Boston's MBTA V3 API, WMATA's endpoints always require a key (WMATA_API_KEY) — there is
  * no unauthenticated fallback, and no WMATA key is registered in CI. So the end-to-end dispatch
  * coverage below stubs globalThis.fetch to serve the real captured
@@ -70,7 +77,6 @@ import {
   resetStationsMetadataCacheForTests,
   WashingtonStationCodeUnconfirmedError,
   MissingWmataApiKeyError,
-  dedupeTrainsList,
 } from "../lib/providers/washington.js";
 import {
   foldKey,
@@ -482,6 +488,28 @@ assertTrunkDirectionNeverCollapsesToOne(
   2
 );
 
+// --- Regression (Mark's QA on PR #482): a de-dup step keyed on (Line, DestinationName, Min)
+// collapsed two GENUINELY DIFFERENT trains — same line, same destination, same rounded-to-the-
+// minute Min, but different Group (platform) — at a two-platform terminus. `Min` is WMATA's own
+// per-minute estimate, not a unique id, so this is a normal, real shape (e.g. two Blue trains to
+// Huntington arriving the same minute on different platforms), not a duplicate to be merged away.
+// tripsFromTrainsList() must never drop either — see lib/providers/washington.js's
+// tripsFromTrainsList() docstring for why the dedupe step was removed entirely rather than re-keyed.
+const twoPlatformSameMinuteTrains = [
+  { _source: "synthetic", Car: "6", Destination: "Huntington", DestinationCode: null, DestinationName: "Huntington", Group: "1", Line: "BL", LocationCode: "C01", LocationName: "Gallery Pl-Chinatown", Min: "4" },
+  { _source: "synthetic", Car: "8", Destination: "Huntington", DestinationCode: null, DestinationName: "Huntington", Group: "2", Line: "BL", LocationCode: "F01", LocationName: "Gallery Pl-Chinatown", Min: "4" },
+];
+const twoPlatformTrips = tripsFromTrainsList(twoPlatformSameMinuteTrains, referenceNow);
+assert(
+  twoPlatformTrips.length === 2,
+  `two genuine same-line/same-destination/same-Min trains that differ only by Group at a two-platform terminus must both survive as separate trips, got ${twoPlatformTrips.length}`
+);
+const twoPlatformUpcoming = pickUpcomingProviderTrips(twoPlatformTrips, "Huntington", referenceNow);
+assert(
+  twoPlatformUpcoming.length === 2,
+  `the Huntington chip must list BOTH same-minute, different-platform Blue trains, got ${twoPlatformUpcoming.length}`
+);
+
 // Metro Center's real jStations+GetPrediction wiring must yield BOTH Red termini (the hub's own
 // line) AND the Blue/Orange/Silver trunk termini — the "Metro Center returned only ONE board
 // entry" symptom must not reproduce against the full merged catalog of direction chips.
@@ -633,5 +661,5 @@ assert(directDogfoodNextTrain.config?.destination === "Glenmont", "dogfood next-
 // status flip — qa/live-city-lists-sync.mjs enforces they equal exactly the live-city set.
 
 console.log(
-  "washington-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section recorded MARC/VRE out-product (Tim, 20 Sep 2026), 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, terminus-only direction model (27 Sep 2026 correction) with legacy Line+terminus server-side aliases, Metro Center and Downtown never a direction token, a shared trunk terminus lists every line's trains under one chip and never collapses to upcoming.length===1 with >=2 fixture trains, Metro Center yields Red AND Blue/Orange/Silver trunk directions, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, dispatch/dogfood next-train wired end-to-end against mocked real fixture data including the legacy-label alias round-trip, missing-key still refuses rather than falling back, Perth Australia green)"
+  "washington-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section recorded MARC/VRE out-product (Tim, 20 Sep 2026), 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, terminus-only direction model (27 Sep 2026 correction) with legacy Line+terminus server-side aliases, Metro Center and Downtown never a direction token, a shared trunk terminus lists every line's trains under one chip and never collapses to upcoming.length===1 with >=2 fixture trains, two same-line/same-destination/same-minute trains on different platforms both survive (no Line/DestinationName/Min dedupe), Metro Center yields Red AND Blue/Orange/Silver trunk directions, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, dispatch/dogfood next-train wired end-to-end against mocked real fixture data including the legacy-label alias round-trip, missing-key still refuses rather than falling back, Perth Australia green)"
 );
