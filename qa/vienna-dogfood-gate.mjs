@@ -136,14 +136,18 @@ assert(isForbiddenHubProxy("Stephansplatz") === true, "Stephansplatz must never 
 assert(isForbiddenHubProxy(VIENNA_HUB) === false, "the hub itself is not its own proxy violation");
 assert(isForbiddenCollapseName("Zentrum") === true, "Zentrum must never resolve as a station");
 
-// Line labels + termini (direction-model-memo.md sections 1-2) — U2 deliberately excludes
-// Karlsplatz as a terminus.
+// Line labels + termini (direction-model-memo.md sections 1-2, corrected 27 Sep 2026 per
+// docs/jim-brief-vienna-u2-hub-bound-direction.md) — U2 now carries BOTH real printed termini,
+// Seestadt and its hub-bound terminus Karlsplatz; the hub lock forbids only a bare/generic hub
+// token, not a line-qualified hub-bound chip.
 assert(LINE_LABELS.u1 === "U1" && LINE_LABELS.u6 === "U6", "line labels must be the bare printed U-codes");
 assert(LINE_TERMINI.u1.includes("Leopoldau") && LINE_TERMINI.u1.includes("Oberlaa"), "U1 termini must be Leopoldau/Oberlaa");
-assert(LINE_TERMINI.u2.length === 1 && LINE_TERMINI.u2[0] === "Seestadt", "U2 termini must be ONLY Seestadt, never Karlsplatz");
-assert(mapLineTerminusDestination(VIENNA_HUB, "u1") === "U1", "Karlsplatz must never appear as a direction token — falls back to the bare line label");
+assert(LINE_TERMINI.u2.length === 2 && LINE_TERMINI.u2.includes("Seestadt") && LINE_TERMINI.u2.includes("Karlsplatz"), "U2 termini must be Seestadt AND Karlsplatz");
+assert(!LINE_TERMINI.u1.includes(VIENNA_HUB), "U1 must never gain a Karlsplatz terminus/chip");
+assert(!LINE_TERMINI.u4.includes(VIENNA_HUB), "U4 must never gain a Karlsplatz terminus/chip");
+assert(mapLineTerminusDestination(VIENNA_HUB, "u1") === "U1", "Karlsplatz must never appear as a U1 direction token — falls back to the bare line label");
 assert(mapLineTerminusDestination("Seestadt", "u2") === "U2 + Seestadt", "direction chip must be line + terminus");
-assert(mapLineTerminusDestination(VIENNA_HUB, "u2") === "U2", "a U2 towards-Karlsplatz string must never synthesize a fabricated 'U2 + Karlsplatz' chip");
+assert(mapLineTerminusDestination(VIENNA_HUB, "u2") === "U2 + Karlsplatz", "a U2 towards-Karlsplatz string must resolve to the line-qualified hub-bound chip");
 assert(resolveTerminus("Some Unknown Headsign", "u1") === null, "resolveTerminus must not fabricate an unknown terminus");
 assert(foldKey("Kaisermühlen") !== "", "foldKey must fold diacritics");
 
@@ -152,8 +156,55 @@ const karlsplatzLabels = marketingLabelsForStation(VIENNA_HUB);
 assert(karlsplatzLabels.includes("U1 + Leopoldau"), "Karlsplatz must offer U1 + Leopoldau");
 assert(karlsplatzLabels.includes("U2 + Seestadt"), "Karlsplatz must offer U2 + Seestadt");
 assert(!karlsplatzLabels.some((l) => l.endsWith("+ Karlsplatz")), "Karlsplatz must never offer a self-referential + Karlsplatz chip");
+assert(!karlsplatzLabels.some((l) => l.startsWith("U1") && l.includes("Karlsplatz")), "Karlsplatz's own U1 chips must never mention Karlsplatz");
+assert(!karlsplatzLabels.some((l) => l.startsWith("U4") && l.includes("Karlsplatz")), "Karlsplatz's own U4 chips must never mention Karlsplatz");
 assert(tripMatchesMarketingChip({ destination: "U1 + Leopoldau" }, "U1 + Leopoldau") === true, "tripMatchesMarketingChip must match an identical chip");
 assert(tripMatchesMarketingChip({ destination: "U1 + Leopoldau" }, "U1 + Oberlaa") === false, "tripMatchesMarketingChip must reject a mismatched chip");
+
+// Seestadt (U2's own terminus, Mark's flip-QA RED station) must now offer exactly the
+// Karlsplatz-bound chip, and every U1/U4 chip must never mention Karlsplatz.
+const seestadtLabels = marketingLabelsForStation("Seestadt");
+assert(JSON.stringify(seestadtLabels) === JSON.stringify(["U2 + Karlsplatz"]), `Seestadt must offer exactly ["U2 + Karlsplatz"], got ${JSON.stringify(seestadtLabels)}`);
+
+// An intermediate U2 station (not a terminus either side) must show BOTH U2 directions.
+const praternsternLabels = marketingLabelsForStation("Praterstern");
+assert(praternsternLabels.includes("U2 + Seestadt"), "Praterstern must offer U2 + Seestadt");
+assert(praternsternLabels.includes("U2 + Karlsplatz"), "Praterstern must offer U2 + Karlsplatz");
+
+// Synthetic per-direction trip-count assertion: a station with live trips in both directions
+// must have BOTH chips backed by at least one matching trip (a zero-trip chip at a station with
+// live trips must fail this pattern).
+function assertBothDirectionsHaveTrips(stationName, lineId, towardsA, towardsB, referenceTime) {
+  const chipA = mapLineTerminusDestination(towardsA, lineId);
+  const chipB = mapLineTerminusDestination(towardsB, lineId);
+  const syntheticMonitors = [
+    {
+      lines: [
+        {
+          name: lineId.toUpperCase(),
+          towards: towardsA,
+          platform: "1",
+          type: "ptMetro",
+          departures: { departure: [{ departureTime: { timeReal: referenceTime } }] },
+        },
+        {
+          name: lineId.toUpperCase(),
+          towards: towardsB,
+          platform: "2",
+          type: "ptMetro",
+          departures: { departure: [{ departureTime: { timeReal: referenceTime } }] },
+        },
+      ],
+    },
+  ];
+  const trips = tripsFromMonitors(syntheticMonitors, new Date(referenceTime));
+  const countA = trips.filter((t) => tripMatchesMarketingChip(t, chipA)).length;
+  const countB = trips.filter((t) => tripMatchesMarketingChip(t, chipB)).length;
+  assert(countA > 0, `${stationName}: chip "${chipA}" must have > 0 matching trips, got ${countA}`);
+  assert(countB > 0, `${stationName}: chip "${chipB}" must have > 0 matching trips, got ${countB}`);
+}
+assertBothDirectionsHaveTrips("Praterstern", "u2", "Seestadt", "Karlsplatz", "2026-09-27T02:16:00.000+0200");
+assertBothDirectionsHaveTrips("Aspern Nord", "u2", "Seestadt", "Karlsplatz", "2026-09-27T02:16:00.000+0200");
 
 // Monitor URL shaping (no SENDER parameter, multiple stopId params) — no network.
 assert(WIENER_LINIEN_MONITOR_URL === "https://www.wienerlinien.at/ogd_realtime/monitor", "monitor URL must point at the OGD Realtime Monitor");

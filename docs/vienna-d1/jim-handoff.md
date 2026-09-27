@@ -162,3 +162,16 @@ RBL ids' coordinates independently cross-checked against a second geocoding sour
 taken from the monitor's own `locationStop.geometry.coordinates`, which is Wiener Linien's own
 data, not third-party); no resolution of the "Schedifkaplatz" naming gap (hazard-pack.md H3 —
 still unresolved, doesn't affect scope since Badner Bahn is out-product regardless).
+
+## Correction, 27 Sep 2026 (docs/jim-brief-vienna-u2-hub-bound-direction.md)
+
+Mark's flip QA (docs/vienna-d1/mark-qa-note.md) found `/api/board` and `/api/directions` returned
+zero entries for Seestadt despite six real live U2 departures there. Root cause: U2's
+`LINE_TERMINI` in `lib/cities/vienna/marketing-directions.js` previously listed only Seestadt, so
+Seestadt (U2's own terminus) had no other terminus to offer as a chip, and every Karlsplatz-bound
+trip elsewhere on U2 fell back to the unmatched bare "U2" label. Fixed by adding Karlsplatz to
+U2's `LINE_TERMINI` as a second, line-qualified, hub-bound chip ("U2 + Karlsplatz") — this does
+not violate the hub lock, which forbids only a bare/generic hub token, not a line-qualified
+hub-bound direction. Karlsplatz itself is unaffected (self-terminus skip still applies; only one
+live U2 platform there, `towards: "Seestadt"`); U1/U4 are untouched. Full detail in
+docs/vienna-d1/direction-model-memo.md's own "Correction, 27 Sep 2026" section.
