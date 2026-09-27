@@ -2,7 +2,7 @@
  * D5 — Offline Hong Kong line-map conformance.
  * Usage: node qa/hong-kong-line-map-conformance.mjs
  *
- * City stays planned. D1 pack required. Not generated from GTFS.
+ * Flipped live 27 Sep 2026. D1 pack required. Not generated from GTFS.
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -79,19 +79,19 @@ function main() {
   const catalog = loadJson("lib/cities/hong-kong/stations.json");
   const failures = [];
 
-  if (assertCityLive("hong-kong")?.ok === true) {
-    failures.push("C0: assertCityLive(hong-kong) must fail (city stays planned)");
+  // Flipped live 27 Sep 2026 (Mark's QA re-run after the coordinates fix, PR #472 +
+  // docs/hong-kong-d1/mark-qa-note.md).
+  if (assertCityLive("hong-kong")?.ok !== true) {
+    failures.push("C0: assertCityLive(hong-kong) must succeed now that hong-kong is live");
   }
-  if (getCity("hong-kong")?.status !== "planned") {
-    failures.push("C0: hong-kong registry status must be planned");
+  if (getCity("hong-kong")?.status !== "live") {
+    failures.push("C0: hong-kong registry status must be live");
   }
-  // adapterReady flipped true 27 Sep 2026 once the adapter was wired (flip follow-through) —
-  // status stays "planned" until Mark/Tim's flip (checked above via assertCityLive).
   if (getCity("hong-kong")?.adapterReady !== true) {
-    failures.push("C0: hong-kong adapterReady must be true (adapter is wired; status stays planned)");
+    failures.push("C0: hong-kong adapterReady must be true");
   }
-  if (isMultiCity("hong-kong")) {
-    failures.push("C0: hong-kong must not join MULTI_CITY_IDS until Tim flips live");
+  if (!isMultiCity("hong-kong")) {
+    failures.push("C0: hong-kong must be in MULTI_CITY_IDS now that status is live");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
@@ -349,7 +349,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("hong-kong-line-map-conformance: ok (planned, eight urban heavy-rail lines + AEL at Hong Kong/Kowloon/Tsing Yi + DRL at Sunny Bay (board eligibility, Tim 27 Sep 2026), Admiralty hub, DIS station-code/Light Rail/HSR absent as lines, Lo Wu/Lok Ma Chau in, LOHAS Park TKL branch, 95 names)");
+  console.log("hong-kong-line-map-conformance: ok (live, eight urban heavy-rail lines + AEL at Hong Kong/Kowloon/Tsing Yi + DRL at Sunny Bay (board eligibility, Tim 27 Sep 2026), Admiralty hub, DIS station-code/Light Rail/HSR absent as lines, Lo Wu/Lok Ma Chau in, LOHAS Park TKL branch, 95 names)");
 }
 
 main();

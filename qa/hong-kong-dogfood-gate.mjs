@@ -1,8 +1,13 @@
 /**
- * Hong Kong flip follow-through gate. Hong Kong stays `status: "planned"` (Mark/Tim's flip call)
- * but the dogfood module, live-city-api.js dispatch switch-cases, and this gate are wired ahead
- * of that per the flip-follow-through guardrail (Vienna/Chicago/BART/Washington shape) so no
- * second pass is needed once Mark's QA pass is green. Replaces qa/hong-kong-planned-gate.mjs.
+ * Hong Kong flip follow-through gate. Rewritten 27 Sep 2026 (Mark's QA re-run after the
+ * coordinates fix, PR #472 + docs/hong-kong-d1/mark-qa-note.md) to assert LIVE state — Hong
+ * Kong flipped `status: "live"` once every checklist item (board eligibility, live-only grep,
+ * rider-facing /api/board + /api/directions, trip counts, coordinates/Near me, hub lock,
+ * coverage.json) came back green. Mirrors qa/copenhagen-dogfood-gate.mjs's/
+ * qa/washington-dogfood-gate.mjs's post-flip shape. The old pre-flip assertions (assertCityLive
+ * must fail, status === "planned", isMultiCity() === false, picker must not list Hong Kong, and
+ * the api/next-train.js + api/board.js 501 probes — a Hong-Kong-only pre-flip scaffold, no other
+ * flipped city's gate carries it) are removed, not left disabled.
  *
  * Deliberately does NOT call the live MTR Next Train REST (rt.data.gov.hk) — this is a
  * smoke-tier gate, not a network test. Instead this gate unit-tests the catalog/direction-model/
@@ -45,29 +50,6 @@ import {
   getHongKongDogfoodDirections,
   getHongKongDogfoodNextTrain,
 } from "../lib/cities/hong-kong/dogfood-next-train.js";
-import nextTrain from "../api/next-train.js";
-import board from "../api/board.js";
-
-function mockRes() {
-  return {
-    statusCode: 0,
-    body: null,
-    headers: {},
-    setHeader(name, value) {
-      this.headers[name] = value;
-    },
-    status(code) {
-      this.statusCode = code;
-      return this;
-    },
-    json(payload) {
-      this.body = payload;
-      return this;
-    },
-    end() {},
-  };
-}
-
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 function assert(condition, message) {
@@ -83,13 +65,12 @@ assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must sta
 assert(assertCityLive("goteborg")?.ok === true, "Göteborg tester-live must stay green");
 assert(assertCityLive("bart")?.ok === false, "BART stays planned");
 
-// Registry identity + status — Hong Kong stays planned; only the flip changes this.
+// Registry identity + status — flipped live 27 Sep 2026.
 const live = assertCityLive("hong-kong");
-assert(live?.ok === false, "assertCityLive(hong-kong) must fail");
-assert(live?.status === 501, "hong-kong must be 501 planned");
+assert(live?.ok === true, "assertCityLive(hong-kong) must succeed now that hong-kong is live");
 
 const entry = getCity("hong-kong");
-assert(entry?.status === "planned", "hong-kong registry status must be planned");
+assert(entry?.status === "live", "hong-kong registry status must be live");
 assert(entry?.adapterReady === true, "hong-kong adapterReady must be true");
 assert(entry?.displayName === "Hong Kong", "hong-kong display name must be Hong Kong");
 assert(entry?.timeZone === "Asia/Hong_Kong", "hong-kong timezone must be Asia/Hong_Kong");
@@ -106,8 +87,7 @@ for (const forbiddenId of ["hk", "mtr", "kowloon", "china", "light-rail", "airpo
 }
 assert(!CITIES.some((city) => city.id === "hk"), "registry must not invent city=hk");
 
-// Dogfood dispatch is wired ahead of the flip — NOT in MULTI_CITY_IDS yet.
-assert(isMultiCity("hong-kong") === false, "hong-kong must NOT be in MULTI_CITY_IDS while status stays planned");
+assert(isMultiCity("hong-kong") === true, "hong-kong must be in MULTI_CITY_IDS now that status is live");
 
 // D1 pack presence (+ Board eligibility section, appended after the original hazard pack).
 const d1Dir = join(ROOT, "docs/hong-kong-d1");
@@ -369,8 +349,8 @@ const hubPack = getHongKongDogfoodDirections(METRO_HUB);
 assert(hubPack.source === "hong-kong-marketing-ends", "directions source must be hong-kong-marketing-ends");
 assert(JSON.stringify(hubPack.directions.sort()) === JSON.stringify(hubLabels.sort()), "dogfood directions must match marketingLabelsForStation");
 
-// The production dispatch entry exists and returns the same chips as the dogfood harness, even
-// though hong-kong is deliberately not in MULTI_CITY_IDS yet.
+// The production dispatch entry (now gated live via MULTI_CITY_IDS) returns the same chips as
+// the dogfood harness.
 const dispatchedDirections = await getMultiCityDirections("hong-kong", METRO_HUB);
 assert(JSON.stringify(dispatchedDirections.directions.sort()) === JSON.stringify(hubLabels.sort()), "live-city-api dispatch must return the same chips as the dogfood harness");
 assert(dispatchedDirections.source === "hong-kong-marketing-ends", "live-city-api dispatch source must be hong-kong-marketing-ends");
@@ -408,32 +388,15 @@ assert(foldKey("Kowloon Station") === "kowloon", "foldKey must strip a trailing 
 
 assert(HONG_KONG_TIMEZONE === "Asia/Hong_Kong", "HONG_KONG_TIMEZONE must be Asia/Hong_Kong");
 
-// Production routes still 501 on this planned city — gated on assertCityLive(), not on
-// MULTI_CITY_IDS membership.
-const nextRes = mockRes();
-await nextTrain({ method: "GET", query: { city: "hong-kong", station: METRO_HUB, direction: "Chai Wan" }, headers: {} }, nextRes);
-assert(nextRes.statusCode === 501, `/api/next-train?city=hong-kong must 501, got ${nextRes.statusCode}`);
-const boardRes = mockRes();
-await board({ method: "GET", query: { city: "hong-kong", station: METRO_HUB }, headers: {} }, boardRes);
-assert(boardRes.statusCode === 501, `/api/board?city=hong-kong must 501, got ${boardRes.statusCode}`);
-
-// Per Tim's 30 Aug 2026 call: no Coming Soon picker entry for a bare new planned city.
+// Picker + live lists: now populated as part of this same flip commit
+// (qa/live-city-lists-sync.mjs and qa/country-regions-sync-gate.mjs check they equal exactly
+// the live-city set, and are run separately in the flip checklist).
 const session = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(
-  !/id:\s*"hk"/.test(session) && !/id:\s*"hong-kong"/.test(session),
-  "picker must not list Hong Kong (no Coming Soon entry for a bare new planned city, Tim 30 Aug 2026)"
-);
-assert(!/MULTI_CITY_IDS = \[[^\]]*hong-kong/.test(session), "hong-kong must not be in city-session MULTI_CITY_IDS");
-
-const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*hong-kong/.test(appJs), "hong-kong must not be in LIVE_CITY_IDS");
-
-const liveCityApiSrc = readFileSync(join(ROOT, "lib/cities/live-city-api.js"), "utf8");
-assert(!/MULTI_CITY_IDS = \[[^\]]*hong-kong/.test(liveCityApiSrc), "hong-kong must not be in live-city-api MULTI_CITY_IDS");
+assert(/id:\s*"hong-kong"/.test(session), "picker must now list Hong Kong (flipped live)");
 
 const pkg = readFileSync(join(ROOT, "package.json"), "utf8");
-assert(!/"hong-kong"/.test(pkg), "do not add hong-kong scripts or bump version for a planned city");
+assert(!/"hong-kong"/.test(pkg), "do not add hong-kong scripts or bump version for a live-flip commit");
 
 console.log(
-  "hong-kong-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack + Board eligibility section recorded, D2 fixture verbatim, 95 stations, Admiralty hub TWLxISLxSILxEAL, AEL at Hong Kong/Kowloon/Tsing Yi + DRL at Sunny Bay live-confirmed dest-code mapping, NT-301/NT-205/isdelay=Y all propagate rather than a silent empty board, unknown-station throws before any fetch, Perth/Sydney/Stockholm/Göteborg green)"
+  "hong-kong-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired and tested end to end without any network call, D1 pack + Board eligibility section recorded, D2 fixture verbatim, 95 stations, Admiralty hub TWLxISLxSILxEAL, AEL at Hong Kong/Kowloon/Tsing Yi + DRL at Sunny Bay live-confirmed dest-code mapping, NT-301/NT-205/isdelay=Y all propagate rather than a silent empty board, unknown-station throws before any fetch, Perth/Sydney/Stockholm/Göteborg green)"
 );
