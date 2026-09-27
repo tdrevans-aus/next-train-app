@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen", "vienna"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -30,6 +30,15 @@
         { id: "newcastle", name: "Newcastle", timeZone: "Australia/Sydney" },
         { id: "perth", name: "Perth", timeZone: "Australia/Perth" },
         { id: "sydney", name: "Sydney", timeZone: "Australia/Sydney" },
+      ],
+    },
+    {
+      // Austria: first Austrian region, flipped live 27 Sep 2026 (docs/vienna-d1/mark-qa-note.md,
+      // after the U2 hub-bound direction fix, docs/jim-brief-vienna-u2-hub-bound-direction.md).
+      id: "at",
+      name: "Austria",
+      regions: [
+        { id: "vienna", name: "Vienna", timeZone: "Europe/Vienna" },
       ],
     },
     {
@@ -191,6 +200,11 @@
     // (lat 50.812-50.897, lng 4.267-4.465) with a small margin. Doesn't overlap any other
     // region's box, so its position here doesn't affect containment order.
     brussels: { minLat: 50.79, maxLat: 50.92, minLng: 4.24, maxLng: 4.49 },
+    // Vienna (docs/jim-brief-vienna-u2-hub-bound-direction.md flip follow-through, 27 Sep 2026)
+    // — box derived from lib/cities/vienna/stations.json's 99 catalogued stations
+    // (lat 48.130117-48.277555, lng 16.260728-16.508502), with a small margin. No overlap
+    // with any other city's box (Brussels/Copenhagen are the nearest and both far off).
+    vienna: { minLat: 48.10, maxLat: 48.30, minLng: 16.22, maxLng: 16.55 },
     // Dublin (docs/dublin-d1/jim-handoff.md flip follow-through) — comingSoon in the picker,
     // box derived from lib/cities/dublin/stations.json's 67 catalogued stations (all 67 now
     // carry real lat/lng, matched by name against the published NTA GTFS snapshot's
