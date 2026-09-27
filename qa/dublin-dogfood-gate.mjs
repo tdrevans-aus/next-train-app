@@ -46,6 +46,8 @@ import {
   getDublinDogfoodNextTrain,
 } from "../lib/cities/dublin/dogfood-next-train.js";
 import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
+import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -271,12 +273,15 @@ assert(coverage.notCovered.some((c) => /DART|Iarnr/.test(c.label)), "coverage.js
 const countryRegions = readFileSync(join(ROOT, "lib/cities/country-regions.js"), "utf8");
 assert(!/dublin:\s*"ie"/.test(countryRegions), "country-regions.js must not map dublin to ie until the flip commit");
 
-const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(!/id:\s*"dublin",\s*name:\s*"Dublin"/.test(citySession), "city-session.js picker must not list Dublin until the flip commit");
-// CITY_BOUNDS box stays ahead of the flip, same as Hong Kong's — it only satisfies
+// The picker is now built server-side from the /api/cities manifest
+// (docs/jim-brief-registry-driven-client.md) — a "planned" registry status keeps a city out
+// of it automatically, with nothing left in public/city-session.js to assert against.
+const manifestCityIds = buildCityManifest().cities.map((c) => c.id);
+assert(!manifestCityIds.includes("dublin"), "the /api/cities manifest must not list Dublin until the flip commit (registry status must stay \"planned\")");
+// The bounds box stays ahead of the flip, same as Hong Kong's — it only satisfies
 // qa/live-city-lists-sync.mjs's per-live-city check once Dublin is live, and is
-// otherwise inert while the city isn't in the picker at all.
-assert(/dublin:\s*\{\s*minLat/.test(citySession), "city-session.js CITY_BOUNDS must carry a dublin box");
+// otherwise inert while the city isn't in the manifest at all.
+assert(Boolean(CITY_BOUNDS.dublin), "lib/cities/city-bounds.js must carry a dublin box");
 
 console.log(
   "dublin-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded (DART/buses out), 67 stations with real lat/lng inside CITY_BOUNDS, hub Abbey Street, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART out, Perth Australia green)"

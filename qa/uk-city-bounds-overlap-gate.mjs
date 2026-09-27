@@ -12,9 +12,9 @@
  * docs/jim-brief-south-wales-rescope-wiring.md for the Cardiff/Newport
  * vs. West of England case this gate was added to catch.
  *
- * CITY_BOUNDS is parsed out of the source file as plain text (the same
- * approach qa/live-city-lists-sync.mjs uses for COUNTRIES/MULTI_CITY_IDS)
- * rather than loaded in a browser — this is a pure-Node, offline gate.
+ * CITY_BOUNDS lives server-side (lib/cities/city-bounds.js,
+ * docs/jim-brief-registry-driven-client.md) and is imported directly here —
+ * this is a pure-Node, offline gate.
  *
  * Some overlaps are pre-existing, geometrically unavoidable with a single
  * rectangle per region, and already resolved correctly by CITY_BOUNDS's
@@ -25,12 +25,8 @@
  *
  * Usage: node qa/uk-city-bounds-overlap-gate.mjs
  */
-import { readFileSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
 import { UK_REGION_IDS, listCatalogStations } from "../lib/providers/uk/catalog.js";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
 
 let failures = 0;
 function check(condition, message) {
@@ -480,16 +476,6 @@ function allowListReason(regionId, stationName) {
   const hit = ALLOW_LIST.find((entry) => entry.region === regionId && entry.station === stationName);
   return hit?.reason ?? null;
 }
-
-// --- Parse CITY_BOUNDS out of public/city-session.js -----------------------
-const citySessionSrc = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-const boundsMatch = citySessionSrc.match(/const CITY_BOUNDS = \{([\s\S]*?)\n  \};/);
-check(boundsMatch, "could not find CITY_BOUNDS block in public/city-session.js (pattern drift — update this gate)");
-if (!boundsMatch) {
-  process.exit(1);
-}
-// eslint-disable-next-line no-new-func -- parsing a trusted local source file's own object literal
-const CITY_BOUNDS = new Function(`return {${boundsMatch[1]}};`)();
 
 function inBounds(lat, lng, box) {
   return lat >= box.minLat && lat <= box.maxLat && lng >= box.minLng && lng <= box.maxLng;

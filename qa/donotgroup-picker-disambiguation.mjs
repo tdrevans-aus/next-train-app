@@ -93,7 +93,7 @@ async function run() {
         const originalSession = window.NextTrainCitySession;
         const originalDogfood = window.NextTrainBrisbaneDogfood;
         window.NextTrainCitySession = {
-          MULTI_CITY_IDS: [city],
+          isMultiCityId: (id) => id === city,
           readSavedCity: () => city,
         };
         window.NextTrainBrisbaneDogfood = {

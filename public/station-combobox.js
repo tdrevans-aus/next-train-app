@@ -53,8 +53,7 @@
   }
 
   function isMultiCityCatalog(city) {
-    const ids = window.NextTrainCitySession?.MULTI_CITY_IDS;
-    return Array.isArray(ids) && ids.includes(city);
+    return Boolean(window.NextTrainCitySession?.isMultiCityId?.(city));
   }
 
   // Per-region operator names for the picker's "same printed name, different

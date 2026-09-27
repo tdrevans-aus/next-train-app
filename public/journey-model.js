@@ -470,7 +470,7 @@ function normalizeJourney(raw = {}) {
   };
 
   const cityId = String(raw.cityId ?? "").trim().toLowerCase();
-  if (PERSISTED_CITY_IDS.has(cityId)) {
+  if (isPersistableCityId(cityId)) {
     journey.cityId = cityId;
   }
 
@@ -608,65 +608,48 @@ function pickAppThemeFields(raw = {}) {
   return { appTheme: "system" };
 }
 
-const PERSISTED_CITY_IDS = new Set([
-  "perth",
-  "sydney",
-  "brisbane",
-  "adelaide",
-  "uk-london-tfl",
-  "canberra",
-  "gold-coast",
-  "newcastle",
-  "stockholm",
-  "goteborg",
-  "malmo",
-  "uppsala",
-  "helsinki",
-  "oslo",
-  "uk-west-midlands",
-  "west-of-england",
-  "east-midlands",
-  "greater-anglia",
-  "rest-of-wales",
-  "rest-of-scotland",
-  "liverpool-city-region",
-  "solent",
-  "south-wales",
-  "west-yorkshire",
-  "thames-valley",
-  "london-se-national-rail",
-  "southwest",
-  "greater-manchester",
-  "south-yorkshire",
-  "north-east",
-  "glasgow",
-  "edinburgh",
-  "cumbria",
-  "rest-of-england",
-  "boston",
-  "brussels",
-  "melbourne",
-  "washington",
-  "copenhagen",
-  "vienna",
-  "hong-kong",
-]);
-// "gb" kept alongside the split gb-eng/gb-sct/gb-wls ids so an older stored savedCountry
-// survives the sanitizer until city-session.js's readSavedCountry() migration rewrites it
-// on next launch (docs/jim-brief-picker-countries-england-scotland-wales.md item 3).
-// "nl", "ca", "nz" dropped 7 Sep 2026 (release 1 scope cut) — Netherlands, Canada, and
-// New Zealand no longer have any live city, so an old savedCountry for them degrades the
-// same way an unknown country does today.
-const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "gb-eng", "gb-sct", "gb-wls", "se", "fi", "no", "us", "be", "dk", "at", "hk"]);
+// Registry-driven persistence (docs/jim-brief-registry-driven-client.md): a saved
+// savedCity/savedCountry/journey.cityId is no longer checked against a hardcoded allow-list
+// that only ever listed today's live cities — that dropped a saved journey the moment its
+// city was removed from the list (e.g. a retired city, or simply lagging a flip). Instead,
+// accept anything that either (a) the loaded manifest currently recognises as live, or
+// (b) is already present in the saved data itself — i.e. anything shaped like a real id,
+// full stop. A later-retired city's journey keeps loading (and shows the existing "not
+// available" path) rather than silently losing its station/direction/name.
+const CITY_ID_SHAPE = /^[a-z][a-z0-9-]{0,63}$/;
+const COUNTRY_ID_SHAPE = /^[a-z]{2}(?:-[a-z]{3})?$/;
+
+function isPersistableCityId(id) {
+  if (!id) {
+    return false;
+  }
+  if (window.CityManifest?.isLiveCity(id)) {
+    return true;
+  }
+  // No manifest loaded yet, or this id isn't (or is no longer) live — still accept it if
+  // it's shaped like a real city id, so a saved journey for a since-retired city, or one
+  // read before the manifest resolves, is never dropped.
+  return CITY_ID_SHAPE.test(id);
+}
+
+function isPersistableCountryId(id) {
+  // "gb" kept alongside the split gb-eng/gb-sct/gb-wls ids so an older stored savedCountry
+  // survives the sanitizer until city-session.js's readSavedCountry() migration rewrites it
+  // on next launch (docs/jim-brief-picker-countries-england-scotland-wales.md item 3).
+  if (id === "gb") {
+    return true;
+  }
+  return Boolean(id) && COUNTRY_ID_SHAPE.test(id);
+}
 
 function pickSavedCityFields(raw = {}) {
   const city = String(raw.savedCity ?? "").trim().toLowerCase();
   const country = String(raw.savedCountry ?? "").trim().toLowerCase();
   const out = {};
-  if (PERSISTED_CITY_IDS.has(city)) {
+  if (isPersistableCityId(city)) {
     out.savedCity = city;
   }
-  if (PERSISTED_COUNTRY_IDS.has(country)) {
+  if (isPersistableCountryId(country)) {
     out.savedCountry = country;
   }
   // docs/jim-brief-region-explicit-false-dropped.md: this used to only copy

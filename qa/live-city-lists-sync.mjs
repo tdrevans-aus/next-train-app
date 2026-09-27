@@ -1,19 +1,34 @@
 /**
  * Live-city list sync gate — the self-enforcing half of docs/live-flip-checklist.md.
  *
- * The live-flip touches seven independent copies of "which cities are live"
- * (see the Göteborg flip, PR #129 + follow-ups: e2867b8 missed three of them).
- * This gate derives the expected set from the registry (status === "live") and
- * asserts every copy agrees, so a flip that misses one fails smoke instead of
- * failing in production persistence or the dogfood mount.
+ * The live-flip used to touch seven independent hand-maintained copies of "which cities are
+ * live" (see the Göteborg flip, PR #129 + follow-ups: e2867b8 missed three of them). As of
+ * docs/jim-brief-registry-driven-client.md, six of those seven are gone — the client now
+ * loads /api/cities' manifest instead of bundling its own copy — leaving exactly one
+ * server-side list that still has to agree with the registry: lib/cities/live-city-api.js's
+ * MULTI_CITY_IDS (the actual authorization gate `directionsFor`/`getMultiCityNextTrain` use;
+ * see .claude/agents/mark.md's flip-commit paragraph).
+ *
+ * This gate asserts:
+ *  (a) /api/cities' manifest live set === lib/providers/registry.js's `status: "live"` set
+ *      (built the same way the endpoint itself is — lib/cities/city-manifest.js — so this is
+ *      a construction proof, not a live HTTP call; no dev server needed).
+ *  (b) MULTI_CITY_IDS still matches the registry (the one list this move deliberately did
+ *      NOT remove).
+ *  (c) no hardcoded city-id list survives in public/*.js outside the accessor module
+ *      (public/city-manifest.js) — a static grep for the six retired list names.
+ *  (d) public/city-manifest.seed.json equals what scripts/write-city-manifest.mjs would
+ *      produce right now, so a stale seed (e.g. a flip that forgot to regenerate it) fails
+ *      smoke instead of shipping a bundle that doesn't match the registry.
  *
  * Offline pure-Node gate — no dev server. Usage: node qa/live-city-lists-sync.mjs
  */
-import { readFileSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { CITIES } from "../lib/providers/registry.js";
 import { MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -37,113 +52,65 @@ function sameSet(actual, expected, label) {
   );
 }
 
-/** Extract a quoted-string list from source by a regex whose group 1 spans the entries. */
-function extractIds(source, regex, label) {
-  const match = source.match(regex);
-  check(match, `${label}: could not find the list in source (pattern drift — update this gate)`);
-  if (!match) return [];
-  return [...match[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-}
-
 // Ground truth: the registry. Perth is live but predates the multi-city path.
 const registryLiveIds = CITIES.filter((city) => city.status === "live").map((city) => city.id);
 const expectedMulti = registryLiveIds.filter((id) => id !== "perth");
 check(registryLiveIds.includes("perth"), "Perth must be live in the registry");
 
-// 1. lib/cities/live-city-api.js — MULTI_CITY_IDS (imported directly).
+// (b) lib/cities/live-city-api.js — MULTI_CITY_IDS (imported directly). The one list this
+// move deliberately kept — it's the server-side authorization gate, not a client copy.
 sameSet(MULTI_CITY_IDS, expectedMulti, "live-city-api MULTI_CITY_IDS vs registry live cities");
 
-// 2–3. public/app.js — NEARBY_MULTI_CITY_IDS + LIVE_CITY_IDS (which adds perth).
-const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
+// (a) /api/cities' manifest — built the same way api/cities.js/dev-server.js build it.
+const manifest = buildCityManifest();
 sameSet(
-  extractIds(appJs, /NEARBY_MULTI_CITY_IDS = \[([^\]]*)\]/, "app.js NEARBY_MULTI_CITY_IDS"),
-  expectedMulti,
-  "app.js NEARBY_MULTI_CITY_IDS"
-);
-sameSet(
-  extractIds(appJs, /LIVE_CITY_IDS = new Set\(\[([^\]]*)\]/, "app.js LIVE_CITY_IDS"),
+  manifest.cities.map((city) => city.id),
   registryLiveIds,
-  "app.js LIVE_CITY_IDS"
+  "city manifest (api/cities.js) vs registry live cities"
 );
 
-// 4. public/city-session.js — its own MULTI_CITY_IDS, plus picker comingSoon flags.
-const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-sameSet(
-  extractIds(citySession, /MULTI_CITY_IDS = \[([^\]]*)\]/, "city-session MULTI_CITY_IDS"),
-  expectedMulti,
-  "city-session MULTI_CITY_IDS"
-);
+// (c) No hardcoded city-id list left in public/*.js outside the accessor module itself.
+const RETIRED_LIST_NAMES = [
+  "MULTI_CITY_IDS",
+  "LIVE_CITY_IDS",
+  "NEARBY_MULTI_CITY_IDS",
+  "PERSISTED_CITY_IDS",
+  "PERSISTED_COUNTRY_IDS",
+  "CITY_BOUNDS",
+  "const COUNTRIES",
+];
+const ACCESSOR_MODULE = "city-manifest.js";
+const publicDir = join(ROOT, "public");
+const publicJsFiles = readdirSync(publicDir, { withFileTypes: true })
+  .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
+  .map((entry) => entry.name);
+check(publicJsFiles.length > 0, "public/*.js: could not list files (pattern drift — update this gate)");
 
-// Picker: every live city's region entry must exist and must not be comingSoon,
-// and its country id must be in journey-model's PERSISTED_COUNTRY_IDS below.
-const countryByCity = new Map();
-for (const country of citySession.matchAll(
-  /id:\s*"([a-z]{2}(?:-[a-z]{3})?)",\s*name:\s*"[^"]+",\s*regions:\s*\[([\s\S]*?)\]/g
-)) {
-  for (const region of country[2].matchAll(/\{\s*id:\s*"([a-z-]+)"([^}]*)\}/g)) {
-    countryByCity.set(region[1], { country: country[1], comingSoon: /comingSoon:\s*true/.test(region[2]) });
+for (const entry of publicJsFiles) {
+  if (entry === ACCESSOR_MODULE) {
+    continue;
+  }
+  const src = readFileSync(join(publicDir, entry), "utf8");
+  for (const name of RETIRED_LIST_NAMES) {
+    check(
+      !src.includes(name),
+      `public/${entry} still references "${name}" — the client must read this from window.CityManifest instead (docs/jim-brief-registry-driven-client.md)`
+    );
   }
 }
-check(countryByCity.size > 0, "city-session picker COUNTRIES: could not parse (pattern drift — update this gate)");
-for (const id of registryLiveIds) {
-  const entry = countryByCity.get(id);
-  check(entry, `city-session picker must list live city ${id}`);
-  check(entry && !entry.comingSoon, `city-session picker entry for live city ${id} must not be comingSoon`);
-}
 
-// 5. public/brisbane-dogfood.js — its own MULTI_CITY_IDS + the available map.
-const dogfood = readFileSync(join(ROOT, "public/brisbane-dogfood.js"), "utf8");
-sameSet(
-  extractIds(dogfood, /MULTI_CITY_IDS = \[([^\]]*)\]/, "brisbane-dogfood MULTI_CITY_IDS"),
-  expectedMulti,
-  "brisbane-dogfood MULTI_CITY_IDS"
-);
-const availableMatch = dogfood.match(/available: \{([^}]*)\}/);
-check(availableMatch, "brisbane-dogfood available map: could not parse (pattern drift — update this gate)");
-if (availableMatch) {
-  const availableIds = [...availableMatch[1].matchAll(/(?:"([a-z-]+)"|([a-z]+)):/g)].map(
-    (m) => m[1] ?? m[2]
-  );
-  sameSet(availableIds, expectedMulti, "brisbane-dogfood available map keys");
-}
-
-// 6–7. public/journey-model.js — PERSISTED_CITY_IDS + PERSISTED_COUNTRY_IDS.
-// The settings sanitizer silently drops savedCity / savedCountry not on these.
-const journeyModel = readFileSync(join(ROOT, "public/journey-model.js"), "utf8");
-sameSet(
-  extractIds(journeyModel, /PERSISTED_CITY_IDS = new Set\(\[([\s\S]*?)\]\)/, "journey-model PERSISTED_CITY_IDS"),
-  registryLiveIds,
-  "journey-model PERSISTED_CITY_IDS"
-);
-const persistedCountries = new Set(
-  extractIds(journeyModel, /PERSISTED_COUNTRY_IDS = new Set\(\[([^\]]*)\]\)/, "journey-model PERSISTED_COUNTRY_IDS")
-);
-for (const id of registryLiveIds) {
-  const country = countryByCity.get(id)?.country;
-  if (!country) continue; // already failed the picker check above
+// (d) public/city-manifest.seed.json equals what scripts/write-city-manifest.mjs would
+// produce right now — a flip that forgot to regenerate it ships a stale seed instead of
+// failing loudly.
+const seedPath = join(ROOT, "public", "city-manifest.seed.json");
+try {
+  const seedOnDisk = JSON.parse(readFileSync(seedPath, "utf8"));
   check(
-    persistedCountries.has(country),
-    `journey-model PERSISTED_COUNTRY_IDS must include "${country}" (country of live city ${id}) — the sanitizer drops savedCountry otherwise`
+    JSON.stringify(seedOnDisk) === JSON.stringify(manifest),
+    "public/city-manifest.seed.json is stale — run `node scripts/write-city-manifest.mjs` and commit the result"
   );
-}
-
-// 8. public/city-session.js — CITY_BOUNDS. Missing entries silently fall back to
-// nearbyCityFromCoords()'s "perth" default (public/app.js), misfiring the region-mismatch
-// prompt for a live city's own users.
-const boundsMatch = citySession.match(/CITY_BOUNDS = \{([\s\S]*?)\n  \};/);
-check(boundsMatch, "city-session CITY_BOUNDS: could not parse (pattern drift — update this gate)");
-if (boundsMatch) {
-  // A CITY_BOUNDS value is normally a single box ({...}) but may be an array of boxes
-  // ([...], added 16 Sep 2026, docs/jim-brief-essex-to-greater-anglia.md round 2) —
-  // match either opening character.
-  const boundsIds = [...boundsMatch[1].matchAll(/(?:"([a-z-]+)"|([a-z-]+)):\s*[[{]/g)].map(
-    (m) => m[1] ?? m[2]
-  );
-  const missingBounds = registryLiveIds.filter((id) => !boundsIds.includes(id));
-  check(
-    missingBounds.length === 0,
-    `city-session CITY_BOUNDS missing entries for live cities: [${missingBounds}]`
-  );
+} catch (error) {
+  check(false, `public/city-manifest.seed.json: could not read/parse (${error.message})`);
 }
 
 if (failures > 0) {
@@ -151,5 +118,5 @@ if (failures > 0) {
   process.exit(1);
 }
 console.log(
-  `live-city-lists-sync: ok (${registryLiveIds.length} live cities consistent across registry, live-city-api, app.js, city-session, brisbane-dogfood, journey-model)`
+  `live-city-lists-sync: ok (${registryLiveIds.length} live cities consistent across registry, live-city-api, and the /api/cities manifest; no hardcoded city-id list left in public/*.js)`
 );

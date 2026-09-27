@@ -220,7 +220,12 @@ let journeyBoardFetchInFlight = null;
 let journeyBoardFetchInFlightStartId = null;
 let journeyBoardFetchRerunRequested = false;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen", "vienna", "hong-kong"];
+// Which city ids "Near me" may auto-mount a dogfood catalog for (every live city except
+// perth, which has its own dedicated branch below) — now the loaded /api/cities manifest's
+// nearbyEligible flag, not a hardcoded list (docs/jim-brief-registry-driven-client.md).
+function isNearbyEligibleCity(id) {
+  return Boolean(window.CityManifest?.isNearbyEligible(id));
+}
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -744,11 +749,9 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen", "vienna", "hong-kong"]);
-
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
-  return LIVE_CITY_IDS.has(city) ? city : "";
+  return window.CityManifest?.isLiveCity(city) ? city : "";
 }
 
 function cityIdForStation(station) {
@@ -5048,7 +5051,7 @@ async function loadStationCoordsForCity(cityId) {
       console.warn("Could not load station-coords.json for nearby", error);
       coords = {};
     }
-  } else if (NEARBY_MULTI_CITY_IDS.includes(id)) {
+  } else if (isNearbyEligibleCity(id)) {
     coords = (await window.NextTrainBrisbaneDogfood?.loadCoordsForCity?.(id)) ?? {};
   }
 
@@ -5070,7 +5073,7 @@ async function loadNearbyStationNames(cityId) {
       console.warn("Could not load stations.json for nearby", error);
       names = [];
     }
-  } else if (NEARBY_MULTI_CITY_IDS.includes(id)) {
+  } else if (isNearbyEligibleCity(id)) {
     names = (await window.NextTrainBrisbaneDogfood?.loadStationNamesForCity?.(id)) ?? [];
   }
 
@@ -5460,7 +5463,7 @@ async function configureOutboundJourney(journey, nearestStation, inboundJourney 
 
 /**
  * Region hint for a GPS fix: nearest live-feed station (across every region in
- * the rider's country) wins over the first CITY_BOUNDS box that contains them.
+ * the rider's country) wins over the first manifest bounds box that contains them.
  * docs/jim-brief-near-me-nearest-station-region.md — the box order made a
  * King's Cross/Waterloo/Victoria rider get hinted uk-london-tfl even though
  * they're standing at a National Rail terminus, and the same first-match bug

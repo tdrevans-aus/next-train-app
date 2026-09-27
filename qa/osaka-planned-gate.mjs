@@ -8,7 +8,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
-import { isMultiCity } from "../lib/cities/live-city-api.js";
+import { isMultiCity, MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 import nextTrain from "../api/next-train.js";
 import board from "../api/board.js";
 import { METRO_HUB, marketingLabelsForStation } from "../lib/cities/osaka/marketing-directions.js";
@@ -184,28 +185,25 @@ const hubChips = marketingLabelsForStation(METRO_HUB);
 assert(hubChips.includes("Midosuji + Nakamozu"), "Hommachi chips must include Midosuji + Nakamozu");
 assert(!hubChips.some((label) => /inbound|outbound|to city/i.test(label)), "chips are line + terminus, never to City");
 
-const session = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
+// The picker is now built server-side from the /api/cities manifest
+// (docs/jim-brief-registry-driven-client.md) — a "planned" registry status keeps a city out
+// of it automatically, with nothing left in public/city-session.js or public/app.js to
+// assert against; check the manifest and the registry directly instead.
+const manifestCityIds = buildCityManifest().cities.map((c) => c.id);
 assert(
-  !/id:\s*"jp"/.test(session) && !/id:\s*"osaka"/.test(session),
-  "picker must not list Japan/Osaka at all (removed from the launch picker 4 Sep 2026; city stays planned in registry)"
+  !manifestCityIds.includes("osaka"),
+  "picker must not list Osaka at all (removed from the launch picker 4 Sep 2026; city stays planned in registry)"
 );
 // Anchor moved off melbourne's picker entry (flipped live 22 Sep 2026) to BART's absence —
 // BART is key-blocked and has no picker row at all (no "Coming Soon" third state,
 // docs/jim-brief-no-coming-soon-picker.md, 27 Sep 2026), see docs/jim-brief-melbourne-flip-unblock.md.
-assert(!/id:\s*"bart"/.test(session), "BART must not appear in the picker at all");
-assert(/id:\s*"stockholm"/.test(session), "Stockholm must remain in the Sweden picker");
-assert(!/id:\s*"japan"/.test(session), "do not invent city=japan in the picker");
-assert(!/id:\s*"tokyo"|id:\s*"fukuoka"|id:\s*"nagoya"|id:\s*"osk"|id:\s*"osaka-metro"/.test(session), "do not start Tokyo / Fukuoka / Nagoya / osk");
-assert(!/MULTI_CITY_IDS = \[[^\]]*osaka/.test(session), "osaka must not be in city-session MULTI_CITY_IDS");
-assert(/MULTI_CITY_IDS = \[[^\]]*stockholm/.test(session), "stockholm must remain in city-session MULTI_CITY_IDS");
+assert(!manifestCityIds.includes("bart"), "BART must not appear in the picker at all");
+assert(manifestCityIds.includes("stockholm"), "Stockholm must remain in the Sweden picker");
+assert(!getCity("japan") && !getCity("tokyo") && !getCity("fukuoka") && !getCity("nagoya") && !getCity("osaka-metro"), "do not invent a Tokyo/Fukuoka/Nagoya/osaka-metro/japan registry city");
+assert(manifestCityIds.includes("perth"), "Perth must remain in the manifest");
 
-const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*osaka/.test(appJs), "osaka must not be in LIVE_CITY_IDS");
-assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*osaka/.test(appJs), "osaka must not be in the live nearby list");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*perth/.test(appJs), "Perth must remain in LIVE_CITY_IDS");
-
-const liveCityApi = readFileSync(join(ROOT, "lib/cities/live-city-api.js"), "utf8");
-assert(!/MULTI_CITY_IDS = \[[^\]]*osaka/.test(liveCityApi), "osaka must not be in live-city-api MULTI_CITY_IDS");
+assert(!MULTI_CITY_IDS.includes("osaka"), "osaka must not be in live-city-api MULTI_CITY_IDS");
+assert(MULTI_CITY_IDS.includes("stockholm"), "stockholm must remain in live-city-api MULTI_CITY_IDS");
 
 const pkg = readFileSync(join(ROOT, "package.json"), "utf8");
 assert(!/"osaka"/.test(pkg), "do not add osaka scripts or bump version for a planned city");

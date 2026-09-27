@@ -23,6 +23,7 @@
 import { readFileSync, existsSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -204,13 +205,8 @@ check(
 // uk-city-bounds-overlap-gate already maintains rather than duplicating a second list:
 // every rest-of-england station this check flags must already have a documented,
 // reviewed reason there.
-const cityBoundsSrc = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-const boundsBraceStart = cityBoundsSrc.indexOf("{", cityBoundsSrc.indexOf("const CITY_BOUNDS = {"));
-const boundsEnd = cityBoundsSrc.indexOf("\n  };", boundsBraceStart);
-const boundsCloseBrace = cityBoundsSrc.indexOf("}", boundsEnd);
-// eslint-disable-next-line no-eval -- same plain-text-parse approach as
-// qa/uk-city-bounds-overlap-gate.mjs and qa/live-city-lists-sync.mjs; offline, no browser.
-const CITY_BOUNDS = eval(`(${cityBoundsSrc.slice(boundsBraceStart, boundsCloseBrace + 1)})`);
+// CITY_BOUNDS lives server-side (lib/cities/city-bounds.js,
+// docs/jim-brief-registry-driven-client.md) — imported directly, see top of file.
 
 function inBox(lat, lng, box) {
   return lat >= box.minLat && lat <= box.maxLat && lng >= box.minLng && lng <= box.maxLng;

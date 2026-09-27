@@ -4,7 +4,6 @@
  */
 (function () {
   const STORAGE_KEY = "nextTrainDogfoodOrigin";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne", "washington", "copenhagen", "vienna", "hong-kong"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   const state = {
@@ -16,8 +15,27 @@
     directionsByStation: {},
     modesByName: {},
     liveFeedByName: {},
-    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, canberra: true, "gold-coast": true, newcastle: true, stockholm: true, goteborg: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true, solent: true, "south-wales": true, "west-yorkshire": true, "thames-valley": true, "greater-anglia": true, "rest-of-wales": true, "rest-of-scotland": true, "london-se-national-rail": true, "southwest": true, "greater-manchester": true, "south-yorkshire": true, "north-east": true, glasgow: true, "edinburgh": true, "cumbria": true, "rest-of-england": true, boston: true, brussels: true, melbourne: true, washington: true, copenhagen: true, vienna: true, "hong-kong": true },
   };
+
+  // Which city ids this dogfood catalog may load — every live city except perth (its own
+  // dedicated path). Loaded from the /api/cities manifest instead of a hardcoded list
+  // (docs/jim-brief-registry-driven-client.md), so a new live city works with zero app
+  // release: it just needs to already be `status: "live"` in the registry.
+  function isMultiCityId(id) {
+    return id !== "perth" && Boolean(window.CityManifest?.isLiveCity(id));
+  }
+
+  /** {cityId: true, ...} shape, mirroring the old hardcoded `available` map, for callers
+   *  that spread probe()'s return value. */
+  function availableMap() {
+    const out = {};
+    for (const id of window.CityManifest?.liveCityIds() ?? []) {
+      if (id !== "perth") {
+        out[id] = true;
+      }
+    }
+    return out;
+  }
 
   async function isDebugNative() {
     if (!window.Capacitor?.isNativePlatform?.()) {
@@ -112,17 +130,72 @@
     return parseCatalogRows(body.stations ?? body);
   }
 
-  async function loadDirectionsMap(city) {
+  function directionsCacheKey(city) {
+    return `nextTrainDirectionsCache:${city}`;
+  }
+
+  function readCachedDirections(cacheKey) {
     try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
+      if (cached && typeof cached === "object" && !Array.isArray(cached)) {
+        return cached;
+      }
+    } catch {
+      /* corrupt cache entry — treat as absent */
+    }
+    return null;
+  }
+
+  /**
+   * Fetches this city's direction chips on demand from the deployed site — same origin in
+   * the web app, the production Vercel origin in Capacitor (reusing productionOrigin(), the
+   * same mechanism loadCatalogFromProduction already uses for /api/city-stations) — rather
+   * than only reading a bundled file (docs/jim-brief-registry-driven-client.md item 3). The
+   * `?v=` query string is the manifest's directionsVersion content hash, so a CDN/browser
+   * cache is naturally busted whenever a city's chips actually change.
+   *
+   * Resolution order mirrors the manifest's own (network -> cache -> bundled seed): a
+   * successful fetch re-caches the response in localStorage (keyed by city — each city has
+   * exactly one live directionsVersion at a time, so there's nothing to key by version for);
+   * a failed fetch (offline, or a city with no generated file) falls back to that cache; a
+   * cache miss (e.g. a fresh install that's never had network) falls back to the bundled
+   * local copy at the plain same-origin path, which for the seed set of cities is shipped in
+   * the app for exactly this reason.
+   */
+  async function loadDirectionsMap(city) {
+    const version = window.CityManifest?.directionsVersion(city) || "";
+    const cacheKey = directionsCacheKey(city);
+    try {
+      const origin = productionOrigin();
+      const qs = version ? `?v=${encodeURIComponent(version)}` : "";
       const body = await fetchJsonWithTimeout(
-        `/city-directions/${encodeURIComponent(city)}.json`,
+        `${origin}/city-directions/${encodeURIComponent(city)}.json${qs}`,
         4000
       );
+      if (body && typeof body === "object" && !Array.isArray(body)) {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(body));
+        } catch {
+          /* storage full/unavailable — this session just isn't cached for later */
+        }
+        return body;
+      }
+    } catch {
+      /* offline, older APKs, or a city without a generated file — fall back below */
+    }
+    const cached = readCachedDirections(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    try {
+      // Bundled local seed copy — no origin prefix, so this is the app's own local asset
+      // in Capacitor (never a network hop) and the same-origin static file on the web.
+      const body = await fetchJsonWithTimeout(`/city-directions/${encodeURIComponent(city)}.json`, 4000);
       if (body && typeof body === "object" && !Array.isArray(body)) {
         return body;
       }
     } catch {
-      /* older APKs / cities without a generated file */
+      /* no bundled seed for this city either (not in the seed set, or never generated) */
     }
     return {};
   }
@@ -218,7 +291,7 @@
     // Multi-city probe is disabled in production to avoid loading unrelated city catalogs.
     // mount(city) will load the specific city catalog when needed.
     state.ready = true;
-    return { ...state.available, origin: state.origin };
+    return { ...availableMap(), origin: state.origin };
   }
 
   // Monotonic token so an overlapping mount() call for a different (or the same)
@@ -234,7 +307,7 @@
     if (!id) {
       return Boolean(state.active);
     }
-    if (!MULTI_CITY_IDS.includes(id)) {
+    if (!isMultiCityId(id)) {
       console.warn(`[NextTrainDogfood] City not in multi-city list: ${id}`);
       if (myToken === mountToken) {
         state.active = false;
@@ -356,7 +429,7 @@
     },
     loadCoordsForCity,
     loadStationNamesForCity,
-    isCityAvailable: (city) => MULTI_CITY_IDS.includes(String(city || "").toLowerCase()),
+    isCityAvailable: (city) => isMultiCityId(String(city || "").toLowerCase()),
     applyParams(params) {
       if (state.active && state.city && !params.has("city")) {
         const station = params.get("station");

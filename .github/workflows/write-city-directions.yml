@@ -95,12 +95,19 @@ jobs:
       - name: Verify bundled city-directions
         run: node qa/bundled-city-directions.mjs
 
-      - name: Check only the target file changed
+      # Regenerated after city-directions (docs/jim-brief-registry-driven-client.md): each
+      # manifest city's directionsVersion is a content hash of its own city-directions/<id>.json,
+      # so the seed must be rebuilt whenever that file's content just changed.
+      - name: Regenerate city manifest seed
+        run: node scripts/write-city-manifest.mjs
+
+      - name: Check only the expected files changed
         id: diff
         run: |
           git status --porcelain > /tmp/status.txt
           cat /tmp/status.txt
-          expected="public/city-directions/$CITY.json"
+          expected1="public/city-directions/$CITY.json"
+          expected2="public/city-manifest.seed.json"
           other_changes=""
           while IFS= read -r line; do
             [ -z "$line" ] && continue
@@ -108,16 +115,16 @@ jobs:
             if [[ "$path" == *" -> "* ]]; then
               old_path="${path%% -> *}"
               new_path="${path##* -> }"
-              if [ "$old_path" = "$expected" ] || [ "$new_path" = "$expected" ]; then
+              if [ "$old_path" = "$expected1" ] || [ "$new_path" = "$expected1" ] || [ "$old_path" = "$expected2" ] || [ "$new_path" = "$expected2" ]; then
                 continue
               fi
-            elif [ "$path" = "$expected" ]; then
+            elif [ "$path" = "$expected1" ] || [ "$path" = "$expected2" ]; then
               continue
             fi
             other_changes="$other_changes$line"$'\n'
           done < /tmp/status.txt
           if [ -n "$other_changes" ]; then
-            echo "::error::Unexpected files changed besides $expected:"
+            echo "::error::Unexpected files changed besides $expected1 / $expected2:"
             echo "$other_changes"
             exit 1
           fi
@@ -132,6 +139,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "public/city-directions/$CITY.json"
-          git commit -m "Generate city-directions/$CITY.json in CI"
+          git add "public/city-directions/$CITY.json" "public/city-manifest.seed.json"
+          git commit -m "Generate city-directions/$CITY.json + city-manifest.seed.json in CI"
           git push origin "HEAD:$BRANCH"

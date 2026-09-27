@@ -17,11 +17,11 @@
  *
  * Usage: node qa/uk-catalog-coords-gate.mjs
  */
-import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { UK_REGION_IDS, listRailStations } from "../lib/providers/uk/catalog.js";
 import { CITIES } from "../lib/providers/registry.js";
+import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -73,23 +73,13 @@ const BOX_CHECK_EXEMPT = new Set([
 
 const liveIds = new Set(CITIES.filter((c) => c.status === "live").map((c) => c.id));
 
-const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-const boundsMatch = citySession.match(/CITY_BOUNDS = \{([\s\S]*?)\n  \};/);
-if (!boundsMatch) {
-  fail("city-session CITY_BOUNDS: could not parse (pattern drift — update this gate)");
-}
 // A CITY_BOUNDS value is normally a single box, but may be an array of boxes (added
-// 16 Sep 2026, docs/jim-brief-essex-to-greater-anglia.md round 2 — see the matching
-// comment in public/city-session.js). Evaluate the object literal itself, same
-// approach qa/uk-city-bounds-overlap-gate.mjs uses, rather than a regex that can only
-// match a single-box shape.
+// 16 Sep 2026, docs/jim-brief-essex-to-greater-anglia.md round 2). CITY_BOUNDS now
+// lives server-side (lib/cities/city-bounds.js, docs/jim-brief-registry-driven-
+// client.md) rather than being parsed out of public/city-session.js as text.
 const bounds = new Map();
-if (boundsMatch) {
-  // eslint-disable-next-line no-new-func -- parsing a trusted local source file's own object literal
-  const parsed = new Function(`return {${boundsMatch[1]}};`)();
-  for (const [id, boxOrBoxes] of Object.entries(parsed)) {
-    bounds.set(id, Array.isArray(boxOrBoxes) ? boxOrBoxes : [boxOrBoxes]);
-  }
+for (const [id, boxOrBoxes] of Object.entries(CITY_BOUNDS)) {
+  bounds.set(id, Array.isArray(boxOrBoxes) ? boxOrBoxes : [boxOrBoxes]);
 }
 
 let checkedRegions = 0;

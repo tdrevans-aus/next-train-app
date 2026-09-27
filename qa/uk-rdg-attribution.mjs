@@ -6,6 +6,7 @@ import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import vm from "vm";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -26,7 +27,22 @@ assert(session.includes("RDG_LDB_LINE"), "RDG line must be exported as a named c
 assert(session.includes(TFL), "TfL line must be unchanged");
 
 // Load city-session.js in a sandbox and exercise feedAttributionForCity directly.
-const window = {};
+// city-session.js now reads its picker/bounds data from window.CityManifest
+// (docs/jim-brief-registry-driven-client.md) instead of its own COUNTRIES table — stub it
+// with the real, currently-built manifest so isDarwinCityId()/regionById() resolve exactly
+// as they would in the browser.
+const manifest = buildCityManifest();
+const window = {
+  CityManifest: {
+    countries: () => manifest.countries,
+    isLiveCity: (id) => manifest.cities.some((c) => c.id === id),
+    liveCityIds: () => manifest.cities.map((c) => c.id),
+    get: (id) => manifest.cities.find((c) => c.id === id) ?? null,
+    boundsFor: (id) => manifest.cities.find((c) => c.id === id)?.bounds ?? null,
+    isNearbyEligible: (id) => Boolean(manifest.cities.find((c) => c.id === id)?.nearbyEligible),
+    directionsVersion: (id) => manifest.cities.find((c) => c.id === id)?.directionsVersion ?? null,
+  },
+};
 const sandbox = {
   window,
   document: { getElementById: () => null, addEventListener: () => {}, querySelector: () => null },
