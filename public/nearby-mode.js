@@ -133,6 +133,8 @@
     return "trains";
   }
 
+  const KNOWN_EMPTY_REASONS = new Set(["no-live-predictions", "not-currently-served"]);
+
   /**
    * docs/jim-brief-dublin-honest-empty-state.md, extended by
    * docs/jim-brief-prague-line-c-closure.md — true only when EVERY direction on the current
@@ -144,20 +146,21 @@
    * one direction still showing a `next` train, an empty direction that ISN'T flagged with one of
    * these two reasons (outside service hours, a feed-wide outage — those already have their own
    * handling), or a station whose directions disagree on which of the two reasons applies, never
-   * matches (mixed reasons are treated conservatively as no match, same as an unknown one).
+   * matches (mixed reasons are treated conservatively as no match, same as an unknown one). See
+   * focusedDirectionEmptyReason below for the single-direction extension used when this returns
+   * null.
    */
   function boardHonestEmptyReason(entries) {
     if (!Array.isArray(entries) || entries.length === 0) {
       return null;
     }
-    const knownReasons = new Set(["no-live-predictions", "not-currently-served"]);
     let reason = null;
     for (const entry of entries) {
       if (entry?.data?.next) {
         return null;
       }
       const entryReason = entry?.data?.emptyReason ?? null;
-      if (!knownReasons.has(entryReason)) {
+      if (!KNOWN_EMPTY_REASONS.has(entryReason)) {
         return null;
       }
       if (reason !== null && reason !== entryReason) {
@@ -169,15 +172,36 @@
   }
 
   /**
-   * docs/jim-brief-prague-line-c-closure.md — the station-specific rider-facing sentence for a
-   * `"not-currently-served"` board (built server-side from the station's `notServed` copy, e.g.
-   * "No metro service at this station at the moment — <reason>; replacement bus XC runs..."),
-   * read off whichever entry actually carries it (every entry shares the same reason, per
-   * boardHonestEmptyReason above, but only additive fields are guaranteed identical). Falls back
-   * to a generic sentence if a provider ever sets the reason without the message, so the UI never
-   * renders blank body text.
+   * docs/jim-brief-per-direction-honest-empty.md — extends boardHonestEmptyReason above from
+   * "every direction is empty for the same reason" to "the direction the rider is actually
+   * looking at is empty for a known reason", regardless of what the other directions are doing.
+   * Dublin's Belgard "Red + Saggart" feed gap (hazard-pack H9) drops one direction for minutes
+   * while another still shows trams; today's plain "No upcoming trams" there reads as "no
+   * service" when the honest copy is available and just wasn't being shown for this direction.
+   * Only consulted when boardHonestEmptyReason already returned null (an unknown reason, or other
+   * directions disagreeing) so the all-directions case keeps its existing behaviour unchanged.
    */
-  function notCurrentlyServedMessage(entries) {
+  function focusedDirectionEmptyReason(entry) {
+    const reason = entry?.data?.emptyReason ?? null;
+    return KNOWN_EMPTY_REASONS.has(reason) ? reason : null;
+  }
+
+  /**
+   * docs/jim-brief-prague-line-c-closure.md, extended by
+   * docs/jim-brief-per-direction-honest-empty.md — the station- or direction-specific
+   * rider-facing sentence for a `"not-currently-served"` board (built server-side from the
+   * station's `notServed` copy, e.g. "No metro service at this station at the moment — <reason>;
+   * replacement bus XC runs..."). Prefers the message carried by the direction actually being
+   * shown (`preferredEntry`, the focused direction), since directions can be affected for
+   * different specific reasons even when they share the same reason code; falls back to
+   * whichever entry on the board carries a message, then to a generic sentence if a provider ever
+   * sets the reason without a message, so the UI never renders blank body text.
+   */
+  function notCurrentlyServedMessage(entries, preferredEntry) {
+    const preferredMessage = preferredEntry?.data?.emptyReasonMessage;
+    if (typeof preferredMessage === "string" && preferredMessage.trim()) {
+      return preferredMessage.trim();
+    }
     for (const entry of entries ?? []) {
       const message = entry?.data?.emptyReasonMessage;
       if (typeof message === "string" && message.trim()) {
@@ -2510,10 +2534,13 @@ function renderNearbyBoard({ stale = false } = {}) {
     // feed gap, not "no service") gets an honest explanation instead of a bare "No upcoming
     // trains" — which reads as "app broken" to a rider. Never for planned/retired cities (they
     // never reach this render path — the existing 501), feed errors (the existing 503 path,
-    // handled before boardData exists), outside-service-hours boards (no emptyReason set), or a
-    // station with only one empty direction while another still has a train (boardHonestEmptyReason
-    // returns null unless every entry is empty this way).
-    const honestEmptyReason = boardHonestEmptyReason(nearbyBoard?.entries);
+    // handled before boardData exists), or outside-service-hours boards (no emptyReason set).
+    // docs/jim-brief-per-direction-honest-empty.md: when the other directions disagree (one has
+    // a train, or an unknown/mixed reason), boardHonestEmptyReason returns null but the focused
+    // direction itself may still carry a known reason — fall back to that so this direction gets
+    // the honest copy on its own. A direction with no reason at all keeps the plain copy below.
+    const honestEmptyReason =
+      boardHonestEmptyReason(nearbyBoard?.entries) ?? focusedDirectionEmptyReason(focusedEntry);
     if (honestEmptyReason === "no-live-predictions") {
       setLastRenderedNext(null);
       setHeroUrgency("calm");
@@ -2571,7 +2598,7 @@ function renderNearbyBoard({ stale = false } = {}) {
         deps.departDisplayTimeEl.textContent = "No service at this station at the moment";
       }
       if (deps.heroScheduledTimeEl) {
-        deps.heroScheduledTimeEl.textContent = notCurrentlyServedMessage(nearbyBoard?.entries);
+        deps.heroScheduledTimeEl.textContent = notCurrentlyServedMessage(nearbyBoard?.entries, focusedEntry);
         deps.heroScheduledTimeEl.hidden = false;
       }
       if (deps.platformEl) {

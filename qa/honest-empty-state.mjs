@@ -19,9 +19,11 @@
  * Part 2 (browser, via lib/fixtures.js's "live-gap"/"live-gap-partial"/"empty"/"error"
  * fixtures over Perth's /api/board — city-agnostic, since the honest empty state is shared
  * rider-facing UI, not Dublin-specific code): the title/body render for the all-directions-empty
- * live-gap case, and do NOT render for the three excluded cases — a feed error, a station with
- * no scheduled service (the existing "empty" fixture, no emptyReason), and a station where only
- * one of two directions is gapped while the other still has a train.
+ * live-gap case, and do NOT render for a feed error or a station with no scheduled service (the
+ * existing "empty" fixture, no emptyReason). docs/jim-brief-per-direction-honest-empty.md extends
+ * "live-gap-partial" to three directions and checks each one on its own: a gapped direction gets
+ * its own honest copy even while a sibling direction still has a train, a direction with a train
+ * renders unaffected, and a direction with no reason at all keeps the plain generic copy.
  *
  * Usage: node qa/honest-empty-state.mjs — assumes a dev server is already reachable at BASE
  * (qa/run-all.mjs's own harness when run under the smoke suite; a hand-started
@@ -222,27 +224,60 @@ async function main() {
       `empty (no-service) fixture: expected the plain generic empty copy, got ${JSON.stringify(noService.title)} — must NOT show the honest empty state`
     );
 
-    // Case 3 (exclusion): one direction gapped, the other has a real train — station-wide honest
-    // state must not fire just because the currently-focused direction happens to be empty.
-    // The board auto-focuses the soonest direction with a real train, so explicitly click the
-    // gapped direction's own row to focus it and prove the exclusion, rather than trivially
-    // passing because the board never focused the empty one in the first place.
+    // Case 3 (docs/jim-brief-per-direction-honest-empty.md): one direction gapped, one has a
+    // real train, one is plainly empty (no reason). The board auto-focuses the soonest direction
+    // with a real train, so explicitly click each row to focus it and check what that specific
+    // direction renders, rather than trivially relying on whichever the board focused first.
     await page.goto(`${BASE}/?reset=1&test=1&fixture=live-gap-partial`);
     await page.waitForFunction(
       () => (document.getElementById("depart-display-time")?.textContent ?? "").trim() !== "",
       null,
       { timeout: 20000 }
     );
+
+    // 3a: focusing the gapped direction shows ITS OWN honest copy, even though another
+    // direction (Green + South) still has a train — the fix this brief exists for.
     await page.locator("#nearby-directions-list button").filter({ hasText: "Red + North" }).click();
+    await page.waitForFunction(
+      () =>
+        (document.getElementById("depart-display-time")?.textContent ?? "").trim() ===
+        "No live predictions for this stop right now",
+      null,
+      { timeout: 20000 }
+    );
+    const gappedDirection = await readHero(page);
+    assert(
+      gappedDirection.title === "No live predictions for this stop right now",
+      `live-gap-partial (focused on the gapped direction): expected the per-direction honest empty-state title, got ${JSON.stringify(gappedDirection.title)}`
+    );
+    assert(!gappedDirection.bodyHidden, "live-gap-partial (gapped direction): expected the body explanation to be visible");
+
+    // 3b: focusing the direction with a real train shows the train, unaffected.
+    await page.locator("#nearby-directions-list button").filter({ hasText: "Green + South" }).click();
+    await page.waitForFunction(
+      () => (document.getElementById("depart-display-time")?.textContent ?? "").trim().includes("Green + South"),
+      null,
+      { timeout: 20000 }
+    );
+    const trainDirection = await readHero(page);
+    assert(
+      trainDirection.title !== "No live predictions for this stop right now" &&
+        trainDirection.title !== "No upcoming trains",
+      `live-gap-partial (focused on the direction with a train): expected the train to render, got ${JSON.stringify(trainDirection.title)}`
+    );
+
+    // 3c: focusing the plainly-empty direction (no emptyReason at all) keeps the plain generic
+    // copy — a direction with no reason must never borrow another direction's honest copy.
+    await page.locator("#nearby-directions-list button").filter({ hasText: "Blue + West" }).click();
     await page.waitForFunction(
       () => (document.getElementById("depart-display-time")?.textContent ?? "").trim() === "No upcoming trains",
       null,
       { timeout: 20000 }
     );
-    const partial = await readHero(page);
+    const plainDirection = await readHero(page);
     assert(
-      partial.title === "No upcoming trains",
-      `live-gap-partial (focused on the gapped direction): expected the plain generic empty copy, got ${JSON.stringify(partial.title)} — honest empty state must NOT render while another direction still has a train`
+      plainDirection.title === "No upcoming trains",
+      `live-gap-partial (focused on the plainly-empty direction): expected the plain generic empty copy, got ${JSON.stringify(plainDirection.title)} — must NOT borrow another direction's honest empty state`
     );
 
     // Case 4 (exclusion): a feed error — the existing error path, never the honest empty state.
