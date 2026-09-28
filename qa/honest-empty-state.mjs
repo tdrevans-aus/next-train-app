@@ -5,7 +5,12 @@
  * data — set by a live-only GTFS-RT provider, e.g. lib/providers/dublin.js, when NTA's feed
  * intermittently omits a stop's stopTimeUpdate rows for a few minutes while Luas is running),
  * must read as "the feed has a gap right now", never as a bare blank board indistinguishable
- * from broken.
+ * from broken. A second reason code, `"not-currently-served"` (docs/jim-brief-prague-line-c-closure.md),
+ * covers the opposite static signal — today's schedule itself expects nothing here at all (a
+ * section closure, a station under reconstruction) — and carries its own `emptyReasonMessage`
+ * (a ready-to-render, station-specific replacement-transport sentence) rendered verbatim instead
+ * of the generic live-gap copy, which would be actively misleading (retrying can't help; the fix
+ * is the named replacement transport, not a refresh).
  *
  * Part 1 (offline, no server): buildNextTrainResponse's additive `emptyReason` field — present
  * only when `upcoming` resolves empty and a reason was passed, absent (byte-identical to every
@@ -96,7 +101,50 @@ function testEmptyReasonAdditive() {
     "a non-empty board must never carry emptyReason, even if a caller passed one"
   );
 
-  console.log("honest-empty-state: offline — buildNextTrainResponse's emptyReason is additive/optional, matches malmo/terminus precedent");
+  // docs/jim-brief-prague-line-c-closure.md — a second, distinct reason code carrying its own
+  // rider-facing message (emptyReasonMessage), additive/optional the same way.
+  const withNotServedReason = buildNextTrainResponse({
+    station: "Kačerov",
+    destination: "C + Háje",
+    destinationLabel: "C + Háje",
+    leaveBeforeMinutes: 0,
+    refreshSeconds: 30,
+    now,
+    lastUpdated: now,
+    upcomingTrips: [],
+    timeZone: "Europe/Prague",
+    emptyReason: "not-currently-served",
+    emptyReasonMessage:
+      "No metro service at this station at the moment — line closure for track repair; replacement bus XC runs.",
+  });
+  assert(
+    withNotServedReason.emptyReason === "not-currently-served",
+    `expected emptyReason to be set on a genuinely not-served board, got ${JSON.stringify(withNotServedReason.emptyReason)}`
+  );
+  assert(
+    withNotServedReason.emptyReasonMessage ===
+      "No metro service at this station at the moment — line closure for track repair; replacement bus XC runs.",
+    `expected emptyReasonMessage to be carried through verbatim, got ${JSON.stringify(withNotServedReason.emptyReasonMessage)}`
+  );
+
+  const notServedWithoutMessage = buildNextTrainResponse({
+    station: "Kačerov",
+    destination: "C + Háje",
+    destinationLabel: "C + Háje",
+    leaveBeforeMinutes: 0,
+    refreshSeconds: 30,
+    now,
+    lastUpdated: now,
+    upcomingTrips: [],
+    timeZone: "Europe/Prague",
+    emptyReason: "not-currently-served",
+  });
+  assert(
+    !("emptyReasonMessage" in notServedWithoutMessage),
+    "emptyReasonMessage must stay absent (not null) when a caller sets emptyReason without one — byte-identical for every existing caller"
+  );
+
+  console.log("honest-empty-state: offline — buildNextTrainResponse's emptyReason/emptyReasonMessage are additive/optional, matches malmo/terminus precedent");
 }
 
 async function readHero(page) {
@@ -136,6 +184,28 @@ async function main() {
       gap.body ===
         "Trains are running but the operator's live feed has no times for this stop at the moment. Try again in a minute or check a nearby stop.",
       `live-gap: expected the honest empty-state body copy, got ${JSON.stringify(gap.body)}`
+    );
+
+    // Case 1b: every direction empty because today's static schedule itself expects nothing here
+    // (docs/jim-brief-prague-line-c-closure.md) — a distinct reason code from live-gap above, and
+    // the honest empty state must render the station-specific replacement-transport message
+    // verbatim, not the generic live-gap copy.
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=not-served`);
+    await page.waitForFunction(
+      () => (document.getElementById("depart-display-time")?.textContent ?? "").trim() !== "",
+      null,
+      { timeout: 20000 }
+    );
+    const notServed = await readHero(page);
+    assert(
+      notServed.title === "No service at this station at the moment",
+      `not-served: expected the not-currently-served title, got ${JSON.stringify(notServed.title)}`
+    );
+    assert(!notServed.bodyHidden, "not-served: expected the body explanation to be visible");
+    assert(
+      notServed.body ===
+        "No metro service at this station at the moment — line closure for track repair; replacement bus XC runs.",
+      `not-served: expected the station-specific replacement-transport message, got ${JSON.stringify(notServed.body)}`
     );
 
     // Case 2 (exclusion): outside service hours / no scheduled service at all — the existing

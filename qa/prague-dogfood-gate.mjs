@@ -61,7 +61,9 @@ import {
   getPragueDogfoodDirections,
   getPragueDogfoodNextTrain,
 } from "../lib/cities/prague/dogfood-next-train.js";
+import { formatNotServedMessage } from "../lib/providers/prague.js";
 import { loadGtfsStaticFromDirectory } from "../lib/providers/gtfs/static-cache.js";
+import { hasScheduledServiceToday } from "../lib/providers/gtfs/board.js";
 import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
 import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
 import { buildCityManifest } from "../lib/cities/city-manifest.js";
@@ -137,23 +139,48 @@ const oracleReport = readFileSync(join(d1Dir, "oracle-clash-report.md"), "utf8")
 assert(/## Board eligibility/.test(oracleReport), "oracle report must carry a Board eligibility section");
 
 const stations = listCatalogStations();
-assert(stations.length === 57, `catalog must have 57 stations (Flora excluded, see coverage.json), got ${stations.length}`);
+assert(
+  stations.length === 58,
+  `catalog must have 58 stations — Flora is back in the catalog on the notServed mechanism (docs/jim-brief-prague-line-c-closure.md), got ${stations.length}`
+);
 const byName = new Map(stations.map((s) => [s.name, s]));
 assert(byName.has(PRAGUE_HUB), `catalog must lock ${PRAGUE_HUB}`);
 assert(byName.get(PRAGUE_HUB)?.lines.sort().join(",") === "a,c", `${PRAGUE_HUB} must carry exactly A/C`);
 assert(byName.get("Můstek")?.lines.sort().join(",") === "a,b", "Můstek must carry exactly A/B");
 assert(byName.get("Florenc")?.lines.sort().join(",") === "b,c", "Florenc must carry exactly B/C");
 assert(
-  !byName.has("Flora"),
-  "Flora must NOT be in the catalog — confirmed 28 Sep 2026 (docs/jim-brief-prague-flora-sweep-empty-state.md) as a real, current zero-service gap (not a stop-id mapping bug), same shape as Dublin's Connolly/Saggart, excluded via coverage.json"
+  byName.has("Flora"),
+  "Flora must be back IN the catalog (docs/jim-brief-prague-line-c-closure.md) — a station with a real, current zero-service gap is now handled by the auto-detected notServed mechanism, never by removal from the catalog"
 );
 
 const aStations = stations.filter((s) => s.lines.includes("a"));
 const bStations = stations.filter((s) => s.lines.includes("b"));
 const cStations = stations.filter((s) => s.lines.includes("c"));
-assert(aStations.length === 16, `Line A must have 16 unique stops (Flora excluded), got ${aStations.length}`);
+assert(aStations.length === 17, `Line A must have 17 unique stops (Flora back in the catalog), got ${aStations.length}`);
 assert(bStations.length === 24, `Line B must have 24 unique stops, got ${bStations.length}`);
 assert(cStations.length === 20, `Line C must have 20 unique stops, got ${cStations.length}`);
+
+// notServed metadata (docs/jim-brief-prague-line-c-closure.md): Flora (long-term, open-ended) and
+// the four Line C stations flanking the confirmed Pražského povstání–Chodov section closure each
+// carry a `notServed` field with a since date, reason and replacement-transport copy — metadata/
+// copy only, never itself the runtime gate (that's hasScheduledServiceToday, asserted below).
+const NOT_SERVED_NAMES = ["Flora", "Budějovická", "Kačerov", "Pankrác", "Roztyly"];
+for (const name of NOT_SERVED_NAMES) {
+  const entry = byName.get(name);
+  assert(entry, `${name} must be in the catalog`);
+  assert(entry.notServed && typeof entry.notServed === "object", `${name} must carry a notServed field`);
+  assert(typeof entry.notServed.since === "string" && entry.notServed.since, `${name}.notServed.since must be a non-empty string`);
+  assert(typeof entry.notServed.reason === "string" && entry.notServed.reason, `${name}.notServed.reason must be a non-empty string`);
+  assert(typeof entry.notServed.replacement === "string" && entry.notServed.replacement, `${name}.notServed.replacement must be a non-empty string`);
+}
+assert(byName.get("Flora").notServed.until === null, "Flora's closure is open-ended (until further notice) — until must be null, not a guessed date");
+assert(byName.get("Budějovická").notServed.until === "2026-09-28", "Budějovická's closure has a confirmed end date from DPP's notice");
+for (const name of ["Kačerov", "Pankrác", "Roztyly"]) {
+  assert(byName.get(name).notServed.until === "2026-09-28", `${name}'s closure has a confirmed end date from DPP's notice`);
+}
+for (const name of stations.map((s) => s.name).filter((n) => !NOT_SERVED_NAMES.includes(n))) {
+  assert(!byName.get(name).notServed, `${name} must NOT carry a notServed field — it has normal service`);
+}
 
 // Every station carries lat/lng and at least one GTFS stop_id, D2-confirmed against the live
 // PID GTFS feed (scripts/trim-prague-gtfs.mjs), and falls inside Prague's CITY_BOUNDS box.
@@ -167,26 +194,49 @@ for (const station of stations) {
   );
 }
 
-// Static-coverage gate (docs/jim-brief-prague-flora-sweep-empty-state.md item 1): every catalog
-// station must have >= 1 metro stop_time in the committed trimmed GTFS fixture
-// (qa/fixtures/prague/gtfs, offline, no network) — this would have caught Flora before it ever
-// reached a live poll. Flora itself is correctly EXCLUDED from the catalog now (asserted above),
-// so this loop covers all 57 remaining stations and must find every one of them non-empty.
+// Static-coverage gate (docs/jim-brief-prague-flora-sweep-empty-state.md item 1, corrected by
+// docs/jim-brief-prague-line-c-closure.md item 3): the original version of this check only asked
+// "does this station have >= 1 stop_time EVER in the committed fixture" — which is exactly why it
+// passed for Budějovická/Kačerov/Pankrác/Roztyly despite their current section closure: each has
+// hundreds of stop_times in the fixture, just none whose service_id is active on any date before
+// 29 Sep 2026 (the closure's calendar.txt start_date). The corrected check is date-aware:
+// hasScheduledServiceToday() (lib/providers/gtfs/board.js) against a frozen reference date inside
+// the confirmed closure window, exactly like it would run "today" if a caller called
+// fetchStationBoard right now. A non-notServed station must show scheduled service on that date;
+// a notServed station must NOT (this is the assertion that would have caught the closure — and
+// would have caught Flora too, since its own reference-date check is unconditionally false, any
+// date, forever).
 const fixtureDir = join(ROOT, "qa/fixtures/prague/gtfs");
 assert(existsSync(fixtureDir), "qa/fixtures/prague/gtfs must be committed (small trimmed metro-only fixture)");
 const pragueStaticFixture = loadGtfsStaticFromDirectory(fixtureDir, { timeZone: PRAGUE_TIMEZONE });
-const zeroStopTimeCoverage = [];
+// Inside the confirmed 26-28 Sep closure window AND inside the committed fixture's own calendar
+// coverage (its calendar.txt rows only start 2026-09-28 — the fixture was trimmed/regenerated the
+// same day, so 26-27 Sep predate its coverage and would make activeServicesForDate() return an
+// empty set for reasons unrelated to the closure).
+const closureReferenceNow = new Date("2026-09-28T10:00:00+02:00");
+const unexpectedlyUnserved = [];
+const unexpectedlyServed = [];
 for (const station of stations) {
-  const hasCoverage = (station.stopIds ?? []).some(
-    (stopId) => (pragueStaticFixture.stopTimesByStopId.get(stopId)?.length ?? 0) > 0
-  );
-  if (!hasCoverage) {
-    zeroStopTimeCoverage.push(station.name);
+  const servedToday = hasScheduledServiceToday({
+    stopIds: station.stopIds ?? [],
+    staticData: pragueStaticFixture,
+    timeZone: PRAGUE_TIMEZONE,
+    now: closureReferenceNow,
+  });
+  const shouldBeNotServed = NOT_SERVED_NAMES.includes(station.name);
+  if (shouldBeNotServed && servedToday) {
+    unexpectedlyServed.push(station.name);
+  } else if (!shouldBeNotServed && !servedToday) {
+    unexpectedlyUnserved.push(station.name);
   }
 }
 assert(
-  zeroStopTimeCoverage.length === 0,
-  `every catalog station must have >= 1 static stop_time in the committed fixture — zero coverage at: ${zeroStopTimeCoverage.join(", ")} (this is exactly the check that would have caught Flora)`
+  unexpectedlyUnserved.length === 0,
+  `every non-notServed catalog station must show scheduled service on the closure-window reference date — zero coverage at: ${unexpectedlyUnserved.join(", ")} (this is exactly the check that would have caught Flora before it reached a live poll)`
+);
+assert(
+  unexpectedlyServed.length === 0,
+  `every notServed station (Flora, Budějovická, Kačerov, Pankrác, Roztyly) must show ZERO scheduled service on the closure-window reference date, in the committed fixture — unexpectedly served: ${unexpectedlyServed.join(", ")} (this is exactly the check that would have caught the Line C section closure)`
 );
 
 // resolveCatalogEntry — exact-match, diacritic-EXACT (never fold/strip diacritics), forbidden
@@ -441,30 +491,70 @@ assert(
   "a board with at least one live trip must never carry emptyReason, even if scheduledCandidates would otherwise justify it"
 );
 
-// Case 3: outside service hours (or a genuine no-more-service case) — live AND static schedule
-// both empty. Must NOT set emptyReason (there is nothing for the live feed to be "gapped" on).
+// Case 3: outside service hours (or a genuine no-more-service case) — live AND near-term static
+// schedule both empty, AND today's calendar genuinely has service somewhere else this station
+// (notServedToday: false, e.g. a legitimate lull between trains). Must NOT set emptyReason (there
+// is nothing for the live feed to be "gapped" on, and this isn't a station-wide closure either).
+// `notServedToday` is passed explicitly (docs/jim-brief-prague-line-c-closure.md) so this stays a
+// pure offline unit test — without it, fetchStationBoard would call the real, network-hitting
+// computeNotServedToday(), which this gate deliberately never does (file header).
 const outsideHoursBoard = await fetchStationBoard(PRAGUE_HUB, {
   departures: [],
   scheduledCandidates: [],
+  notServedToday: false,
 });
 assert(outsideHoursBoard.trips.length === 0, "outside-hours board must have zero live trips");
 assert(
   outsideHoursBoard.emptyReason === null,
-  "an empty board with nothing scheduled either (outside hours / no service) must not set emptyReason"
+  "an empty board with nothing scheduled near-term, but today's calendar has service somewhere else (outside hours / a legitimate lull) must not set emptyReason"
 );
 
 // Unknown static state (computeScheduledCandidates() returning null, e.g. blob 404/stale
 // calendar/network error) must behave the same as "nothing scheduled", never fabricate a reason
-// from a side-computation failure.
+// from a side-computation failure. notServedToday: null models the same "unknown, not empty"
+// contract computeNotServedToday() itself returns on a load failure.
 const unknownStaticBoard = await fetchStationBoard(PRAGUE_HUB, {
   departures: [],
   scheduledCandidates: null,
+  notServedToday: null,
 });
 assert(
   unknownStaticBoard.emptyReason === null,
   "an unresolvable static snapshot must never itself produce emptyReason"
 );
 assert(Array.isArray(unknownStaticBoard.scheduledCandidates) && unknownStaticBoard.scheduledCandidates.length === 0, "scheduledCandidates on the response must always be an array, even when the static side-computation is unavailable");
+
+// Case 4 (docs/jim-brief-prague-line-c-closure.md): live AND near-term static schedule both
+// empty, AND today's calendar genuinely has zero service here at all (notServedToday: true) — the
+// station-wide "not currently served" signature (a section closure, a station under
+// reconstruction). Must set emptyReason: "not-currently-served" with the station's notServed
+// copy assembled by formatNotServedMessage(), never the "no-live-predictions" feed-gap reason.
+const notServedBoard = await fetchStationBoard("Kačerov", {
+  departures: [],
+  scheduledCandidates: [],
+  notServedToday: true,
+});
+assert(notServedBoard.trips.length === 0, "not-served board must have zero live trips");
+assert(
+  notServedBoard.emptyReason === "not-currently-served",
+  `a station-wide zero-scheduled-today board must set emptyReason: not-currently-served, got ${JSON.stringify(notServedBoard.emptyReason)}`
+);
+assert(
+  notServedBoard.notServedMessage === formatNotServedMessage(byName.get("Kačerov").notServed),
+  "the not-served board must carry Kačerov's own notServed copy, assembled by formatNotServedMessage"
+);
+assert(
+  /replacement bus XC/.test(notServedBoard.notServedMessage),
+  `Kačerov's notServedMessage must name the replacement bus XC, got ${JSON.stringify(notServedBoard.notServedMessage)}`
+);
+
+// A station with no notServed metadata at all must fall back to the generic sentence, never throw
+// or produce an empty/undefined message, if it were ever (incorrectly) flagged notServedToday.
+const genericNotServedMessage = formatNotServedMessage(byName.get(PRAGUE_HUB).notServed);
+assert(
+  genericNotServedMessage === "No metro service at this station at the moment.",
+  `a station with no notServed metadata must get the generic sentence, got ${JSON.stringify(genericNotServedMessage)}`
+);
 
 // End-to-end through the dogfood next-train pipeline: a direction the (synthetic) static
 // schedule expects, with zero live confirmation, surfaces emptyReason via buildNextTrainResponse;
@@ -484,7 +574,7 @@ assert(allEmptyNextTrain === null, "getPragueDogfoodNextTrain must still throw M
 
 // Dogfood station list comes from the catalog, not a live parse.
 const dogfoodStations = listPragueDogfoodStations();
-assert(dogfoodStations.length === 57, `dogfood stations must be the 57 catalog names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 58, `dogfood stations must be the 58 catalog names, got ${dogfoodStations.length}`);
 assert(dogfoodStations.some((row) => row.name === PRAGUE_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodStations.every((row) => typeof row.lat === "number" && typeof row.lng === "number"), "every dogfood station must carry lat/lng");
 
@@ -538,7 +628,15 @@ assert(coverage.region === "prague", "coverage.json region must be prague");
 assert(coverage.covered.some((c) => /Metro/.test(c.label)), "coverage.json must record Metro as covered");
 assert(coverage.notCovered.some((c) => /Line D/.test(c.label)), "coverage.json must explicitly record Line D as not covered");
 assert(coverage.notCovered.some((c) => /[Tt]ram/.test(c.label)), "coverage.json must explicitly record trams as not covered");
-assert(coverage.notCovered.some((c) => /Flora/.test(c.label)), "coverage.json must explicitly record Flora as excluded, with evidence");
+assert(coverage.notCovered.some((c) => /Flora/.test(c.label)), "coverage.json must explicitly record Flora as currently not served, with evidence");
+assert(
+  coverage.notCovered.some((c) => /Budějovická/.test(c.label) && /Kačerov/.test(c.label)),
+  "coverage.json must explicitly record the Line C section closure (Budějovická/Kačerov/Pankrác/Roztyly), with evidence and expected reopening"
+);
+assert(
+  coverage.notCovered.some((c) => /XC/.test(c.detail)),
+  "coverage.json's Line C closure note must name the replacement bus XC"
+);
 
 // Picker/country-regions surfaces: while `status: "planned"`, a city gets no picker entry at all
 // (Tim, 27 Sep 2026: docs/jim-brief-no-coming-soon-picker.md). Persistence + dogfood-mount
@@ -559,5 +657,5 @@ if (pragueIsLive) {
 assert(Boolean(CITY_BOUNDS.prague), "lib/cities/city-bounds.js must carry a prague box");
 
 console.log(
-  `prague-dogfood-gate: ok (status=${entry.status}, dispatch switch-cases wired, MULTI_CITY_IDS/manifest tracking registry status, D1 pack still records 58 (Luke's historical topology, unedited), catalog carries 57 stations (16/24/20 per line, Flora excluded — confirmed real zero-service gap, not a mapping bug, coverage.json verdict recorded) each with lat/lng + GTFS stop_id inside CITY_BOUNDS, static-coverage gate passes offline against the committed qa/fixtures/prague/gtfs snapshot (every catalog station has >= 1 metro stop_time), honest-empty-state (emptyReason: no-live-predictions) proven for all-empty/partial/outside-hours/unknown-static cases, hub Muzeum A x C with Můstek A x B and Florenc B x C as separate doNotGroup interchange-triangle vertices, line+terminus direction model, full-diacritic-exact station resolution (no stripped-diacritic aliasing), self-terminus guard proven end-to-end across all 57 stations via synthetic Golemio payloads, non-metro/unknown-route rows dropped, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Metro in / Line D + trams + Flora out, Perth Australia green)`
+  `prague-dogfood-gate: ok (status=${entry.status}, dispatch switch-cases wired, MULTI_CITY_IDS/manifest tracking registry status, D1 pack still records 58 (Luke's historical topology, unedited), catalog carries 58 stations (17/24/20 per line — Flora restored to the catalog on the auto-detected notServed mechanism, not removed) each with lat/lng + GTFS stop_id inside CITY_BOUNDS, five stations (Flora + the Line C section closure's four) carry notServed metadata, date-aware static-coverage gate passes offline against the committed qa/fixtures/prague/gtfs snapshot at a frozen closure-window reference date (every non-notServed station shows scheduled service, every notServed station shows none — this is the check that would have caught both Flora and the closure), honest-empty-state proven for all-empty/partial/outside-hours/unknown-static/not-currently-served cases (emptyReason: no-live-predictions vs not-currently-served, with station-specific notServedMessage), hub Muzeum A x C with Můstek A x B and Florenc B x C as separate doNotGroup interchange-triangle vertices, line+terminus direction model, full-diacritic-exact station resolution (no stripped-diacritic aliasing), self-terminus guard proven end-to-end across all 58 stations via synthetic Golemio payloads, non-metro/unknown-route rows dropped, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Metro in / Line D + trams out + Flora and the Line C closure as currently-not-served with replacement transport, Perth Australia green)`
 );

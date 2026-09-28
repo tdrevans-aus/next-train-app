@@ -353,7 +353,15 @@ var NextTrainTimes = (() => {
     // byte-identical output — it only ever adds `emptyReason` to the response, and only when
     // `upcoming` is empty. Mutually exclusive in practice with `nextServiceDate` (that one means
     // "no more service today/soon", this one means "service should be running, feed is silent").
-    emptyReason = null
+    emptyReason = null,
+    // Additive/optional (docs/jim-brief-prague-line-c-closure.md): a ready-to-render rider-facing
+    // sentence for an `emptyReason` the caller wants to show verbatim rather than have the client
+    // pick fixed copy per reason code (e.g. `"not-currently-served"`, where the explanation is
+    // station-specific — a section closure's reason/replacement text, or a long-term station
+    // reconstruction's). Every existing caller omits this and gets byte-identical output — it only
+    // ever adds `emptyReasonMessage` to the response, and only alongside a truthy `emptyReason` on
+    // a genuinely empty board.
+    emptyReasonMessage = null
   }) {
     const skip = Math.max(0, Math.floor(Number(skipTrains) || 0));
     const formatLastUpdated = lastUpdated instanceof Date ? lastUpdated.toLocaleString("en-AU", {
@@ -388,6 +396,9 @@ var NextTrainTimes = (() => {
     }
     if (upcomingPayloads.length === 0 && emptyReason) {
       response.emptyReason = emptyReason;
+      if (emptyReasonMessage) {
+        response.emptyReasonMessage = emptyReasonMessage;
+      }
     }
     if (upcomingPayloads.length === 0 && Array.isArray(terminatingTrips) && terminatingTrips.length > 0) {
       const arrivals = terminatingTrips.filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture).slice(0, UPCOMING_TRIP_LIMIT).map((trip) => buildTripPayload(trip, leaveBeforeMinutes, now));

@@ -4,14 +4,18 @@
   "covered": [
     {
       "label": "Metro (A, B, C)",
-      "detail": "57 of 58 metro stations, three lines, live departures (Flora excluded, see notCovered)."
+      "detail": "58 of 58 metro stations, three lines, live departures. Flora and four Line C stations (Budějovická, Kačerov, Pankrác, Roztyly) are in the catalog but currently show no service — see notCovered; the app detects this automatically from the static feed and shows the reason plus replacement transport instead of a blank board, and will resume showing live departures the moment the feed does, with no app change needed."
     }
   ],
   "partial": [],
   "notCovered": [
     {
       "label": "Flora (Line A)",
-      "detail": "No live metro service currently scheduled (confirmed both in the current PID GTFS static snapshot and 9/9 clean live Golemio polls, 28 Sep 2026) - use Jiřího z Poděbrad or Želivského instead."
+      "detail": "No live metro service currently scheduled (confirmed both in the PID GTFS static snapshot and 9/9 clean live Golemio polls, 28 Sep 2026) - long-term station reconstruction (trains pass through without stopping), since 2 Feb 2026, until further notice - use Jiřího z Poděbrad or Želivského instead, or nearby trams 10/11/16 (Náměstí Míru), 13 (Jiřího z Poděbrad), 16 (Želivského)."
+    },
+    {
+      "label": "Budějovická, Kačerov, Pankrác, Roztyly (Line C)",
+      "detail": "Temporary bidirectional closure of Metro C between Pražského povstání and Chodov for track repair, Sat 26 Sep 2026 04:30 - Mon 28 Sep 2026 23:59 (DPP \"Omezení a mimořádné události\" notice) - confirmed in the PID GTFS static snapshot (zero scheduled stop_times for these four stations' platforms until service resumes 29 Sep 2026). Replacement bus XC runs Pražského povstání – Pankrác – Budějovická – Kačerov – Roztyly – Dědinova – Chodov while the closure is in effect. Expected to resume normal service 29 Sep 2026; the app detects this automatically and will stop showing this notice the moment the feed does, with no app change needed."
     },
     {
       "label": "Line D",
@@ -38,6 +42,6 @@
       "detail": "Not covered."
     }
   ],
-  "stations": "57 metro stations (Flora excluded - no scheduled service, see notCovered).",
-  "notes": "Muzeum is the inner-city hub where lines A and C cross; it never appears as a direction. No single station serves all three lines — Můstek (A x B) and Florenc (B x C) are the other two interchanges, each a separate stop from Muzeum. Flora isn't shown because Metro Line A currently runs no scheduled service there (confirmed against both the static timetable and the live feed) — use Jiřího z Poděbrad or Želivského instead. Data: Pražská integrovaná doprava (PID) – Open Data (CC BY 4.0)."
+  "stations": "58 metro stations. Flora and four Line C stations (Budějovická, Kačerov, Pankrác, Roztyly) are catalogued but currently show no scheduled service - see notCovered.",
+  "notes": "Muzeum is the inner-city hub where lines A and C cross; it never appears as a direction. No single station serves all three lines — Můstek (A x B) and Florenc (B x C) are the other two interchanges, each a separate stop from Muzeum. Flora and four Line C stations (Budějovická, Kačerov, Pankrác, Roztyly) currently show no scheduled service — see notCovered for reasons and replacement transport; the app detects this automatically from the static feed (rather than a fixed list of dates), so it stops showing the notice as soon as PID's feed shows the station served again. Data: Pražská integrovaná doprava (PID) – Open Data (CC BY 4.0)."
 }
