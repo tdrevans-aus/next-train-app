@@ -53,6 +53,9 @@ import {
   isDirectionAllowedAtStop,
   isTerminatingAtStation,
   GREEN_LOOP_DIRECTION_ONLY,
+  LINE_TERMINI,
+  LINE_LABELS,
+  greenTravelDirection,
 } from "../lib/cities/dublin/marketing-directions.js";
 import {
   listDublinDogfoodStations,
@@ -214,6 +217,36 @@ assert(mapLineTerminusDestination("Tallaght", "red") === "Red + Tallaght", "dire
 assert(mapLineTerminusDestination("Broombridge", "green") === "Green + Broombridge", "direction chip must be colour + terminus");
 assert(mapLineTerminusDestination(DUBLIN_HUB, "red") === "Red", "Abbey Street must never appear as a direction token");
 
+// No bare "Red"/"Green" line-name chip for any CONFIRMED live terminus (docs/jim-brief-dublin-
+// bare-line-chips.md — controller pre-check on flip PR #501 found bare chips at Abbey Street/
+// Belgard/Sandyford/Broombridge carrying 1-2 live trips each whose headsign didn't resolve).
+// Connolly (Red), Parnell and Sandyford (Green short-turns) are the three confirmed 28 Sep 2026
+// live-poll additions — every LINE_TERMINI entry for every line must map to a named chip, never
+// fall back to the bare line label.
+for (const [lineId, termini] of Object.entries(LINE_TERMINI)) {
+  for (const terminus of termini) {
+    const label = LINE_LABELS[lineId];
+    assert(
+      mapLineTerminusDestination(terminus, lineId) === `${label} + ${terminus}`,
+      `${label} + ${terminus} must be a named chip, never bare "${label}" — every LINE_TERMINI entry must resolve`
+    );
+  }
+}
+assert(LINE_TERMINI.red.includes("Connolly"), "Red LINE_TERMINI must include Connolly (confirmed live headsign, Red trams alternate The Point/Connolly)");
+assert(LINE_TERMINI.green.includes("Parnell"), "Green LINE_TERMINI must include Parnell (confirmed live short-turn headsign)");
+assert(LINE_TERMINI.green.includes("Sandyford"), "Green LINE_TERMINI must include Sandyford (confirmed live short-turn headsign)");
+assert(resolveTerminus("Connolly", "red") === "Connolly", "resolveTerminus must resolve Connolly as a Red terminus even though Connolly is filtered from the catalog");
+assert(mapLineTerminusDestination("Connolly", "red") === "Red + Connolly", "the Red + Connolly direction chip must work even though Connolly's own board is filtered — Saggart precedent");
+assert(resolveTerminus("Parnell", "green") === "Parnell", "resolveTerminus must resolve Parnell as a Green terminus");
+assert(resolveTerminus("Sandyford", "green") === "Sandyford", "resolveTerminus must resolve Sandyford as a Green terminus");
+assert(greenTravelDirection("Connolly") === null, "Connolly must not be misclassified as a Green loop direction (it is a Red-only terminus)");
+assert(greenTravelDirection("Parnell") === "northbound", "a Parnell short-turn must classify as northbound (towards Broombridge, stopping short)");
+assert(greenTravelDirection("Sandyford") === "southbound", "a Sandyford short-turn must classify as southbound (towards Brides Glen, stopping short)");
+assert(isDirectionAllowedAtStop("O'Connell - GPO", "green", "Parnell") === true, "O'Connell - GPO must allow a Parnell-bound (northbound short-turn) trip");
+assert(isDirectionAllowedAtStop("Marlborough", "green", "Parnell") === false, "Marlborough must reject a Parnell-bound (northbound short-turn) trip — Marlborough is southbound-only");
+assert(isDirectionAllowedAtStop("Marlborough", "green", "Sandyford") === true, "Marlborough must allow a Sandyford-bound (southbound short-turn) trip");
+assert(isDirectionAllowedAtStop("O'Connell - GPO", "green", "Sandyford") === false, "O'Connell - GPO must reject a Sandyford-bound (southbound short-turn) trip — O'Connell - GPO is northbound-only");
+
 // Route colour classification.
 assert(classifyLuasLineId({ routeShortName: "Red Line" }) === "red", "classifyLuasLineId must classify Red by short name");
 assert(classifyLuasLineId({ routeLongName: "Luas Green Line" }) === "green", "classifyLuasLineId must classify Green by long name");
@@ -248,7 +281,17 @@ assert(isTerminatingAtStation("Tallaght", "Saggart") === false, "isTerminatingAt
 // catches a regression in the wiring between those two calls, not just in either function alone.
 // ---------------------------------------------------------------------------------------------
 function dublinFixtureStaticData() {
-  const stopIds = ["stop-belgard", "stop-tallaght", "stop-thepoint", "stop-sandyford", "stop-broombridge", "stop-bridesglen"];
+  const stopIds = [
+    "stop-belgard",
+    "stop-tallaght",
+    "stop-thepoint",
+    "stop-connolly",
+    "stop-sandyford",
+    "stop-broombridge",
+    "stop-bridesglen",
+    "stop-parnell",
+    "stop-dundrum",
+  ];
   const stopsById = new Map(stopIds.map((id) => [id, { stop_id: id, platform_code: "" }]));
 
   const routesById = new Map([
@@ -263,8 +306,16 @@ function dublinFixtureStaticData() {
   const tripDefs = [
     { trip_id: "trip-red-tallaght", route_id: "route-red", trip_headsign: "Tallaght", stopIds: ["stop-belgard", "stop-tallaght"] },
     { trip_id: "trip-red-thepoint", route_id: "route-red", trip_headsign: "The Point", stopIds: ["stop-belgard", "stop-thepoint"] },
+    // Confirmed live 28 Sep 2026 — Red trams alternate The Point/Connolly eastern termini
+    // (docs/jim-brief-dublin-bare-line-chips.md); Connolly is filtered from the catalog (no own
+    // board) but must still resolve to a named chip upstream.
+    { trip_id: "trip-red-connolly", route_id: "route-red", trip_headsign: "Connolly", stopIds: ["stop-belgard", "stop-connolly"] },
     { trip_id: "trip-green-broombridge", route_id: "route-green", trip_headsign: "Broombridge", stopIds: ["stop-sandyford", "stop-broombridge"] },
     { trip_id: "trip-green-bridesglen", route_id: "route-green", trip_headsign: "Brides Glen", stopIds: ["stop-sandyford", "stop-bridesglen"] },
+    // Confirmed live 28 Sep 2026 short-turns (hazard-pack.md H5) — Parnell (northbound short of
+    // Broombridge) and Sandyford (southbound short of Brides Glen).
+    { trip_id: "trip-green-parnell", route_id: "route-green", trip_headsign: "Parnell", stopIds: ["stop-sandyford", "stop-parnell"] },
+    { trip_id: "trip-green-sandyford", route_id: "route-green", trip_headsign: "Sandyford", stopIds: ["stop-dundrum", "stop-sandyford"] },
   ];
 
   const tripsById = new Map(
@@ -309,18 +360,22 @@ function dublinFixtureStaticData() {
   };
 }
 
+// tripId -> [upstream stop, own terminus stop], same two-stop shape as the tripDefs above —
+// kept as an explicit table rather than re-deriving from tripDefs so each entry stays legible.
+const FIXTURE_TRIP_STOP_PAIRS = {
+  "trip-red-tallaght": ["stop-belgard", "stop-tallaght"],
+  "trip-red-thepoint": ["stop-belgard", "stop-thepoint"],
+  "trip-red-connolly": ["stop-belgard", "stop-connolly"],
+  "trip-green-broombridge": ["stop-sandyford", "stop-broombridge"],
+  "trip-green-bridesglen": ["stop-sandyford", "stop-bridesglen"],
+  "trip-green-parnell": ["stop-sandyford", "stop-parnell"],
+  "trip-green-sandyford": ["stop-dundrum", "stop-sandyford"],
+};
+
 function dublinFixtureRealtimeIndex(now) {
   const soonEpochSec = Math.floor((now.getTime() + 5 * 60_000) / 1000);
-  const entities = [
-    "trip-red-tallaght",
-    "trip-red-thepoint",
-    "trip-green-broombridge",
-    "trip-green-bridesglen",
-  ].flatMap((tripId) =>
-    [
-      tripId === "trip-red-tallaght" || tripId === "trip-red-thepoint" ? "stop-belgard" : "stop-sandyford",
-      tripId === "trip-red-tallaght" ? "stop-tallaght" : tripId === "trip-red-thepoint" ? "stop-thepoint" : tripId === "trip-green-broombridge" ? "stop-broombridge" : "stop-bridesglen",
-    ].map((stopId) => ({
+  const entities = Object.entries(FIXTURE_TRIP_STOP_PAIRS).flatMap(([tripId, stopPair]) =>
+    stopPair.map((stopId) => ({
       tripUpdate: {
         trip: { tripId },
         stopTimeUpdate: [{ stopId, departure: { time: soonEpochSec } }],
@@ -375,16 +430,35 @@ function testFetchStationBoardPipelineFiltersSelfTerminus() {
   assert(!bridesGlen.trips.includes("Green + Brides Glen"), 'Brides Glen board must never show "Green + Brides Glen" (self-terminus) in trips');
   assert(!bridesGlen.scheduledCandidates.includes("Green + Brides Glen"), 'Brides Glen scheduledCandidates must never show "Green + Brides Glen" (self-terminus)');
 
+  // Connolly (Red) and Parnell/Sandyford (Green short-turns) — confirmed live 28 Sep 2026, same
+  // self-terminus guard as every other terminus above (docs/jim-brief-dublin-bare-line-chips.md).
+  const connolly = destinationsAt("Connolly", "stop-connolly");
+  assert(!connolly.trips.includes("Red + Connolly"), 'Connolly board must never show "Red + Connolly" (self-terminus) in trips');
+  const parnell = destinationsAt("Parnell", "stop-parnell");
+  assert(!parnell.trips.includes("Green + Parnell"), 'Parnell board must never show "Green + Parnell" (self-terminus) in trips');
+  const sandyfordOwnBoard = destinationsAt("Sandyford", "stop-sandyford");
+  assert(!sandyfordOwnBoard.trips.includes("Green + Sandyford"), 'Sandyford board must never show "Green + Sandyford" (self-terminus) in trips');
+
   // The SAME two Red trips, one stop upstream at the trunk stop Belgard, must still show up
   // correctly as real, non-self-terminus directions — proves the fix doesn't over-filter.
   const belgard = destinationsAt("Belgard", "stop-belgard");
   assert(belgard.trips.includes("Red + Tallaght"), 'Belgard must still show "Red + Tallaght" for a genuinely upstream Tallaght-bound trip');
   assert(belgard.trips.includes("Red + The Point"), 'Belgard must still show "Red + The Point" for a genuinely upstream The Point-bound trip');
+  assert(belgard.trips.includes("Red + Connolly"), 'Belgard must still show "Red + Connolly" for a genuinely upstream Connolly-bound trip — never a bare "Red" chip');
+  assert(!belgard.trips.includes("Red"), 'Belgard must never show a bare "Red" chip for a trip whose destination is a known terminus');
 
-  // Same check for the Green Line's upstream trunk stop Sandyford.
+  // Same check for the Green Line's upstream trunk stop Sandyford (also carries the Parnell
+  // short-turn, since Sandyford is upstream of Parnell on that trip's own path).
   const sandyford = destinationsAt("Sandyford", "stop-sandyford");
   assert(sandyford.trips.includes("Green + Broombridge"), 'Sandyford must still show "Green + Broombridge" for a genuinely upstream trip');
   assert(sandyford.trips.includes("Green + Brides Glen"), 'Sandyford must still show "Green + Brides Glen" for a genuinely upstream trip');
+  assert(sandyford.trips.includes("Green + Parnell"), 'Sandyford must still show "Green + Parnell" for a genuinely upstream Parnell-bound short-turn — never a bare "Green" chip');
+  assert(!sandyford.trips.includes("Green"), 'Sandyford must never show a bare "Green" chip for a trip whose destination is a known terminus');
+
+  // The Sandyford short-turn ("Green + Sandyford") viewed one stop upstream at Dundrum.
+  const dundrum = destinationsAt("Dundrum", "stop-dundrum");
+  assert(dundrum.trips.includes("Green + Sandyford"), 'Dundrum must still show "Green + Sandyford" for a genuinely upstream Sandyford-bound short-turn — never a bare "Green" chip');
+  assert(!dundrum.trips.includes("Green"), 'Dundrum must never show a bare "Green" chip for a trip whose destination is a known terminus');
 }
 
 testFetchStationBoardPipelineFiltersSelfTerminus();
@@ -503,5 +577,5 @@ assert(Boolean(CITY_BOUNDS.dublin), "lib/cities/city-bounds.js must carry a dubl
 console.log(
   `dublin-dogfood-gate: ok (status=${entry.status}, dispatch switch-cases wired, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists tracking registry status (${
     dublinIsLive ? "live — all four lists must include dublin" : "planned — deliberately deferred to the status-flip commit"
-  }), D1 pack, Board eligibility section recorded (DART/buses/Connolly/Saggart out), 65 stations (Connolly + Saggart filtered — no NTA real-time coverage; Rialto confirmed intermittent and kept in) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, Red + Saggart direction chip still works upstream, doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard, self-terminus guard fixed (rawDestination/terminus, not the mapped label) and regression-tested end-to-end via classifyAndFilterDublinTrips, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly + Saggart out, Perth Australia green)`
+  }), D1 pack, Board eligibility section recorded (DART/buses/Connolly/Saggart out), 65 stations (Connolly + Saggart filtered — no NTA real-time coverage; Rialto confirmed intermittent and kept in) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, Red + Saggart/Connolly and Green + Parnell/Sandyford direction chips still work upstream (no bare "Red"/"Green" chip for any confirmed LINE_TERMINI entry), doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard (extended to Parnell/Sandyford short-turns), self-terminus guard fixed (rawDestination/terminus, not the mapped label) and regression-tested end-to-end via classifyAndFilterDublinTrips, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly + Saggart out, Perth Australia green)`
 );

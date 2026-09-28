@@ -69,3 +69,37 @@ Green + Broombridge vs Green + Brides Glen, both valid here — these two are th
 4. Whether testers see dublin as its own city picker (yes — do not invent city=dub, city=ie, or merge into a national Irish feed).
 5. Confirm the Parnell↔Trinity direction-exclusivity against a second source (live NTA GTFS-RT trip patterns, once keyed) before D5 locks it — this pack's evidence is the official static map only, one asset, hand-read.
 6. Confirm the Connolly dogleg (H4, hazard pack) is an inline stop and not a short-turn spur — this pack assumes inline based on general knowledge of Luas operations, not confirmed against a second primary source.
+
+## Correction, 28 Sep 2026 (Jim, docs/jim-brief-dublin-bare-line-chips.md) — Connolly/Parnell/Sandyford confirmed live termini; no bare chip
+
+The controller's pre-flip check on PR #501 (08:40 Dublin) found bare `"Red"`/`"Green"` direction
+chips at Abbey Street, Belgard, Sandyford and Broombridge — 1-2 live trips per station whose
+headsign didn't resolve to any entry in `LINE_TERMINI`, falling back to the bare colour word.
+Live headsign dump (Dublin daytime, full service, `node --env-file=.env.local` against
+`fetchStationBoard`) resolved every one of them to a real, confirmed terminus:
+
+- **Red: `Connolly`.** Red trams alternate their eastern terminus between **The Point** and
+  **Connolly** — this pack's H4 flagged the Connolly dogleg as "flagged for Tim to confirm" and
+  the 27 Sep correction (hazard-pack.md) removed Connolly from the *catalog* (no live board of
+  its own — the NTA feed never carries a stopTimeUpdate for either of Connolly's stop_ids) but
+  that correction's conclusion that Connolly is "never a terminus" was wrong: it is a real,
+  live-confirmed Red headsign, just one whose own stop has no board — same "chip works, own
+  board doesn't" shape as Saggart. `LINE_TERMINI.red` now includes `"Connolly"`.
+- **Green: `Parnell` and `Sandyford`.** This pack's H5 flagged "peak-time short workings (e.g.
+  some Green trips turn at Sandyford or Dundrum)... not printed on the official network map" as
+  an open D2 finding pending live GTFS-RT headsigns — now confirmed live. Both are real,
+  fully-catalogued Green stops (not filtered), so a `Green + Parnell` or `Green + Sandyford` chip
+  simply means this particular tram doesn't run the full line to Broombridge/Brides Glen.
+  `LINE_TERMINI.green` now includes `"Parnell"` and `"Sandyford"`. Per the Parnell↔Trinity loop
+  model above, a Parnell short-turn only ever runs the northbound leg (stopping short of
+  Broombridge) and a Sandyford short-turn only ever runs the southbound leg (stopping short of
+  Brides Glen) — `greenTravelDirection()` classifies them accordingly so the O'Connell - GPO /
+  O'Connell Upper / Marlborough direction-exclusive guard still applies to these short-turns, not
+  just the two full-line termini.
+
+This resolves open question 6 above in the negative for the "no short-turn" half of it: Connolly
+is confirmed an inline stop (as assumed), but Luas *does* run confirmed short-turns that this
+pack's map-only evidence could not have found — exactly the risk flagged in H5. No further product
+action needed beyond `LINE_TERMINI`/`greenTravelDirection` above; the assertion that no station
+ever offers a bare line-name chip now lives in `qa/dublin-dogfood-gate.mjs` and
+`qa/dublin-all-stations-live-sweep.mjs`.

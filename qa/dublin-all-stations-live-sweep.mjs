@@ -73,6 +73,13 @@ import {
 } from "../lib/providers/dublin.js";
 import { readNtaApiKey } from "../lib/providers/gtfs/auth.js";
 import { activeServicesForDate } from "../lib/providers/gtfs/static-cache.js";
+import { LINE_LABELS } from "../lib/cities/dublin/marketing-directions.js";
+
+// Bare line-name chips (docs/jim-brief-dublin-bare-line-chips.md) — a live trip whose headsign
+// didn't resolve to a known LINE_TERMINI entry falls back to the bare colour word ("Red"/
+// "Green"), under-specified for a rider (can't tell where the tram goes). Checked against every
+// poll's raw board, not just the final one, since a bare chip can appear intermittently.
+const BARE_LINE_LABELS = new Set(Object.values(LINE_LABELS));
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EVIDENCE_LOG_PATH = join(ROOT, "docs/dublin-d1/live-sweep-log.jsonl");
@@ -199,14 +206,18 @@ async function sweepOnce(stations, apiKey) {
   for (const station of stations) {
     try {
       const board = await fetchStationBoard(station.name, { apiKey });
+      const bareDestinations = (board.trips ?? [])
+        .map((t) => t.destination)
+        .filter((destination) => BARE_LINE_LABELS.has(destination));
       results.push({
         name: station.name,
         tripCount: board.trips?.length ?? 0,
         emptyReason: board.emptyReason ?? null,
+        bareDestinations,
         error: null,
       });
     } catch (error) {
-      results.push({ name: station.name, tripCount: 0, emptyReason: null, error: error?.message ?? String(error) });
+      results.push({ name: station.name, tripCount: 0, emptyReason: null, bareDestinations: [], error: error?.message ?? String(error) });
     }
   }
   return results;
@@ -254,6 +265,7 @@ async function main() {
   const staleGap = []; // continuously empty for >= 1.5x headway AND never observed non-empty (permanent)
   const intermittentLong = []; // continuously empty for >= 1.5x headway THIS run but seen non-empty in the evidence window (long intermittent gap, e.g. Broombridge)
   const uncertain = []; // still empty at run end but never reached its own threshold within the runtime cap
+  const bareChipSightings = []; // { poll, station, destination } — a bare "Red"/"Green" chip, ever
   let sawAnyTrips = false;
   let lastErrored = [];
 
@@ -269,6 +281,18 @@ async function main() {
     if (errored.length) {
       console.log(`dublin-all-stations-live-sweep: ${errored.length} station(s) errored this poll:`);
       for (const r of errored) console.log(`  ${r.name}: ${r.error}`);
+    }
+
+    for (const r of results) {
+      for (const destination of r.bareDestinations ?? []) {
+        bareChipSightings.push({ poll, station: r.name, destination });
+      }
+    }
+    if (results.some((r) => r.bareDestinations?.length)) {
+      console.log(
+        `dublin-all-stations-live-sweep: poll ${poll} bare line-name chip(s): ` +
+          `${results.filter((r) => r.bareDestinations?.length).map((r) => `${r.name}: ${r.bareDestinations.join(", ")}`).join("; ")}`
+      );
     }
 
     // Outside Luas service hours (or a genuine feed-wide outage), EVERY station legitimately
@@ -367,6 +391,17 @@ async function main() {
     );
   }
 
+  if (bareChipSightings.length > 0) {
+    const details = bareChipSightings
+      .map((s) => `${s.station} (poll ${s.poll}): "${s.destination}"`)
+      .join("; ");
+    throw new Error(
+      `dublin-all-stations-live-sweep: ${bareChipSightings.length} bare line-name chip sighting(s) ` +
+        `— a live trip's destination fell back to the bare colour word instead of a named terminus ` +
+        `(docs/jim-brief-dublin-bare-line-chips.md; a rider can't tell where the tram goes): ${details}`
+    );
+  }
+
   if (unconfirmedEmpty.length > 0) {
     const names = [...new Set(unconfirmedEmpty.map((r) => r.name))];
     throw new Error(
@@ -410,7 +445,7 @@ async function main() {
   console.log(
     `dublin-all-stations-live-sweep: ok — every catalog station either had live trips, a long ` +
       `intermittent gap backed by evidence-memory, or a properly-flagged honest empty state ` +
-      `within its own 1.5x-headway threshold`
+      `within its own 1.5x-headway threshold; no bare "Red"/"Green" line-name chip was ever seen`
   );
 }
 

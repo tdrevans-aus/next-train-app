@@ -249,3 +249,38 @@ across a comparably long multi-poll window, cross-check against `docs/dublin-d1/
 and this entry's timestamps before re-opening a Jim brief — the pattern so far (present at session
 start, present throughout a later 8-poll run) does not yet support a permanent, Connolly/Saggart-
 shaped exclusion.
+
+## Correction, 28 Sep 2026 (Jim, docs/jim-brief-dublin-bare-line-chips.md) — Connolly IS a confirmed live Red terminus chip; Green short-turns at Parnell/Sandyford confirmed
+
+The 27 Sep Connolly correction above (H4) confirmed Connolly has no live real-time coverage of its
+**own board** and filtered it from the catalog — correct, and unchanged by this entry. But that
+correction's narrower framing ("Connolly is a common-trunk stop, never a Red terminus") was read
+downstream as "Connolly never appears as a direction destination at all", which is wrong: the
+controller's pre-flip check on PR #501 (08:40 Dublin) found bare `"Red"` chips (no terminus) at
+Abbey Street (3 trips) and Belgard (1 trip) — live Red trips genuinely headsigned `"Connolly"` that
+`LINE_TERMINI.red` had no entry for, so `mapLineTerminusDestination()` fell back to the bare colour
+label instead of naming where the tram goes. Confirmed by a live headsign dump (Dublin Monday
+daytime, full service, 09:00 Europe/Dublin): Red trams alternate their eastern terminus between
+**The Point** and **Connolly** — Connolly is a genuine, currently-running Red terminus, just one
+whose own stop has no live board (same "chip works, own board doesn't" shape H4's Saggart
+correction already established one section below it).
+
+The same live check found the equivalent Green gap this pack's H5 had flagged as an open, unchased
+possibility: bare `"Green"` chips at Sandyford (2 trips, headsigned `"Parnell"`) and Broombridge (3
+trips, headsigned `"Sandyford"`) — confirmed peak-time-shape short workings turning at **Parnell**
+and **Sandyford**, exactly the "some Green trips turn at Sandyford or Dundrum" case H5 named but
+did not chase (map-only D1 evidence can't find an unpublished short-turn).
+
+**Fix:** `LINE_TERMINI.red` now includes `"Connolly"`; `LINE_TERMINI.green` now includes
+`"Parnell"` and `"Sandyford"` (lib/cities/dublin/marketing-directions.js). `greenTravelDirection()`
+classifies Parnell as northbound and Sandyford as southbound (both short-turns stop short of their
+line's full terminus on one side of the Parnell↔Trinity loop, per direction-model-memo.md), so the
+O'Connell - GPO / O'Connell Upper / Marlborough direction-exclusive guard (H4a) also defends
+against a phantom short-turn showing at the wrong one of those three stops. No catalog change —
+Connolly and Saggart stay filtered (no own board); Parnell and Sandyford were never filtered (real,
+fully-catalogued stops). `coverage.json`'s Connolly note now mentions the `Red + Connolly` chip
+explicitly, so a rider who searches for Connolly and finds it missing from the app isn't left
+wondering why trams are still labelled as going there. Asserted in `qa/dublin-dogfood-gate.mjs`
+(every `LINE_TERMINI` entry must resolve to a named chip, never a bare line label) and
+`qa/dublin-all-stations-live-sweep.mjs` (every live poll's board is checked for a bare `"Red"`/
+`"Green"` destination, failing the run immediately if one appears).
