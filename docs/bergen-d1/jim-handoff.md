@@ -169,3 +169,14 @@ confirmed, per the "not independently live-confirmed this pass" note already in 
 entry. SIRI VM/vehicle-positions availability for the SKY dataset also remains unconfirmed
 (this pack's item 3) — not needed for the `estimatedCalls` path this adapter uses, but flagged
 again for whoever eventually wires a vehicle-position feature.
+
+## Controller probe, 28 Sep 2026 12:53 Europe/Oslo — Bybanen real-time coverage in Entur (second sample, midday)
+
+Entur Journey Planner v3, `stopPlace.estimatedCalls(numberOfDepartures: 100, timeRange: 5400)`:
+
+| Stop | Mode | Calls | `realtime: true` |
+|---|---|---|---|
+| Bergen busstasjon (NSR:StopPlace:62356) | tram (Bybanen) | 40 | **0 (0%)** |
+| Oslo Jernbanetorget (NSR:StopPlace:58366) | metro (T-bane) | 27 | 27 (100%) |
+
+Same result as Mark's 05:13–05:50 sample (0/25). Two samples, seven hours apart, both zero: Bybanen vehicle tracking is not reaching Entur's national feed. Bergen stays `planned` under the 20 Sep 2026 rule (no schedule-only city goes live). Outreach draft for Tim: docs/outreach-drafts/bergen-bybanen.md. Re-probe after Skyss/Entur reply, or weekly.
