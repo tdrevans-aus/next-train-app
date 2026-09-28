@@ -43,7 +43,13 @@
     { "name": "Amager Strand", "aliases": [], "mode": "metro", "lines": ["M2"] },
     { "name": "Femøren", "aliases": [], "mode": "metro", "lines": ["M2"] },
     { "name": "Kastrup", "aliases": [], "mode": "metro", "lines": ["M2"] },
-    { "name": "Lufthavnen", "aliases": ["Copenhagen Airport"], "mode": "metro", "lines": ["M2"] },
+    {
+      "name": "Lufthavnen",
+      "aliases": ["Copenhagen Airport", "Københavns Lufthavn", "Københavns Lufthavn St. (Metro)"],
+      "mode": "metro",
+      "lines": ["M2"],
+      "note": "Live Rejseplanen feed names this stop 'Københavns Lufthavn St. (Metro)', which does not fold-substring-match the printed name 'Lufthavnen' or the pre-existing alias 'Copenhagen Airport' (missing the feed's Danish wording) — confirmed live 28 Sep 2026 to have resolved to zero stop_ids since the flip (docs/jim-brief-copenhagen-snapshot-trim.md). 'Københavns Lufthavn' and 'Copenhagen Airport' both work as user-facing search aliases (resolveCatalogEntry); 'Københavns Lufthavn' is also what resolveStopIdsForCatalogEntry's name-then-aliases fallback needs to actually resolve GTFS stop_ids (lib/providers/copenhagen.js) — 'Lufthavnen St.' was tried and confirmed NOT to substring-match the feed's stop_name, so it is deliberately not listed here."
+    },
     {
       "name": "København H",
       "aliases": ["Copenhagen Central Station", "Central Station"],

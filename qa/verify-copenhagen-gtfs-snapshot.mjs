@@ -17,13 +17,26 @@
  * RT-join item rather than fabricating a check against a feed that doesn't exist — flagged here
  * for whoever reviews this PR.
  *
+ * Catalog-completeness audit (docs/jim-brief-copenhagen-snapshot-trim.md follow-up, 28 Sep
+ * 2026 — Dublin's #499 audit is the pattern): every catalog station must resolve to at least
+ * one stop_id via the SAME resolution the live adapter uses at request time
+ * (resolveStopIdsForCatalogEntry, which tries the catalog name then each alias) — not a
+ * looser/different check that could pass while the real adapter 404s. This is what would have
+ * caught Lufthavnen (M2 airport terminus) at flip time: it resolved to zero stop_ids against
+ * both the trimmed snapshot and the full untrimmed national feed, confirmed unrelated to this
+ * trim, until "Københavns Lufthavn" was added as an alias.
+ *
  * Usage: node qa/verify-copenhagen-gtfs-snapshot.mjs
  */
 import { unzipSync } from "../lib/vendor/fflate.mjs";
 import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
-import { findRailStopIdsForName } from "../lib/providers/gtfs/static-cache.js";
-import { listCatalogStations, METRO_CODES, STOG_CODES } from "../lib/providers/copenhagen.js";
+import {
+  listCatalogStations,
+  resolveStopIdsForCatalogEntry,
+  METRO_CODES,
+  STOG_CODES,
+} from "../lib/providers/copenhagen.js";
 import { classifyDsbService } from "../lib/cities/copenhagen/marketing-directions.js";
 
 const MIN_BYTES = 50 * 1024;
@@ -101,23 +114,12 @@ function inspectRoutesAndStops(files) {
 
 /**
  * Every catalog station (lib/cities/copenhagen/stations.json) must resolve to at least one
- * stop_id in the published snapshot via the exact same lookup the adapter uses at request time
- * (findRailStopIdsForName) — otherwise a board request for that station would come back empty
- * even though the station is genuinely in-catalog.
+ * stop_id in the published snapshot via the EXACT SAME resolution fetchStationBoard() uses at
+ * request time (resolveStopIdsForCatalogEntry — name first, then each alias in order) —
+ * otherwise a board request for that station would come back "Unknown Copenhagen station" even
+ * though the station is genuinely in-catalog. No carve-outs: this is what would have caught
+ * Lufthavnen at flip time (see file header).
  */
-/**
- * Lufthavnen (M2 airport terminus): confirmed PRE-EXISTING and unrelated to this trim — the
- * live Rejseplanen feed names this stop "Københavns Lufthavn St. (Metro)", which
- * findRailStopIdsForName's plain-substring match does not find for either the catalog's
- * printed name ("Lufthavnen") or its alias ("Copenhagen Airport") — confirmed by running the
- * same lookup against the FULL, untrimmed national feed during this fix, not just this trimmed
- * snapshot. Today's status: "live" adapter already 404s a board request for this station name;
- * this trim changes nothing about that (docs/jim-brief-copenhagen-snapshot-trim.md — "behaviour
- * must be identical apart from latency"). Flagged, not silently fixed — a real fix is a catalog/
- * alias change outside this brief's scope.
- */
-const KNOWN_PRE_EXISTING_UNRESOLVED_STATIONS = new Set(["Lufthavnen"]);
-
 function auditCatalogStationResolution(files) {
   const stopsKey = findEntry(files, "stops.txt");
   if (!stopsKey) {
@@ -129,13 +131,9 @@ function auditCatalogStationResolution(files) {
   const problems = [];
   const summary = [];
   for (const station of listCatalogStations()) {
-    const stopIds = findRailStopIdsForName(staticData, station.name);
+    const stopIds = resolveStopIdsForCatalogEntry(staticData, station);
     if (stopIds.length === 0) {
-      if (KNOWN_PRE_EXISTING_UNRESOLVED_STATIONS.has(station.name)) {
-        summary.push(`${station.name}: 0 stop_id(s) — KNOWN pre-existing gap, not introduced by this trim (see comment above)`);
-        continue;
-      }
-      problems.push(`${station.name}: resolves to zero stop_ids in the published snapshot.`);
+      problems.push(`${station.name}: resolves to zero stop_ids in the published snapshot (tried name + ${(station.aliases ?? []).length} alias(es)).`);
       continue;
     }
     summary.push(`${station.name}: ${stopIds.length} stop_id(s)`);
@@ -146,7 +144,7 @@ function auditCatalogStationResolution(files) {
     console.log(`  ${line}`);
   }
   if (problems.length === 0) {
-    console.log("--- catalog station resolution: ok (excluding known pre-existing gaps, see above) ---\n");
+    console.log("--- catalog station resolution: ok, every catalog station resolves ---\n");
   }
 
   return problems;
