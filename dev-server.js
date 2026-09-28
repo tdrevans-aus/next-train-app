@@ -40,7 +40,10 @@ loadEnvLocal();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = process.env.PORT || 3000;
+// Honour PORT and QA_PORT consistently — a standalone gate that sets QA_PORT to pick a free
+// port (rather than PORT directly) must still land on the same port this server binds
+// (docs/jim-brief-live-gates-service-hours.md, 28 Sep 2026 — port-discipline section).
+const PORT = process.env.PORT || process.env.QA_PORT || 3000;
 const PRODUCTION_FEEDBACK_URL = "https://next-train-app.vercel.app/api/feedback";
 
 app.use(express.json({ limit: "32kb" }));
@@ -756,5 +759,27 @@ if (process.env.VERCEL !== "1") {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Next Train App running at http://localhost:${PORT}`);
     console.log(`Fixture mode: add ?fixture=<name> (see TESTING.md or GET /api/fixtures)`);
+
+    // docs/jim-brief-live-gates-service-hours.md (28 Sep 2026): a server started without PORT
+    // set (silently binding the 3000 default) while a gate's QA_BASE points elsewhere looks,
+    // from the gate's side, like "nothing is listening" — which previously led an agent to treat
+    // this very process as a stray on :3000 and try to kill it. Make the mismatch loud instead.
+    if (process.env.QA_BASE) {
+      let qaBasePort = null;
+      try {
+        qaBasePort = Number(new URL(process.env.QA_BASE).port) || (new URL(process.env.QA_BASE).protocol === "https:" ? 443 : 80);
+      } catch {
+        // Not a parseable URL — nothing useful to compare, skip the warning.
+      }
+      if (qaBasePort !== null && String(qaBasePort) !== String(PORT)) {
+        console.warn(
+          `\n*** WARNING: QA_BASE=${process.env.QA_BASE} points at port ${qaBasePort}, but this ` +
+            `server just bound port ${PORT} instead. A gate reading QA_BASE will not reach this ` +
+            `server, and this server is not "stray" for that gate — it is simply on the wrong ` +
+            `port for it. Start it with PORT=${qaBasePort} node dev-server.js instead, or unset ` +
+            `QA_BASE / point it at http://localhost:${PORT}. ***\n`
+        );
+      }
+    }
   });
 }

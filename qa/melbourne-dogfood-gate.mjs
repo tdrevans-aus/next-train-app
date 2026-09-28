@@ -63,6 +63,7 @@ import {
   getMelbourneDogfoodNextTrain,
 } from "../lib/cities/melbourne/dogfood-next-train.js";
 import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
+import { skipLiveLine } from "./helpers/service-hours.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -419,9 +420,40 @@ async function runLiveEndToEndChecks() {
     legacyHubLabelNextTrain.config?.destination === "Flinders Street (Hurstbridge Line)",
     `legacy hub-bound label must resolve to canonical "Flinders Street (Hurstbridge Line)", got ${legacyHubLabelNextTrain.config?.destination}`
   );
+  await assertNextTrainOrNoService({
+    label: "legacy hub-bound label request (Eaglemont towards Flinders Street)",
+    station: "Eaglemont",
+    routeCode: "HBE",
+    next: legacyHubLabelNextTrain.next,
+  });
+}
+
+// docs/jim-brief-live-gates-service-hours.md (28 Sep 2026): a hard `next !== null` assertion
+// against the live Open Data Portal feed goes red for real whenever the Hurstbridge line is
+// shut for scheduled overnight/weekend works (as it was 27-28 Sep 2026) — the #439 mechanism
+// this exists to catch is a *matching/label-resolution* bug (a real running trip silently not
+// resolving to its chip), not the absence of any Hurstbridge service at all. Distinguish the two
+// independently: check the same live board fetch the dogfood path itself uses, but by the raw
+// GTFS trip_id's route code (via routeCodeFromTripId) rather than by the direction-label
+// functions the regression check exists to exercise — reusing those here would just echo the
+// same bug back instead of independently confirming a trip genuinely exists on the wire.
+async function assertNextTrainOrNoService({ label, station, routeCode, next }) {
+  if (next !== null) {
+    return;
+  }
+  const board = await fetchStationBoard(station);
+  const matchingLineTripsOnBoard = board.trips.filter((trip) => routeCodeFromTripId(trip.tripId) === routeCode);
+  if (matchingLineTripsOnBoard.length === 0) {
+    console.log(
+      skipLiveLine("melbourne", new Date(), {
+        reason: `no ${routeCode} (Hurstbridge line) service currently confirmed on the live feed at ${station} — genuine closure/overnight gap, not the #439 regression`,
+      })
+    );
+    return;
+  }
   assert(
-    legacyHubLabelNextTrain.next !== null,
-    "legacy hub-bound label request (Eaglemont towards Flinders Street) must return a non-null next train — this is the production regression from #439"
+    false,
+    `${label} must return a non-null next train — this is the exact production regression from #439; ${matchingLineTripsOnBoard.length} live ${routeCode}-coded trip(s) exist on ${station}'s board right now, so a null "next" is a matching bug, not an empty timetable`
   );
 }
 
