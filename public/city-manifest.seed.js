@@ -392,6 +392,27 @@ window.__CITY_MANIFEST_SEED__ = {
       "directionsVersion": "9c805e4d"
     },
     {
+      "id": "dublin",
+      "displayName": "Dublin",
+      "status": "live",
+      "country": {
+        "id": "ie",
+        "name": "Ireland"
+      },
+      "timeZone": "Europe/Dublin",
+      "bounds": {
+        "minLat": 53.2,
+        "maxLat": 53.4,
+        "minLng": -6.48,
+        "maxLng": -6.1
+      },
+      "modes": [
+        "light_rail"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "a662d813"
+    },
+    {
       "id": "prague",
       "displayName": "Prague",
       "status": "live",
@@ -1144,6 +1165,17 @@ window.__CITY_MANIFEST_SEED__ = {
           "id": "hong-kong",
           "name": "Hong Kong",
           "timeZone": "Asia/Hong_Kong"
+        }
+      ]
+    },
+    {
+      "id": "ie",
+      "name": "Ireland",
+      "regions": [
+        {
+          "id": "dublin",
+          "name": "Dublin",
+          "timeZone": "Europe/Dublin"
         }
       ]
     },
