@@ -1605,13 +1605,35 @@ function pickSoonestNearbyDirection(entries) {
 }
 
 function getNearbyFocusedEntry() {
+  const focused = nearbySession?.focusedDirection;
+
   if (!nearbyBoard?.entries?.length) {
+    // docs/jim-brief-feed-unavailable-bespoke-adapters.md: a station whose ONLY directions all
+    // failed with FeedUnavailableError never reaches this render path (api/board.js's all-failed
+    // case is a 503, handled before boardData exists) — but keep the same synthetic-entry
+    // handling below for symmetry/tests.
+    if (focused && nearbyBoard?.unavailableDirections?.includes(focused)) {
+      return { direction: focused, data: null, unavailable: true };
+    }
     return null;
   }
 
-  const focused = nearbySession?.focusedDirection;
   const match = nearbyBoard.entries.find((entry) => entry.direction === focused);
-  return match ?? nearbyBoard.entries.find((entry) => entry.data?.next) ?? nearbyBoard.entries[0];
+  if (match) {
+    return match;
+  }
+  if (focused && nearbyBoard?.unavailableDirections?.includes(focused)) {
+    // docs/jim-brief-feed-unavailable-bespoke-adapters.md: SOME directions failed with
+    // FeedUnavailableError (api/board.js's additive `partial`/`unavailableDirections`) — the
+    // failed direction has no entry in `entries` at all. Without this, the fallback below would
+    // silently substitute a DIFFERENT direction's data for the one the rider actually picked,
+    // which is exactly the silent-drop bug this brief fixes. Return a marker entry instead so the
+    // render path shows an honest "temporarily unavailable" message for THIS direction (reuses
+    // #500's per-direction honest-empty-state pattern — see the `unavailable` check in
+    // renderNearbyBoard).
+    return { direction: focused, data: null, unavailable: true };
+  }
+  return nearbyBoard.entries.find((entry) => entry.data?.next) ?? nearbyBoard.entries[0];
 }
 
 function formatNearbyDirectionRow(entry) {
@@ -2529,6 +2551,51 @@ function renderNearbyBoard({ stale = false } = {}) {
       return;
     }
 
+    // docs/jim-brief-feed-unavailable-bespoke-adapters.md: the focused direction is one
+    // api/board.js's partial-board fan-out could not fetch at all (FeedUnavailableError),
+    // distinct from every honest-empty-state reason below (those are a well-formed board with
+    // zero trips; this is a fetch that outright failed for this direction only, while other
+    // directions on the same station loaded fine). Reuses #500's per-direction render shape with
+    // its own copy rather than either the generic "No upcoming trains" or silently substituting
+    // another direction's data (see getNearbyFocusedEntry).
+    if (focusedEntry?.unavailable) {
+      setLastRenderedNext(null);
+      setHeroUrgency("calm");
+      if (deps.heroDepartLabelEl) {
+        deps.heroDepartLabelEl.textContent = "Next Train";
+      }
+      if (deps.departCountdownEl) {
+        deps.departCountdownEl.textContent = "—";
+      }
+      if (deps.departDisplayTimeEl) {
+        deps.departDisplayTimeEl.textContent = "Temporarily unavailable";
+      }
+      if (deps.heroScheduledTimeEl) {
+        deps.heroScheduledTimeEl.textContent =
+          "Live times are temporarily unavailable for this direction — please try again shortly.";
+        deps.heroScheduledTimeEl.hidden = false;
+      }
+      if (deps.platformEl) {
+        deps.platformEl.textContent = "—";
+      }
+      if (deps.statusEl) {
+        deps.statusEl.textContent = "—";
+      }
+      if (deps.followingSectionEl) {
+        deps.followingSectionEl.hidden = true;
+      }
+      hideUpcomingDepartureBoard();
+      hideTerminusArrivalsBoard();
+      if (nearbyDirectionsEl) {
+        nearbyDirectionsEl.hidden = false;
+      }
+      renderNearbyDirectionsList();
+      updateSwipeHint();
+      updateSwipeCues();
+      maybeScheduleOnboarding();
+      return;
+    }
+
     // docs/jim-brief-dublin-honest-empty-state.md: a well-formed board with zero trips in
     // every direction, where the provider says service should genuinely be running (a live
     // feed gap, not "no service") gets an honest explanation instead of a bare "No upcoming
@@ -2898,11 +2965,20 @@ async function fetchNearbyBoard() {
       return;
     }
 
+    // docs/jim-brief-feed-unavailable-bespoke-adapters.md: additive fields — a direction here
+    // has no `entries` row because its own fetch failed (FeedUnavailableError), not because it
+    // doesn't exist for this station. Read before the focus-reassignment check below so a rider
+    // already looking at that direction isn't silently bounced to a different one.
+    const unavailableDirections = Array.isArray(payload.unavailableDirections)
+      ? payload.unavailableDirections
+      : [];
+
     if (applyHoldingNearbyPinFocus()) {
       // Keep the pinned direction even if another line has an earlier next train.
     } else if (
       !nearbySession.focusedDirection ||
-      !entries.some((entry) => entry.direction === nearbySession.focusedDirection)
+      (!entries.some((entry) => entry.direction === nearbySession.focusedDirection) &&
+        !unavailableDirections.includes(nearbySession.focusedDirection))
     ) {
       nearbySession.focusedDirection = pickSoonestNearbyDirection(entries);
     }
@@ -2918,6 +2994,7 @@ async function fetchNearbyBoard() {
         year: "numeric",
       }),
       entries,
+      ...(payload.partial ? { partial: true, unavailableDirections } : {}),
     };
     writeLastNearbyStationCache({
       station,

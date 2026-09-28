@@ -77,6 +77,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-realtime-accept.mjs",
   "gtfs-error-redaction.mjs",
   "static-feed-429-gate.mjs",
+  "bespoke-feed-unavailable-gate.mjs",
   "gtfs-snapshot-freshness.mjs",
   "gtfs-local-snapshot-fixture-freshness.mjs",
   "gtfs-rt-zero-time-gate.mjs",

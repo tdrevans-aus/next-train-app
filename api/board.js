@@ -139,10 +139,23 @@ export default async function handler(req, res) {
         return;
       }
 
+      // docs/jim-brief-feed-unavailable-bespoke-adapters.md: SOME directions failing with a
+      // FeedUnavailableError while others succeeded must read as an honest "some directions
+      // unavailable" partial board, never a silent drop of the failed direction(s) with no
+      // explanation. Additive-only fields (`partial`, `unavailableDirections`) — the `entries`
+      // shape and every other field are unchanged, and this never fires for the all-failed case
+      // above (that stays a 503).
+      const unavailableDirections = results
+        .filter((entry) => entry.error instanceof FeedUnavailableError)
+        .map((entry) => entry.direction);
+
       res.status(200).json({
         stationName: station,
         lastUpdated: now.toISOString(),
         entries,
+        ...(unavailableDirections.length > 0
+          ? { partial: true, unavailableDirections }
+          : {}),
       });
       return;
     }
