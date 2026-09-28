@@ -927,7 +927,7 @@ async function ensureSettingsDraftLoaded() {
   await populateJourneyListView();
 }
 
-async function fetchDirectionsFromApi(station) {
+async function fetchDirectionsFromApiAttempt(station) {
   const bundled = window.NextTrainBrisbaneDogfood?.getDirectionsForStation?.(station) ?? [];
   if (Array.isArray(bundled) && bundled.length) {
     return bundled;
@@ -953,6 +953,29 @@ async function fetchDirectionsFromApi(station) {
   }
 
   throw apiResultError(primary.ok ? fallback : primary, "Could not load directions");
+}
+
+/**
+ * jim-brief-cold-start-directions-timeout (28 Sep 2026): a static-join city's first
+ * /api/directions call on a freshly started serverless instance (GTFS snapshot
+ * download+parse, e.g. Copenhagen ~14s cold vs <0.5s warm) can legitimately fail or
+ * time out once, while a request 2s later — against the now-warm in-memory cache the
+ * first call already populated server-side — succeeds in well under a second. Retry
+ * once after a short pause before surfacing an error, rather than failing a rider on
+ * what a warm retry would have served fine. Never retried for a rate-limited result
+ * (error.code === "RATE_LIMITED") — that already has its own backoff via
+ * noteRateLimited(), and hammering it again 2s later would only make it worse.
+ */
+async function fetchDirectionsFromApi(station) {
+  try {
+    return await fetchDirectionsFromApiAttempt(station);
+  } catch (error) {
+    if (error?.code === "RATE_LIMITED") {
+      throw error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return await fetchDirectionsFromApiAttempt(station);
+  }
 }
 
 async function loadDirectionsForSelect(selectEl, station, preferredDirection) {

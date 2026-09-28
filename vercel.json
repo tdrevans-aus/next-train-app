@@ -12,6 +12,18 @@
     "api/health.js": {
       "maxDuration": 300,
       "regions": ["syd1"]
+    },
+    "api/directions.js": {
+      "maxDuration": 30
+    },
+    "api/destinations.js": {
+      "maxDuration": 30
+    },
+    "api/board.js": {
+      "maxDuration": 30
+    },
+    "api/next-train.js": {
+      "maxDuration": 30
     }
   },
   "headers": [

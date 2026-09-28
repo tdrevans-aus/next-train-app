@@ -175,6 +175,7 @@ const SMOKE_SCRIPTS = [
   "write-city-directions-resilience.mjs",
   "late-leave-slider-stays.mjs",
   "cold-boot-fetch-coalesce.mjs",
+  "cold-start-directions-gate.mjs",
   "lib-bare-import-gate.mjs",
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
