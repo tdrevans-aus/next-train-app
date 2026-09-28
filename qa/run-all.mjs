@@ -166,9 +166,11 @@ const SMOKE_SCRIPTS = [
   "honest-empty-state.mjs",
   "chicago-dogfood-gate.mjs",
   "vienna-dogfood-gate.mjs",
+  "prague-dogfood-gate.mjs",
   "washington-dogfood-gate.mjs",
   "melbourne-dogfood-gate.mjs",
   "tampere-dogfood-gate.mjs",
+  "bergen-dogfood-gate.mjs",
   "write-city-directions-resilience.mjs",
   "late-leave-slider-stays.mjs",
   "cold-boot-fetch-coalesce.mjs",
@@ -178,6 +180,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-refresh-status-cache-gate.mjs",
   "prod-sweep-refresh-failed-gate.mjs",
   "no-hardcoded-qa-port.mjs",
+  "service-hours-helper.mjs",
   "ad-consent-gate.mjs",
   "ads-init-after-deferred-load.mjs",
   "feedback-abuse.mjs",
@@ -389,6 +392,12 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "prod-sweep-refresh-failed-gate.mjs",
   /** Pure static-text scan of qa/*.mjs for hardcoded :3000; no dev server. */
   "no-hardcoded-qa-port.mjs",
+  /**
+   * Fixed-clock unit test of qa/helpers/service-hours.mjs — no dev server, no
+   * network, no real "now". docs/jim-brief-live-gates-service-hours.md, 28
+   * Sep 2026.
+   */
+  "service-hours-helper.mjs",
   /**
    * Static assertion on vercel.json + lib/gtfs-refresh.js text - no dev
    * server, no network. docs/jim-brief-canberra-refresh-region.md, 13 Sep

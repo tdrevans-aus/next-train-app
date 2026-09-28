@@ -83,3 +83,23 @@ Line A does **not** call at Florenc.
 5. Whether any A/B/C service is a short-turn/partial route not running end to end (oracle report
    silent on this — flagged as a hazard-pack gap, verify at D2 before assuming `shortTurns: []`
    holds for the live product, not just this pack).
+
+## Correction, 28 Sep 2026 (docs/jim-brief-prague-line-c-short-turn.md)
+
+Question 5 above is answered: **yes**, Line C runs genuine short-turns, confirmed live twice
+(Jim's PR #488 D2 finding, re-confirmed this session) during the early-morning
+Europe/Prague window. Tim's call: real short-turns are promoted to first-class terminus chips
+(Washington #482 precedent — Huntington, Wiehle-Reston East), not left as an under-specified bare
+`"C"` fallback. Two confirmed:
+
+| train | label |
+| --- | --- |
+| C toward Háje, short-turning at Pražského povstání (southbound) | C + Pražského povstání |
+| C toward Letňany, short-turning at Chodov (northbound) | C + Chodov |
+
+Both are catalogued, in-network Line C stations (Pražského povstání between Vyšehrad and Pankrác;
+Chodov between Roztyly and Opatov) — see `docs/prague-d1/jim-handoff.md`'s "Correction, 28 Sep
+2026" section for the live evidence and `lib/cities/prague/marketing-directions.js` for the
+implementation (`LINE_TERMINI.c`, `SHORT_TURN_TERMINI.c`, `isTerminusReachableFromStation`).
+Lines A and B showed no short-turn headsigns over the same live window — `shortTurns: []` stands
+for both, on a live-sample-of-one basis (not an exhaustive schedule audit).

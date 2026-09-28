@@ -134,3 +134,38 @@ intentionally NOT started** — that's Jim's job (D2–D6), not this pack's. Nor
 already ran (`docs/norway-ledger.md`, Nico, 27 Sep 2026) — Bergen is the second of its two scoped
 regions (Oslo is live; this pack is Bergen's D1). No country-lane lock applies to Luke's work
 regardless (lock is Jim's only, for shared files).
+
+## Jim's D2 pass, 28 Sep 2026
+
+Adapter built per this pack, reusing Oslo's Entur Journey Planner v3 GraphQL pattern
+(`lib/providers/bergen.js`, filtered to `SKY:Authority:SKY` + `transportMode: tram` +
+publicCode `{"1","2"}`) — not a fork of `lib/providers/oslo.js`, a separate adapter over the
+same shared surface, per `docs/norway-ledger.md`'s per-city-adapter decision. Built with
+**Bergen busstasjon as the hub lock**, per this pack's H6 correction — Tim's override question
+(Byparken vs Bergen busstasjon) is still open; flagging again here rather than silently
+resolving it. If Tim prefers Byparken, that's a one-line change to `BERGEN_HUB` in
+`lib/cities/bergen/marketing-directions.js` plus the registry note, not a re-derivation.
+
+Shipped: `lib/providers/bergen.js`, `lib/cities/bergen/{stations.json, marketing-directions.js,
+dogfood-next-train.js, coverage.json}`, a `bergen` entry in `lib/providers/registry.js`
+(`status: "planned"`, `adapterReady: true`), dispatch switch-cases in
+`lib/cities/live-city-api.js`'s `directionsFor`/`getMultiCityNextTrain`, a `bergen` box in
+`lib/cities/city-bounds.js`, `qa/bergen-dogfood-gate.mjs` (registered in `qa/run-all.mjs`'s
+smoke tier), and `qa/bergen-all-stations-live-sweep.mjs` (modelled on
+`qa/dublin-all-stations-live-sweep.mjs`, unregistered — needs real network + Bergen service
+hours). Deliberately NOT touched: `MULTI_CITY_IDS`/the `MultiCityId` typedef,
+`brisbane-dogfood.js`'s mount/available map, `journey-model.js`'s persisted-city/country lists,
+or any picker/`country-regions.js` entry — those are Mark's flip-commit additions (Norway
+already has a picker/country-regions mapping for Oslo; whether Bergen needs its own or shares
+one is Mark's call at flip time, not decided here).
+
+**Live check: pending, not run this pass.** This D2 pass ran at ~03:04 Europe/Oslo (Monday),
+before Bybanen's ~05:00 service start — outside the window this brief called out as viable
+(~11:00 Perth / Bergen daytime). `node qa/bergen-dogfood-gate.mjs` and
+`node qa/run-all.mjs --smoke` were both run instead (offline, synthetic-payload coverage only)
+and are green. `qa/bergen-all-stations-live-sweep.mjs` has not been run against the real Entur
+endpoint — Mark should run it during Bergen service hours before treating the live path as
+confirmed, per the "not independently live-confirmed this pass" note already in the registry
+entry. SIRI VM/vehicle-positions availability for the SKY dataset also remains unconfirmed
+(this pack's item 3) — not needed for the `estimatedCalls` path this adapter uses, but flagged
+again for whoever eventually wires a vehicle-position feature.

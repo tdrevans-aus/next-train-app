@@ -54,7 +54,8 @@
     "gtfsRouteIdsIfKnown are the official line letters A, B, C printed on the PID map (not extracted from GTFS). No stopIds in this file.",
     "Feed / live (Jim D2, not a D1 generator): Golemio API (api.golemio.cz) via X-Access-Token header. Free registration required, non-commercial tier. No public GTFS-RT confirmed. Static PID GTFS zip verified live 200 empty-key 2026-08-28 — not a D1 generator, filter to metro routes only. Never paste a key. D1 stays planned. assertCityLive(\"prague\") must fail (Unknown city / 400 — city is not in lib/providers/registry.js CITIES).",
     "Board eligibility: all three lines verdict 'in' per oracle report (open honor-system boarding, pre-boarding validators not gate barriers, no compulsory reservation, no check-in barrier). No excluded metro services in v1 scope.",
-    "Shortturns: oracle report does not document any nested/partial-route service codes for A/B/C. shortTurns left empty on all three lines as a default, NOT a confirmed empty — flagged in hazard-pack.md H5 for D2 verification against GTFS trip_headsign / stop_times before treating as final."
+    "Shortturns: oracle report does not document any nested/partial-route service codes for A/B/C. shortTurns left empty on all three lines as a default, NOT a confirmed empty — flagged in hazard-pack.md H5 for D2 verification against GTFS trip_headsign / stop_times before treating as final.",
+    "Correction, 28 Sep 2026 (docs/jim-brief-prague-line-c-short-turn.md): H5's gap resolved for Line C — two genuine, recurring short-turns confirmed live over the early-morning Europe/Prague window: southbound trips terminating at Pražského povstání (short of Háje) and northbound trips terminating at Chodov (short of Letňany, originating at Háje). Both are real, separately-catalogued Line C stations, added to lines[].shortTurns for C and to lib/cities/prague/marketing-directions.js LINE_TERMINI.c as first-class terminus chips (Washington #482 precedent). Lines A and B showed no short-turn headsigns over the same live window; shortTurns stays [] for both on a live-sample-of-one basis, not an exhaustive schedule audit."
   ],
   "printedInnerCityNames": {
     "lock": "Muzeum",
@@ -229,7 +230,10 @@
         "Letňany",
         "Háje"
       ],
-      "shortTurns": [],
+      "shortTurns": [
+        "Pražského povstání",
+        "Chodov"
+      ],
       "branches": [
         {
           "at": "Florenc",

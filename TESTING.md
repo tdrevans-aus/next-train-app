@@ -48,6 +48,35 @@ curl https://next-train-app.vercel.app/api/health
 curl https://next-train-app.vercel.app/api/ready
 ```
 
+## QA dev-server port discipline
+
+`node qa/run-all.mjs --smoke` (or `--release`) picks its own free port per run and never
+attaches to a server another run started — safe by default, no flags needed
+(docs/jim-brief-qa-port-per-worktree.md).
+
+Running a single gate standalone (`node qa/<city>-dogfood-gate.mjs`) is different: with no
+`QA_BASE` set, it falls back to `http://localhost:3000` and spawns `dev-server.js` there itself
+if nothing answers. Two things to know if you want it to attach to a server *you* started
+yourself, on a non-default port:
+
+- Start the server with `PORT` (not `QA_PORT`, though `dev-server.js` now honours either) set
+  to the exact port your gate will look for: `PORT=3411 node dev-server.js`.
+- Point the gate at that same port and tell it to attach, not spawn its own:
+  `QA_BASE=http://localhost:3411 QA_ATTACH=1 node qa/some-dogfood-gate.mjs`.
+
+Without `QA_ATTACH=1`, a gate given a `QA_BASE` with nothing listening on it will spawn its own
+server there rather than erroring — convenient for the common "just run this one script" case,
+but it means a server you hand-started on the *wrong* port (e.g. plain `node dev-server.js`,
+which binds :3000 by default) is invisible to a gate whose `QA_BASE` points elsewhere; the gate
+spawns a second server instead of using yours, and your first server is not a "stray" — it is
+just not the one the gate is looking for. If you do set `QA_ATTACH=1` and nothing is listening on
+`QA_BASE`, the gate now refuses with the exact command to fix it, instead of silently spawning
+one — and `dev-server.js` itself prints a loud warning at startup if `QA_BASE` is set to a port
+different from the one it just bound, for the same reason.
+
+Never kill a process you did not start to "fix" a port mismatch — check `QA_BASE` against the
+port the server actually printed first.
+
 ## Fixtures
 
 Times are relative to **now** when the API responds, so countdowns stay stable for the session but drift on refresh (by design).

@@ -77,3 +77,124 @@ live is Jim's job, not this pack's flip.
 4. **DPP metro agency/route filter string in GTFS not yet confirmed exact** — oracle report says
    "agency 'DPP metro' (or confirmed name)"; confirm exact `agency_name`/`route_type` filter at D2
    against the live GTFS zip rather than guessing a string.
+
+## D2 (Jim, 28 Sep 2026) — appended, not a rewrite
+
+Adapter wired: `lib/providers/prague.js` + `lib/cities/prague/{stations.json, marketing-
+directions.js, dogfood-next-train.js, coverage.json}` + `lib/providers/registry.js` entry
+(`status: "planned"`, `adapterReady: true`). Registered in `qa/run-all.mjs`'s smoke tier as
+`qa/prague-dogfood-gate.mjs` (offline, synthetic Golemio payloads, status-agnostic). Golemio
+live-sweep script added (`qa/prague-all-stations-live-sweep.mjs`), not run this session (see
+"Live check" below).
+
+**Golemio endpoint confirmed.** GET `https://api.golemio.cz/v2/pid/departureboards?ids[]=<GTFS
+stop_id>`, header `X-Access-Token`, confirmed against the live OpenAPI spec at
+https://api.golemio.cz/pid/docs/openapi/ (served from
+https://api.golemio.cz/docs/static/vp-output-gateway/openapi.json) and a real 200 response
+(empty `departures: []`, ~02:15 Prague — metro closed) using `GOLEMIO_API_KEY`. Rate limit: 20
+requests / 8 seconds per key (the spec's own "Requests rate" note). `route.type` in a departure
+row is the GTFS route_type (1 = metro) — used as a belt-and-braces filter even though the queried
+stop_ids are already metro-only platforms.
+
+**Static GTFS cross-check done, not skipped.** `scripts/trim-prague-gtfs.mjs` downloaded the live
+~48MB `PID_GTFS.zip`, filtered to route_type 1, and confirmed the kept `route_short_name` set is
+exactly `{A, B, C}` — no D. Every one of the 58 D1 station names matched exactly one
+location_type=1 (parent station) row's `stop_name` in the FULL unfiltered feed, byte-for-byte
+including diacritics — no misses, no duplicates. The trimmed fixture was published to the
+next-train-gtfs Vercel Blob store (`gtfs/prague.zip`, 0.51MB zipped) for provenance, but the
+resolved stop_ids are baked directly into `lib/cities/prague/stations.json` — the adapter does
+NOT read that blob (or any GTFS static feed) at runtime; see lib/providers/prague.js's file
+header for why (same "resolve once, store the result" pattern as Vienna's RBL arrays, not
+Dublin's per-request GTFS lookup).
+
+**Flora finding.** Flora (Metro A, between Jiřího z Poděbrad and Želivského) has ZERO
+`stop_times.txt` rows referencing either of its platform stop_ids (`U118Z101P`/`U118Z102P`) in
+the 28 Sep 2026 snapshot — every sampled Line A trip runs Jiřího z Poděbrad -> Želivského
+directly, skipping it. This looks like a real, current service gap (e.g. an escalator/engineering
+closure), not a fixture bug — Flora's parent + platform stop_ids were confirmed to still exist by
+exact NAME match against the full feed (not trip-derived), so `scripts/trim-prague-gtfs.mjs`
+unions in every D1-named station's parent+child platforms regardless of whether today's
+stop_times touch them, and Flora stays in the 58-station catalog. If Golemio's live board
+genuinely returns zero metro departures for Flora, that is an honest reflection of today's real
+service, not a bug to paper over — flagged for Mark/Tim to re-confirm before flip whether this is
+temporary (docs/board-eligibility-rule.md doesn't apply here — this isn't a mode/product
+eligibility question, it's a live-service-pattern one).
+
+**Live check: PENDING, not done.** It was ~02:15 Monday Prague time (Prague Metro closed
+~00:00-04:40 local) when this adapter was built and QA'd — every live network step above (the
+Golemio endpoint confirmation call, the GTFS static trim/cross-check) was done for real, but a
+genuine end-to-end `fetchStationBoard()` call at Muzeum/Můstek/Florenc/a terminus during actual
+service hours was NOT performed this session. `qa/prague-all-stations-live-sweep.mjs` is written
+and ready (headway-aware, evidence log at `docs/prague-d1/live-sweep-log.jsonl`, 9-minute runtime
+cap, modelled on Dublin's) but has not been run — left for Mark to run during Prague daytime/
+evening service (`node --env-file=.env.local qa/prague-all-stations-live-sweep.mjs`).
+
+**Golemio API ToS.** Not independently verified this session (oracle report's license section
+recommends Tim review before commercial wiring) — not a D2 blocker per the pack's own
+instruction, but flagged again here for Mark/Tim before flip.
+
+## Live verification (28 Sep 2026, ~03:53 Europe/Prague — metro just opened)
+
+After merging master (PR #488 conflict-resolution pass), the Prague Metro's early-morning
+service was running, so `fetchStationBoard()` was called for real (not synthetic) at Muzeum and
+Můstek using the checked-in `GOLEMIO_API_KEY`:
+
+- **Muzeum** (A x C): 20 trips returned. All A trips resolved cleanly to `A + Depo Hostivař` /
+  `A + Nemocnice Motol`. Every C trip towards Letňany resolved cleanly to `C + Letňany`.
+- **Můstek** (A x B): 20 trips returned. All A trips resolved to `A + Depo Hostivař` /
+  `A + Nemocnice Motol`; all B trips resolved to `B + Zličín` / `B + Černý Most`.
+- Both boards' timestamps and destinations look correct and match the expected line/terminus
+  model — no self-terminus leaks, no hub-string leaks, no cross-line contamination (no B at
+  Muzeum, no C at Můstek) observed in either live poll.
+
+**NEW FINDING confirming hazard-pack.md H5's flagged gap** ("verify... whether any A/B/C trips
+terminate short of the printed line ends... before assuming `shortTurns: []` holds"): it does
+NOT hold. At Muzeum, every Line C departure whose real headsign is toward the Háje end printed
+**`"Pražského povstání"`** as `trip.headsign` — a genuine, real Line C station (between Vyšehrad
+and Pankrác), not Háje itself. This is a real short-turn/partial-route service pattern (observed
+consistently across the whole live poll window, not a one-off), most likely an early-morning
+reduced-service pattern. `resolveTerminus`/`mapLineTerminusDestination` correctly do NOT fabricate
+a matching chip for this (per their "never invent an unknown terminus" contract) and fall back to
+the bare `"C"` label — this is the SAFE behaviour (no wrong string shown), but it means riders see
+an under-specified direction chip for this real, recurring service, not a wrong one. This is a
+**direction-model decision for Tim** (§3 memo says "Hold D5... until Tim locks this," and
+explicitly flagged this exact gap as unconfirmed) — options are (a) add `Pražského povstání` as a
+second valid C terminus in `LINE_TERMINI.c` so it gets its own `"C + Pražského povstání"` chip, or
+(b) leave the bare-`"C"` fallback as the deliberate degraded-but-safe behaviour. Not decided or
+changed here — `lib/cities/prague/marketing-directions.js`'s `LINE_TERMINI` is untouched pending
+that call. No other short-turn headsigns were observed on A or B in this poll window.
+
+## Correction, 28 Sep 2026 (docs/jim-brief-prague-line-c-short-turn.md — flip prerequisite)
+
+Tim's call above is now made (controller decision under the Washington #482 precedent: real
+short-turns are promoted to terminus chips, not left as a bare line label). Re-verified live
+against the real Golemio departureboards feed at ~03:53-04:10 Europe/Prague (early-morning
+short-turn window, same window as the original finding):
+
+- **Line C, southbound (Letňany -> Háje):** `"Pražského povstání"` confirmed again as a real,
+  recurring headsign (41 departures across a full-line-C poll of 90 total departures) — this is
+  not a one-off. Added to `LINE_TERMINI.c` as `"C + Pražského povstání"`.
+- **Line C, northbound (Háje -> Letňany):** a SECOND short-turn found this session, not previously
+  reported — `"Chodov"` (10 departures, all seen at Háje and Opatov, i.e. trips originating at
+  Háje and terminating two stops north at Chodov). Chodov is a real, separately-catalogued Line C
+  station (between Roztyly and Opatov). Added to `LINE_TERMINI.c` as `"C + Chodov"`.
+- **Lines A and B:** re-polled in full (every stop on each line, 86 and 89 departures
+  respectively) over the same window — every A departure read `Nemocnice Motol`/`Depo Hostivař`,
+  every B departure read `Zličín`/`Černý Most`. No short-turn headsign observed on either line.
+  `shortTurns: []` stays correct for A/B on this evidence, but remains a live-sample-of-one for
+  those two lines, not an exhaustive schedule audit — a future session should re-check rather than
+  treat this as permanently confirmed.
+
+Both C short-turns are geographically direction-aware in the dogfood picker (`marketingLabelsForStation`
+in `lib/cities/prague/marketing-directions.js`, via `isTerminusReachableFromStation`): a short-turn
+chip is only offered at stations that short-turn's trip actually passes through (e.g. Pankrác,
+south of Pražského povstání, never offers that chip; Roztyly, north of Chodov, never offers that
+chip), and never at the short-turn terminus itself. Production boards needed no equivalent change —
+`resolveTerminus`/`mapLineTerminusDestination` are driven by the live headsign itself, so a station
+only ever shows a chip for a trip that genuinely passes it, automatically.
+
+`node qa/prague-dogfood-gate.mjs` carries the synthetic-payload proof (a C trip headsigned
+Pražského povstání is counted and correctly chipped at Muzeum, dropped as a self-terminus arrival
+at Pražského povstání itself, and the reachability filter is asserted directly) plus the reachable/
+unreachable station pairs for both short-turns. Status stays `"planned"` — this is a flip
+prerequisite, not a flip.
