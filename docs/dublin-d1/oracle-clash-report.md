@@ -47,6 +47,17 @@ D1 pack will hand-transcribe station order from official Luas Red & Green line m
 
 **Board eligibility summary:** All Luas services (Red & Green) are walk-up boardable with no check-in barriers at any station. Leap Card or contactless tap at entry is the only booking; no seat reservation, no advance booking. DART is walk-up boardable but deferred to v2 per product scope. Buses are excluded by mode cut (v1 is light rail only). **All verdicts recorded; no silent omissions.**
 
+**Update, 28 Sep 2026 (docs/jim-brief-dublin-belgard-saggart-direction-gap.md, hazard-pack.md H9):**
+Belgard (Red Line fork) was found intermittently dropping its `Red + Saggart` direction from live
+boards while `Red + Tallaght`/`Red + The Point` kept working — a direction-specific real-time
+delivery gap, not a board-eligibility mode/product verdict change (Saggart-bound Luas service is
+still `in`, walk-up boardable, same operator and fare system as every other Red Line direction).
+Investigated and confirmed as a NTA GTFS-RT feed intermittency (present at session start, absent for
+part of Mark's earlier window, present and stable across a later 8-poll session) rather than a
+missing catalog stop_id — Belgard's two static stop_ids are the only ones that exist for that name
+in the published snapshot, and both resolve correctly. No verdict change; no catalog action. See
+hazard-pack.md H9 for full evidence.
+
 ## Skip risk
 
 None if NTA API key is issued. DART is recorded as out-of-scope (v2), not a missing feed. Static GTFS zip 200 verified; live GTFS-RT v2 endpoints confirmed functional. Real-time Luas coverage is in scope and documented.

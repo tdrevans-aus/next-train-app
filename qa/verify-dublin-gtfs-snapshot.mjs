@@ -12,9 +12,15 @@
  *
  * Usage: node qa/verify-dublin-gtfs-snapshot.mjs
  */
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { unzipSync } from "../lib/vendor/fflate.mjs";
 import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
+import { resolveStopIds } from "../lib/providers/dublin.js";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const MIN_BYTES = 5 * 1024;
 const MAX_ALLOWED_ROUTES = 4;
@@ -100,6 +106,86 @@ function inspectRoutesAndStops(files) {
   return problems;
 }
 
+/**
+ * Station-id completeness audit (docs/jim-brief-dublin-belgard-saggart-direction-gap.md).
+ * Dublin's catalog (lib/cities/dublin/stations.json) never hardcodes stop_ids — every station's
+ * stop_ids are resolved dynamically at request time by findRailStopIdsForName()'s substring match
+ * over the published static snapshot (lib/providers/gtfs/static-cache.js), so there is no static
+ * "stopIds list" a defect could go stale in. The real risk this guards against is drift between
+ * that dynamic resolution and the ground truth: a stop_id whose stop_name EXACTLY equals (folded)
+ * a catalog station's printed name or alias, and which is genuinely used by a kept Red/Green trip,
+ * but which resolveStopIds()/findRailStopIdsForName() somehow fails to return — e.g. a future
+ * change to the substring-match logic, a parent_station edge case, or (Belgard's own suspicion,
+ * ruled out below) an undiscovered third platform id.
+ *
+ * Independent of dublin.js's own matching logic: builds its own exact-name index over stops.txt,
+ * intersects it with stop_ids actually referenced by kept (Luas) trips in stop_times.txt, and
+ * asserts every such id is a member of the set resolveStopIds() would actually use. This would
+ * have caught Belgard if its catalog entry had ever hardcoded an incomplete id pair.
+ */
+async function auditStationIdCompleteness(files) {
+  const stopsKey = findEntry(files, "stops.txt");
+  const tripsKey = findEntry(files, "trips.txt");
+  const stopTimesKey = findEntry(files, "stop_times.txt");
+  if (!stopsKey || !tripsKey || !stopTimesKey) {
+    console.log("\n--- station-id completeness audit: skipped (missing stops/trips/stop_times.txt) ---\n");
+    return [];
+  }
+
+  const stops = parseCsv(readEntryText(files, stopsKey));
+  const trips = parseCsv(readEntryText(files, tripsKey));
+  const stopTimes = parseCsv(readEntryText(files, stopTimesKey));
+
+  const keptTripIds = new Set(trips.map((trip) => trip.trip_id));
+  const usedStopIds = new Set();
+  for (const stopTime of stopTimes) {
+    if (keptTripIds.has(stopTime.trip_id) && stopTime.stop_id) {
+      usedStopIds.add(stopTime.stop_id);
+    }
+  }
+
+  const foldName = (value) => String(value || "").trim().toLowerCase();
+  const stopNameById = new Map(stops.map((stop) => [stop.stop_id, foldName(stop.stop_name)]));
+  const staticData = { stops, stopsById: new Map(stops.map((stop) => [stop.stop_id, stop])) };
+
+  const catalogPath = join(ROOT, "lib/cities/dublin/stations.json");
+  const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
+
+  const problems = [];
+  const summary = [];
+
+  for (const station of catalog.stations ?? []) {
+    const names = [station.name, ...(station.aliases ?? [])].map(foldName).filter(Boolean);
+
+    // Ground truth: every stop_id genuinely used by a kept trip whose GTFS stop_name folds to
+    // an EXACT match against this station's printed name or one of its aliases.
+    const exactMatchIds = [...usedStopIds].filter((stopId) => names.includes(stopNameById.get(stopId)));
+    if (exactMatchIds.length === 0) {
+      continue;
+    }
+
+    // What the adapter would actually resolve at request time for this station.
+    const resolved = new Set(await resolveStopIds(station.name, staticData));
+    const missing = exactMatchIds.filter((id) => !resolved.has(id));
+    if (missing.length > 0) {
+      problems.push(
+        `${station.name}: exact-name-matched stop_id(s) ${missing.join(", ")} are used by a kept Red/Green trip but resolveStopIds("${station.name}") never returns them.`
+      );
+    }
+    summary.push(`${station.name}: ${exactMatchIds.length} exact-name-matched id(s), ${resolved.size} resolved`);
+  }
+
+  console.log(`\n--- station-id completeness audit: ${summary.length} station(s) with a live-snapshot name match ---`);
+  for (const line of summary) {
+    console.log(`  ${line}`);
+  }
+  if (problems.length === 0) {
+    console.log("--- station-id completeness audit: ok, every exact-name-matched id resolves ---\n");
+  }
+
+  return problems;
+}
+
 async function main() {
   const url = gtfsFixtureBlobUrl("dublin");
   const response = await fetch(url);
@@ -135,7 +221,12 @@ async function main() {
     );
   }
 
-  console.log(`verify-dublin-gtfs-snapshot: ok (${url}, ${buffer.length} bytes, stops.txt contains Luas stops)`);
+  const idProblems = await auditStationIdCompleteness(files);
+  if (idProblems.length > 0) {
+    throw new Error(`verify-dublin-gtfs-snapshot: station-id completeness audit failed:\n  - ${idProblems.join("\n  - ")}`);
+  }
+
+  console.log(`verify-dublin-gtfs-snapshot: ok (${url}, ${buffer.length} bytes, stops.txt contains Luas stops, station-id completeness audit passed)`);
 }
 
 main().catch((error) => {

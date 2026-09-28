@@ -197,3 +197,55 @@ telling them apart needs evidence across time, not a single poll:
    >= 1.5x-headway empty run is classified `intermittent-long` (shape 3, passes, honest-empty-state
    signal still required) rather than failed. No catalog action for shape 3 — Broombridge keeps its
    own board and its `Green + Broombridge` terminus chip.
+
+## H9 — Belgard: a fourth shape, direction-specific intermittent dropout at a shared-trunk fork station (added 28 Sep 2026, docs/jim-brief-dublin-belgard-saggart-direction-gap.md)
+
+Mark's QA pass 8 (docs/dublin-d1/mark-qa-note.md) found Belgard — the Red Line's Tallaght/Saggart
+fork — showing only `Red + Tallaght` and `Red + The Point` over 15+ live polls spanning ~12 minutes
+(06:21-06:33 Dublin), with `Red + Saggart` never appearing, while Fortunestown and Citywest Campus
+(downstream, Saggart-branch-only stations) carried live Saggart-bound trams throughout. Unlike H8's
+three shapes (which are all *whole-station* dropouts), this is a **single direction dropping out at
+a station whose other directions keep working fine** — a rider at Belgard would see a healthy,
+non-empty board that simply never mentions one of its two genuinely-running branches, with no
+`emptyReason` to explain the gap.
+
+**Hypothesis tested first, per the brief: a missing platform stop_id.** Belgard has exactly two
+stop_ids in the published NTA Luas static snapshot (`8230GA00347`/`8230GA00348`, both named plainly
+"Belgard", no `parent_station`) — confirmed directly against the raw `GTFS_LUAS.zip` source
+(stops.txt) and against the published blob snapshot via `qa/verify-dublin-gtfs-snapshot.mjs`'s new
+station-id completeness audit (added this pass): every one of the catalog's 65 stations, Belgard
+included, has all of its exact-name-matched live-snapshot stop_ids resolved correctly by
+`resolveStopIds()`/`findRailStopIdsForName()`. **No third platform id exists, and the catalog's
+dynamic (not hardcoded) id resolution is already complete.** stop_times.txt independently confirms
+478 Saggart-headsign trips are scheduled to call at Belgard's two ids, on par with Tallaght (479)
+and The Point (499) — the static schedule expects Saggart trains at Belgard as often as the other
+two directions. This rules out the missing-id hypothesis entirely; it is not a catalog/adapter
+defect.
+
+**Live re-check (28 Sep 2026, ~05:44-05:58 Dublin, Monday morning service, foreground
+`fetchStationBoard('Belgard', {horizonMinutes: 90})` polls plus a direct GTFS-RT TripUpdates
+snapshot parse):** the first poll of the session (05:44, one raw TripUpdates fetch) found 13
+stop_time_updates at Belgard's two ids, of which 2 were genuinely Saggart-headsigned trips
+(`5858_2409` delay +404s, `5858_2458` delay +284s) — i.e. Saggart-bound confirmation was *already
+present* at that point, contradicting a permanent/still-ongoing gap. A follow-up `fetchStationBoard`
+poll sequence, 8 polls at 60s spacing from 05:50 to 05:58, found `Red + Saggart` present (1-3
+confirmed trips) in 7 of 8 polls, stabilising to a consistent 2-3 confirmed Saggart trips per poll
+from the second poll onward, with Tallaght/The Point unaffected throughout. This is the same shape
+as H8's shape 2/3 (Red Cow/Kylemore/Rialto/Broombridge/Marlborough) — a window where the feed
+under-reports, followed by recovery within the same session — but scoped to one direction at a
+shared-trunk station rather than the whole station. Given Mark's original window (06:21-06:33) and
+this session's window (05:44-05:58) don't overlap, and both are single-session snapshots, this is
+recorded as a new intermittent shape rather than either fully confirmed-permanent or
+fully-confirmed-resolved; a station that has been directly observed carrying `Red + Saggart` with
+real (non-placeholder) delays this session is not filtered or downgraded.
+
+**Verdict: direction-level intermittent NTA feed gap (new H8-adjacent shape), not a code or
+catalog defect.** No catalog change. Belgard stays in the catalog with all three of its directions
+(`Red + Tallaght`, `Red + Saggart`, `Red + The Point`); no coverage-note exclusion, since the
+direction was directly observed live and working this session, and no per-direction empty state is
+warranted for a shape that resolves within the same session (same posture as Red Cow/Kylemore under
+H8 shape 2). Flag for the next Mark pass: if `Red + Saggart` at Belgard is ever found absent again
+across a comparably long multi-poll window, cross-check against `docs/dublin-d1/live-sweep-log.jsonl`
+and this entry's timestamps before re-opening a Jim brief — the pattern so far (present at session
+start, present throughout a later 8-poll run) does not yet support a permanent, Connolly/Saggart-
+shaped exclusion.

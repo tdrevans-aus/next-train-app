@@ -432,3 +432,39 @@ observed in this shape, each confirmed non-empty earlier or later the same day (
 `docs/live-flip-checklist.md` §9 is corrected to say permanent means "never observed non-empty
 across runs" rather than "empty this run" — the wording that led to Mark's understandable
 first-pass PERMANENT classification here.
+
+## Correction, 28 Sep 2026 (Jim, docs/jim-brief-dublin-belgard-saggart-direction-gap.md) — Belgard's missing-id hypothesis ruled out; direction-specific intermittency, no catalog action
+
+Mark's QA-8 note (`docs/dublin-d1/mark-qa-note.md`, run on `mark/dublin-flip-8`) found **Belgard**
+(the Red Line's Tallaght/Saggart fork) showing only `Red + Tallaght` and `Red + The Point` across
+15+ live polls (~06:21-06:33 Dublin), with `Red + Saggart` never appearing — a new shape, since
+Belgard's overall board wasn't empty (unlike Connolly/Saggart/H8's whole-station dropouts), only one
+of its two directions was silently missing.
+
+The brief's first hypothesis — Belgard has an undiscovered third platform stop_id the catalog
+doesn't know about — is **ruled out**. Dublin's catalog never hardcodes stop_ids per station; every
+station's ids are resolved dynamically at request time from the published static snapshot
+(`findRailStopIdsForName()`/`resolveStopIds()`, `lib/providers/dublin.js`). Direct inspection of
+both the raw NTA source (`GTFS_LUAS.zip`) and the published Vercel Blob snapshot confirms Belgard
+has exactly two stop_ids (`8230GA00347`/`8230GA00348`, no `parent_station`), both already resolved
+correctly — there is no third id anywhere in `stops.txt`. `qa/verify-dublin-gtfs-snapshot.mjs`
+gained a new station-id completeness audit this pass (per the brief's ask: "for each catalog
+station, compare its listed ids with ALL stops.txt ids of that name... report any station missing
+an id") — it independently re-derives, from `stops.txt`/`stop_times.txt` directly, every stop_id
+whose GTFS name exactly matches a catalog station's name/alias and is genuinely used by a kept Red/
+Green trip, then asserts `resolveStopIds()` returns every one of them. All 65 catalog stations pass,
+Belgard included (2/2 resolved). This would have caught Belgard had the defect been real.
+
+A foreground live re-check (Monday ~05:44-05:58 Dublin) found the opposite of a persistent gap: a
+raw TripUpdates snapshot at 05:44 already carried two genuinely Saggart-headsigned, non-zero-delay
+confirmations at Belgard's stop_ids, and an 8-poll `fetchStationBoard` sequence (60s apart, 05:50-
+05:58) found `Red + Saggart` present in 7/8 polls, stabilising to 2-3 confirmed Saggart trips per
+poll from the second poll onward — Tallaght/The Point unaffected throughout. Since this session's
+window doesn't overlap Mark's (06:21-06:33), and both are single-session snapshots, this is recorded
+as a new, direction-specific intermittent NTA feed shape (hazard-pack.md H9) rather than declared
+either permanently broken or definitively resolved. **No catalog action**: Belgard keeps all three
+directions; no coverage-note exclusion, since the direction was directly observed live and working
+this session. If a future Mark pass finds `Red + Saggart` absent at Belgard again across a
+comparably long window, check `docs/dublin-d1/live-sweep-log.jsonl` and hazard-pack.md H9's
+timestamps first — the evidence so far favours intermittency over a permanent, Connolly/Saggart-
+shaped gap.
