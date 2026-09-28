@@ -42,6 +42,7 @@ import {
   fetchStationBoard,
   tripAllowed,
   mapGroupOf,
+  classifyAndFilterCopenhagenTrips,
 } from "../lib/providers/copenhagen.js";
 import {
   foldKey,
@@ -52,6 +53,7 @@ import {
   classifyDsbService,
   mapDsbDestination,
   resolveTerminus,
+  isTerminatingAtCatalogEntry,
 } from "../lib/cities/copenhagen/marketing-directions.js";
 import { REJSEPLANEN_GTFS_STATIC_URL, MissingRejseplanenApiKeyError } from "../lib/providers/rejseplanen.js";
 import {
@@ -177,6 +179,86 @@ assert(isForbiddenHubProxy("Nørreport") === true, "Nørreport must never stand 
 assert(isForbiddenHubProxy(COPENHAGEN_HUB) === false, "the hub itself is not its own proxy violation");
 assert(foldKey("Nørreport") === foldKey("NORREPORT".replace("R", "R")) || foldKey("Nørreport") !== "", "foldKey must fold diacritics/case");
 
+// Self-terminus guard (docs/jim-brief-copenhagen-self-terminus.md, Dublin #484 pattern): a trip
+// whose resolved terminus/raw headsign equals the station being viewed must never surface as a
+// boardable direction — the exact defect that shipped live at Lufthavnen ("M2 + Lufthavnen"
+// offered at Lufthavnen) plus six more stations (Vanløse, Vestamager, København H, København S,
+// Orientkaj) found by a production scan of public/city-directions/copenhagen.json. Fixture-based,
+// all-44-stations sweep against classifyAndFilterCopenhagenTrips() directly — no network call —
+// mirrors Dublin's classifyAndFilterDublinTrips() pipeline regression test. M3 (Cityringen) is
+// deliberately excluded: it has no terminus concept, and its raw headsign is a fixed
+// reference-stop label used feed-wide regardless of departure station (marketing-directions.js's
+// isTerminatingAtCatalogEntry doc comment) — filtering on name match there would strip every M3
+// departure at that one reference stop rather than catch a genuine self-terminus case.
+for (const station of stations) {
+  for (const code of station.lines ?? []) {
+    if (code === "M3") {
+      continue; // ring — no terminus concept, deliberately exempt from this guard
+    }
+    const mapGroup = METRO_CODES.has(code) ? "Metro" : STOG_CODES.has(code) ? "S-tog" : null;
+    if (mapGroup === "S-tog" && !(station.sharedOperators?.stog ?? []).includes(code)) {
+      continue; // this S-tog line isn't allow-listed at this station at all
+    }
+    if (!mapGroup) {
+      continue;
+    }
+    const selfArrivalTrip = {
+      routeShortName: code,
+      routeLongName: "",
+      routeDesc: "",
+      destination: station.name,
+      tripId: `self-terminus-${station.name}-${code}`,
+    };
+    const filtered = classifyAndFilterCopenhagenTrips([selfArrivalTrip], station);
+    assert(
+      filtered.length === 0,
+      `${station.name} (${code}) must drop a trip destined for its own name — self-terminus leak`
+    );
+  }
+}
+// DSB Regional/InterCity/InterCityLyn self-terminus at each of the four shared stations
+// (Öresundståg's real destinations are all outside Denmark, so it has no self-terminus case).
+for (const sharedName of ["Nørreport", "Nørrebro", "København H", "Nordhavn"]) {
+  const sharedEntry = byName.get(sharedName);
+  for (const [code, dsbAllowKey] of [
+    ["RE", "Regionaltog"],
+    ["IC", "InterCity"],
+    ["ICL", "InterCityLyn"],
+  ]) {
+    if (!(sharedEntry?.sharedOperators?.dsbOresundstag ?? []).includes(dsbAllowKey)) {
+      continue;
+    }
+    const dsbSelfTrip = {
+      routeShortName: code,
+      routeLongName: "",
+      routeDesc: "",
+      destination: sharedName,
+      tripId: `dsb-self-${sharedName}-${code}`,
+    };
+    const filtered = classifyAndFilterCopenhagenTrips([dsbSelfTrip], sharedEntry);
+    assert(
+      filtered.length === 0,
+      `${sharedName} must drop a self-terminus ${dsbAllowKey} trip destined for ${sharedName}`
+    );
+  }
+}
+// Control: a genuine non-self-terminus trip must survive the guard unchanged.
+const controlTrip = { routeShortName: "M1", routeLongName: "", routeDesc: "", destination: "Vestamager", tripId: "control" };
+const controlFiltered = classifyAndFilterCopenhagenTrips([controlTrip], byName.get("Vanløse"));
+assert(controlFiltered.length === 1, "a genuine non-self-terminus trip must survive the guard");
+assert(controlFiltered[0].destination === "M1 + Vestamager", "surviving trip must still carry its normal marketing label");
+// M3 ring exemption: the fixed reference-stop headsign must never be filtered, even when it
+// textually equals the station being viewed.
+const m3RingTrip = { routeShortName: "M3", routeLongName: "", routeDesc: "", destination: "København H (Metro)", tripId: "m3-ring" };
+const m3Filtered = classifyAndFilterCopenhagenTrips([m3RingTrip], byName.get("København H"));
+assert(m3Filtered.length === 1, "M3 ring trips must never be self-terminus filtered (no terminus concept)");
+// isTerminatingAtCatalogEntry direct unit coverage — resolved terminus, raw headsign fallback,
+// and alias match (Lufthavnen's live headsign never fold-substring-matches the printed name).
+assert(isTerminatingAtCatalogEntry("Lufthavnen", byName.get("Lufthavnen")) === true, "must match on the catalog name itself");
+assert(isTerminatingAtCatalogEntry("Københavns Lufthavn", byName.get("Lufthavnen")) === true, "must match on a catalog alias");
+assert(isTerminatingAtCatalogEntry("Vestamager", byName.get("Lufthavnen")) === false, "must not match an unrelated terminus");
+assert(isTerminatingAtCatalogEntry(null, byName.get("Lufthavnen")) === false, "null candidate (e.g. M3 ring) must never match");
+
 // tripAllowed / mapGroupOf — synthetic trips, no network.
 const metroTrip = { routeShortName: "M1", destination: "Vestamager" };
 assert(mapGroupOf(metroTrip) === "Metro", "M1 must classify as Metro");
@@ -298,6 +380,14 @@ assert(
   lufthavnenBoard.trips.every((trip) => trip.mapGroup === "Metro" && trip.routeShortName === "M2"),
   "Lufthavnen (M2-only terminus) must only ever surface M2 Metro trips"
 );
+// Live confirmation of the self-terminus fix at the exact station the production scan found it
+// broken (docs/jim-brief-copenhagen-self-terminus.md finding, 28 Sep 2026, 13:40 Europe/Copenhagen):
+// Lufthavnen was unreachable until #505's trimmed-snapshot fix, so nobody had seen this board
+// live before.
+assert(
+  lufthavnenBoard.trips.every((trip) => trip.destination !== "M2 + Lufthavnen"),
+  "Lufthavnen must never show itself as a direction (self-terminus guard)"
+);
 
 // Dogfood station list comes from the catalog, not a fresh GTFS parse.
 const dogfoodStations = listCopenhagenDogfoodStations();
@@ -375,6 +465,24 @@ if (copenhagenInServiceWindow) {
 }
 for (const chip of kobenhavnHPack.directions) {
   assert(!/EuroCity|SJ X2000|Ceské drá|České dráhy|RailJet|Praha|Hamburg Hbf/i.test(chip), `København H must never surface an excluded operator chip, got "${chip}"`);
+}
+
+// Live all-44-stations self-terminus sweep (docs/jim-brief-copenhagen-self-terminus.md item 2):
+// same invariant as the fixture-based sweep above, but against the real live GTFS.zip pull, one
+// call per station through the dogfood harness (same path a rider hits). M3 chips are skipped —
+// deliberately exempt, see marketing-directions.js's isTerminatingAtCatalogEntry doc comment.
+for (const station of stations) {
+  const pack = await getCopenhagenDogfoodDirections(station.name);
+  for (const chip of pack.directions) {
+    if (chip.startsWith("M3 + ")) {
+      continue;
+    }
+    const terminusPart = chip.includes(" + ") ? chip.split(" + ").slice(1).join(" + ") : chip;
+    assert(
+      foldKey(terminusPart) !== foldKey(station.name),
+      `${station.name} must never list itself as a direction, got "${chip}"`
+    );
+  }
 }
 
 // End-to-end next-train, through both the dogfood harness and the dispatch, for a real chip.

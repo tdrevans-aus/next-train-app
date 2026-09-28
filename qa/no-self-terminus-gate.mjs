@@ -1,9 +1,9 @@
 /**
  * No station may offer a direction chip naming itself (self-terminus), across every live city.
  *
- * Dublin (#484), Prague (#493) and Copenhagen (docs/jim-brief-copenhagen-self-terminus.md, in
- * flight) each shipped or nearly shipped a terminus offering a direction to itself. Older live
- * cities were built before the guard existed. This gate is the standing regression check —
+ * Dublin (#484), Prague (#493) and Copenhagen (docs/jim-brief-copenhagen-self-terminus.md) each
+ * shipped or nearly shipped a terminus offering a direction to itself. Older live cities were
+ * built before the guard existed. This gate is the standing regression check —
  * docs/jim-brief-self-terminus-audit-all-cities.md.
  *
  * Two independent checks per city, both offline (no network):
@@ -26,14 +26,25 @@ import { CITIES } from "../lib/providers/registry.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+/** Cities excluded from this run, with a printed reason. Empty — every live city is asserted on. */
+const EXCLUDED = {};
+
 /**
- * Cities excluded from this run, with a printed reason. Copenhagen is mid-fix under a
- * different Jim on the denmark lane lock (docs/jim-brief-copenhagen-self-terminus.md) — this
- * gate must not touch any Copenhagen file, so it is skipped here rather than asserted on.
+ * Per-city, per-chip exemptions for a documented non-self-terminus false positive — never a
+ * blanket per-city skip (see EXCLUDED above for that). Copenhagen's M3 (Cityringen) is a true
+ * ring with no terminus concept; the live Rejseplanen feed's raw headsign for M3 trips is,
+ * feed-wide, a single fixed reference-stop label ("København H (Metro)") regardless of the
+ * trip's actual departure station or direction (direction-model-memo.md open question 1,
+ * unverified against a live payload — a separate, pre-existing feed-data-quality limitation,
+ * not something this gate or the self-terminus fix can resolve). Filtering that chip out at
+ * København H itself would silently drop every M3 departure from that station's board — exactly
+ * the "filter trains off a board silently" failure docs/board-eligibility-rule.md exists to
+ * prevent — so lib/providers/copenhagen.js's isTerminatingAtCatalogEntry() deliberately exempts
+ * M3 from the self-terminus guard, and this exemption documents the same chip here so the
+ * generic parser below doesn't flag it as a regression.
  */
-const EXCLUDED = {
-  copenhagen:
-    "skipped — fix in flight under docs/jim-brief-copenhagen-self-terminus.md (denmark lane lock held by a different Jim run)",
+const KNOWN_EXEMPT_CHIPS = {
+  copenhagen: new Set(["M3 + København H (Metro)"]),
 };
 
 /**
@@ -202,12 +213,17 @@ function checkBundledJson(cityId, catalog) {
   // collision would show up in.
   const catalogNameSet = buildCatalogNameSet(catalog, stationNames);
 
+  const exemptChips = KNOWN_EXEMPT_CHIPS[cityId] ?? null;
+
   for (const stationKey of stationNames) {
     const chips = Array.isArray(pack[stationKey]) ? pack[stationKey] : [];
     const catalogEntry = byName.get(fold(stationKey));
     const selfKeys = selfKeysForStation(stationKey, catalogEntry?.aliases, catalogNameSet);
     for (const chip of chips) {
       chipCount += 1;
+      if (exemptChips?.has(chip)) {
+        continue;
+      }
       const terminusKey = fold(genericChipTerminus(chip));
       if (terminusKey && selfKeys.has(terminusKey)) {
         violations.push(`${cityId} bundled: station "${stationKey}" offers self chip "${chip}"`);

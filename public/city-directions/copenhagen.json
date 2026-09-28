@@ -82,16 +82,21 @@
   ],
   "København H": [
     "A + Hillerød",
-    "A + Køge",
+    "A + Hundige St.",
     "B + Farum",
     "B + Høje Taastrup",
     "C + Frederikssund",
     "C + Klampenborg",
+    "E + Holte",
+    "E + Køge",
+    "H + Ballerup St.",
+    "H + Østerport",
     "InterCity + Esbjerg St.",
     "InterCity + Fredericia St.",
-    "InterCity + København H",
     "InterCity + Østerport St.",
+    "InterCity + Aalborg St.",
     "InterCityLyn + CPH Lufthavn",
+    "InterCityLyn + Aalborg St.",
     "InterCityLyn + Aarhus H",
     "M3 + København H (Metro)",
     "M4 + København S",
@@ -99,19 +104,17 @@
     "Regionaltog + Helsingør St.",
     "Regionaltog + Holbæk St.",
     "Regionaltog + Kalundborg St.",
-    "Regionaltog + København H",
-    "Regionaltog + Køge St.",
     "Regionaltog + Nykøbing F St.",
     "Regionaltog + Næstved St.",
-    "Regionaltog + Roskilde St.",
     "Regionaltog + Østerport St.",
     "Öresundståg + Göteborg C",
+    "Öresundståg + Helsingborg C",
+    "Öresundståg + Kalmar C",
     "Öresundståg + Karlskrona",
-    "Öresundståg + Älmhult",
+    "Öresundståg + Växjö",
     "Öresundståg + Østerport"
   ],
   "København S": [
-    "M4 + København S",
     "M4 + Orientkaj"
   ],
   "Kongens Nytorv": [
@@ -133,6 +136,9 @@
     "M2 + Lufthavnen",
     "M2 + Vanløse"
   ],
+  "Lufthavnen": [
+    "M2 + Vanløse"
+  ],
   "Marmorkirken": [
     "M3 + København H (Metro)",
     "M4 + København S",
@@ -144,11 +150,13 @@
   ],
   "Nordhavn": [
     "A + Hillerød",
-    "A + Køge",
+    "A + Hundige St.",
     "B + Farum",
     "B + Høje Taastrup",
     "C + Frederikssund",
     "C + Klampenborg",
+    "E + Holte",
+    "E + Køge",
     "M4 + København S",
     "M4 + Orientkaj"
   ],
@@ -162,27 +170,33 @@
   ],
   "Nørreport": [
     "A + Hillerød",
-    "A + Køge",
+    "A + Hundige St.",
     "B + Farum",
     "B + Høje Taastrup",
     "C + Frederikssund",
     "C + Klampenborg",
+    "E + Holte",
+    "E + Køge",
+    "H + Ballerup St.",
+    "H + Østerport",
     "InterCity + Esbjerg St.",
     "InterCity + Fredericia St.",
     "InterCity + Østerport St.",
+    "InterCity + Aalborg St.",
     "M1 + Vanløse",
     "M1 + Vestamager",
     "M2 + Lufthavnen",
     "M2 + Vanløse",
     "Regionaltog + Helsingør St.",
     "Regionaltog + Holbæk St.",
-    "Regionaltog + Køge St.",
+    "Regionaltog + Kalundborg St.",
     "Regionaltog + Næstved St.",
-    "Regionaltog + Roskilde St.",
     "Regionaltog + Østerport St.",
     "Öresundståg + Göteborg C",
+    "Öresundståg + Helsingborg C",
+    "Öresundståg + Kalmar C",
     "Öresundståg + Karlskrona",
-    "Öresundståg + Älmhult",
+    "Öresundståg + Växjö",
     "Öresundståg + Østerport"
   ],
   "Nuuks Plads": [
@@ -197,8 +211,7 @@
     "M2 + Vanløse"
   ],
   "Orientkaj": [
-    "M4 + København S",
-    "M4 + Orientkaj"
+    "M4 + København S"
   ],
   "Østerport": [
     "M3 + København H (Metro)",
@@ -228,14 +241,11 @@
     "M3 + København H (Metro)"
   ],
   "Vanløse": [
-    "M1 + Vanløse",
     "M1 + Vestamager",
-    "M2 + Lufthavnen",
-    "M2 + Vanløse"
+    "M2 + Lufthavnen"
   ],
   "Vestamager": [
-    "M1 + Vanløse",
-    "M1 + Vestamager"
+    "M1 + Vanløse"
   ],
   "Vibenshus Runddel": [
     "M3 + København H (Metro)"

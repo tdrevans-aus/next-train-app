@@ -261,7 +261,7 @@ window.__CITY_MANIFEST_SEED__ = {
         "train"
       ],
       "nearbyEligible": true,
-      "directionsVersion": "1a591a8c"
+      "directionsVersion": "67a9a600"
     },
     {
       "id": "malmo",
