@@ -1,0 +1,23 @@
+{
+  "region": "tampere",
+  "updated": "2026-09-28",
+  "covered": [
+    {
+      "label": "Tampere Tram lines 1 and 3",
+      "detail": "All 33 tram stops, live confirmation from ITS Factory's GTFS-RT VehiclePositions feed only - a tram only appears once the live feed actually reports it running, never backfilled from the printed timetable."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Nysse buses",
+      "detail": "Not a rail app - tram only, even at stops (Keskustori, Rautatieasema, Sorin aukio) that also have lettered bus platforms under the same printed name."
+    },
+    {
+      "label": "VR regional and long-distance trains at Tampere railway station",
+      "detail": "The VR railway station is a separate, nearby stop-place from the tram's Rautatieasema stop, not the same station under any name."
+    }
+  ],
+  "stations": "33 Tampere Tram stops across lines 1 and 3 (20 on line 1, 17 on line 3, 4 shared).",
+  "notes": "Rautatieasema is the hub - the only central stop shared by both lines, and adjacent to (but a separate stop-place from) the VR railway station. This adapter has no GTFS-RT TripUpdates feed available (the confirmed real endpoint, data.waltti.fi's Waltti product, requires separate client-id/secret credentials this pass doesn't have) - live confirmation comes from VehiclePositions only, so a tram that hasn't yet left its own line-end stop can briefly be missing from a board even though the timetable says it should be there soon; the app says so with a clear message rather than showing a blank board."
+}
