@@ -909,7 +909,7 @@ window.__CITY_MANIFEST_SEED__ = {
         "metro"
       ],
       "nearbyEligible": true,
-      "directionsVersion": "0bf31190"
+      "directionsVersion": "479a1b77"
     }
   ],
   "countries": [

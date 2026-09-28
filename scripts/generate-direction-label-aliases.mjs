@@ -19,6 +19,10 @@ import {
 } from "../lib/cities/melbourne/direction-labels.js";
 import { COMMUTER_RAIL_ROUTES, mapCommuterRailDestination } from "../lib/cities/boston/marketing-directions.js";
 import { METROLINK_LINES, mapMetrolinkDestination } from "../lib/cities/greater-manchester/marketing-directions.js";
+import {
+  LINE_LABELS as WASHINGTON_LINE_LABELS,
+  LINE_TERMINI as WASHINGTON_LINE_TERMINI,
+} from "../lib/cities/washington/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -120,11 +124,31 @@ function buildGreaterManchesterAliases() {
   return aliases;
 }
 
+/**
+ * Washington, D.C., relabelled terminus-only 27 Sep 2026
+ * (docs/jim-brief-washington-one-train-per-direction.md). Retired form was
+ * "<Line> Line + <terminus>" for every (line, terminus) pair, including the two short-turns
+ * (Blue's Huntington, Silver's Wiehle-Reston East) added in the same change — harmless extra
+ * keys since neither string was ever actually emitted under the old model (both previously fell
+ * back to the bare line label, never a "+ terminus" chip).
+ */
+function buildWashingtonAliases() {
+  const aliases = {};
+  for (const [lineId, termini] of Object.entries(WASHINGTON_LINE_TERMINI)) {
+    const label = WASHINGTON_LINE_LABELS[lineId] ?? lineId;
+    for (const terminus of termini) {
+      aliases[`${label} Line + ${terminus}`] = terminus;
+    }
+  }
+  return aliases;
+}
+
 const CITY_BUILDERS = {
   melbourne: buildMelbourneAliases,
   adelaide: buildAdelaideAliases,
   boston: buildBostonAliases,
   "greater-manchester": buildGreaterManchesterAliases,
+  washington: buildWashingtonAliases,
 };
 
 function buildAll() {
@@ -180,4 +204,11 @@ if (isMain) {
   main();
 }
 
-export { buildAll, buildMelbourneAliases, buildAdelaideAliases, buildBostonAliases, buildGreaterManchesterAliases };
+export {
+  buildAll,
+  buildMelbourneAliases,
+  buildAdelaideAliases,
+  buildBostonAliases,
+  buildGreaterManchesterAliases,
+  buildWashingtonAliases,
+};
