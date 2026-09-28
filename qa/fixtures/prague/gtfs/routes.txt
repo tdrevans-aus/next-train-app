@@ -1,0 +1,4 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_url,route_color,route_text_color,is_night,is_regional,is_substitute_transport
+L991,99,A,Nemocnice Motol - Petřiny - Skalka - Depo Hostivař,1,https://pid.cz/linka/A,00A562,FFFFFF,0,0,0
+L992,99,B,Zličín - Černý Most,1,https://pid.cz/linka/B,F8B322,000000,0,0,0
+L993,99,C,Letňany - Ládví - Háje,1,https://pid.cz/linka/C,CF003D,FFFFFF,0,0,0

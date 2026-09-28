@@ -1,14 +1,31 @@
 /**
- * Sweeps every catalog station's fetchStationBoard() against the live Golemio PID Departure
- * Boards API and asserts each one has genuine live coverage — modelled on
+ * Sweeps every catalog station's live coverage against the Golemio PID Departure Boards API and
+ * asserts each one has genuine live coverage — modelled on
  * qa/dublin-all-stations-live-sweep.mjs (headway-aware threshold, evidence log, runtime cap), but
- * simplified for Prague's feed shape: fetchStationBoard() here does not distinguish "feed gap"
- * from "genuinely nothing scheduled" the way Dublin's `emptyReason: "no-live-predictions"` does
- * (Golemio's departureboards response is just an empty `departures: []` array either way, and
- * this adapter deliberately does not load PID's static schedule at runtime to cross-check it —
- * see lib/providers/prague.js file header) — so there is no "unconfirmed empty" bucket here, only
- * "empty" vs "non-empty", and a fixed conservative fallback headway (10 minutes, safe for every
- * line at every time of day metro operates) rather than a per-station GTFS-derived one.
+ * simplified for Prague's feed shape: there is no "unconfirmed empty" bucket here, only "empty"
+ * vs "non-empty", and a fixed conservative fallback headway (10 minutes, safe for every line at
+ * every time of day metro operates) rather than a per-station GTFS-derived one.
+ *
+ * BATCHING + PACING (docs/jim-brief-prague-flora-sweep-empty-state.md, Finding A): Mark's QA pass
+ * found the previous version issued one Golemio request per station, sequentially, with no
+ * pacing — 58 sequential requests every poll blew straight through Golemio's documented 20
+ * requests / 8 seconds limit (18-29/58 stations 429'd per poll). This version instead batches
+ * every catalog station's stop_ids into requests of <= BATCH_SIZE `ids[]` each (Golemio's own
+ * endpoint accepts up to 100 combined — see lib/providers/prague.js file header) and paces every
+ * request, across the whole run (not reset per poll), through a token bucket capped at
+ * MAX_REQUESTS_PER_WINDOW requests per WINDOW_MS — a deliberate margin under the documented
+ * 20/8s limit, not the limit itself. A batch that still gets a 429 is retried exactly once,
+ * honouring the response's `Retry-After` header when present (falls back to a fixed backoff
+ * otherwise) via lib/providers/prague.js's exported fetchDepartureBoardsJson(), which attaches
+ * `.status`/`.retryAfterMs` to the thrown error for exactly this purpose. A batch that still
+ * fails after the retry marks every station whose stop_id was in it as errored for this poll —
+ * never silently reported as "empty" (a rate-limit failure must never look like "no service").
+ *
+ * Reuses lib/providers/prague.js's own fetchDepartureBoardsJson/tripsFromDepartures/
+ * listCatalogStations — no reimplemented fetch/decode/classification logic (this is the *rider*
+ * board pipeline; per-station requests to Golemio, item 2 of the brief, are unchanged — only this
+ * QA sweep script fans multiple stations' stop_ids into one request, purely for QA-evidence
+ * gathering, never on a rider's actual board request path).
  *
  * PRAGUE METRO OPERATING HOURS: approximately 04:40-00:00 Europe/Prague daily. Outside that
  * window every station legitimately shows zero departures at once — this is skipped, not failed,
@@ -18,24 +35,27 @@
  * docs/dublin-d1/live-sweep-log.jsonl): a station continuously empty for >= 1.5x the fallback
  * headway THIS run is only a permanent-shape failure if it has never been observed non-empty in
  * the last EVIDENCE_WINDOW_DAYS days of logged runs — the Dublin Broombridge lesson (a long
- * intermittent gap is not the same as a permanent one). Flora (see lib/providers/prague.js's D2
- * finding — zero metro stop_times reference it in the 28 Sep 2026 static snapshot) is the station
- * most likely to need this distinction; do not assume a single run's empty result there is
- * definitive either way.
+ * intermittent gap is not the same as a permanent one). Flora was removed from the catalog
+ * entirely (docs/jim-brief-prague-flora-sweep-empty-state.md, confirmed real zero-service gap,
+ * not a mapping bug — see lib/providers/prague.js file header and
+ * lib/cities/prague/coverage.json), so it is never swept here.
  *
- * Reuses lib/providers/prague.js's own fetchStationBoard/listCatalogStations — no reimplemented
- * fetch/decode logic. Requires a real GOLEMIO_API_KEY (run with
- * `node --env-file=.env.local qa/prague-all-stations-live-sweep.mjs`). NOT registered in
- * qa/run-all.mjs for the same reason qa/dublin-all-stations-live-sweep.mjs isn't (needs a real
- * key + live network + real service hours, none of which a smoke/CI run can guarantee). Mark can
- * rerun it directly during Prague metro service hours.
+ * Requires a real GOLEMIO_API_KEY (run with `node --env-file=.env.local
+ * qa/prague-all-stations-live-sweep.mjs`). NOT registered in qa/run-all.mjs for the same reason
+ * qa/dublin-all-stations-live-sweep.mjs isn't (needs a real key + live network + real service
+ * hours, none of which a smoke/CI run can guarantee). Mark can rerun it directly during Prague
+ * metro service hours.
  *
  * Usage: node --env-file=.env.local qa/prague-all-stations-live-sweep.mjs
  */
 import { existsSync, readFileSync, appendFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { fetchStationBoard, listCatalogStations } from "../lib/providers/prague.js";
+import {
+  fetchDepartureBoardsJson,
+  tripsFromDepartures,
+  listCatalogStations,
+} from "../lib/providers/prague.js";
 import { readGolemioApiKey } from "../lib/providers/gtfs/auth.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -47,12 +67,72 @@ const REQUIRED_EMPTY_MULTIPLE = 1.5;
 const POLL_INTERVAL_MS = 60_000;
 // Bounded well under common CI/tool foreground-command ceilings (e.g. a 10-minute Bash timeout)
 // — a script that only finishes by being auto-backgrounded defeats "explicit progress lines,
-// exits" (docs/jim-brief-prague... same lesson as Dublin's sweep, per this task's brief).
+// exits" (same lesson as Dublin's sweep, per this task's brief).
 const MAX_RUNTIME_MS = 9 * 60 * 1000;
 const MAX_POLLS = Math.max(2, Math.floor(MAX_RUNTIME_MS / POLL_INTERVAL_MS));
 
+// Golemio's documented limit is 20 requests / 8 seconds per key; this stays under it with margin
+// so pacing jitter (system clock, GC pauses) never itself causes a 429.
+const MAX_REQUESTS_PER_WINDOW = 15;
+const WINDOW_MS = 8_000;
+// Golemio's departureboards endpoint accepts up to 100 combined `ids[]` per request; batching
+// stays under that with margin too.
+const BATCH_SIZE = 50;
+const DEFAULT_RETRY_BACKOFF_MS = 8_000;
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function chunk(array, size) {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
+
+/** Sliding-window token bucket, shared across the whole run (not reset per poll) — Golemio's rate
+ * limit is a real-time window, not a per-poll allowance. */
+class TokenBucket {
+  constructor(maxPerWindow, windowMs) {
+    this.max = maxPerWindow;
+    this.windowMs = windowMs;
+    this.timestamps = [];
+  }
+
+  async acquire() {
+    for (;;) {
+      const now = Date.now();
+      this.timestamps = this.timestamps.filter((t) => now - t < this.windowMs);
+      if (this.timestamps.length < this.max) {
+        this.timestamps.push(now);
+        return;
+      }
+      const oldest = this.timestamps[0];
+      const waitMs = this.windowMs - (now - oldest) + 10;
+      await sleep(Math.max(waitMs, 10));
+    }
+  }
+}
+
+async function fetchChunkWithRetry(stopIds, apiKey, bucket) {
+  await bucket.acquire();
+  try {
+    return await fetchDepartureBoardsJson(stopIds, apiKey);
+  } catch (error) {
+    if (error?.status !== 429) {
+      throw error;
+    }
+    const waitMs = error.retryAfterMs ?? DEFAULT_RETRY_BACKOFF_MS;
+    console.log(
+      `prague-all-stations-live-sweep: 429 for a batch of ${stopIds.length} stop_id(s), retrying ` +
+        `once after ${Math.round(waitMs / 1000)}s (Retry-After ${error.retryAfterMs != null ? "honoured" : "absent, using default backoff"})`
+    );
+    await sleep(waitMs);
+    await bucket.acquire();
+    return await fetchDepartureBoardsJson(stopIds, apiKey);
+  }
 }
 
 /** Reads docs/prague-d1/live-sweep-log.jsonl and returns the set of station names observed
@@ -91,15 +171,49 @@ function appendEvidenceLogEntry(entry) {
   appendFileSync(EVIDENCE_LOG_PATH, `${JSON.stringify(entry)}\n`, "utf8");
 }
 
-async function sweepOnce(stations, apiKey) {
+async function sweepOnce(stations, apiKey, bucket) {
+  const stopIdToStation = new Map();
+  for (const station of stations) {
+    for (const stopId of station.stopIds ?? []) {
+      stopIdToStation.set(stopId, station.name);
+    }
+  }
+  const allStopIds = [...stopIdToStation.keys()];
+  const batches = chunk(allStopIds, BATCH_SIZE);
+
+  const departuresByStation = new Map(stations.map((s) => [s.name, []]));
+  const erroredStations = new Map();
+
+  for (const batch of batches) {
+    try {
+      const departures = await fetchChunkWithRetry(batch, apiKey, bucket);
+      for (const departure of departures) {
+        const stopId = departure?.stop?.id;
+        const stationName = stopId != null ? stopIdToStation.get(stopId) : undefined;
+        if (stationName) {
+          departuresByStation.get(stationName).push(departure);
+        }
+      }
+    } catch (error) {
+      const message = error?.message ?? String(error);
+      for (const stopId of batch) {
+        const stationName = stopIdToStation.get(stopId);
+        if (stationName) {
+          erroredStations.set(stationName, message);
+        }
+      }
+    }
+  }
+
   const results = [];
   for (const station of stations) {
-    try {
-      const board = await fetchStationBoard(station.name, { apiKey });
-      results.push({ name: station.name, tripCount: board.trips?.length ?? 0, error: null });
-    } catch (error) {
-      results.push({ name: station.name, tripCount: 0, error: error?.message ?? String(error) });
+    if (erroredStations.has(station.name)) {
+      results.push({ name: station.name, tripCount: 0, error: erroredStations.get(station.name) });
+      continue;
     }
+    const departures = departuresByStation.get(station.name) ?? [];
+    const trips = tripsFromDepartures(departures, station.name);
+    results.push({ name: station.name, tripCount: trips.length, error: null });
   }
   return results;
 }
@@ -114,9 +228,14 @@ async function main() {
 
   const stations = listCatalogStations();
   const now = new Date();
+  const bucket = new TokenBucket(MAX_REQUESTS_PER_WINDOW, WINDOW_MS);
 
+  const totalStopIds = stations.reduce((sum, s) => sum + (s.stopIds?.length ?? 0), 0);
+  const batchCount = Math.ceil(totalStopIds / BATCH_SIZE);
   console.log(
-    `prague-all-stations-live-sweep: sweeping ${stations.length} catalog stations, fallback ` +
+    `prague-all-stations-live-sweep: sweeping ${stations.length} catalog stations ` +
+      `(${totalStopIds} stop_ids in ${batchCount} batch(es) of <= ${BATCH_SIZE} per poll, paced ` +
+      `to <= ${MAX_REQUESTS_PER_WINDOW} requests / ${Math.round(WINDOW_MS / 1000)}s), fallback ` +
       `headway ${FALLBACK_HEADWAY_MINUTES}min (fail at >= ${REQUIRED_EMPTY_MULTIPLE}x continuous ` +
       `empty), polls every ${Math.round(POLL_INTERVAL_MS / 1000)}s, up to ${MAX_POLLS} polls ` +
       `(runtime capped at ${Math.round(MAX_RUNTIME_MS / 60_000)} min)`
@@ -130,12 +249,14 @@ async function main() {
   const totalPollCounts = new Map(stations.map((s) => [s.name, 0]));
   let sawAnyTrips = false;
   let lastErrored = [];
+  let totalRateLimitErrors = 0;
 
   for (let poll = 1; poll <= MAX_POLLS; poll += 1) {
-    const results = await sweepOnce(stations, apiKey);
+    const results = await sweepOnce(stations, apiKey, bucket);
     const totalTrips = results.reduce((sum, r) => sum + r.tripCount, 0);
     const errored = results.filter((r) => r.error);
     lastErrored = errored;
+    totalRateLimitErrors += errored.filter((r) => /HTTP 429/.test(r.error ?? "")).length;
     sawAnyTrips = sawAnyTrips || totalTrips > 0;
 
     console.log(`prague-all-stations-live-sweep: poll ${poll}/${MAX_POLLS} — total trips ${totalTrips}`);
@@ -203,8 +324,11 @@ async function main() {
     runId: `sweep-${new Date(runEndMs).toISOString()}`,
     timestamp: new Date(runEndMs).toISOString(),
     source: "qa/prague-all-stations-live-sweep.mjs",
+    rateLimitErrors: totalRateLimitErrors,
     stations: evidenceStations,
   });
+
+  console.log(`prague-all-stations-live-sweep: total rate-limit (429) errors across the run: ${totalRateLimitErrors}`);
 
   if (!sawAnyTrips && lastErrored.length === 0) {
     console.log(
@@ -246,9 +370,8 @@ async function main() {
       `prague-all-stations-live-sweep: ${staleGap.length}/${stations.length} station(s) were ` +
         `continuously empty for >= ${REQUIRED_EMPTY_MULTIPLE}x the fallback headway AND have never ` +
         `been observed non-empty within the last ${EVIDENCE_WINDOW_DAYS} days ` +
-        `(docs/prague-d1/live-sweep-log.jsonl) — a real per-station coverage gap (Flora, per ` +
-        `lib/providers/prague.js's D2 finding, is the most likely candidate) needs a coverage.json ` +
-        `verdict rather than passing behind a silent empty board: ` +
+        `(docs/prague-d1/live-sweep-log.jsonl) — a real per-station coverage gap needs a ` +
+        `coverage.json verdict rather than passing behind a silent empty board: ` +
         `${staleGap.map((s) => `${s.name} (empty ${s.observedMinutes}min)`).join(", ")}`
     );
   }

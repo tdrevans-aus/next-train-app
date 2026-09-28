@@ -198,3 +198,87 @@ Pražského povstání is counted and correctly chipped at Muzeum, dropped as a 
 at Pražského povstání itself, and the reachability filter is asserted directly) plus the reachable/
 unreachable station pairs for both short-turns. Status stays `"planned"` — this is a flip
 prerequisite, not a flip.
+
+## Correction, 28 Sep 2026 (docs/jim-brief-prague-flora-sweep-empty-state.md) — Flora resolved as a real gap, not a mapping bug; sweep pacing fixed; honest empty state wired
+
+Mark's QA pass (`origin/mark/prague-flip`, `docs/prague-d1/mark-qa-note.md`) found the sweep
+script (`qa/prague-all-stations-live-sweep.mjs`) didn't pace requests to Golemio's documented
+20 req/8s limit (18-29/58 stations 429'd per poll, Finding A) and that Flora was empty on every
+clean poll with no honest-empty-state support at all (Finding B), plus asked for a re-check of
+Budějovická/Kačerov/Roztyly during full service (Finding D). This session's investigation and
+fixes:
+
+**Finding B — investigated FIRST, per this brief's instruction, before treating it as a gap.**
+Downloaded a fresh copy of `https://data.pid.cz/PID_GTFS.zip` (live, ~50MB, feed span
+20260928-20261011) and dumped every stop row whose name folds to "Flora":
+
+```
+U118Z1P   Flora  location_type=0  parent_station=(none)   platform_code=A   (tram)
+U118Z2P   Flora  location_type=0  parent_station=(none)   platform_code=B   (tram)
+U118Z3P   Flora  location_type=0  parent_station=(none)   platform_code=C   (tram)
+U118Z4P   Flora  location_type=0  parent_station=(none)   platform_code=D   (tram)
+U118Z101P Flora  location_type=0  parent_station=U118S1    platform_code=1   (metro platform)
+U118Z102P Flora  location_type=0  parent_station=U118S1    platform_code=2   (metro platform)
+U118S1    Flora  location_type=1  parent_station=(none)                      (metro parent station)
+```
+
+`lib/cities/prague/stations.json`'s Flora entry used `U118Z101P`/`U118Z102P` — exactly the correct
+metro platform ids (not the tram platforms `U118Z1P-Z4P`, which correctly have no parent_station
+and were never in scope). **Zero** metro-route (`route_type=1`) `stop_times.txt` rows reference
+either id, across the entire current feed (not just today's calendar — every service_id checked).
+Dumping a real Line A trip's full stop sequence confirmed the mechanism directly: trip
+`991_11915_260207` (Depo Hostivař -> Nemocnice Motol) runs `... Želivského (11:10:05) ->
+Jiřího z Poděbrad (11:13:25) ...` — Flora's slot is simply absent between them, the same shape as
+Dublin's Connolly (a stop the RT/schedule skips entirely, not a wrong id). Cross-checked against
+Mark's own live Golemio evidence: 9/9 clean polls, zero trips, no errors. **Conclusion: a real,
+current zero-service gap, not a stop-id mapping bug** — Flora was removed from the serving catalog
+(`lib/cities/prague/stations.json`, 58 -> 57 stations; Line A 17 -> 16) with a coverage-note
+exclusion (`lib/cities/prague/coverage.json`), same precedent as Dublin's Connolly/Saggart.
+`docs/prague-d1/published-network.json` (Luke's D1 pack) is deliberately NOT edited — it stays the
+historical 58-name topology record, exactly as Dublin's published-network.json still lists
+Connolly/Saggart.
+
+Added an offline static-coverage gate case to `qa/prague-dogfood-gate.mjs` (every catalog station
+must have >= 1 metro stop_time in the committed, regenerated `qa/fixtures/prague/gtfs` fixture —
+committed directly this session, small enough at ~4MB uncompressed to not need Auckland/
+Wellington's gitignore treatment) — this is the exact check that would have caught Flora before it
+ever reached a live poll, and now covers all 57 remaining stations.
+
+**Finding A — fixed.** `qa/prague-all-stations-live-sweep.mjs` now batches every station's
+stop_ids into requests of <= 50 `ids[]` (Golemio's endpoint accepts up to 100 combined) instead of
+one request per station, and paces every request — across the whole run, not reset per poll —
+through a sliding-window token bucket capped at 15 requests / 8 seconds (a deliberate margin under
+Golemio's documented 20/8s limit). A batch that still 429s is retried once, honouring the
+response's `Retry-After` header when present. Re-ran for real against the live API during full
+Prague daytime service (~05:37-05:46 Europe/Prague, well past the opening ramp-up): **0 rate-limit
+errors across all 9 polls, all 3 batches per poll** (120 stop_ids total across 57 stations).
+
+**Finding D — re-checked during full service, not the opening ramp-up.** Budějovická, Kačerov,
+Pankrác and Roztyly (plus Háje, Hůrka, Invalidovna, Kobylisy, Malostranská, Nemocnice Motol, Nové
+Butovice, Rajská zahrada) were empty for the whole 9-minute run this session, but none reached the
+1.5x-headway (15 min) failure threshold within that runtime cap — reported as "uncertain", not
+failed, per the sweep's own design (a 9-minute cap can't always resolve every station's headway).
+This is a real re-run during full service (not the early-morning ramp-up Mark's original run
+caught), so the gap is likely just these stations' genuine service headway exceeding one 9-minute
+window, not a coverage problem — but per the sweep's own evidence-log design, this isn't a final
+verdict either way; a longer or repeated run would confirm. Not escalated to a coverage.json
+change — no station here showed the Flora shape (confirmed zero in the static schedule too).
+
+**Finding C (honest empty state) — wired.** `lib/providers/prague.js` now loads the same trimmed
+static snapshot at runtime (`loadPragueStatic()`, cached, same `loadGtfsStatic()` pattern as
+`lib/providers/dublin.js`) purely as a side-computation: when Golemio's live board is empty,
+`computeScheduledCandidates()` checks whether the static schedule expects any trip at this stop
+within the near-term horizon; if so, `emptyReason: "no-live-predictions"` is set through
+`buildNextTrainResponse` (already supports this field, unchanged). This load is best-effort and
+non-fatal — any failure (stale 2-week calendar, network, missing blob) is swallowed and just omits
+`emptyReason`, never turns a working live board into a thrown error. `qa/prague-dogfood-gate.mjs`
+now covers the same three cases as `qa/honest-empty-state.mjs`'s Dublin fixtures (all-empty ->
+reason; partial -> no reason; outside hours / nothing scheduled either -> no reason), plus an
+unknown-static-state case, all exercised offline via `fetchStationBoard()`'s
+`options.departures`/`options.scheduledCandidates` overrides — no network call. The regenerated
+GTFS fixture was republished to the `next-train-gtfs` Blob store
+(`node --env-file=.env.local scripts/publish-gtfs-fixture-to-blob.mjs prague`) so this runtime
+static load resolves against current data.
+
+Status stays `"planned"`. This is a flip prerequisite, not a flip — Mark should re-run QA (his
+note's item 3 in particular) once this PR merges.
