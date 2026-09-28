@@ -163,3 +163,38 @@ second valid C terminus in `LINE_TERMINI.c` so it gets its own `"C + Pražského
 (b) leave the bare-`"C"` fallback as the deliberate degraded-but-safe behaviour. Not decided or
 changed here — `lib/cities/prague/marketing-directions.js`'s `LINE_TERMINI` is untouched pending
 that call. No other short-turn headsigns were observed on A or B in this poll window.
+
+## Correction, 28 Sep 2026 (docs/jim-brief-prague-line-c-short-turn.md — flip prerequisite)
+
+Tim's call above is now made (controller decision under the Washington #482 precedent: real
+short-turns are promoted to terminus chips, not left as a bare line label). Re-verified live
+against the real Golemio departureboards feed at ~03:53-04:10 Europe/Prague (early-morning
+short-turn window, same window as the original finding):
+
+- **Line C, southbound (Letňany -> Háje):** `"Pražského povstání"` confirmed again as a real,
+  recurring headsign (41 departures across a full-line-C poll of 90 total departures) — this is
+  not a one-off. Added to `LINE_TERMINI.c` as `"C + Pražského povstání"`.
+- **Line C, northbound (Háje -> Letňany):** a SECOND short-turn found this session, not previously
+  reported — `"Chodov"` (10 departures, all seen at Háje and Opatov, i.e. trips originating at
+  Háje and terminating two stops north at Chodov). Chodov is a real, separately-catalogued Line C
+  station (between Roztyly and Opatov). Added to `LINE_TERMINI.c` as `"C + Chodov"`.
+- **Lines A and B:** re-polled in full (every stop on each line, 86 and 89 departures
+  respectively) over the same window — every A departure read `Nemocnice Motol`/`Depo Hostivař`,
+  every B departure read `Zličín`/`Černý Most`. No short-turn headsign observed on either line.
+  `shortTurns: []` stays correct for A/B on this evidence, but remains a live-sample-of-one for
+  those two lines, not an exhaustive schedule audit — a future session should re-check rather than
+  treat this as permanently confirmed.
+
+Both C short-turns are geographically direction-aware in the dogfood picker (`marketingLabelsForStation`
+in `lib/cities/prague/marketing-directions.js`, via `isTerminusReachableFromStation`): a short-turn
+chip is only offered at stations that short-turn's trip actually passes through (e.g. Pankrác,
+south of Pražského povstání, never offers that chip; Roztyly, north of Chodov, never offers that
+chip), and never at the short-turn terminus itself. Production boards needed no equivalent change —
+`resolveTerminus`/`mapLineTerminusDestination` are driven by the live headsign itself, so a station
+only ever shows a chip for a trip that genuinely passes it, automatically.
+
+`node qa/prague-dogfood-gate.mjs` carries the synthetic-payload proof (a C trip headsigned
+Pražského povstání is counted and correctly chipped at Muzeum, dropped as a self-terminus arrival
+at Pražského povstání itself, and the reachability filter is asserted directly) plus the reachable/
+unreachable station pairs for both short-turns. Status stays `"planned"` — this is a flip
+prerequisite, not a flip.
