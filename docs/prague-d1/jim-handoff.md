@@ -132,3 +132,34 @@ evening service (`node --env-file=.env.local qa/prague-all-stations-live-sweep.m
 **Golemio API ToS.** Not independently verified this session (oracle report's license section
 recommends Tim review before commercial wiring) — not a D2 blocker per the pack's own
 instruction, but flagged again here for Mark/Tim before flip.
+
+## Live verification (28 Sep 2026, ~03:53 Europe/Prague — metro just opened)
+
+After merging master (PR #488 conflict-resolution pass), the Prague Metro's early-morning
+service was running, so `fetchStationBoard()` was called for real (not synthetic) at Muzeum and
+Můstek using the checked-in `GOLEMIO_API_KEY`:
+
+- **Muzeum** (A x C): 20 trips returned. All A trips resolved cleanly to `A + Depo Hostivař` /
+  `A + Nemocnice Motol`. Every C trip towards Letňany resolved cleanly to `C + Letňany`.
+- **Můstek** (A x B): 20 trips returned. All A trips resolved to `A + Depo Hostivař` /
+  `A + Nemocnice Motol`; all B trips resolved to `B + Zličín` / `B + Černý Most`.
+- Both boards' timestamps and destinations look correct and match the expected line/terminus
+  model — no self-terminus leaks, no hub-string leaks, no cross-line contamination (no B at
+  Muzeum, no C at Můstek) observed in either live poll.
+
+**NEW FINDING confirming hazard-pack.md H5's flagged gap** ("verify... whether any A/B/C trips
+terminate short of the printed line ends... before assuming `shortTurns: []` holds"): it does
+NOT hold. At Muzeum, every Line C departure whose real headsign is toward the Háje end printed
+**`"Pražského povstání"`** as `trip.headsign` — a genuine, real Line C station (between Vyšehrad
+and Pankrác), not Háje itself. This is a real short-turn/partial-route service pattern (observed
+consistently across the whole live poll window, not a one-off), most likely an early-morning
+reduced-service pattern. `resolveTerminus`/`mapLineTerminusDestination` correctly do NOT fabricate
+a matching chip for this (per their "never invent an unknown terminus" contract) and fall back to
+the bare `"C"` label — this is the SAFE behaviour (no wrong string shown), but it means riders see
+an under-specified direction chip for this real, recurring service, not a wrong one. This is a
+**direction-model decision for Tim** (§3 memo says "Hold D5... until Tim locks this," and
+explicitly flagged this exact gap as unconfirmed) — options are (a) add `Pražského povstání` as a
+second valid C terminus in `LINE_TERMINI.c` so it gets its own `"C + Pražského povstání"` chip, or
+(b) leave the bare-`"C"` fallback as the deliberate degraded-but-safe behaviour. Not decided or
+changed here — `lib/cities/prague/marketing-directions.js`'s `LINE_TERMINI` is untouched pending
+that call. No other short-turn headsigns were observed on A or B in this poll window.
