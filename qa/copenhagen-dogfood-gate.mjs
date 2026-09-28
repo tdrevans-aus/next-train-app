@@ -59,6 +59,7 @@ import {
   getCopenhagenDogfoodDirections,
   getCopenhagenDogfoodNextTrain,
 } from "../lib/cities/copenhagen/dogfood-next-train.js";
+import { skipLiveLine, isDocumentedServiceHour } from "./helpers/service-hours.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -319,19 +320,40 @@ assert(dispatched.source === "copenhagen-rejseplanen-schedule", "live-city-api d
 
 // København H must surface DSB Regional/InterCity/InterCityLyn/Öresundståg chips (the
 // silent-exclusion defect this pass fixed) but never EuroCity/SJ/České dráhy.
+//
+// docs/jim-brief-live-gates-service-hours.md (28 Sep 2026): DSB night regional trains are
+// genuinely sparse — reproduced directly against the real static schedule: fetchStationBoard's
+// own 180-minute near-term horizon returns zero Regionaltog-classified trips at København H for
+// a fixed instant of local 01:50 CEST (the exact PR #487 failure time), while the same query at
+// local 02:00+ already finds some again. Widening the horizon does NOT distinguish a genuine gap
+// from a real regression here — at 01:50 CEST a 6-hour-wide query already finds the next
+// morning's services (266 trips), so a wide-horizon check would still force the strict
+// assertion during the exact minutes it needs to relax. A documented per-city window is the
+// right tool for this one (per the brief's fallback clause), not a wider live query.
 const kobenhavnHPack = await getCopenhagenDogfoodDirections("København H");
-assert(
-  kobenhavnHPack.directions.some((chip) => chip.startsWith("Regionaltog +")),
-  "København H must surface at least one Regionaltog chip (RE short-code fix)"
-);
-assert(
-  kobenhavnHPack.directions.some((chip) => chip.startsWith("InterCity +") || chip.startsWith("InterCityLyn +")),
-  "København H must surface at least one InterCity/InterCityLyn chip (IC/ICL short-code fix)"
-);
-assert(
-  kobenhavnHPack.directions.some((chip) => chip.startsWith("Öresundståg +")),
-  "København H must surface at least one Öresundståg chip"
-);
+const copenhagenNow = new Date();
+const copenhagenInServiceWindow = isDocumentedServiceHour("copenhagen", copenhagenNow);
+
+if (copenhagenInServiceWindow) {
+  assert(
+    kobenhavnHPack.directions.some((chip) => chip.startsWith("Regionaltog +")),
+    "København H must surface at least one Regionaltog chip (RE short-code fix)"
+  );
+  assert(
+    kobenhavnHPack.directions.some((chip) => chip.startsWith("InterCity +") || chip.startsWith("InterCityLyn +")),
+    "København H must surface at least one InterCity/InterCityLyn chip (IC/ICL short-code fix)"
+  );
+  assert(
+    kobenhavnHPack.directions.some((chip) => chip.startsWith("Öresundståg +")),
+    "København H must surface at least one Öresundståg chip"
+  );
+} else {
+  console.log(
+    skipLiveLine("copenhagen", copenhagenNow, {
+      reason: "DSB Regional/InterCity/Öresundståg service at København H is genuinely sparse overnight",
+    })
+  );
+}
 for (const chip of kobenhavnHPack.directions) {
   assert(!/EuroCity|SJ X2000|Ceské drá|České dráhy|RailJet|Praha|Hamburg Hbf/i.test(chip), `København H must never surface an excluded operator chip, got "${chip}"`);
 }
