@@ -11,7 +11,7 @@
   "notCovered": [
     {
       "label": "Connolly Luas stop",
-      "detail": "No real-time data from the NTA feed; use Busaras."
+      "detail": "No real-time data from the NTA feed; use Busaras. Red trams still show 'Red + Connolly' as a direction chip further up the line - that names where the tram is going, not a board you can open at Connolly itself."
     },
     {
       "label": "Saggart Luas stop",
