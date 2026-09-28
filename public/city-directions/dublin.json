@@ -1,1 +1,326 @@
-{}
+{
+  "Abbey Street": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Balally": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Ballyogan Wood": [
+    "Green + Brides Glen",
+    "Green + Parnell"
+  ],
+  "Beechwood": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Belgard": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Blackhorse": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Bluebell": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Brides Glen": [
+    "Green + Parnell"
+  ],
+  "Broadstone - University": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Broombridge": [
+    "Green + Brides Glen",
+    "Green + Sandyford"
+  ],
+  "Busáras": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Cabra": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Carrickmines": [
+    "Green + Brides Glen",
+    "Green + Parnell"
+  ],
+  "Central Park": [
+    "Green + Brides Glen"
+  ],
+  "Charlemont": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Cheeverstown": [
+    "Red + Saggart",
+    "Red + The Point"
+  ],
+  "Cherrywood": [
+    "Green + Brides Glen",
+    "Green + Parnell"
+  ],
+  "Citywest Campus": [
+    "Red + Saggart",
+    "Red + The Point"
+  ],
+  "Cookstown": [
+    "Red + Connolly",
+    "Red + Tallaght"
+  ],
+  "Cowper": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Dawson": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Dominick": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Drimnagh": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Dundrum": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Fatima": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Fettercairn": [
+    "Red + Saggart",
+    "Red + The Point"
+  ],
+  "Fortunestown": [
+    "Red + Saggart",
+    "Red + The Point"
+  ],
+  "Four Courts": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "George's Dock": [
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Glencairn": [
+    "Green + Brides Glen"
+  ],
+  "Goldenbridge": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Grangegorman": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Harcourt": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Heuston": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Hospital": [
+    "Red + Connolly",
+    "Red + Tallaght"
+  ],
+  "James's": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Jervis": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Kilmacud": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Kingswood": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Kylemore": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Laughanstown": [
+    "Green + Brides Glen",
+    "Green + Parnell"
+  ],
+  "Leopardstown Valley": [
+    "Green + Brides Glen",
+    "Green + Parnell"
+  ],
+  "Marlborough": [
+    "Green + Brides Glen",
+    "Green + Sandyford"
+  ],
+  "Mayor Square - NCI": [
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Milltown": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Museum": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "O'Connell - GPO": [
+    "Green + Broombridge",
+    "Green + Parnell"
+  ],
+  "O'Connell Upper": [
+    "Green + Broombridge",
+    "Green + Parnell"
+  ],
+  "Parnell": [
+    "Green + Brides Glen",
+    "Green + Sandyford"
+  ],
+  "Phibsborough": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Ranelagh": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Red Cow": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Rialto": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Sandyford": [
+    "Green + Brides Glen",
+    "Green + Broombridge"
+  ],
+  "Smithfield": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Spencer Dock": [
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "St. Stephen's Green": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ],
+  "Stillorgan": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Sandyford"
+  ],
+  "Suir Road": [
+    "Red + Connolly",
+    "Red + Saggart",
+    "Red + Tallaght",
+    "Red + The Point"
+  ],
+  "Tallaght": [
+    "Red + Connolly"
+  ],
+  "The Gallops": [
+    "Green + Brides Glen"
+  ],
+  "The Point": [
+    "Red + Saggart",
+    "Red + Tallaght"
+  ],
+  "Trinity": [
+    "Green + Brides Glen",
+    "Green + Sandyford"
+  ],
+  "Westmoreland": [
+    "Green + Broombridge",
+    "Green + Parnell"
+  ],
+  "Windy Arbour": [
+    "Green + Brides Glen",
+    "Green + Broombridge",
+    "Green + Parnell",
+    "Green + Sandyford"
+  ]
+}
