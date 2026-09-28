@@ -39,7 +39,13 @@
         "U50Z102P"
       ],
       "lat": 50.04441,
-      "lng": 14.44879
+      "lng": 14.44879,
+      "notServed": {
+        "since": "2026-09-26",
+        "until": "2026-09-28",
+        "reason": "Line C section closure for track repair (Pražského povstání – Chodov)",
+        "replacement": "replacement bus XC runs Pražského povstání – Pankrác – Budějovická – Kačerov – Roztyly – Dědinova – Chodov"
+      }
     },
     {
       "name": "Černý Most",
@@ -92,6 +98,25 @@
       ],
       "lat": 50.075093,
       "lng": 14.515182
+    },
+    {
+      "name": "Flora",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U118Z101P",
+        "U118Z102P"
+      ],
+      "lat": 50.078289,
+      "lng": 14.462677,
+      "notServed": {
+        "since": "2026-02-02",
+        "until": null,
+        "reason": "long-term reconstruction of the station (trains pass through without stopping)",
+        "replacement": "nearby trams connect instead: 10/11/16 from Náměstí Míru, 13 from Jiřího z Poděbrad, 16 from Želivského"
+      }
     },
     {
       "name": "Florenc",
@@ -250,7 +275,13 @@
         "U228Z102P"
       ],
       "lat": 50.041844,
-      "lng": 14.459294
+      "lng": 14.459294,
+      "notServed": {
+        "since": "2026-09-26",
+        "until": "2026-09-28",
+        "reason": "Line C section closure for track repair (Pražského povstání – Chodov)",
+        "replacement": "replacement bus XC runs Pražského povstání – Pankrác – Budějovická – Kačerov – Roztyly – Dědinova – Chodov"
+      }
     },
     {
       "name": "Karlovo náměstí",
@@ -529,7 +560,13 @@
         "U385Z102P"
       ],
       "lat": 50.050977,
-      "lng": 14.43971
+      "lng": 14.43971,
+      "notServed": {
+        "since": "2026-09-26",
+        "until": "2026-09-28",
+        "reason": "Line C section closure for track repair (Pražského povstání – Chodov)",
+        "replacement": "replacement bus XC runs Pražského povstání – Pankrác – Budějovická – Kačerov – Roztyly – Dědinova – Chodov"
+      }
     },
     {
       "name": "Petřiny",
@@ -607,7 +644,13 @@
         "U601Z102P"
       ],
       "lat": 50.037677,
-      "lng": 14.476747
+      "lng": 14.476747,
+      "notServed": {
+        "since": "2026-09-26",
+        "until": "2026-09-28",
+        "reason": "Line C section closure for track repair (Pražského povstání – Chodov)",
+        "replacement": "replacement bus XC runs Pražského povstání – Pankrác – Budějovická – Kačerov – Roztyly – Dědinova – Chodov"
+      }
     },
     {
       "name": "Skalka",

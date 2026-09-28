@@ -35,10 +35,18 @@
  * docs/dublin-d1/live-sweep-log.jsonl): a station continuously empty for >= 1.5x the fallback
  * headway THIS run is only a permanent-shape failure if it has never been observed non-empty in
  * the last EVIDENCE_WINDOW_DAYS days of logged runs — the Dublin Broombridge lesson (a long
- * intermittent gap is not the same as a permanent one). Flora was removed from the catalog
- * entirely (docs/jim-brief-prague-flora-sweep-empty-state.md, confirmed real zero-service gap,
- * not a mapping bug — see lib/providers/prague.js file header and
- * lib/cities/prague/coverage.json), so it is never swept here.
+ * intermittent gap is not the same as a permanent one).
+ *
+ * notServed stations (docs/jim-brief-prague-line-c-closure.md, supersedes the Flora
+ * catalog-removal note this replaced): a station carrying a `notServed` field in
+ * lib/cities/prague/stations.json (Flora, plus Budějovická/Kačerov/Pankrác/Roztyly for the
+ * confirmed Line C section closure) is swept exactly like every other station, but a continuous
+ * empty run there is reported as PASS — "not-currently-served" — rather than fed through the
+ * staleGap/intermittentLong/uncertain classification below, which exists to catch an
+ * *undocumented* coverage gap. This is a report classification only, never a bypass of the sweep
+ * itself: these stations are still polled and still show up in the evidence log, so if one of
+ * them starts showing live trips again (the closure lifting, PID's data changing), the run's own
+ * output makes that visible even though it isn't required for a pass.
  *
  * Requires a real GOLEMIO_API_KEY (run with `node --env-file=.env.local
  * qa/prague-all-stations-live-sweep.mjs`). NOT registered in qa/run-all.mjs for the same reason
@@ -227,6 +235,7 @@ async function main() {
   }
 
   const stations = listCatalogStations();
+  const notServedNames = new Set(stations.filter((s) => s.notServed).map((s) => s.name));
   const now = new Date();
   const bucket = new TokenBucket(MAX_REQUESTS_PER_WINDOW, WINDOW_MS);
 
@@ -297,20 +306,28 @@ async function main() {
   const staleGap = [];
   const intermittentLong = [];
   const uncertain = [];
+  const notCurrentlyServed = [];
   for (const [name, since] of emptySinceMs.entries()) {
     if (since == null) {
       continue;
     }
     const observedMs = runEndMs - since;
+    const record = { name, observedMinutes: Math.round(observedMs / 60_000) };
+    if (notServedNames.has(name)) {
+      // docs/jim-brief-prague-line-c-closure.md: a documented notServed station's continuous
+      // empty run is the expected, correct signature (the auto-detected notServed mechanism, not
+      // an undocumented gap) — reported as a pass regardless of how long it's been empty.
+      notCurrentlyServed.push(record);
+      continue;
+    }
     if (observedMs >= requiredEmptyMs) {
-      const record = { name, observedMinutes: Math.round(observedMs / 60_000) };
       if (historicalNonEmpty.has(name)) {
         intermittentLong.push(record);
       } else {
         staleGap.push(record);
       }
     } else {
-      uncertain.push({ name, observedMinutes: Math.round(observedMs / 60_000) });
+      uncertain.push(record);
     }
   }
 
@@ -319,6 +336,7 @@ async function main() {
     totalPolls: totalPollCounts.get(s.name) ?? 0,
     nonEmptyPolls: nonEmptyPollCounts.get(s.name) ?? 0,
     observedNonEmpty: (nonEmptyPollCounts.get(s.name) ?? 0) > 0,
+    notServed: notServedNames.has(s.name),
   }));
   appendEvidenceLogEntry({
     runId: `sweep-${new Date(runEndMs).toISOString()}`,
@@ -343,6 +361,15 @@ async function main() {
     throw new Error(
       `prague-all-stations-live-sweep: ${lastErrored.length}/${stations.length} station(s) threw ` +
         `an error on the final poll — see above.`
+    );
+  }
+
+  if (notCurrentlyServed.length > 0) {
+    console.log(
+      `prague-all-stations-live-sweep: ${notCurrentlyServed.length} station(s) reported ` +
+        `not-currently-served (documented in lib/cities/prague/stations.json's notServed field — ` +
+        `expected empty, a pass, not a coverage gap): ` +
+        `${notCurrentlyServed.map((s) => `${s.name} (empty ${s.observedMinutes}min)`).join(", ")}`
     );
   }
 
@@ -377,8 +404,9 @@ async function main() {
   }
 
   console.log(
-    "prague-all-stations-live-sweep: ok — every catalog station either had live trips, a long " +
-      "intermittent gap backed by evidence-memory, or is still within its uncertain window"
+    "prague-all-stations-live-sweep: ok — every catalog station either had live trips, was a " +
+      "documented not-currently-served station, a long intermittent gap backed by " +
+      "evidence-memory, or is still within its uncertain window"
   );
 }
 

@@ -134,30 +134,57 @@
   }
 
   /**
-   * docs/jim-brief-dublin-honest-empty-state.md — true only when EVERY direction on the current
-   * station board is empty, all of them for the same reason: a live-only provider's additive
-   * `emptyReason: "no-live-predictions"` field, meaning the static schedule says service should
-   * be running but the real-time feed had nothing to say for this stop right now (a feed gap,
-   * not "no service"). A station with even one direction still showing a `next` train, or an
-   * empty direction that ISN'T flagged this way (outside service hours, a planned closure, a
-   * feed-wide outage — those already have their own handling), never matches.
+   * docs/jim-brief-dublin-honest-empty-state.md, extended by
+   * docs/jim-brief-prague-line-c-closure.md — true only when EVERY direction on the current
+   * station board is empty, all of them for the SAME known reason code: either a live-only
+   * provider's additive `emptyReason: "no-live-predictions"` (the static schedule says service
+   * should be running but the real-time feed had nothing to say for this stop right now — a feed
+   * gap, not "no service"), or `"not-currently-served"` (today's static schedule itself expects
+   * nothing here at all — a section closure, a station under reconstruction). A station with even
+   * one direction still showing a `next` train, an empty direction that ISN'T flagged with one of
+   * these two reasons (outside service hours, a feed-wide outage — those already have their own
+   * handling), or a station whose directions disagree on which of the two reasons applies, never
+   * matches (mixed reasons are treated conservatively as no match, same as an unknown one).
    */
   function boardHonestEmptyReason(entries) {
     if (!Array.isArray(entries) || entries.length === 0) {
       return null;
     }
+    const knownReasons = new Set(["no-live-predictions", "not-currently-served"]);
     let reason = null;
     for (const entry of entries) {
       if (entry?.data?.next) {
         return null;
       }
       const entryReason = entry?.data?.emptyReason ?? null;
-      if (entryReason !== "no-live-predictions") {
+      if (!knownReasons.has(entryReason)) {
+        return null;
+      }
+      if (reason !== null && reason !== entryReason) {
         return null;
       }
       reason = entryReason;
     }
     return reason;
+  }
+
+  /**
+   * docs/jim-brief-prague-line-c-closure.md — the station-specific rider-facing sentence for a
+   * `"not-currently-served"` board (built server-side from the station's `notServed` copy, e.g.
+   * "No metro service at this station at the moment — <reason>; replacement bus XC runs..."),
+   * read off whichever entry actually carries it (every entry shares the same reason, per
+   * boardHonestEmptyReason above, but only additive fields are guaranteed identical). Falls back
+   * to a generic sentence if a provider ever sets the reason without the message, so the UI never
+   * renders blank body text.
+   */
+  function notCurrentlyServedMessage(entries) {
+    for (const entry of entries ?? []) {
+      const message = entry?.data?.emptyReasonMessage;
+      if (typeof message === "string" && message.trim()) {
+        return message.trim();
+      }
+    }
+    return "No service at this station at the moment.";
   }
 
   function readActiveTimeZone() {
@@ -2503,6 +2530,48 @@ function renderNearbyBoard({ stale = false } = {}) {
         const noun = nearbyModeVehicleNoun(readNearbyCity());
         deps.heroScheduledTimeEl.textContent =
           `${noun.charAt(0).toUpperCase()}${noun.slice(1)} are running but the operator's live feed has no times for this stop at the moment. Try again in a minute or check a nearby stop.`;
+        deps.heroScheduledTimeEl.hidden = false;
+      }
+      if (deps.platformEl) {
+        deps.platformEl.textContent = "—";
+      }
+      if (deps.statusEl) {
+        deps.statusEl.textContent = "—";
+      }
+      if (deps.followingSectionEl) {
+        deps.followingSectionEl.hidden = true;
+      }
+      hideUpcomingDepartureBoard();
+      hideTerminusArrivalsBoard();
+      if (nearbyDirectionsEl) {
+        nearbyDirectionsEl.hidden = false;
+      }
+      renderNearbyDirectionsList();
+      updateSwipeHint();
+      updateSwipeCues();
+      maybeScheduleOnboarding();
+      return;
+    }
+
+    // docs/jim-brief-prague-line-c-closure.md: a well-formed board with zero trips in every
+    // direction, where the provider says today's schedule itself expects no service here at all
+    // (a section closure, a station under reconstruction) — distinct from the feed-gap case
+    // above, this renders the station-specific replacement-transport message verbatim rather than
+    // the generic "try again in a minute" copy, which would be actively misleading here.
+    if (honestEmptyReason === "not-currently-served") {
+      setLastRenderedNext(null);
+      setHeroUrgency("calm");
+      if (deps.heroDepartLabelEl) {
+        deps.heroDepartLabelEl.textContent = "Next Train";
+      }
+      if (deps.departCountdownEl) {
+        deps.departCountdownEl.textContent = "—";
+      }
+      if (deps.departDisplayTimeEl) {
+        deps.departDisplayTimeEl.textContent = "No service at this station at the moment";
+      }
+      if (deps.heroScheduledTimeEl) {
+        deps.heroScheduledTimeEl.textContent = notCurrentlyServedMessage(nearbyBoard?.entries);
         deps.heroScheduledTimeEl.hidden = false;
       }
       if (deps.platformEl) {

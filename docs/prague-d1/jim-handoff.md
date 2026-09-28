@@ -282,3 +282,107 @@ static load resolves against current data.
 
 Status stays `"planned"`. This is a flip prerequisite, not a flip — Mark should re-run QA (his
 note's item 3 in particular) once this PR merges.
+
+## Correction, 28 Sep 2026 (docs/jim-brief-prague-line-c-closure.md) — Budějovická/Kačerov/Pankrác/Roztyly confirmed as a temporary, dated Line C section closure; auto-detected `notServed` mechanism replaces catalog-removal (Flora restored onto the same mechanism)
+
+Mark's second QA pass (`origin/mark/prague-flip-2`, `docs/prague-d1/mark-qa-note.md`) found
+Budějovická/Kačerov/Pankrác/Roztyly (Line C, consecutive) empty on 18/18 live polls across two
+independent runs ~30 min apart during confirmed weekday peak service, `emptyReason: null` for all
+four (the honest-empty-state fix from the prior session didn't cover this case — the static
+schedule's own near-term horizon also found zero candidates, not just the live feed). This
+session's investigation, before treating it as a bug:
+
+**1. Static feed investigation.** Downloaded a fresh `https://data.pid.cz/PID_GTFS.zip` (feed
+span 20260928-20261011) and dumped every stop_time referencing the four stations' platform ids
+(`U50Z101P/102P`, `U228Z101P/102P`, `U385Z101P/102P`, `U601Z101P/102P` — all confirmed correct by
+name/parent_station, not a mapping bug, same check as Flora's). All 484/484/484/467 stop_time rows
+for these four resolve to exactly 3 service_ids (`0000011-3`, `1111100-1`, `1111111-2`), and every
+one of those three has `calendar.txt` `start_date: 20260929` — tomorrow. Zero calendar_dates.txt
+exceptions. In other words: the current feed period has genuinely zero scheduled trips through
+this section for any date before 29 Sep 2026, and normal service resumes automatically that day —
+confirmed by the same check against Muzeum (370 trips referencing its platform, 37 active today)
+to rule out a bug in the date-matching logic itself.
+
+**2. DPP closure notice — confirms cause, dates, and replacement.** DPP's "Omezení a mimořádné
+události" (Restrictions and exceptional events) listing
+(https://www.dpp.cz/omezeni-a-mimoradne-udalosti, detail
+https://www.dpp.cz/omezeni-a-mimoradne-udalosti/detail/31) records: **"C Pražského povstání –
+Chodov: dočasné přerušení provozu metra"** — bidirectional Metro C service interrupted
+Pražského povstání–Chodov from **Sat 26 Sep 2026, 04:30 to Mon 28 Sep 2026, 23:59**, reason
+**track repair** ("Z důvodu opravy trati"), with the Chodov–Háje sub-section running single-track
+shuttle. Replacement: **daytime bus XC**, route Pražského povstání – Pankrác – Budějovická –
+Kačerov – Roztyly – Dědinova – Chodov (full stop list and both directions' exact stop locations in
+the notice). This matches the GTFS finding exactly — service resumes 29 Sep 2026, the day after
+the notice's end date. The same listing's detail #15 confirms Flora's own closure
+("dočasné uzavření stanice metra", since Mon 2 Feb 2026, "do odvolání" — until further notice,
+reason: station reconstruction, trains pass through without stopping; replacement: nearby tram
+lines 10/11/16 from Náměstí Míru, 13 from Jiřího z Poděbrad, 16 from Želivského) — this was already
+known from the prior session's GTFS dump, now also confirmed against DPP's own rider-facing notice.
+
+**3. Static-coverage gate fix (item 3).** The gate's prior assertion ("every catalog station has
+>= 1 stop_time in the committed fixture, ever") passed for all four Line C stations despite the
+closure because they DO have hundreds of stop_time rows in the fixture — just none whose
+service_id is active on any date before 29 Sep. Replaced with a date-aware check
+(`hasScheduledServiceToday()`, new export in `lib/providers/gtfs/board.js`) run against a frozen
+reference date inside the confirmed closure window (`2026-09-28T10:00:00+02:00`, chosen because the
+committed fixture's own calendar.txt only starts 2026-09-28): every non-notServed station must show
+scheduled service on that date, every notServed station (now including Flora) must show none. This
+is the assertion that would have caught both Flora and the section closure before either reached a
+live poll.
+
+**4. Fix — auto-detected `notServed`, not catalog removal.** Per this session's brief, catalog
+removal (Flora's prior treatment) doesn't fit a station that reopens on its own once the feed
+updates — it would need a manual PR to un-remove it. Instead:
+- `lib/cities/prague/stations.json` gained an optional `notServed: { since, until, reason,
+  replacement }` field — metadata/copy only, never itself the runtime gate — on Flora (since
+  2026-02-02, until `null`/open-ended) and the four Line C stations (since 2026-09-26, until
+  2026-09-28, from DPP's notice). Flora is back in the catalog (58 stations total, Line A 16 -> 17)
+  on this same mechanism, superseding its removal in the prior session — `coverage.json` still
+  documents it, but as "in the catalog, currently not served" rather than "excluded".
+- `lib/providers/gtfs/board.js` gained `hasScheduledServiceToday({ stopIds, staticData, timeZone,
+  now })`: whether ANY currently-active-calendar trip stops here on the service date containing
+  `now` — the whole calendar day, not a near-term horizon, which is what safely distinguishes a
+  genuine closure from an ordinary gap between trains or the network's own overnight downtime
+  (during which every station would otherwise show empty too).
+- `lib/providers/prague.js`'s `fetchStationBoard()`: when the live board is empty AND the
+  near-term static horizon (`computeScheduledCandidates`) has nothing due either, it now calls
+  `computeNotServedToday()` (same best-effort/non-fatal contract as the existing side-computation)
+  and, if the whole day has zero scheduled service, sets `emptyReason: "not-currently-served"` (a
+  new, distinct code from `"no-live-predictions"`) plus a `notServedMessage` built by the new
+  exported `formatNotServedMessage()` from the station's `notServed` copy. No date is ever
+  hardcoded in code — `since`/`until` in stations.json are for humans re-reading the file; the
+  actual decision comes from the live feed's current calendar, so this stops firing automatically
+  the moment PID's data shows the station served again (29 Sep for the four; Flora indefinitely).
+- `lib/train-times-core.js` gained an additive/optional `emptyReasonMessage` field on
+  `buildNextTrainResponse()`, alongside the existing `emptyReason` — carries a ready-to-render,
+  station-specific sentence rather than having the client hardcode copy per reason code.
+  `lib/cities/prague/dogfood-next-train.js` plumbs `board.notServedMessage` through as
+  `emptyReasonMessage` whenever `board.emptyReason === "not-currently-served"`, with no
+  direction-specific gate (unlike `"no-live-predictions"`, this is a station-wide condition).
+- `public/nearby-mode.js` (shared product UI, authorised by this brief's bug-fix/product mode):
+  `boardHonestEmptyReason()` now accepts either known reason code (still requiring every direction
+  agree), and a new render branch shows the station-specific `emptyReasonMessage` verbatim for
+  `"not-currently-served"`, distinct from the generic live-gap copy (which would be actively
+  misleading here — retrying can't help, the fix is the named replacement transport).
+  `public/train-times-bundle.js` rebuilt via `npm run build:train-times`.
+- `lib/fixtures.js` gained a `not-served` dev fixture; `qa/honest-empty-state.mjs` gained matching
+  offline (`emptyReasonMessage` additive/absent) and browser (renders the station-specific message,
+  distinct title) cases.
+- `qa/prague-all-stations-live-sweep.mjs`: a documented `notServed` station's continuous empty run
+  is now reported as a PASS ("not-currently-served") rather than fed through the
+  staleGap/intermittentLong/uncertain classification — still polled and logged every run (so a
+  reopening is visible in the evidence log even though it isn't required for a pass), never a
+  bypass of the sweep itself. Re-ran for real during confirmed Prague weekday peak service
+  (~06:44-06:53 Europe/Prague, 28 Sep 2026): 0 rate-limit errors, exactly the 5 notServed stations
+  (Flora + the four Line C stations) reported not-currently-served, 41 stations had live trips
+  every poll, 12 stations were empty the whole 9-minute run but hadn't yet reached the 1.5x-headway
+  failure threshold (reported uncertain, not failed — same as the prior session's finding, just a
+  short local gap inside a 2-4 min headway window).
+- `lib/cities/prague/coverage.json` updated: `covered` now records 58/58 stations with a note that
+  Flora and the four Line C stations currently show no service (auto-detected, self-resolving);
+  `notCovered` gained a dedicated entry for the Line C closure (dates, reason, replacement bus XC,
+  expected reopening) alongside the updated Flora entry.
+
+Status stays `"planned"`. This is a flip prerequisite, not a flip — Mark should re-run the full QA
+checklist (his `mark-qa-note.md` item 3 in particular, plus items 4-8 which his second pass didn't
+re-verify) once this PR merges.
