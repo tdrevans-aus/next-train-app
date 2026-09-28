@@ -108,6 +108,42 @@ async function timedFetch(path, timeoutMs) {
   }
 }
 
+function isSuccessfulDirectionsResult(result) {
+  return result.ok && result.status === 200 && Array.isArray(result.body?.directions) && result.body.directions.length > 0;
+}
+
+const COLD_MAX_ATTEMPTS = 3;
+
+/**
+ * The cold call hits a real live upstream feed (NTA/VIC Open Data) — a transient network hiccup
+ * or upstream rate limit there is not the cold-start-timing bug this gate exists to catch. Both
+ * were observed directly during this fix's own testing: an HTTP 500 traced to a genuine upstream
+ * 429 from NTA's own TripUpdates endpoint (confirmed via QA_VERBOSE server logs — NTA rate-limits
+ * per key/IP, and this investigation's own heavy repeated testing tripped it), and a separate
+ * abort past a generous bound on melbourne with no server-side error logged at all (a stalled
+ * connection, not a slow-but-completing one). Up to COLD_MAX_ATTEMPTS total attempts, pausing 2s
+ * between each, mirrors the exact same reasoning as public/journey-detail.js's own client-side
+ * retry this PR adds — a rider's next attempt landing on an already-warm server (or simply after
+ * an upstream rate-limit window passes) is normal, expected behaviour, not the gate cutting
+ * itself slack on the thing it actually exists to measure.
+ */
+async function coldFetchWithRetry(path, timeoutMs, city) {
+  let last;
+  for (let attempt = 1; attempt <= COLD_MAX_ATTEMPTS; attempt += 1) {
+    last = await timedFetch(path, timeoutMs);
+    if (isSuccessfulDirectionsResult(last)) {
+      return last;
+    }
+    if (attempt < COLD_MAX_ATTEMPTS) {
+      console.log(
+        `[cold-start-directions-gate] ${city} cold attempt ${attempt} did not succeed (${last.ok ? `HTTP ${last.status}` : last.error?.message ?? last.error} after ${last.elapsedMs}ms) — retrying after 2s`
+      );
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  }
+  return last;
+}
+
 async function main() {
   const child = await ensureDevServer({ isRunner: true });
   const failures = [];
@@ -126,7 +162,7 @@ async function main() {
 
       const path = `/api/directions?city=${encodeURIComponent(city)}&station=${encodeURIComponent(station)}`;
 
-      const cold = await timedFetch(path, coldTimeoutMs);
+      const cold = await coldFetchWithRetry(path, coldTimeoutMs, city);
       if (!cold.ok) {
         failures.push(
           `${city}: cold /api/directions request errored after ${cold.elapsedMs}ms: ${cold.error?.message ?? cold.error}`
