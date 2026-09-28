@@ -6,6 +6,20 @@
  * pre-flip assertions (assertCityLive must fail, status === "planned", isMultiCity() === false,
  * dispatched calls must surface MissingWmataApiKeyError) are removed, not left disabled.
  *
+ * Updated 27 Sep 2026 (docs/jim-brief-washington-one-train-per-direction.md) for the terminus-only
+ * direction model correction — see lib/cities/washington/marketing-directions.js file header. All
+ * "Line + terminus" assertions below are now bare-terminus; a per-direction trip-count section
+ * (search "trunk direction") proves a shared terminus reachable by multiple lines lists every
+ * line's trains, and that a trunk direction with >=2 fixture trains never collapses to
+ * upcoming.length === 1.
+ *
+ * Corrected again same day (Mark's QA on PR #482): that same PR had added a defensive dedupe step
+ * (dedupeTrainsList(), keyed on Line/DestinationName/Min) which Mark caught silently collapsing
+ * two GENUINELY DIFFERENT Blue trains to Huntington that only differed by `Group` (platform) — a
+ * real, common shape at a two-platform terminus, not a duplicate. The dedupe step is removed
+ * entirely (see lib/providers/washington.js's tripsFromTrainsList()); search "two-platform
+ * terminus" below for the regression fixture.
+ *
  * Unlike Boston's MBTA V3 API, WMATA's endpoints always require a key (WMATA_API_KEY) — there is
  * no unauthenticated fallback, and no WMATA key is registered in CI. So the end-to-end dispatch
  * coverage below stubs globalThis.fetch to serve the real captured
@@ -22,7 +36,7 @@
  * The rest of the gate is unchanged by the flip: it still replays
  * qa/fixtures/washington/{jstations,predictions}.json through the catalog/allow-list/
  * direction-model logic (resolveCatalogEntry, mapWmataTrainToTrip, tripsFromTrainsList,
- * mapLineTerminusDestination, resolveTerminus, resolveStationCodesForCatalogEntry), and still
+ * mapTerminusOnlyDestination, resolveTerminus, resolveStationCodesForCatalogEntry), and still
  * asserts that fetchStationBoard throws for an unknown station and for a missing WMATA_API_KEY
  * (still a real, live failure mode — the mock above only covers the dispatch-wiring section).
  * Rows in the fixtures marked "_source": "synthetic" are hand-authored for shapes the live
@@ -69,10 +83,14 @@ import {
   isForbiddenCollapseName,
   isForbiddenHubProxy,
   resolveTerminus,
-  mapLineTerminusDestination,
+  mapTerminusOnlyDestination,
+  printedLineTerminusLabel,
   marketingLabelsForStation,
   tripMatchesMarketingChip,
+  SHORT_TURN_TERMINI,
 } from "../lib/cities/washington/marketing-directions.js";
+import { resolveDirectionLabelAlias } from "../lib/cities/direction-label-aliases.js";
+import { pickUpcomingProviderTrips } from "../lib/train-times-core.js";
 import {
   listWashingtonDogfoodStations,
   getWashingtonDogfoodDirections,
@@ -189,24 +207,48 @@ assert(resolveCatalogEntry("Farragut North")?.name !== resolveCatalogEntry("Farr
 // Metro Center is one merged multi-line catalog entry, never split into two.
 assert(resolveCatalogEntry(WASHINGTON_HUB)?.lines.sort().join(",") === "blue,orange,red,silver", "Metro Center must carry all four crossing lines as one entry");
 
-// Line labels + termini (direction-model-memo.md §3 recommendation A — "{Color} Line + terminus").
+// Line labels + termini (terminus-only model, corrected 27 Sep 2026 — see marketing-directions.js
+// file header Correction, docs/jim-brief-washington-one-train-per-direction.md).
 assert(LINE_LABELS.red === "Red" && LINE_LABELS.silver === "Silver", "line labels must be bare color words");
 assert(LINE_TERMINI.red.includes("Shady Grove") && LINE_TERMINI.red.includes("Glenmont"), "Red termini must be Shady Grove/Glenmont");
-assert(LINE_TERMINI.silver.includes("Ashburn") && LINE_TERMINI.silver.includes("Downtown Largo") && LINE_TERMINI.silver.includes("New Carrollton"), "Silver must have three termini: Ashburn, Downtown Largo, New Carrollton");
+assert(LINE_TERMINI.silver.includes("Ashburn") && LINE_TERMINI.silver.includes("Downtown Largo") && LINE_TERMINI.silver.includes("New Carrollton"), "Silver must have three full-length termini: Ashburn, Downtown Largo, New Carrollton");
+assert(LINE_TERMINI.silver.includes("Wiehle-Reston East"), "Silver must include the Wiehle-Reston East short-turn terminus");
+assert(LINE_TERMINI.blue.includes("Huntington"), "Blue must include the Huntington short-turn terminus");
 assert(LINE_TERMINI.yellow.includes("Huntington") && LINE_TERMINI.yellow.includes("Greenbelt"), "Yellow termini must include Huntington and Greenbelt");
-assert(mapLineTerminusDestination(WASHINGTON_HUB, "red") === "Red Line", "Metro Center must never appear as a direction token — falls back to the bare line label");
-assert(mapLineTerminusDestination("Downtown", "orange") === "Orange Line", "Downtown must never appear as a direction token");
-assert(mapLineTerminusDestination("Glenmont", "red") === "Red Line + Glenmont", "direction chip must be Line + terminus");
-assert(mapLineTerminusDestination("Ashburn", "silver") === "Silver Line + Ashburn", "Silver direction chip must be Line + terminus");
+assert(SHORT_TURN_TERMINI.blue.includes("Huntington") && SHORT_TURN_TERMINI.silver.includes("Wiehle-Reston East"), "SHORT_TURN_TERMINI must record both new short-turns");
+assert(mapTerminusOnlyDestination(WASHINGTON_HUB, "red") === "Red Line", "Metro Center must never appear as a direction token — falls back to the bare line label");
+assert(mapTerminusOnlyDestination("Downtown", "orange") === "Orange Line", "Downtown must never appear as a direction token");
+assert(mapTerminusOnlyDestination("Glenmont", "red") === "Glenmont", "direction chip must be the bare terminus, not Line + terminus");
+assert(mapTerminusOnlyDestination("Ashburn", "silver") === "Ashburn", "Silver direction chip must be the bare terminus");
+assert(mapTerminusOnlyDestination("New Carrollton", "orange") === "New Carrollton" && mapTerminusOnlyDestination("New Carrollton", "silver") === "New Carrollton", "New Carrollton must be the exact same chip string for both Orange and Silver trains — this is what fixes the one-train-per-direction bug");
 assert(resolveTerminus("Some Unknown Destination", "red") === null, "resolveTerminus must not fabricate an unknown terminus");
 assert(foldKey("Grosvenor - Strathmore") !== "", "foldKey must fold case/punctuation");
 
-// marketingLabelsForStation excludes a self-referential terminus chip.
+// printedLineTerminusLabel discloses the physical line per trip even though the chip is line-agnostic.
+assert(printedLineTerminusLabel("New Carrollton", "orange") === "Orange Line · New Carrollton", "printedLineTerminusLabel must disclose the Orange line for an Orange trip to New Carrollton");
+assert(printedLineTerminusLabel("New Carrollton", "silver") === "Silver Line · New Carrollton", "printedLineTerminusLabel must disclose the Silver line for a Silver trip to the same terminus");
+assert(printedLineTerminusLabel("Downtown", "orange") === null, "printedLineTerminusLabel must be null when the destination doesn't resolve to a known terminus");
+
+// marketingLabelsForStation excludes a self-referential terminus chip and dedupes across lines.
 const glenmontLabels = marketingLabelsForStation("Glenmont");
-assert(glenmontLabels.includes("Red Line + Shady Grove"), "Glenmont must offer Red Line + Shady Grove");
-assert(!glenmontLabels.some((l) => l.endsWith("+ Glenmont")), "Glenmont must never offer a self-referential + Glenmont chip");
-assert(tripMatchesMarketingChip({ destination: "Red Line + Glenmont" }, "Red Line + Glenmont") === true, "tripMatchesMarketingChip must match an identical chip");
-assert(tripMatchesMarketingChip({ destination: "Red Line + Glenmont" }, "Red Line + Shady Grove") === false, "tripMatchesMarketingChip must reject a mismatched chip");
+assert(glenmontLabels.includes("Shady Grove"), "Glenmont must offer the bare Shady Grove chip");
+assert(!glenmontLabels.includes("Glenmont"), "Glenmont must never offer a self-referential Glenmont chip");
+assert(tripMatchesMarketingChip({ destination: "Glenmont" }, "Glenmont") === true, "tripMatchesMarketingChip must match an identical chip");
+assert(tripMatchesMarketingChip({ destination: "Glenmont" }, "Shady Grove") === false, "tripMatchesMarketingChip must reject a mismatched chip");
+
+const metroCenterLabels = marketingLabelsForStation(WASHINGTON_HUB);
+const newCarrolltonCount = metroCenterLabels.filter((l) => l === "New Carrollton").length;
+assert(newCarrolltonCount === 1, `Metro Center must offer exactly ONE deduped "New Carrollton" chip (reachable via both Orange and Silver), got ${newCarrolltonCount}`);
+for (const expected of ["Shady Grove", "Glenmont", "Vienna/Fairfax-GMU", "New Carrollton", "Franconia-Springfield", "Downtown Largo", "Ashburn"]) {
+  assert(metroCenterLabels.includes(expected), `Metro Center must offer the ${expected} chip`);
+}
+
+// Legacy "Line + terminus" labels still resolve server-side (PR #440 mechanism) — a saved route
+// on an installed client keeps working, and the response echoes the new canonical bare terminus.
+assert(resolveDirectionLabelAlias("washington", "Orange Line + New Carrollton") === "New Carrollton", "the old Orange Line + New Carrollton label must alias to the new bare terminus");
+assert(resolveDirectionLabelAlias("washington", "Silver Line + New Carrollton") === "New Carrollton", "the old Silver Line + New Carrollton label must alias to the same new bare terminus");
+assert(resolveDirectionLabelAlias("washington", "Red Line + Glenmont") === "Glenmont", "the old Red Line + Glenmont label must alias to the new bare terminus");
+assert(resolveDirectionLabelAlias("washington", "New Carrollton") === null, "the new canonical label must not itself need an alias");
 
 // WMATA endpoint shape + prediction URL building (documented JSON shape), no network.
 assert(WMATA_STATIONS_URL === `${WMATA_API_BASE}/Rail.svc/json/jStations`, "jStations URL must point at WMATA's Rail Station Information endpoint");
@@ -256,7 +298,9 @@ const liveMetroCenterGlenmont = predictionsFixture.metroCenter.find(
 );
 const liveTrip = mapWmataTrainToTrip(liveMetroCenterGlenmont, referenceNow);
 assert(liveTrip.lineId === "red", "mapWmataTrainToTrip must classify by Line code");
-assert(liveTrip.destination === "Red Line + Glenmont", "mapWmataTrainToTrip must map the destination via the direction model");
+assert(liveTrip.destination === "Glenmont", "mapWmataTrainToTrip must map the destination to the bare terminus (terminus-only model)");
+assert(liveTrip.line === "Red", "mapWmataTrainToTrip must set the bare colour-word line field");
+assert(liveTrip.printedDestination === "Red Line · Glenmont", "mapWmataTrainToTrip must set printedDestination so a board row can still disclose the physical line");
 assert(typeof liveTrip.displayTime === "string" && liveTrip.displayTime !== "", "mapWmataTrainToTrip must set a string displayTime");
 assert(liveTrip.cancelled === false, "WMATA's feed never reports a cancellation flag — cancelled must always be false");
 assert(liveTrip.delayed === false, "WMATA's feed has no documented delay indicator — delayed must always be false");
@@ -279,31 +323,41 @@ assert(mapWmataTrainToTrip(liveBrdRow, referenceNow) !== null, "a real BRD row m
 const liveShadyGrvRow = predictionsFixture.fortTotten.find((t) => t.DestinationName === "Shady Grv");
 assert(liveShadyGrvRow, "fixture must contain a real 'Shady Grv' abbreviated row");
 assert(
-  mapWmataTrainToTrip(liveShadyGrvRow, referenceNow).destination === "Red Line + Shady Grove",
-  "the real live abbreviation 'Shady Grv' must still resolve to the full terminus chip Red Line + Shady Grove"
+  mapWmataTrainToTrip(liveShadyGrvRow, referenceNow).destination === "Shady Grove",
+  "the real live abbreviation 'Shady Grv' must still resolve to the bare terminus chip Shady Grove"
 );
 
 const liveNewCrltonSpaced = predictionsFixture.silverNewCarrollton.find((t) => t.DestinationName === "New Crlton");
 assert(liveNewCrltonSpaced, "fixture must contain a real 'New Crlton' abbreviated row");
 assert(
-  mapWmataTrainToTrip(liveNewCrltonSpaced, referenceNow).destination === "Silver Line + New Carrollton",
-  "the real live abbreviation 'New Crlton' must still resolve to the full terminus chip"
+  mapWmataTrainToTrip(liveNewCrltonSpaced, referenceNow).destination === "New Carrollton",
+  "the real live abbreviation 'New Crlton' must still resolve to the bare terminus chip"
+);
+assert(
+  mapWmataTrainToTrip(liveNewCrltonSpaced, referenceNow).printedDestination === "Silver Line · New Carrollton",
+  "the Silver trip's printedDestination must disclose the Silver line"
 );
 
 const liveNewCrltonNoSpace = predictionsFixture.silverNewCarrollton.find((t) => t.DestinationName === "NewCrlton");
 assert(liveNewCrltonNoSpace, "fixture must contain a real 'NewCrlton' abbreviated row");
 assert(
-  mapWmataTrainToTrip(liveNewCrltonNoSpace, referenceNow).destination === "Silver Line + New Carrollton",
-  "the real live abbreviation 'NewCrlton' (no space) must still resolve to the full terminus chip"
+  mapWmataTrainToTrip(liveNewCrltonNoSpace, referenceNow).destination === "New Carrollton",
+  "the real live abbreviation 'NewCrlton' (no space) must still resolve to the bare terminus chip"
 );
 
-// A genuine short-turn seen live: a real Blue Line train signed "Huntington" (not one of Blue's
-// two D1 termini) must fall back to the bare line label, never a fabricated/mislabelled chip.
+// A genuine short-turn seen live: a real Blue Line train signed "Huntington". Corrected 27 Sep
+// 2026 — Huntington is now a first-class Blue terminus (LINE_TERMINI.blue), so this must resolve
+// to the SAME bare "Huntington" chip Yellow's full-length Huntington trains use, not a fallback.
 const liveBlueHuntington = predictionsFixture.lenfantPlaza.find((t) => t.Line === "BL" && t.DestinationName === "Huntington");
 assert(liveBlueHuntington, "fixture must contain the real live Blue-Line-to-Huntington short-turn row");
+const blueHuntingtonTrip = mapWmataTrainToTrip(liveBlueHuntington, referenceNow);
 assert(
-  mapWmataTrainToTrip(liveBlueHuntington, referenceNow).destination === "Blue Line",
-  "a genuine short-turn destination not in LINE_TERMINI must fall back to the bare line label, never be dropped or mislabelled"
+  blueHuntingtonTrip.destination === "Huntington",
+  "Blue's genuine Huntington short-turn must now resolve to the first-class bare Huntington chip"
+);
+assert(
+  blueHuntingtonTrip.printedDestination === "Blue Line · Huntington",
+  "the Blue short-turn trip's printedDestination must disclose the Blue line"
 );
 
 // Real no-passenger rows are dropped.
@@ -336,22 +390,22 @@ assert(trips.length === predictionsFixture.metroCenter.length, `every real Metro
 // this gate loudly instead of silently degrading to a bare-line-label fallback unnoticed. ---
 const EXPECTED_LINE_CODES = new Set(["RD", "BL", "OR", "SV", "GR", "YL", "No", "ZZ"]);
 const EXPECTED_DESTINATION_CHIPS = {
-  "RD|Shady Grove": "Red Line + Shady Grove",
-  "RD|Shady Grv": "Red Line + Shady Grove",
-  "RD|Glenmont": "Red Line + Glenmont",
-  "BL|Downtown Largo": "Blue Line + Downtown Largo",
-  "BL|Franconia-Springfield": "Blue Line + Franconia-Springfield",
-  "BL|Huntington": "Blue Line", // genuine short-turn, not a Blue terminus — bare label is correct
-  "SV|Ashburn": "Silver Line + Ashburn",
-  "SV|New Crlton": "Silver Line + New Carrollton",
-  "SV|NewCrlton": "Silver Line + New Carrollton",
-  "OR|New Crlton": "Orange Line + New Carrollton",
-  "OR|Vienna/Fairfax-GMU": "Orange Line + Vienna/Fairfax-GMU",
-  "GR|Greenbelt": "Green Line + Greenbelt",
-  "GR|Branch Av": "Green Line + Branch Av",
-  "No|No Passenger": null, // dropped before mapLineTerminusDestination ever runs
-  "YL|Huntington": "Yellow Line + Huntington",
-  "ZZ|Unknown": null, // dropped (unrecognized Line) before mapLineTerminusDestination ever runs
+  "RD|Shady Grove": "Shady Grove",
+  "RD|Shady Grv": "Shady Grove",
+  "RD|Glenmont": "Glenmont",
+  "BL|Downtown Largo": "Downtown Largo",
+  "BL|Franconia-Springfield": "Franconia-Springfield",
+  "BL|Huntington": "Huntington", // first-class short-turn terminus, not a fallback (27 Sep 2026)
+  "SV|Ashburn": "Ashburn",
+  "SV|New Crlton": "New Carrollton",
+  "SV|NewCrlton": "New Carrollton",
+  "OR|New Crlton": "New Carrollton", // SAME bare chip as SV's New Carrollton — the whole fix
+  "OR|Vienna/Fairfax-GMU": "Vienna/Fairfax-GMU",
+  "GR|Greenbelt": "Greenbelt",
+  "GR|Branch Av": "Branch Av",
+  "No|No Passenger": null, // dropped before mapTerminusOnlyDestination ever runs
+  "YL|Huntington": "Huntington", // SAME bare chip as BL's Huntington short-turn
+  "ZZ|Unknown": null, // dropped (unrecognized Line) before mapTerminusOnlyDestination ever runs
 };
 
 function checkNoSilentlyUnmappedRow(train) {
@@ -364,15 +418,15 @@ function checkNoSilentlyUnmappedRow(train) {
   }
   const lineId = WMATA_LINE_CODE_TO_LINE[train.Line];
   if (!lineId) {
-    // No-passenger / unrecognized-line rows never reach mapLineTerminusDestination in
+    // No-passenger / unrecognized-line rows never reach mapTerminusOnlyDestination in
     // production (mapWmataTrainToTrip drops them by Line before that call) — checked above via
     // EXPECTED_LINE_CODES/the explicit `null` expectation, nothing further to assert here.
     return;
   }
-  // Checked independently of Min/reliability (mapLineTerminusDestination, not
+  // Checked independently of Min/reliability (mapTerminusOnlyDestination, not
   // mapWmataTrainToTrip) so a synthetic "---" row still exercises the destination-mapping half
   // of this safety net even though its Min would drop it from a real board.
-  const actual = mapLineTerminusDestination(train.DestinationName, lineId);
+  const actual = mapTerminusOnlyDestination(train.DestinationName, lineId);
   assert(
     actual === EXPECTED_DESTINATION_CHIPS[key],
     `fixture row ${key} must map to "${EXPECTED_DESTINATION_CHIPS[key]}", got "${actual}"`
@@ -382,6 +436,89 @@ function checkNoSilentlyUnmappedRow(train) {
 for (const train of [...allRealTrains, ...syntheticEdgeCases]) {
   checkNoSilentlyUnmappedRow(train);
 }
+
+// --- Part C (docs/jim-brief-washington-one-train-per-direction.md): a shared trunk terminus
+// reachable by multiple lines must list every line's trains under the SAME chip, and a trunk
+// direction with >=2 fixture trains must never render upcoming.length === 1 (the exact bug). ---
+//
+// DC Metro's real topology never has three DIFFERENT lines sharing one far-end terminus (the
+// widest real overlap is two: New Carrollton via Orange+Silver, Huntington via Blue+Yellow — see
+// hazard-pack.md/oracle-clash-report.md), so "three interleaved lines run to one terminus" is
+// realized here as three interleaved TRAINS across those two genuinely-overlapping lines (the
+// real WMATA platform-group shape the bug report describes: up to ~3 trains per group,
+// interleaved) — a synthetic (marked _source: synthetic) fixture built to exercise the MECHANISM,
+// that tripMatchesMarketingChip/pickUpcomingProviderTrips merge strictly by destination string,
+// not by line, on top of the real two-line New Carrollton case already covered by the fixtures
+// above.
+const trunkOverlapTrains = [
+  { _source: "synthetic", Car: "6", Destination: "NC", DestinationCode: "G05", DestinationName: "New Carrollton", Group: "1", Line: "OR", LocationCode: "C01", LocationName: "Metro Center", Min: "3" },
+  { _source: "synthetic", Car: "6", Destination: "NC", DestinationCode: "G05", DestinationName: "New Carrollton", Group: "1", Line: "SV", LocationCode: "C01", LocationName: "Metro Center", Min: "6" },
+  { _source: "synthetic", Car: "6", Destination: "NC", DestinationCode: "G05", DestinationName: "New Carrollton", Group: "1", Line: "SV", LocationCode: "C01", LocationName: "Metro Center", Min: "9" },
+];
+const trunkOverlapTrips = tripsFromTrainsList(trunkOverlapTrains, referenceNow);
+assert(trunkOverlapTrips.length === 3, "all three interleaved trains to the shared terminus must survive mapping");
+assert(trunkOverlapTrips.every((t) => t.destination === "New Carrollton"), "every line's train to the shared terminus must produce the SAME bare-terminus chip");
+assert(new Set(trunkOverlapTrips.map((t) => t.lineId)).size === 2, "the fixture must span two DIFFERENT lines (Orange+Silver), not just repeat one");
+const trunkOverlapUpcoming = pickUpcomingProviderTrips(trunkOverlapTrips, "New Carrollton", referenceNow);
+assert(trunkOverlapUpcoming.length === 3, `the New Carrollton chip must list all three interleaved trains, got ${trunkOverlapUpcoming.length}`);
+
+// The real Metro Center capture's two genuinely-overlapping-line termini (New Carrollton via
+// Orange+Silver in qa/fixtures/washington/predictions.json's silverNewCarrollton +
+// metroCenter/OR row) and Huntington (Blue+Yellow) must never collapse to exactly one train when
+// the raw fixture data plainly carries >=2 — this is the literal regression from the bug report.
+function assertTrunkDirectionNeverCollapsesToOne(trains, terminus, minExpected) {
+  const trips = tripsFromTrainsList(trains, referenceNow);
+  const upcoming = pickUpcomingProviderTrips(trips, terminus, referenceNow);
+  assert(
+    upcoming.length >= minExpected,
+    `${terminus} must show at least ${minExpected} upcoming trains from this fixture, got ${upcoming.length}`
+  );
+  assert(
+    !(upcoming.length === 1 && minExpected >= 2),
+    `${terminus} has >=2 predicted trains in the fixture and must never render upcoming.length === 1 (the one-train-per-direction bug)`
+  );
+}
+assertTrunkDirectionNeverCollapsesToOne(trunkOverlapTrains, "New Carrollton", 3);
+assertTrunkDirectionNeverCollapsesToOne(
+  [
+    { _source: "synthetic", DestinationName: "Huntington", Line: "BL", Min: "2", Group: "2", LocationCode: "C01", LocationName: "Metro Center" },
+    { _source: "synthetic", DestinationName: "Huntington", Line: "YL", Min: "5", Group: "1", LocationCode: "C01", LocationName: "Metro Center" },
+  ],
+  "Huntington",
+  2
+);
+
+// --- Regression (Mark's QA on PR #482): a de-dup step keyed on (Line, DestinationName, Min)
+// collapsed two GENUINELY DIFFERENT trains — same line, same destination, same rounded-to-the-
+// minute Min, but different Group (platform) — at a two-platform terminus. `Min` is WMATA's own
+// per-minute estimate, not a unique id, so this is a normal, real shape (e.g. two Blue trains to
+// Huntington arriving the same minute on different platforms), not a duplicate to be merged away.
+// tripsFromTrainsList() must never drop either — see lib/providers/washington.js's
+// tripsFromTrainsList() docstring for why the dedupe step was removed entirely rather than re-keyed.
+const twoPlatformSameMinuteTrains = [
+  { _source: "synthetic", Car: "6", Destination: "Huntington", DestinationCode: null, DestinationName: "Huntington", Group: "1", Line: "BL", LocationCode: "C01", LocationName: "Gallery Pl-Chinatown", Min: "4" },
+  { _source: "synthetic", Car: "8", Destination: "Huntington", DestinationCode: null, DestinationName: "Huntington", Group: "2", Line: "BL", LocationCode: "F01", LocationName: "Gallery Pl-Chinatown", Min: "4" },
+];
+const twoPlatformTrips = tripsFromTrainsList(twoPlatformSameMinuteTrains, referenceNow);
+assert(
+  twoPlatformTrips.length === 2,
+  `two genuine same-line/same-destination/same-Min trains that differ only by Group at a two-platform terminus must both survive as separate trips, got ${twoPlatformTrips.length}`
+);
+const twoPlatformUpcoming = pickUpcomingProviderTrips(twoPlatformTrips, "Huntington", referenceNow);
+assert(
+  twoPlatformUpcoming.length === 2,
+  `the Huntington chip must list BOTH same-minute, different-platform Blue trains, got ${twoPlatformUpcoming.length}`
+);
+
+// Metro Center's real jStations+GetPrediction wiring must yield BOTH Red termini (the hub's own
+// line) AND the Blue/Orange/Silver trunk termini — the "Metro Center returned only ONE board
+// entry" symptom must not reproduce against the full merged catalog of direction chips.
+const metroCenterDirectionsPack = getWashingtonDogfoodDirections(WASHINGTON_HUB);
+assert(metroCenterDirectionsPack.directions.includes("Shady Grove") && metroCenterDirectionsPack.directions.includes("Glenmont"), "Metro Center directions must include BOTH Red termini");
+assert(
+  ["Franconia-Springfield", "Downtown Largo", "Vienna/Fairfax-GMU", "New Carrollton", "Ashburn"].every((d) => metroCenterDirectionsPack.directions.includes(d)),
+  "Metro Center directions must also include the Blue/Orange/Silver trunk termini"
+);
 
 // resolveStationCodesForCatalogEntry — trimmed REAL jStations capture (qa/fixtures/washington/
 // jstations.json), no network. Confirms Metro Center's two platform codes (A01+C01) are
@@ -478,17 +615,31 @@ globalThis.fetch = async (url) => {
 };
 
 let dispatchedNextTrain;
+let legacyLabelNextTrain;
 let directDogfoodNextTrain;
 try {
+  // live-city-api.js's dispatch canonicalizes destination via canonicalizeDirectionConfig
+  // BEFORE it reaches the city adapter, so passing the CANONICAL bare terminus...
   dispatchedNextTrain = await getMultiCityNextTrain("washington", {
+    station: WASHINGTON_HUB,
+    destination: "Glenmont",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+  // ...and passing the OLD, retired "Line + terminus" label must resolve to the exact same
+  // result (PR #440 mechanism) — an installed client still sending the old saved label must not
+  // regress to "No upcoming trains".
+  legacyLabelNextTrain = await getMultiCityNextTrain("washington", {
     station: WASHINGTON_HUB,
     destination: "Red Line + Glenmont",
     leaveBeforeMinutes: 5,
     refreshSeconds: 60,
   });
+  // getWashingtonDogfoodNextTrain is called directly (bypassing the live-city-api.js dispatch
+  // layer that applies canonicalizeDirectionConfig), so it must be given the canonical label.
   directDogfoodNextTrain = await getWashingtonDogfoodNextTrain({
     station: WASHINGTON_HUB,
-    destination: "Red Line + Glenmont",
+    destination: "Glenmont",
     leaveBeforeMinutes: 5,
     refreshSeconds: 60,
   });
@@ -501,13 +652,14 @@ try {
     process.env.WMATA_API_KEY = previousWmataKey;
   }
 }
-assert(dispatchedNextTrain.config?.destination === "Red Line + Glenmont", "dispatched next-train destination must equal the chosen chip");
-assert(directDogfoodNextTrain.config?.destination === "Red Line + Glenmont", "dogfood next-train destination must equal the chosen chip");
+assert(dispatchedNextTrain.config?.destination === "Glenmont", "dispatched next-train destination must equal the chosen bare-terminus chip");
+assert(legacyLabelNextTrain.config?.destination === "Glenmont", "the old 'Red Line + Glenmont' label must still resolve and echo the new canonical bare-terminus label");
+assert(directDogfoodNextTrain.config?.destination === "Glenmont", "dogfood next-train destination must equal the chosen chip");
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
 // brisbane-dogfood MULTI_CITY_IDS/available) were added to all four in the same commit as the
 // status flip — qa/live-city-lists-sync.mjs enforces they equal exactly the live-city set.
 
 console.log(
-  "washington-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section recorded MARC/VRE out-product (Tim, 20 Sep 2026), 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, Line + terminus direction model, Metro Center and Downtown never a direction token, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, dispatch/dogfood next-train wired end-to-end against mocked real fixture data, missing-key still refuses rather than falling back, Perth Australia green)"
+  "washington-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section recorded MARC/VRE out-product (Tim, 20 Sep 2026), 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, terminus-only direction model (27 Sep 2026 correction) with legacy Line+terminus server-side aliases, Metro Center and Downtown never a direction token, a shared trunk terminus lists every line's trains under one chip and never collapses to upcoming.length===1 with >=2 fixture trains, two same-line/same-destination/same-minute trains on different platforms both survive (no Line/DestinationName/Min dedupe), Metro Center yields Red AND Blue/Orange/Silver trunk directions, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, dispatch/dogfood next-train wired end-to-end against mocked real fixture data including the legacy-label alias round-trip, missing-key still refuses rather than falling back, Perth Australia green)"
 );

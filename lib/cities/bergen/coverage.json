@@ -1,0 +1,23 @@
+{
+  "region": "bergen",
+  "updated": "2026-09-28",
+  "covered": [
+    {
+      "label": "Bybanen (light rail) lines 1 and 2",
+      "detail": "All 33 stops on both lines, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Skyss buses",
+      "detail": "Not covered, even at a Bybanen stop that is also a bus stop or terminal."
+    },
+    {
+      "label": "Trains at Bergen railway station",
+      "detail": "Bergen railway station is a separate building from any Bybanen stop and isn't in this app."
+    }
+  ],
+  "stations": "33 Bybanen stops across lines 1 and 2.",
+  "notes": "Bergen busstasjon is the shared stop in the city centre where both lines call. Byparken and Kaigaten are each one line's own end of the line."
+}

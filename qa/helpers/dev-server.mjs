@@ -153,6 +153,23 @@ export async function ensureDevServer({ force = false, isRunner = false } = {}) 
     // the requested BASE).
   }
 
+  // docs/jim-brief-live-gates-service-hours.md (28 Sep 2026): QA_ATTACH=1 is an explicit
+  // "I started a server myself for this BASE, attach to it" signal. Previously a standalone
+  // gate run this way would silently fall through to spawning its OWN server on BASE if the
+  // probe failed — which masked exactly the failure mode that led an agent to (a) start
+  // dev-server.js without PORT (binding :3000) while its gate's QA_BASE pointed at :3411, (b)
+  // see the :3411 probe fail, and (c) go hunting for a "stray" process on :3000 to kill, which
+  // was its own just-started server. Refuse instead, and say exactly how to fix it.
+  if (process.env.QA_ATTACH === "1") {
+    if (await probeDevServer()) {
+      return null;
+    }
+    throw new Error(
+      `QA_ATTACH=1 is set but nothing is listening on ${BASE}. Start a matching server first: ` +
+        `PORT=${DEV_PORT} node dev-server.js — then re-run this gate with QA_BASE=${BASE} QA_ATTACH=1.`
+    );
+  }
+
   if (force && (await probeDevServer())) {
     throw new Error(
       `${BASE} is already in use; CI expected a clean runner (set QA_VERBOSE=1 for logs).`

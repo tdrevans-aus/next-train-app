@@ -23,6 +23,7 @@ import { readAdelaideMetroApiKey } from "../lib/providers/gtfs/auth.js";
 import { loadAdelaideStatic, fetchStationBoard } from "../lib/providers/adelaide.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
+import { skipLiveLine } from "./helpers/service-hours.mjs";
 
 function assert(condition, message) {
   if (!condition) {
@@ -168,12 +169,17 @@ async function assertLegacyNextTrainOrNoService({ label, station, next }) {
   const belairTripsOnBoard = board.trips.filter(
     (trip) => String(trip.routeShortName || "").toUpperCase() === "BEL"
   );
+  if (belairTripsOnBoard.length === 0) {
+    console.log(
+      skipLiveLine("adelaide", new Date(), {
+        reason: `no Belair line service currently scheduled at ${station} (${board.trips.length} total trips on the board right now) — genuine overnight gap, not the #439 regression`,
+      })
+    );
+    return;
+  }
   assert(
-    belairTripsOnBoard.length === 0,
+    false,
     `${label} must return a non-null next train — this is the exact production regression from #439 (docs/jim-brief-adelaide-city-bound-rows-missing.md); ${belairTripsOnBoard.length} live Belair-line trip(s) exist on ${station}'s board right now, so a null "next" is a matching bug, not an empty timetable`
-  );
-  console.log(
-    `adelaide-dogfood-gate: ${label} — no Belair line service currently scheduled at ${station} (${board.trips.length} total trips on the board right now); genuine overnight gap, not the #439 regression — skipping the non-null assertion.`
   );
 }
 

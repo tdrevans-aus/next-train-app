@@ -428,6 +428,16 @@
 
       window.addEventListener("resize", handler);
       detailPositionListeners.push([window, "resize", handler]);
+
+      // Android's on-screen keyboard resizes visualViewport without always
+      // firing a window "resize" event, which would leave the dropdown
+      // anchored to the trigger's pre-keyboard position.
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", handler);
+        detailPositionListeners.push([window.visualViewport, "resize", handler]);
+        window.visualViewport.addEventListener("scroll", handler);
+        detailPositionListeners.push([window.visualViewport, "scroll", handler]);
+      }
     }
 
     function canOpenPicker() {
