@@ -51,6 +51,7 @@ import {
   planLiverpoolCityRegionNextTrainFetch,
 } from "../lib/cities/liverpool-city-region/dogfood-next-train.js";
 import { loadDirectionHubs, applyDirectionHubs } from "../lib/cities/uk/direction-hubs.js";
+import { isDocumentedServiceHour, skipLiveLine } from "./helpers/service-hours.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -319,28 +320,45 @@ if (!hasToken) {
     "liverpool-city-region-dogfood-gate: DARWIN_LDB_TOKEN not set — structural-only pass (all 68 Merseyrail entries resolve to a CRS and fail closed with MissingDarwinTokenError); live sample skipped (expected outside Vercel prod)."
   );
 } else {
+  const merseyrailInWindow = isDocumentedServiceHour("liverpool-city-region-merseyrail");
+
   // Live sample: Ellesmere Port, Liverpool Central, Moorfields, and one
   // unnamed intermediate stop each return at least one Merseyrail trip.
+  // Outside Merseyrail's documented service window this only asserts the
+  // well-formed trips-array shape (docs/jim-brief-live-gates-service-hours-2.md).
   for (const station of ["Ellesmere Port", "Liverpool Central", "Moorfields", "Aigburth"]) {
     const board = await fetchMerseyrailStopBoard(station);
     assert(Array.isArray(board.trips), `${station} metro board must return a trips array`);
-    assert(
-      board.trips.some((trip) => String(trip.operator ?? "").includes("Merseyrail")),
-      `${station} metro board must include at least one Merseyrail trip`
-    );
+    if (merseyrailInWindow) {
+      assert(
+        board.trips.some((trip) => String(trip.operator ?? "").includes("Merseyrail")),
+        `${station} metro board must include at least one Merseyrail trip`
+      );
+    } else {
+      console.log(
+        `liverpool-city-region-dogfood-gate: ${skipLiveLine("liverpool-city-region-merseyrail")} — not asserting ${station} has a Merseyrail trip, only that the trips array is well-formed.`
+      );
+    }
   }
 
   // Lime Street: Merseyrail trips alongside other operators, one board.
   const limeStreetBoard = await fetchNationalRailBoard(LIVERPOOL_CITY_REGION_NR_HUB);
+  assert(Array.isArray(limeStreetBoard.trips), "Liverpool Lime Street board must return a trips array");
   const limeStreetOperators = new Set(limeStreetBoard.trips.map((trip) => trip.operator).filter(Boolean));
-  assert(
-    [...limeStreetOperators].some((op) => op.includes("Merseyrail")),
-    "Liverpool Lime Street board must include Merseyrail trips"
-  );
-  assert(
-    [...limeStreetOperators].some((op) => !op.includes("Merseyrail")),
-    "Liverpool Lime Street board must include at least one non-Merseyrail operator alongside Merseyrail"
-  );
+  if (merseyrailInWindow) {
+    assert(
+      [...limeStreetOperators].some((op) => op.includes("Merseyrail")),
+      "Liverpool Lime Street board must include Merseyrail trips"
+    );
+    assert(
+      [...limeStreetOperators].some((op) => !op.includes("Merseyrail")),
+      "Liverpool Lime Street board must include at least one non-Merseyrail operator alongside Merseyrail"
+    );
+  } else {
+    console.log(
+      `liverpool-city-region-dogfood-gate: ${skipLiveLine("liverpool-city-region-merseyrail")} — not asserting Lime Street's Merseyrail/non-Merseyrail operator mix, only that the trips array is well-formed.`
+    );
+  }
 
   // Direction hub anchoring end-to-end (FB-51): the hub next-train path
   // (Runcorn -> Liverpool Lime Street) must return trips whose

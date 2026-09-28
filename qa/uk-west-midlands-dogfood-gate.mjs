@@ -59,6 +59,7 @@ import {
   loadDirectionHubs,
   applyDirectionHubs,
 } from "../lib/cities/uk-west-midlands/direction-hubs.js";
+import { isDocumentedServiceHour, skipLiveLine } from "./helpers/service-hours.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BHM = "Birmingham New Street";
@@ -592,10 +593,21 @@ if (previousAppKey === undefined) {
 if (String(process.env.TFWM_API_APP_ID ?? "").trim() && String(process.env.TFWM_API_APP_KEY ?? "").trim()) {
   const jqMetroLive = await getUkWestMidlandsDogfoodDirections("Jewellery Quarter (Metro)");
   assert(
-    Array.isArray(jqMetroLive.directions) && jqMetroLive.directions.length > 0,
-    'getUkWestMidlandsDogfoodDirections("Jewellery Quarter (Metro)") must return live tram directions with no mode given, got: ' +
+    Array.isArray(jqMetroLive.directions),
+    'getUkWestMidlandsDogfoodDirections("Jewellery Quarter (Metro)") must return a well-formed directions array, got: ' +
       JSON.stringify(jqMetroLive)
   );
+  if (isDocumentedServiceHour("uk-west-midlands-metro")) {
+    assert(
+      jqMetroLive.directions.length > 0,
+      'getUkWestMidlandsDogfoodDirections("Jewellery Quarter (Metro)") must return live tram directions with no mode given, got: ' +
+        JSON.stringify(jqMetroLive)
+    );
+  } else {
+    console.log(
+      `uk-west-midlands-dogfood-gate: ${skipLiveLine("uk-west-midlands-metro")} — not asserting Jewellery Quarter (Metro) directions are non-empty, only that the shape is well-formed.`
+    );
+  }
 } else {
   console.log(
     "uk-west-midlands-dogfood-gate: TFWM_API_APP_ID/TFWM_API_APP_KEY not set in this environment — live tram-directions assertion for \"Jewellery Quarter (Metro)\" not exercised here (expected outside an environment with TfWM keys)."
