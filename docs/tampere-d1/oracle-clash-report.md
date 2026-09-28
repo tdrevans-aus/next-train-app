@@ -114,3 +114,38 @@ No line-map generator, no stopIds in the published JSON, no live city flip, no G
   - https://dev.publictransport.tampere.fi/docs (Tampere public transport API docs)
 - **Confidence:** `clear` for static GTFS (Tampere City Open Data License explicitly allows redistribution). `clear` for GTFS-RT (Waltti open data platform grants same rights). No ambiguity on commercial use or rehosting.
 - **Keyed feeds:** Static GTFS zip unkeyed. GTFS-RT feeds (Waltti) unkeyed. No API key or OAuth required; free public access.
+
+---
+
+## Dated correction note (Luke, D1 pack pass, 28 Sep 2026)
+
+Re-verified this report's core claims directly against the live ITS Factory static GTFS zip
+(`gtfs_tampere.zip`, `stops.txt`/`routes.txt`/`trips.txt`/`stop_times.txt`, fetched 28 Sep 2026,
+`Last-Modified: 21 Sep 2026`) and the current official `tampereenratikka.fi/en/tram-routes/` page
+(`dateModified: 2026-01-19`), rather than resting on this report's prose alone. Full detail and
+citations in `hazard-pack.md` and `published-network.json`. Two corrections and one strengthening:
+
+1. **There is no passenger Line 2.** This report's "Line 2 Santalahti – Lentävänniemi opened 7 Jan
+   2025... further extensions to Partola and Ruotila target Aug 2028" conflates the tramway's
+   internal construction-phase labels ("Part 2", "Section 2A/2B" — the Pyynikintori-to-Lentävänniemi
+   extension of **Line 1**, built and opened in phases) with a third passenger line. The official
+   page states plainly "Tampere Tram runs on two lines" (1 and 3); the live GTFS `routes.txt` has
+   exactly two `route_type=0` (tram) rows, `"1"` and `"3"` — no `"2"`. Santalahti and Lentävänniemi
+   are both **Line 1** stops (confirmed in Line 1's own 20-stop ordered list, both the official page
+   and every live GTFS trip for route `1`). Nothing needs omitting from v1 that wasn't already a
+   non-issue: v1 scope is unchanged (**tram lines 1 and 3 only**), but there was never a real Line 2
+   to omit in the first place.
+2. **v1 scope, hub lock (Rautatieasema), stop counts (20 Line 1 / 17 Line 3 / 4 shared / 33 unique),
+   and station names are otherwise CONFIRMED**, not just repeated — cross-checked stop-by-stop
+   against live GTFS `stop_times.txt` trip sequences for both routes and the official page's printed
+   ordered lists, which agree exactly. The hub lock is further strengthened, not merely confirmed:
+   live GTFS shows **Keskustori is not served by Line 3 at all** (Line 3 runs Koskipuisto → Sorin
+   aukio directly), so Keskustori was never a real alternate candidate to Rautatieasema, which is
+   the one stop both lines actually share.
+3. **New finding, not in this report originally, flagged (not resolved) in hazard-pack.md H5**: live
+   GTFS trip-level data shows a minority (~2–9% of trips, both directions) of real vehicle trips
+   tagged route `1` or `3` that run through between the Pyhällönpuisto/Lentävänniemi corridor and
+   the Hervanta corridor directly, bypassing Kaupin kampus/TAYS or Sorin aukio entirely. This
+   doesn't change the v1 station graph (still the two printed lines, all stops already covered by
+   either line's own list) but is a real direction-chip/leave-by hazard for Jim's D2 pass — see
+   hazard-pack.md.
