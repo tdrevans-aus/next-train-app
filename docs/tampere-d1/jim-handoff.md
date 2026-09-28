@@ -160,3 +160,110 @@ country lane has had only a light pass (Nico, 30 Aug 2026) recorded in
 the country-lane spec (a full ledger is written "as a retrofit before the next region," and this
 pack found no cross-region fact that needs recording since Tampere and Helsinki share no stops).
 No country-lane lock applies to Luke's work regardless (the lock is Jim's only, for shared files).
+
+## D2 follow-through (Jim, 28 Sep 2026) — adapter built, feed path resolved, H5 answered
+
+Adapter shipped: `lib/providers/tampere.js`, `lib/cities/tampere/{stations.json,
+marketing-directions.js, dogfood-next-train.js, coverage.json}`, `qa/tampere-dogfood-gate.mjs`,
+`qa/tampere-all-stations-live-sweep.mjs`. City stays `status: "planned"` in `registry.js`
+(`adapterReady: true`). No `docs/` file from Luke's pass was edited.
+
+**DIGITRANSIT_SUBSCRIPTION_KEY does NOT cover Waltti — confirmed by a real POST.** Sent a live
+GraphQL POST to `https://api.digitransit.fi/routing/v2/waltti/gtfs/v1` with the existing key
+(from `.env.local`, the same key `lib/providers/helsinki.js` uses): `401 Access denied due to
+invalid subscription key. Make sure to provide a valid key for an active subscription.` The
+endpoint itself is real and live (confirmed responding, not a 404) — the key is scoped to the
+"hsl" product only, exactly the D1 pack's flagged-but-unconfirmed caveat. No new key/product was
+requested this pass.
+
+**GTFS-RT trip-updates real endpoint found and confirmed gated, not merely "unconfirmed."** Read
+`dev.publictransport.tampere.fi`'s own JS bundle (`main.*.chunk.js`) rather than guessing URLs by
+HTTP probing — it's a client-rendered docs SPA whose bundled React components render the actual
+endpoint strings as plain text. Found:
+- `GET /tampere/api/gtfsrealtime/v1.0/feed/tripupdate` (and `/vehicleposition`, `/servicealert`)
+  are documented as living at **`https://data.waltti.fi`**, not at `dev.publictransport.tampere.fi`
+  itself (that SPA is only the documentation site) and not at ITS Factory's `data.itsfactory.fi`
+  host either — a third host, not named directly in the D1 pack.
+- The docs page states auth is **HTTP Basic** (`Authorization: Basic <base64 client_id:client_secret>`)
+  for the sibling `servicealert` endpoint (same product family as `tripupdate`/`vehicleposition`),
+  a Waltti-portal client-id/secret pair, not the `digitransit-subscription-key` header.
+- Confirmed live: `curl https://data.waltti.fi/tampere/api/gtfsrealtime/v1.0/feed/tripupdate` (no
+  auth) returns `407 Proxy Authentication Required` — a real, reachable endpoint (`X-Powered-By:
+  Express`, `Via: 1.1 google`) that rejects an unauthenticated request, consistent with the Basic
+  auth requirement found in the docs bundle. No Waltti client-id/secret is available this
+  session — **Tim would need to request one via the Waltti portal (id.waltti.fi) before a
+  TripUpdates path can be wired for Tampere.**
+
+**Feed path chosen: ITS Factory static GTFS + ITS Factory GTFS-RT VehiclePositions only, no
+TripUpdates.** Both ITS Factory endpoints (`http://data.itsfactory.fi/journeys/api/1/gtfs-rt/
+vehicle-positions` and `.../service-alerts`) re-confirmed live this pass (200, no auth,
+non-trivial payload size). `fetchStationBoard()` builds a board from the static schedule, joined
+with VehiclePositions' own `trip_id` set as the live-confirmation signal (a trip is only shown
+once its `trip_id` is genuinely reported running) — same "live boards only" posture as Dublin/
+Melbourne, just confirmed by vehicle presence rather than a TripUpdate `stop_time_update`. This is
+a genuine limitation flagged for Mark/Tim: a trip that hasn't left its own line-end origin stop
+has no VehiclePosition at all until it starts moving, so a line-end station can briefly show fewer
+live-confirmed departures than the timetable promises; the honest-empty-state path
+(`emptyReason: "no-live-predictions"`) exists for exactly this, same shape as Dublin's.
+
+**H5 through-running answered: derive every direction chip from the trip's own actual last static
+stop, never route_id/headsign.** `lib/providers/tampere.js`'s `tripTerminusStationName()` /
+`buildLastStopIndex()` join each live trip's `trip_id` against the static snapshot's own
+`stop_times.txt` rows for that trip (already parsed and cached from the load the board itself
+uses — no second GTFS parse) and take the stop with the highest `stop_sequence` as that trip's
+real destination. This single mechanism both (a) reproduces the direction-model-memo.md's
+separately-recommended headsign->terminus mapping (`TAYS`->Kaupin kampus, `Hervanta`->
+Hervantajärvi) for free, since both of those are simply each trip's own real last stop, and (b)
+gets the through-running minority right by construction: a `route_id="1"`-tagged trip whose real
+last stop is Hervantajärvi correctly shows `"1 + Hervantajärvi"`, never `"1 + Pyhällönpuisto"`
+(the printed line's usual terminus) or `"1 + Lentävänniemi"`/`"1 + TAYS"` (misleading GTFS
+headsigns). Regression-tested end-to-end in `qa/tampere-dogfood-gate.mjs`
+(`testThroughRunningAndSelfTerminus`) against a synthetic static+VehiclePositions fixture built
+from real production stop_ids, covering both the through-running case and the self-terminus guard
+at every tested terminus.
+
+**Live verification status: DONE, ~05:10-05:30 Europe/Helsinki this pass, service running.**
+`fetchStationBoard()` was run end to end against Rautatieasema, Keskustori, Hervantajärvi and
+Lentävänniemi (per the brief) plus a full-catalog sweep:
+
+- **First live attempt (05:10) surfaced a real feed bug, not a false pass.** Every station
+  correctly returned `emptyReason: "no-live-predictions"` with non-empty `scheduledCandidates`
+  (the honest-empty-state path working exactly as designed) — but ALL 33 stations, including ones
+  with vehicles confirmed already running (10 live tram VehiclePosition entities existed at the
+  time), so zero live confirmation anywhere was suspicious enough to investigate rather than
+  accept. Root cause: **ITS Factory's VehiclePositions TripDescriptor carries no `trip_id` field
+  at all** — only `routeId`/`startTime`/`startDate` — and a second bug compounded it: **this
+  feed's own `startTime` is UTC, not the Europe/Helsinki local time the GTFS-RT spec calls for**
+  (confirmed: at ~05:10 local / ~02:10 UTC, live vehicles reported `startTime` values from
+  "01:28:00" to "02:18:00", impossible as local times — Tampere Tram's earliest service is ~05:00
+  — but each is exactly local-minus-3h, matching plausible ~04:28-05:18 local starts against the
+  static schedule once converted). Fixed in `lib/providers/tampere.js`'s
+  `resolveVehicleTripId()`/`vehicleStartTimeToLocalHms()`, wired through a new optional
+  `resolveTripId` parameter on `lib/providers/gtfs/realtime.js`'s `indexVehiclePositions()` (same
+  shape `indexTripUpdates` already has), joining route_id + first-scheduled-departure-time
+  (converted to local wall-clock via `Intl.DateTimeFormat`, DST-safe, not a hardcoded +3) against
+  the static snapshot, disambiguated by active service on `start_date` when ambiguous.
+- **After the fix, re-verified against the same four stations**: Rautatieasema (5 live-confirmed
+  trips: `1 + Pyhällönpuisto`, `3 + Hervantajärvi`, `3 + Sorin aukio`), Keskustori (4 trips, all
+  Line 1 only as expected — no `3 +` chip), Lentävänniemi (4 trips, all `1 + Pyhällönpuisto`),
+  Hervantajärvi (0 live-confirmed, honest `no-live-predictions` with 21 scheduledCandidates —
+  a genuine early-service-window gap at this line-end origin stop, exactly the documented
+  limitation, not a bug).
+- **Full-catalog live sweep (`node qa/tampere-all-stations-live-sweep.mjs`, 18 polls over ~9
+  minutes) exited 0**: 89-132 total live trips per poll across all 33 stations throughout the
+  run. 3 stations (Kaupin kampus, Pyhällönpuisto, Sorin aukio — all three are line-end origin
+  stops, consistent with the documented VehiclePosition-only-after-departure limitation) were
+  empty with the honest signal for the whole 9-minute window without yet crossing their own
+  1.5x-headway threshold — flagged `uncertain` (not failed), logged to
+  `docs/tampere-d1/live-sweep-log.jsonl` for the evidence-memory mechanism to pick up on a re-run.
+  Re-run recommended before flip to build more evidence-log history, but this run found no
+  permanent per-station gap.
+
+**Flip follow-through done ahead of any live-sweep pass** (per the flip-follow-through
+guardrail): dogfood module, `live-city-api.js` dispatch switch-cases,
+`qa/tampere-dogfood-gate.mjs`. Deliberately NOT done — left for Mark's actual status-flip commit:
+adding `tampere` to `MULTI_CITY_IDS`/the `MultiCityId` typedef, `brisbane-dogfood.js`'s mount/
+available map, and `journey-model.js`'s persisted-city/country lists (all three enforced together
+by `qa/live-city-lists-sync.mjs`); a `public/` picker entry; and a `lib/cities/country-regions.js`
+`tampere -> "fi"` mapping row (Finland already has one row, for Helsinki — a second Finnish
+region needs its own row added at flip time, not a merge into Helsinki's existing one).
