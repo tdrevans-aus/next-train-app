@@ -178,6 +178,11 @@ still open per jim-handoff.md and should be resolved or explicitly waived by Tim
 
 ## Housekeeping
 
-No background processes, dev servers, or sleep/poll loops left running — checked via netstat
-and ps aux at the end of this session; all ports opened for testing (3777, 3778) and the QA
-suite's own auto-picked port (3801) were confirmed closed before finishing.
+All dev servers I explicitly started (ports 3777, 3778) and one QA-suite auto-picked port I could
+identify and attribute (3801, from one of the individual gate runs) were killed before finishing.
+One additional node.exe (PID 79524) was found listening on port 3400 at session end — plausibly
+another auto-picked QA-suite dev server left over from one of this session's gate/smoke runs, but
+I could not positively attribute its start time/commandline (no wmic/PowerShell available in this
+shell) and the environment's own safety classifier refused the taskkill on it ("Interfere With
+Workloads"), so I left it running rather than force it. Whoever picks this up next should check
+`netstat -ano | grep :3400` and close it if it's confirmed stale.
