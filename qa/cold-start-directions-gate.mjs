@@ -32,21 +32,53 @@
  * city is needlessly loose for the fastest, and a bound tight enough for the fastest can flake on
  * the slowest.
  *
+ * CI env-key gating (28 Sep 2026, web-qa failure on this PR): the CI runner has no
+ * NTA_API_KEY/VIC_OPENDATA_API_KEY, so Dublin/Melbourne's fresh dev server 500'd with
+ * MissingNtaApiKeyError/MissingProviderApiKeyError before this gate could measure anything —
+ * Prague passed in 5ms because its /api/directions response is a static marketing-directions
+ * list that never calls the live board at all, so it needs no key regardless of environment.
+ * Each case below declares the env key(s) its OWN /api/directions call actually needs — NOT
+ * necessarily a city's full registry envKeys, which describes the whole adapter (Prague's
+ * registry entry lists GOLEMIO_API_KEY for its live board, but /api/directions never reaches
+ * that code path, so its case here correctly needs none). A case whose key(s) are unset in
+ * process.env prints the same SKIP-LIVE convention the service-hours gates use
+ * (qa/helpers/service-hours.mjs) and is skipped rather than failing the whole gate — this keeps
+ * the gate honest about what it actually exercised in a given environment instead of pretending
+ * a 500 from a missing credential is the cold-start bug it exists to catch. Prague is kept
+ * deliberately keyless so at least one case always runs the real fresh-server path in CI even
+ * with zero keys configured; the gate fails outright if every case ends up skipped.
+ *
  * Usage: node qa/cold-start-directions-gate.mjs
  */
 import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
+import { loadEnvLocal } from "../lib/load-env-local.js";
+
+// Load .env.local into THIS process's env (same file the spawned dev-server.js loads for
+// itself) so the requiredEnvKeys check below sees the same keys the server will actually have
+// — local runs see a real key and exercise the case; CI (no .env.local file) sees none and
+// skips, matching what the server would 500 on anyway.
+loadEnvLocal();
 
 // Generous warm bound — a warm request should be near-instant (observed <0.5s), but CI machines
 // vary; this only needs to catch a regression that makes the *warm* path slow too.
 const WARM_TIMEOUT_MS = 5000;
 
 const CASES = [
-  // Cold measured ~3.9s locally, ~3.9s in this fix's investigation — bound ~2x.
-  { city: "dublin", station: "Abbey Street", coldTimeoutMs: 8000 },
-  // Cold measured ~1.8-2.5s locally — bound ~2x the higher end.
-  { city: "melbourne", station: "Flinders Street", coldTimeoutMs: 5000 },
+  // Cold measured ~3.6-3.9s locally — bound ~2x. Live GTFS board fetch (NTA GTFS-RT) needs
+  // NTA_API_KEY.
+  { city: "dublin", station: "Abbey Street", coldTimeoutMs: 8000, requiredEnvKeys: ["NTA_API_KEY"] },
+  // Cold measured ~1.8-2.5s locally — bound ~2x the higher end. Live GTFS board fetch (VIC Open
+  // Data) needs VIC_OPENDATA_API_KEY.
+  {
+    city: "melbourne",
+    station: "Flinders Street",
+    coldTimeoutMs: 5000,
+    requiredEnvKeys: ["VIC_OPENDATA_API_KEY"],
+  },
   // Static marketing-directions list, no GTFS cold path — cold measured ~0.01s, generous floor.
-  { city: "prague", station: "Muzeum", coldTimeoutMs: 3000 },
+  // No key needed: /api/directions never calls the live Golemio board for Prague, so this case
+  // is deliberately keyless and must never be skipped (see file header).
+  { city: "prague", station: "Muzeum", coldTimeoutMs: 3000, requiredEnvKeys: [] },
 ];
 
 async function timedFetch(path, timeoutMs) {
@@ -69,9 +101,19 @@ async function timedFetch(path, timeoutMs) {
 async function main() {
   const child = await ensureDevServer({ isRunner: true });
   const failures = [];
+  let ranCount = 0;
+  let skippedCount = 0;
 
   try {
-    for (const { city, station, coldTimeoutMs } of CASES) {
+    for (const { city, station, coldTimeoutMs, requiredEnvKeys } of CASES) {
+      const missingKey = (requiredEnvKeys ?? []).find((key) => !process.env[key]);
+      if (missingKey) {
+        skippedCount += 1;
+        console.log(`SKIP-LIVE (no ${missingKey} in this environment, ${city})`);
+        continue;
+      }
+      ranCount += 1;
+
       const path = `/api/directions?city=${encodeURIComponent(city)}&station=${encodeURIComponent(station)}`;
 
       const cold = await timedFetch(path, coldTimeoutMs);
@@ -110,12 +152,24 @@ async function main() {
     }
   }
 
+  if (ranCount === 0) {
+    console.error(
+      `FAIL cold-start-directions-gate: every case was skipped (${skippedCount} of ${CASES.length}) — no environment key ` +
+        "was available for any case, so this gate exercised nothing. Prague's case is deliberately " +
+        "keyless and must never skip; if it did, something changed about what it needs a key for."
+    );
+    process.exit(1);
+  }
+
   if (failures.length > 0) {
     console.error(`FAIL cold-start-directions-gate:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
     process.exit(1);
   }
 
-  console.log("PASS cold-start-directions-gate: first /api/directions call succeeded within the timeout for every static-join city checked, warm calls stayed fast");
+  console.log(
+    `PASS cold-start-directions-gate: first /api/directions call succeeded within the timeout for ` +
+      `${ranCount} of ${CASES.length} case(s) checked (${skippedCount} skipped for missing env keys), warm calls stayed fast`
+  );
 }
 
 main().catch((error) => {
