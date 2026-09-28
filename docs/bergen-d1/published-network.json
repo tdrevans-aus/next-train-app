@@ -1,0 +1,263 @@
+{
+  "city": "bergen",
+  "displayName": "Bergen",
+  "status": "planned",
+  "agency": "Skyss (Bybanen light rail only)",
+  "timezone": "Europe/Oslo",
+  "source": "https://www.skyss.no/globalassets/reise/rutetabellar/bybanen/1.pdf",
+  "sources": [
+    {
+      "role": "D1 ordered station list + termini for line 1 (re-fetched this pass, supersedes the oracle report's partial transcription)",
+      "title": "Rutetabeller for Bybanen — linje 1",
+      "url": "https://www.skyss.no/globalassets/reise/rutetabellar/bybanen/1.pdf",
+      "retrievedAt": "2026-09-28T08:24:00Z",
+      "note": "Currently printed 'Gyldig frå 10. august 2026.' Header pictogram row and footer diagram on every page print the full 27-station ordered list Byparken -> Bergen lufthavn with per-station running minutes. Page footers read '1 Byparken › Bergen lufthavn' / '1 Bergen lufthavn › Byparken' — the specific station, not a 'Bergen sentrum' marketing string. Bybanen/linje 1 blir køyrd av Tide Buss og Bane."
+    },
+    {
+      "role": "D1 ordered station list + termini for line 2 (re-fetched this pass, corrects the oracle report's claimed 10-station count to 9)",
+      "title": "Rutetabeller for Bybanen — linje 2",
+      "url": "https://www.skyss.no/globalassets/reise/rutetabellar/bybanen/2.pdf",
+      "retrievedAt": "2026-09-28T08:24:00Z",
+      "note": "Same currency date. Full 9-station ordered list Kaigaten -> Fyllingsdalen terminal. Page footers read '2 Fyllingsdalen terminal › Bergen sentrum' / '2 Bergen sentrum › Fyllingsdalen terminal' — line 2's own footer uses the 'Bergen sentrum' marketing string, not Kaigaten specifically (asymmetric with line 1's footer, see hazard-pack.md H6)."
+    },
+    {
+      "role": "Independent cross-check of station order, stage-opening dates, and the line 2 count",
+      "title": "List of Bergen Light Rail stations",
+      "url": "https://en.wikipedia.org/wiki/List_of_Bergen_Light_Rail_stations",
+      "retrievedAt": "2026-09-28T08:20:00Z",
+      "note": "Wikitable with Station / Stage / Opened / Transfers / Borough columns, split into Line 1, Line 2, and an unopened 'Future' (Åsane extension) section, all rows TBD. Agrees with both PDFs once 'Bergen busstasjon' is treated as one name across both lines' rows (hazard-pack.md H2). Not the primary source (the PDFs are) — used only as an independent check."
+    },
+    {
+      "role": "NSR stop-place id + coordinate lookup (not used for station order/count — only for id/lat-lng once each D1 name was locked from the PDFs)",
+      "title": "Entur Geocoder v1 (autocomplete + reverse)",
+      "url": "https://api.entur.io/geocoder/v1/autocomplete",
+      "retrievedAt": "2026-09-28T08:30:00Z",
+      "note": "Queried once per station name with header ET-Client-Name. Returns NSR:StopPlace ids, printed name (sometimes a variant of the D1/PDF print — see stationRegistry notes below), category (mode tags), and point coordinates [lon, lat]. Confirmed Bergen stasjon (Vy railway station, NSR:StopPlace:59983, railStation mode) is a distinct stop-place from every Bybanen stop, closest being Nonneseter (~90m) and Bergen busstasjon (~350m)."
+    },
+    {
+      "role": "D1 oracle (agency/auth, mode cut, board-eligibility verdicts, license) — station counts and one station name corrected this pass, see hazard-pack.md H2",
+      "title": "Bergen oracle-clash-report.md",
+      "url": "docs/bergen-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-09-28T08:00:00Z",
+      "note": "Bybanen lines 1-2 v1 scope, single operator Skyss. This pack corrects the report's claimed line-2 count (10, actual 9), total unique count (35, actual 33), one station name ('Bystasjonen', actual current print 'Bergen busstasjon'), the hub lock (Byparken, actual Bergen busstasjon — see direction-model-memo.md), and the timezone string ('Europe/Bergen', actual Europe/Oslo, the only IANA zone Norway has) — see hazard-pack.md H2/H6/H7 and the dated correction note appended to the oracle report."
+    },
+    {
+      "role": "Country lane ledger — provider decision, stop ownership, national-service board-eligibility verdicts shared across Oslo and Bergen",
+      "title": "Norway country ledger",
+      "url": "docs/norway-ledger.md",
+      "retrievedAt": "2026-09-27T00:00:00Z",
+      "note": "Entur as the shared national feed for both regions, per-city adapters. Bergen owns all 33 Bybanen stops; Bergen Railway Station is out of Bergen's catalog by station-set definition (Vy Bergensbanen/Arna line call there, not at any Bybanen stop) — no verdict owed, confirmed with NSR stop-place evidence this pass (see Board eligibility below)."
+    }
+  ],
+  "retrievedAt": "2026-09-28T08:35:00Z",
+  "notes": [
+    "D1 oracle is the two official Skyss Rutetabeller PDFs (line 1, line 2), RE-FETCHED and re-transcribed directly this pass because the oracle report named them as D1 but did not itself transcribe the full ordered station arrays. Not generated from GTFS. Not generated from Entur Journey Planner / SIRI. Entur's geocoder was used only for NSR stop-place id + coordinate lookup after each D1 station name was locked from the PDFs — never for station order or count.",
+    "City id bergen is unused in existing packs. Display Bergen. Agency Skyss (Bybanen light rail only) — not Vy, not Skyss regional bus, not a merged Norway/city=norway feed. Country ledger docs/norway-ledger.md confirms Entur as the shared national feed but per-city adapters (no merged provider config).",
+    "City stays planned until Jim wires testers. Modes v1: Bybanen light rail lines 1 and 2 only, 33 unique stations (see H2 correction — NOT the oracle report's 35). No buses (out-mode, even where a Bybanen stop-place is co-located with a bus terminal — see coverageGaps), no Vy regional/long-distance rail (out of catalog by station-set definition, not a service-level verdict — Bergen Railway Station is never in this catalog).",
+    "Timezone Europe/Oslo HAS DST (CEST/CET) — corrects the oracle report's non-existent 'Europe/Bergen' IANA string (hazard-pack.md H7). Norway has exactly one IANA zone.",
+    "Two printed Bybanen lines: 1 Byparken - Bergen lufthavn (27 stations), 2 Bergen sentrum - Fyllingsdalen terminal (9 stations, station-level termini Kaigaten/Fyllingsdalen terminal). 33 unique stations total (27 + 9 - 3 shared: Nonneseter, Bergen busstasjon, Kronstad) — corrects the oracle report's claimed 27/10/35.",
+    "Locked hub: Bergen busstasjon (NOT Byparken, the oracle report's pick — see direction-model-memo.md for the full correction). Byparken and Kaigaten remain valid line-specific direction-chip termini; they are not shared by both lines (confirmed-distinct Entur NSR stop-places, ~150m apart) so neither can be the shared-reference hub string.",
+    "gtfsRouteIdsIfKnown are the printed passenger line codes (1, 2) — the only codes Skyss prints. No stopIds/GTFS route ids looked up separately; the oracle report explicitly says D1 is hand-transcribed timetables, not GTFS-derived.",
+    "Feed / live (Jim D2, not a D1 generator): Entur Journey Planner v3 `stopPlace.estimatedCalls` GraphQL, POST https://api.entur.io/journey-planner/v3/graphql, header ET-Client-Name (NLOD open service, no key). Filter to authority SKY:Authority:SKY (Skyss) and transportMode tram. Entur SIRI ET/SX and GTFS-RT trip-updates/alerts also available per datasetId=SKY; no SIRI VM / vehicle-positions confirmed for light rail in the country ledger. Static Entur GTFS is NOT a D1 generator. D1 stays planned. assertCityLive(\"bergen\") must fail. Full detail in jim-handoff.md.",
+    "License: NLOD 2.0 per the oracle report and the country ledger. Attribution required (name Entur and Skyss), commercial reuse permitted, ET-Client-Name header is mandatory identification, not a secret. Not re-verified in this pass — the oracle report's/ledger's license tables are treated as settled."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Bergen busstasjon",
+    "doNotUse": [
+      "Bergen",
+      "Bergen sentrum",
+      "Bergen S",
+      "City",
+      "Sentrum",
+      "CBD",
+      "to City",
+      "Jernbanetorget",
+      "Bystasjonen",
+      "Danmarksplass"
+    ],
+    "alsoOnSharedApproaches": [
+      "Nonneseter",
+      "Kronstad"
+    ],
+    "ownTerminiNotHubTokens": [
+      "Byparken",
+      "Kaigaten"
+    ]
+  },
+  "coverageGaps": [
+    "Skyss regional bus (out-mode, even at Bybanen stop-places that are also bus stops/terminals — Bergen busstasjon, Nygård, Florida, Danmarks plass, Wergeland, Slettebakken, Nesttun terminal/sentrum, Skjoldskiftet, Mårdalen, Fyllingsdalen terminal, Lagunen terminal, Birkelandsskiftet terminal, Bergen lufthavn all show a co-located bus tag in Entur's stop-place register — mode cut applies regardless).",
+    "Vy Bergensbanen (Oslo-Bergen long-distance) and Vy Arna line (local) at Bergen Railway Station: out of catalog by station-set definition, not a service-level verdict. Bergen stasjon (NSR:StopPlace:59983) is never an in-catalog Bybanen stop-place — closest is Nonneseter (~90m) or Bergen busstasjon (~350m), both confirmed-distinct stop-places. No verdict owed per docs/board-eligibility-rule.md and docs/norway-ledger.md.",
+    "Åsane extension (13 future stations: Torget, Sandbrogaten, Sandviken kirke, Amalie Skrams vei, Sandviken sykehus, NHH, Eidsvåg, Tertneskrysset, Åsane terminal, Åsane Sentrum, Nyborg, Langarinden, Vågsbotn): all 'TBD' opening dates per Wikipedia's own Future table. Not on either current Skyss PDF. Not inserted.",
+    "No passenger line 3 or higher. Two lines only."
+  ],
+  "boardEligibility": {
+    "ruleBasis": "docs/board-eligibility-rule.md",
+    "verdicts": [
+      {
+        "service": "Bybanen (Skyss) lines 1-2",
+        "callsAtInCatalogStations": "all 33 D1 stations",
+        "walkUp": true,
+        "compulsoryReservation": false,
+        "checkInBarrier": false,
+        "verdict": "in",
+        "evidenceUrl": "https://www.skyss.no/en/travel/tickets-and-fares/"
+      },
+      {
+        "service": "Skyss regional bus",
+        "callsAtInCatalogStations": "co-located at several Bybanen stop-places (see coverageGaps)",
+        "verdict": "out-mode",
+        "note": "Mode cut per v1 scope (Bybanen light rail only) — not a boarding-contract failure, a product mode decision. Same treatment as trikk/bus/båt in Oslo and tram/bus in Vienna."
+      },
+      {
+        "service": "Vy Bergensbanen (Oslo-Bergen long-distance)",
+        "callsAtInCatalogStations": "none — calls only at Bergen Railway Station (Bergen stasjon, NSR:StopPlace:59983), which is not an in-catalog Bybanen stop-place",
+        "verdict": "out-scope",
+        "note": "No verdict owed per docs/board-eligibility-rule.md §1 (filter stations in, never trains off silently) — this service never calls at any in-catalog station, confirmed with NSR stop-place evidence (Bergen stasjon is a distinct railStation-mode stop-place, ~90m+ from the nearest Bybanen stop). Same station-set-level exclusion the Norway ledger already recorded; re-confirmed here with hard coordinates rather than taken on prose alone. Norway ledger also separately records Vy long-distance as out-reservation everywhere it calls (mandatory seat reservations) — moot for Bergen since it never reaches an in-catalog stop."
+      },
+      {
+        "service": "Vy Arna line (Bergen-Arna local/commuter)",
+        "callsAtInCatalogStations": "none — same Bergen Railway Station building as above",
+        "verdict": "out-scope",
+        "note": "Same station-set exclusion as Vy Bergensbanen above."
+      }
+    ],
+    "bergenRailwayStationExplicit": "Bergen Railway Station (Bergen stasjon) is a SEPARATE stop-place from every in-catalog Bybanen stop, confirmed by Entur NSR stop-place ids and coordinates this pass: Bergen stasjon = NSR:StopPlace:59983 (railStation mode), vs the nearest Bybanen stops Nonneseter = NSR:StopPlace:30862 (~90m away) and Bergen busstasjon = NSR:StopPlace:62356 (~350m away, tram + busStation mode). It is NOT an in-catalog Bybanen stop under any name; it is a separate building with separate infrastructure, separate ticketing, and a separate operator (Vy, not Skyss)."
+  },
+  "stationRegistry": {
+    "_comment": "NSR stop-place id + coordinates from Entur's geocoder (api.entur.io/geocoder/v1), fetched 28 Sep 2026, one query per D1 station name. 'nsrPrintedName' is only present where it differs from the D1/PDF print (see hazard-pack.md H2) — never invented, always the geocoder's own returned name.",
+    "Byparken": { "nsrStopPlaceId": "NSR:StopPlace:30859", "lat": 60.392001, "lng": 5.325507 },
+    "Nonneseter": { "nsrStopPlaceId": "NSR:StopPlace:30862", "lat": 60.390115, "lng": 5.332655 },
+    "Bergen busstasjon": { "nsrStopPlaceId": "NSR:StopPlace:62356", "lat": 60.388106, "lng": 5.334608 },
+    "Nygård": { "nsrStopPlaceId": "NSR:StopPlace:58545", "lat": 60.38432, "lng": 5.332725 },
+    "Florida": { "nsrStopPlaceId": "NSR:StopPlace:58544", "lat": 60.381687, "lng": 5.332999 },
+    "Danmarks plass": { "nsrStopPlaceId": "NSR:StopPlace:61380", "lat": 60.374757, "lng": 5.339774 },
+    "Kronstad": { "nsrStopPlaceId": "NSR:StopPlace:31374", "lat": 60.370659, "lng": 5.348173 },
+    "Brann stadion": { "nsrStopPlaceId": "NSR:StopPlace:31377", "lat": 60.365821, "lng": 5.351718 },
+    "Wergeland": { "nsrStopPlaceId": "NSR:StopPlace:60731", "lat": 60.360495, "lng": 5.350771 },
+    "Sletten": { "nsrStopPlaceId": "NSR:StopPlace:62405", "nsrPrintedName": "Sletten senter", "lat": 60.356548, "lng": 5.358673 },
+    "Slettebakken": { "nsrStopPlaceId": "NSR:StopPlace:62401", "lat": 60.351408, "lng": 5.359 },
+    "Fantoft": { "nsrStopPlaceId": "NSR:StopPlace:31388", "lat": 60.345947, "lng": 5.352796, "note": "Entur also returns a separate NSR:StopPlace:31282 tagged onstreetBus-only at the same name — this is the co-located bus stop, out-mode; the tram-tagged id above is the Bybanen stop." },
+    "Paradis": { "nsrStopPlaceId": "NSR:StopPlace:58543", "lat": 60.336171, "lng": 5.346799 },
+    "Hop": { "nsrStopPlaceId": "NSR:StopPlace:29815", "lat": 60.326292, "lng": 5.346686 },
+    "Nesttun terminal": { "nsrStopPlaceId": "NSR:StopPlace:58542", "lat": 60.319706, "lng": 5.352646 },
+    "Nesttun sentrum": { "nsrStopPlaceId": "NSR:StopPlace:58541", "lat": 60.317386, "lng": 5.353515 },
+    "Skjoldskiftet": { "nsrStopPlaceId": "NSR:StopPlace:59851", "lat": 60.312247, "lng": 5.355071 },
+    "Mårdalen": { "nsrStopPlaceId": "NSR:StopPlace:58540", "lat": 60.30908, "lng": 5.345004 },
+    "Skjold": { "nsrStopPlaceId": "NSR:StopPlace:29830", "lat": 60.304057, "lng": 5.333209 },
+    "Lagunen terminal": { "nsrStopPlaceId": "NSR:StopPlace:59849", "lat": 60.298073, "lng": 5.328157 },
+    "Råstølen": { "nsrStopPlaceId": "NSR:StopPlace:58539", "lat": 60.300457, "lng": 5.309494 },
+    "Sandslivegen": { "nsrStopPlaceId": "NSR:StopPlace:58538", "lat": 60.296153, "lng": 5.286814 },
+    "Sandslimarka": { "nsrStopPlaceId": "NSR:StopPlace:62400", "lat": 60.297317, "lng": 5.275334 },
+    "Kokstad": { "nsrStopPlaceId": "NSR:StopPlace:30154", "lat": 60.293439, "lng": 5.267561 },
+    "Birkelandsskiftet": { "nsrStopPlaceId": "NSR:StopPlace:58537", "nsrPrintedName": "Birkelandsskiftet terminal", "lat": 60.288336, "lng": 5.262137 },
+    "Kokstadflaten": { "nsrStopPlaceId": "NSR:StopPlace:30159", "lat": 60.291936, "lng": 5.244435 },
+    "Bergen lufthavn Flesland": { "nsrStopPlaceId": "NSR:StopPlace:58536", "nsrPrintedName": "Bergen lufthavn", "lat": 60.287777, "lng": 5.232555 },
+    "Kaigaten": { "nsrStopPlaceId": "NSR:StopPlace:62130", "lat": 60.39181, "lng": 5.326784 },
+    "Fløen": { "nsrStopPlaceId": "NSR:StopPlace:62128", "lat": 60.381107, "lng": 5.352933 },
+    "Haukeland sjukehus": { "nsrStopPlaceId": "NSR:StopPlace:62413", "lat": 60.376454, "lng": 5.359925 },
+    "Mindemyren": { "nsrStopPlaceId": "NSR:StopPlace:62125", "lat": 60.365752, "lng": 5.345101 },
+    "Kristianborg": { "nsrStopPlaceId": "NSR:StopPlace:62408", "lat": 60.358097, "lng": 5.341276 },
+    "Fyllingsdalen terminal": { "nsrStopPlaceId": "NSR:StopPlace:62112", "lat": 60.348972, "lng": 5.288372 },
+    "_outOfCatalogForReference": {
+      "Bergen stasjon (Vy railway station, NOT a Bybanen stop)": { "nsrStopPlaceId": "NSR:StopPlace:59983", "lat": 60.390434, "lng": 5.333511, "note": "Never in-catalog. Recorded here only to support the Board eligibility section's doNotGroup evidence (distinct stop-place from Nonneseter/Bergen busstasjon)." }
+    }
+  },
+  "lines": [
+    {
+      "id": "1",
+      "number": "1",
+      "name": "1",
+      "officialPageTitle": "1 Byparken - Bergen lufthavn Flesland",
+      "gtfsRouteIdsIfKnown": ["1"],
+      "mapGroup": "Bybanen",
+      "termini": ["Byparken", "Bergen lufthavn Flesland"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Bergen busstasjon",
+          "note": "Hub lock (corrected from the oracle report's Byparken pick — see direction-model-memo.md). Plain through-station on both lines, not a terminus for either."
+        },
+        {
+          "at": "Nonneseter",
+          "note": "Shared with line 2. Also the Bybanen stop nearest Bergen Railway Station (Vy) — doNotGroup, confirmed-distinct NSR stop-places."
+        },
+        {
+          "at": "Kronstad",
+          "note": "Shared with line 2 — the mid-network physical interchange where both lines' separate approach routes cross (hazard-pack.md H4)."
+        },
+        {
+          "at": "Byparken",
+          "note": "Line 1's own terminus. Line 2 does not call here — confirmed-distinct NSR stop-place from Kaigaten, ~150m apart."
+        }
+      ],
+      "stations": [
+        "Byparken",
+        "Nonneseter",
+        "Bergen busstasjon",
+        "Nygård",
+        "Florida",
+        "Danmarks plass",
+        "Kronstad",
+        "Brann stadion",
+        "Wergeland",
+        "Sletten",
+        "Slettebakken",
+        "Fantoft",
+        "Paradis",
+        "Hop",
+        "Nesttun terminal",
+        "Nesttun sentrum",
+        "Skjoldskiftet",
+        "Mårdalen",
+        "Skjold",
+        "Lagunen terminal",
+        "Råstølen",
+        "Sandslivegen",
+        "Sandslimarka",
+        "Kokstad",
+        "Birkelandsskiftet",
+        "Kokstadflaten",
+        "Bergen lufthavn Flesland"
+      ]
+    },
+    {
+      "id": "2",
+      "number": "2",
+      "name": "2",
+      "officialPageTitle": "2 Bergen Sentrum - Fyllingsdalen terminal",
+      "gtfsRouteIdsIfKnown": ["2"],
+      "mapGroup": "Bybanen",
+      "termini": ["Kaigaten", "Fyllingsdalen terminal"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Bergen busstasjon",
+          "note": "Hub lock. Plain through-station on both lines, not a terminus for either."
+        },
+        {
+          "at": "Nonneseter",
+          "note": "Shared with line 1. Also the Bybanen stop nearest Bergen Railway Station (Vy) — doNotGroup, confirmed-distinct NSR stop-places."
+        },
+        {
+          "at": "Kronstad",
+          "note": "Shared with line 1 — the mid-network physical interchange (hazard-pack.md H4)."
+        },
+        {
+          "at": "Kaigaten",
+          "note": "Line 2's own terminus. Line 1 does not call here — confirmed-distinct NSR stop-place from Byparken, ~150m apart. Line 2's own PDF page footer names 'Bergen sentrum' rather than Kaigaten specifically — see hazard-pack.md H6."
+        }
+      ],
+      "stations": [
+        "Kaigaten",
+        "Nonneseter",
+        "Bergen busstasjon",
+        "Fløen",
+        "Haukeland sjukehus",
+        "Kronstad",
+        "Mindemyren",
+        "Kristianborg",
+        "Fyllingsdalen terminal"
+      ]
+    }
+  ]
+}

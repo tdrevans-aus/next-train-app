@@ -101,3 +101,26 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 - **Terms URL:** https://developer.entur.no/open-data/timetable and https://developer.entur.no/open-data/realtime (category National journey planning, License: NLOD). Licence text: https://data.norge.no/nlod/en/2.0
 - **Confidence:** `clear` that Entur dumps + GTFS-RT for Skyss operator are NLOD. Official Skyss timetables used as D1 oracle are printed materials — NLOD covers the data within them when sourced from Entur feeds.
 - **Keyed feeds:** No secret key. `ET-Client-Name` is mandatory identification.
+
+## Correction, 28 Sep 2026 (Luke, D1 pack pass — see hazard-pack.md H2)
+
+Re-fetched the two Skyss timetable PDFs cited above directly (`.../rutetabellar/bybanen/1.pdf`,
+`.../rutetabellar/bybanen/2.pdf`, both currently printed "Gyldig frå 10. august 2026") and
+cross-checked against Wikipedia's "List of Bergen Light Rail stations" and the Entur NSR/geocoder
+register. Three corrections to this report's counts/names, all evidence-backed in
+`hazard-pack.md` H2 — **use the corrected figures and names in `published-network.json`, not the
+ones above**:
+
+1. **Line 2 has 9 stations, not 10** (Kaigaten, Nonneseter, Bergen busstasjon, Fløen, Haukeland
+   sjukehus, Kronstad, Mindemyren, Kristianborg, Fyllingsdalen terminal). **Total unique is 33, not
+   35** (27 + 9 − 3 shared: Nonneseter, Bergen busstasjon, Kronstad).
+2. **"Bystasjonen" is not the current official print — it's "Bergen busstasjon"** on both lines'
+   current timetable PDFs and diagrams; same physical stop-place (NSR:StopPlace:62356), one name.
+3. **Timezone is `Europe/Oslo`, not "Europe/Bergen"** — Norway has a single IANA zone, and
+   "Europe/Bergen" does not exist as an IANA identifier. Same DST behaviour either way, but the
+   zone string itself must be `Europe/Oslo` in the adapter.
+
+Also re-opened: the hub lock. This pack locks **Bergen busstasjon**, not Byparken — see
+`direction-model-memo.md` for the full reasoning (Byparken is Line 1's own terminus only; Line 2
+does not call there at all, per both PDFs' own ordered stop lists and confirmed by Entur NSR
+stop-place ids for Byparken vs Kaigaten being distinct, ~150m apart).
