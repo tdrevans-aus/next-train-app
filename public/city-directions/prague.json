@@ -1,0 +1,248 @@
+{
+  "Anděl": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Bořislavka": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Budějovická": [
+    "C + Letňany",
+    "C + Háje"
+  ],
+  "Černý Most": [
+    "B + Zličín"
+  ],
+  "Českomoravská": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Chodov": [
+    "C + Letňany",
+    "C + Háje"
+  ],
+  "Dejvická": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Depo Hostivař": [
+    "A + Nemocnice Motol"
+  ],
+  "Flora": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Florenc": [
+    "B + Zličín",
+    "B + Černý Most",
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Háje": [
+    "C + Letňany",
+    "C + Chodov"
+  ],
+  "Hlavní nádraží": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Hloubětín": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Hradčanská": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Hůrka": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "I. P. Pavlova": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Invalidovna": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Jinonice": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Jiřího z Poděbrad": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Kačerov": [
+    "C + Letňany",
+    "C + Háje"
+  ],
+  "Karlovo náměstí": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Kobylisy": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Kolbenova": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Křižíkova": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Ládví": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Letňany": [
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Luka": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Lužiny": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Malostranská": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Můstek": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař",
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Muzeum": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař",
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Nádraží Holešovice": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Nádraží Veleslavín": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Náměstí Míru": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Náměstí Republiky": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Národní třída": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Nemocnice Motol": [
+    "A + Depo Hostivař"
+  ],
+  "Nové Butovice": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Opatov": [
+    "C + Letňany",
+    "C + Chodov",
+    "C + Háje"
+  ],
+  "Palmovka": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Pankrác": [
+    "C + Letňany",
+    "C + Háje"
+  ],
+  "Petřiny": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Pražského povstání": [
+    "C + Letňany",
+    "C + Háje"
+  ],
+  "Prosek": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Radlická": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Rajská zahrada": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Roztyly": [
+    "C + Letňany",
+    "C + Háje"
+  ],
+  "Skalka": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Smíchovské nádraží": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Staroměstská": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Stodůlky": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Strašnická": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Střížkov": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Vltavská": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Vyšehrad": [
+    "C + Letňany",
+    "C + Pražského povstání",
+    "C + Háje"
+  ],
+  "Vysočanská": [
+    "B + Zličín",
+    "B + Černý Most"
+  ],
+  "Želivského": [
+    "A + Nemocnice Motol",
+    "A + Depo Hostivař"
+  ],
+  "Zličín": [
+    "B + Černý Most"
+  ]
+}

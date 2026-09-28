@@ -392,6 +392,27 @@ window.__CITY_MANIFEST_SEED__ = {
       "directionsVersion": "9c805e4d"
     },
     {
+      "id": "prague",
+      "displayName": "Prague",
+      "status": "live",
+      "country": {
+        "id": "cz",
+        "name": "Czechia"
+      },
+      "timeZone": "Europe/Prague",
+      "bounds": {
+        "minLat": 50,
+        "maxLat": 50.15,
+        "minLng": 14.27,
+        "maxLng": 14.6
+      },
+      "modes": [
+        "metro"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "8a0be7c6"
+    },
+    {
       "id": "hong-kong",
       "displayName": "Hong Kong",
       "status": "live",
@@ -1079,6 +1100,17 @@ window.__CITY_MANIFEST_SEED__ = {
           "name": "West Yorkshire",
           "timeZone": "Europe/London",
           "feed": "darwin"
+        }
+      ]
+    },
+    {
+      "id": "cz",
+      "name": "Czechia",
+      "regions": [
+        {
+          "id": "prague",
+          "name": "Prague",
+          "timeZone": "Europe/Prague"
         }
       ]
     },
