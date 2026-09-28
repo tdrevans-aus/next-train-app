@@ -59,6 +59,7 @@ import {
   planGreaterAngliaNextTrainFetch,
 } from "../lib/cities/greater-anglia/dogfood-next-train.js";
 import { loadDirectionHubs, applyDirectionHubs } from "../lib/cities/uk/direction-hubs.js";
+import { isDocumentedServiceHour, skipLiveLine } from "./helpers/service-hours.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -302,31 +303,51 @@ if (hubProbe.ok) {
   );
   assert(dispatched.source === "greater-anglia-darwin-live", "live-city-api dispatch source must be greater-anglia-darwin-live");
 
+  const lnerPeterboroughInWindow = isDocumentedServiceHour("greater-anglia-lner-peterborough");
+
   // Peterborough: LNER must appear on the live board — the exclusion is
-  // removed, not just absent from the catalog config.
+  // removed, not just absent from the catalog config. LNER at Peterborough
+  // has an overnight gap (docs/jim-brief-live-gates-service-hours-2.md);
+  // outside its window this only asserts the well-formed directions shape.
   const peterboroughProbe = await probeDirections("Peterborough");
   if (peterboroughProbe.ok) {
-    const lnerChip = peterboroughProbe.pack.directions.find((chip) => chip.endsWith("(LNER)"));
-    assert(
-      typeof lnerChip === "string",
-      `Peterborough's live directions must include at least one LNER chip, got: ${JSON.stringify(peterboroughProbe.pack.directions)}`
-    );
+    assert(Array.isArray(peterboroughProbe.pack.directions), "Peterborough's live directions must be a well-formed array");
+    if (lnerPeterboroughInWindow) {
+      const lnerChip = peterboroughProbe.pack.directions.find((chip) => chip.endsWith("(LNER)"));
+      assert(
+        typeof lnerChip === "string",
+        `Peterborough's live directions must include at least one LNER chip, got: ${JSON.stringify(peterboroughProbe.pack.directions)}`
+      );
+    } else {
+      console.log(
+        `greater-anglia-dogfood-gate: ${skipLiveLine("greater-anglia-lner-peterborough")} — not asserting an LNER chip at Peterborough, only that the directions shape is well-formed.`
+      );
+    }
   }
 
   // Thetford/Ely: the Norwich hub chip must appear, and the operator-split
   // "Norwich (East Midlands Railway)"/"Norwich (Greater Anglia)" chips must
-  // be absorbed into it.
+  // be absorbed into it. Reuses the same LNER-Peterborough window as its
+  // SKIP-LIVE fallback — both are National Rail chips subject to the same
+  // overnight-thinning risk this brief exists to guard.
   for (const hubStation of ["Thetford", "Ely"]) {
     const probe = await probeDirections(hubStation);
     if (probe.ok) {
-      assert(
-        probe.pack.directions.includes("Norwich"),
-        `${hubStation}'s live directions must include the bare 'Norwich' hub chip, got: ${JSON.stringify(probe.pack.directions)}`
-      );
-      assert(
-        !probe.pack.directions.some((chip) => chip.startsWith("Norwich (")),
-        `${hubStation}'s live directions must not still show an operator-suffixed 'Norwich (...)' chip once the hub absorbs it, got: ${JSON.stringify(probe.pack.directions)}`
-      );
+      assert(Array.isArray(probe.pack.directions), `${hubStation}'s live directions must be a well-formed array`);
+      if (lnerPeterboroughInWindow) {
+        assert(
+          probe.pack.directions.includes("Norwich"),
+          `${hubStation}'s live directions must include the bare 'Norwich' hub chip, got: ${JSON.stringify(probe.pack.directions)}`
+        );
+        assert(
+          !probe.pack.directions.some((chip) => chip.startsWith("Norwich (")),
+          `${hubStation}'s live directions must not still show an operator-suffixed 'Norwich (...)' chip once the hub absorbs it, got: ${JSON.stringify(probe.pack.directions)}`
+        );
+      } else {
+        console.log(
+          `greater-anglia-dogfood-gate: ${skipLiveLine("greater-anglia-lner-peterborough")} — not asserting ${hubStation}'s Norwich hub-chip absorption, only that the directions shape is well-formed.`
+        );
+      }
     }
   }
 

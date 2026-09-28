@@ -6,6 +6,11 @@
  * outside-service-hours instant (02:00 local, all four cities) and an inside-service-hours
  * instant (11:00 local), independent of whatever hour this script happens to actually run at.
  *
+ * Extended (docs/jim-brief-live-gates-service-hours-2.md, follow-up to #491) with the three
+ * UK windows added for uk-west-midlands-dogfood-gate.mjs, greater-anglia-dogfood-gate.mjs and
+ * liverpool-city-region-dogfood-gate.mjs. Same 02:00/11:00 fixed-instant shape; all three are
+ * Europe/London so they share greater-manchester's existing instants.
+ *
  * Usage: node qa/service-hours-helper.mjs
  */
 import {
@@ -32,6 +37,10 @@ const TWO_AM_INSTANTS = {
   melbourne: new Date("2026-09-23T16:00:00Z"), // 02:00 AEST (UTC+10)
   adelaide: new Date("2026-09-23T16:30:00Z"), // 02:00 ACST (UTC+9:30)
   "greater-manchester": new Date("2026-09-24T01:00:00Z"), // 02:00 BST (UTC+1)
+  // Same Europe/London instant as greater-manchester — all three new windows share the zone.
+  "uk-west-midlands-metro": new Date("2026-09-24T01:00:00Z"),
+  "greater-anglia-lner-peterborough": new Date("2026-09-24T01:00:00Z"),
+  "liverpool-city-region-merseyrail": new Date("2026-09-24T01:00:00Z"),
 };
 
 // Same day, but a local instant squarely inside every city's daytime service window.
@@ -40,6 +49,9 @@ const ELEVEN_AM_INSTANTS = {
   melbourne: new Date("2026-09-23T01:00:00Z"), // 11:00 AEST
   adelaide: new Date("2026-09-23T01:30:00Z"), // 11:00 ACST
   "greater-manchester": new Date("2026-09-24T10:00:00Z"), // 11:00 BST
+  "uk-west-midlands-metro": new Date("2026-09-24T10:00:00Z"),
+  "greater-anglia-lner-peterborough": new Date("2026-09-24T10:00:00Z"),
+  "liverpool-city-region-merseyrail": new Date("2026-09-24T10:00:00Z"),
 };
 
 for (const city of Object.keys(DOCUMENTED_SERVICE_WINDOWS)) {

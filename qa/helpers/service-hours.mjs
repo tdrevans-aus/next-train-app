@@ -33,6 +33,9 @@ const TIME_ZONES = {
   "greater-manchester": "Europe/London",
   dublin: "Europe/Dublin",
   washington: "America/New_York",
+  "uk-west-midlands-metro": "Europe/London",
+  "greater-anglia-lner-peterborough": "Europe/London",
+  "liverpool-city-region-merseyrail": "Europe/London",
 };
 
 /**
@@ -49,6 +52,18 @@ export const DOCUMENTED_SERVICE_WINDOWS = {
   melbourne: { startHour: 5, endHour: 25 }, // Metro trains run to ~01:00 on most lines.
   adelaide: { startHour: 5.5, endHour: 24 }, // Adelaide Metro: ~05:30 first service, last ~midnight.
   "greater-manchester": { startHour: 5, endHour: 24.5 }, // National Rail + Metrolink, last trains ~00:30.
+  // docs/jim-brief-live-gates-service-hours-2.md (follow-up to #491, Mark's audit): three more
+  // UK live-network hard-assert gates, each its own window because the operators differ even
+  // though all three share Europe/London.
+  "uk-west-midlands-metro": { startHour: 5.5, endHour: 24.5 }, // Midland Metro (TfWM): first trams
+  // ~05:30, last ~00:30 (National Express West Midlands published Metro timetable).
+  "greater-anglia-lner-peterborough": { startHour: 5.5, endHour: 23.5 }, // LNER at Peterborough:
+  // first southbound/northbound LNER call ~05:30, last booked call ~23:30 (LNER published
+  // timetable) — narrower than Greater Anglia's own local services, which is why this gets its
+  // own window rather than reusing a wider National Rail default.
+  "liverpool-city-region-merseyrail": { startHour: 5.5, endHour: 24.5 }, // Merseyrail Northern +
+  // Wirral lines: first trains ~05:30, last ~00:30 (Merseyrail published timetable, Mon-Sat;
+  // Sunday is later/shorter but this window stays conservative rather than day-of-week aware).
 };
 
 function pad2(n) {
