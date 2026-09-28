@@ -19,6 +19,7 @@ on:
         type: choice
         options:
           - dublin
+          - copenhagen
       check_only:
         description: "Skip trim + publish; only run the post-publish check(s) against what's already published"
         required: false
@@ -92,3 +93,24 @@ jobs:
         run: node qa/dublin-rt-join-check.mjs
         env:
           NTA_API_KEY: ${{ secrets.NTA_API_KEY }}
+
+      # Copenhagen's static GTFS (rejseplanen.info) needs no API key either. No realtime step
+      # here — lib/providers/copenhagen.js ships schedule-only (no Rejseplanen API 2.0/SIRI-ET
+      # key wired), so there is nothing to RT-join against, unlike Dublin above.
+      - name: Trim GTFS (copenhagen)
+        if: inputs.city == 'copenhagen' && inputs.check_only != true
+        run: node scripts/trim-copenhagen-gtfs.mjs --out=qa/fixtures/copenhagen/gtfs
+
+      # --allow-live: Copenhagen is status: "live" (unlike Dublin above when its trim shipped) —
+      # this republishes real upstream data trimmed to a smaller route set, not synthetic test
+      # data, so scripts/publish-gtfs-fixture-to-blob.mjs's live-city guardrail is deliberately
+      # overridden here.
+      - name: Publish to Blob (copenhagen)
+        if: inputs.city == 'copenhagen' && inputs.check_only != true
+        run: node scripts/publish-gtfs-fixture-to-blob.mjs copenhagen --allow-live
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+
+      - name: Verify published snapshot (copenhagen)
+        if: inputs.city == 'copenhagen'
+        run: node qa/verify-copenhagen-gtfs-snapshot.mjs

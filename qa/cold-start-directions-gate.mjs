@@ -12,20 +12,23 @@
  * the point here, so this always spawns its OWN dedicated instance via
  * `ensureDevServer({ isRunner: true })` regardless of an inherited QA_BASE.
  *
- * Covers the acceptance criteria's named cities (Dublin, Melbourne, Prague): Dublin and Melbourne
- * derive /api/directions from a live GTFS board fetch (cold GTFS snapshot download+parse over
- * Blob, ~2-4s measured), Prague from a static marketing-directions list (no cold GTFS path at
- * all, included so the acceptance criteria's three named cities are all directly covered even
- * though it was never actually at risk). All three are registry `status: "live"`, so no
- * assertCityLive gate stands in the way of hitting the real handler end to end.
+ * Covers the acceptance criteria's named cities (Dublin, Melbourne, Prague) plus Copenhagen:
+ * Dublin and Melbourne derive /api/directions from a live GTFS board fetch (cold GTFS snapshot
+ * download+parse over Blob, ~2-4s measured), Prague from a static marketing-directions list (no
+ * cold GTFS path at all, included so the acceptance criteria's three named cities are all
+ * directly covered even though it was never actually at risk). All four are registry
+ * `status: "live"`, so no assertCityLive gate stands in the way of hitting the real handler end
+ * to end.
  *
- * Copenhagen is deliberately NOT covered here (removed 28 Sep 2026, Mark's QA note on PR #504):
- * its cold path measured 14.3-18.7s in this fix's own investigation but 21.6-25s across Mark's
- * standalone runs (his own fresh-server measurement: 24.7s), failing 2 of 3 runs against a single
- * global 25s bound — Rejseplanen's national static feed is simply too large and too variable for
- * a tight per-case bound right now. A separate Jim pass is trimming Copenhagen's snapshot
- * (docs/jim-brief-copenhagen-snapshot-trim.md); that PR re-adds a Copenhagen case here with its
- * own tight bound once the trim lands, rather than this gate carrying a loose, flaky one meanwhile.
+ * Copenhagen was deliberately dropped from here on 28 Sep 2026 (Mark's QA note on PR #504): its
+ * cold path against Rejseplanen's FULL national static feed measured 14.3-18.7s in this fix's
+ * own investigation but 21.6-25s across Mark's standalone runs (his own fresh-server
+ * measurement: 24.7s), failing 2 of 3 runs against a single global 25s bound — that feed was
+ * simply too large and too variable for a tight per-case bound. Re-added here now that
+ * docs/jim-brief-copenhagen-snapshot-trim.md's trim has landed: lib/providers/copenhagen.js
+ * reads a ~5MB Blob-published snapshot (scripts/trim-copenhagen-gtfs.mjs) instead of the ~55MB
+ * national feed, and cold time dropped to ~1.5-2.0s standalone, comfortably supporting the same
+ * tight-bound-plus-envKey-gating shape as every other case below.
  *
  * Each case gets its OWN cold bound (generously above its measured standalone cold time) rather
  * than one global bound — exactly the shape a global bound got wrong for Copenhagen: a bound
@@ -50,7 +53,9 @@
  * the gate honest about what it actually exercised in a given environment instead of pretending
  * a 500 from a missing credential is the cold-start bug it exists to catch. Prague is kept
  * deliberately keyless so at least one case always runs the real fresh-server path in CI even
- * with zero keys configured; the gate fails outright if every case ends up skipped.
+ * with zero keys configured; the gate fails outright if every case ends up skipped. Copenhagen's
+ * REJSEPLANEN_API_KEY requirement is the one exception to "the key its /api/directions call
+ * actually needs" -- see that case's own comment below for why it's declared anyway.
  *
  * Usage: node qa/cold-start-directions-gate.mjs
  */
@@ -89,6 +94,18 @@ const CASES = [
   // is deliberately keyless and must never be skipped (see file header). Bound still has real
   // margin (not just 2x a near-zero number) for the same smoke-suite-contention reason as above.
   { city: "prague", station: "Muzeum", coldTimeoutMs: 5000, requiredEnvKeys: [] },
+  // Re-added 28 Sep 2026 (docs/jim-brief-copenhagen-snapshot-trim.md) — cold measured
+  // ~1.5-2.0s standalone against the trimmed Blob snapshot (down from 14.3-18.7s against the
+  // full national feed, see file header). REJSEPLANEN_API_KEY is NOT actually consumed by
+  // /api/directions today — Copenhagen is schedule-only, the trimmed static snapshot needs no
+  // key (see lib/providers/copenhagen.js's file header) — it's declared here purely as an
+  // environment-availability gate, same convention as every other case: local runs (.env.local
+  // has REJSEPLANEN_API_KEY) exercise the real fresh-server path, CI (no .env.local, key unset)
+  // SKIP-LIVEs rather than spending time on a network fetch to the public Blob store with no
+  // signal the environment is meant to run it. If Copenhagen ever wires the live Rejseplanen
+  // API 2.0 path (MissingRejseplanenApiKeyError), this key genuinely becomes required and this
+  // comment should be deleted rather than updated.
+  { city: "copenhagen", station: "København H", coldTimeoutMs: 5000, requiredEnvKeys: ["REJSEPLANEN_API_KEY"] },
 ];
 
 async function timedFetch(path, timeoutMs) {
