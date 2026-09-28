@@ -27,10 +27,14 @@
  * (docs/jim-brief-copenhagen-snapshot-trim.md); that PR re-adds a Copenhagen case here with its
  * own tight bound once the trim lands, rather than this gate carrying a loose, flaky one meanwhile.
  *
- * Each case gets its OWN cold bound (~2x its measured cold time) rather than one global bound —
- * exactly the shape a global bound got wrong for Copenhagen: a bound loose enough for the slowest
- * city is needlessly loose for the fastest, and a bound tight enough for the fastest can flake on
- * the slowest.
+ * Each case gets its OWN cold bound (generously above its measured standalone cold time) rather
+ * than one global bound — exactly the shape a global bound got wrong for Copenhagen: a bound
+ * loose enough for the slowest city is needlessly loose for the fastest, and a bound tight enough
+ * for the fastest can flake on the slowest. The per-case bounds are looser than a plain 2x of the
+ * standalone measurement (see the CASES comments) because this gate's own dedicated dev-server
+ * still competes for CPU with the dozens of other gates a real --smoke run executes concurrently
+ * — a 5000ms melbourne bound flaked inside an actual --smoke run (aborted at 5010ms, 28 Sep 2026)
+ * despite every standalone run measuring under 3s.
  *
  * CI env-key gating (28 Sep 2026, web-qa failure on this PR): the CI runner has no
  * NTA_API_KEY/VIC_OPENDATA_API_KEY, so Dublin/Melbourne's fresh dev server 500'd with
@@ -64,21 +68,27 @@ loadEnvLocal();
 const WARM_TIMEOUT_MS = 5000;
 
 const CASES = [
-  // Cold measured ~3.6-3.9s locally — bound ~2x. Live GTFS board fetch (NTA GTFS-RT) needs
-  // NTA_API_KEY.
-  { city: "dublin", station: "Abbey Street", coldTimeoutMs: 8000, requiredEnvKeys: ["NTA_API_KEY"] },
-  // Cold measured ~1.8-2.5s locally — bound ~2x the higher end. Live GTFS board fetch (VIC Open
+  // Cold measured ~3.5-3.9s standalone. Live GTFS board fetch (NTA GTFS-RT) needs NTA_API_KEY.
+  // Bound is generous, not a tight 2x, because this gate spawns its own dedicated dev-server
+  // but still runs alongside dozens of concurrent smoke-suite gates competing for the same CPU —
+  // a 5000ms bound flaked here under exactly that load (melbourne aborted at 5010ms in a real
+  // --smoke run, 28 Sep 2026) even though every standalone run measured well under 3s.
+  { city: "dublin", station: "Abbey Street", coldTimeoutMs: 12000, requiredEnvKeys: ["NTA_API_KEY"] },
+  // Cold measured ~1.8-2.5s standalone, but see the dublin comment above for why the bound is
+  // this much looser than a plain 2x — CPU contention from the rest of the smoke suite running
+  // concurrently, not variance in this city's own cold path. Live GTFS board fetch (VIC Open
   // Data) needs VIC_OPENDATA_API_KEY.
   {
     city: "melbourne",
     station: "Flinders Street",
-    coldTimeoutMs: 5000,
+    coldTimeoutMs: 12000,
     requiredEnvKeys: ["VIC_OPENDATA_API_KEY"],
   },
-  // Static marketing-directions list, no GTFS cold path — cold measured ~0.01s, generous floor.
+  // Static marketing-directions list, no GTFS cold path — cold measured ~2-13ms standalone.
   // No key needed: /api/directions never calls the live Golemio board for Prague, so this case
-  // is deliberately keyless and must never be skipped (see file header).
-  { city: "prague", station: "Muzeum", coldTimeoutMs: 3000, requiredEnvKeys: [] },
+  // is deliberately keyless and must never be skipped (see file header). Bound still has real
+  // margin (not just 2x a near-zero number) for the same smoke-suite-contention reason as above.
+  { city: "prague", station: "Muzeum", coldTimeoutMs: 5000, requiredEnvKeys: [] },
 ];
 
 async function timedFetch(path, timeoutMs) {
