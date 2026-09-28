@@ -196,6 +196,7 @@ const SMOKE_SCRIPTS = [
   "api-500-no-error-echo.mjs",
   "country-wide-picker.mjs",
   "bundled-city-directions.mjs",
+  "no-self-terminus-gate.mjs",
   "lane-lock-shared-worktree.mjs",
   "ios-no-ad-free.mjs",
   /** Registry-driven client — docs/jim-brief-registry-driven-client.md. */
