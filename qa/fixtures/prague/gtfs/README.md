@@ -2,7 +2,7 @@
 
 **Source:** https://data.pid.cz/PID_GTFS.zip
 **Trimmed:** 2026-09-28
-**Feed span:** 20260927 → 20261010
+**Feed span:** 20260928 → 20261011
 **Kept route_short_name(s):** A, B, C
 
 ## Regenerate

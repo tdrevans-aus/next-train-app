@@ -40,6 +40,7 @@ import {
   buildDepartureBoardsUrl,
   mapDepartureToTrip,
   tripsFromDepartures,
+  mapScheduledCandidateToTrip,
   fetchStationBoard,
   isForbiddenCollapseName,
   isForbiddenHubProxy,
@@ -60,6 +61,7 @@ import {
   getPragueDogfoodDirections,
   getPragueDogfoodNextTrain,
 } from "../lib/cities/prague/dogfood-next-train.js";
+import { loadGtfsStaticFromDirectory } from "../lib/providers/gtfs/static-cache.js";
 import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
 import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
 import { buildCityManifest } from "../lib/cities/city-manifest.js";
@@ -135,18 +137,21 @@ const oracleReport = readFileSync(join(d1Dir, "oracle-clash-report.md"), "utf8")
 assert(/## Board eligibility/.test(oracleReport), "oracle report must carry a Board eligibility section");
 
 const stations = listCatalogStations();
-assert(stations.length === 58, `catalog must have 58 stations, got ${stations.length}`);
+assert(stations.length === 57, `catalog must have 57 stations (Flora excluded, see coverage.json), got ${stations.length}`);
 const byName = new Map(stations.map((s) => [s.name, s]));
 assert(byName.has(PRAGUE_HUB), `catalog must lock ${PRAGUE_HUB}`);
 assert(byName.get(PRAGUE_HUB)?.lines.sort().join(",") === "a,c", `${PRAGUE_HUB} must carry exactly A/C`);
 assert(byName.get("Můstek")?.lines.sort().join(",") === "a,b", "Můstek must carry exactly A/B");
 assert(byName.get("Florenc")?.lines.sort().join(",") === "b,c", "Florenc must carry exactly B/C");
-assert(byName.has("Flora"), "Flora must stay in the catalog (D2 finding: real station, currently zero live stop_times — see lib/providers/prague.js file header)");
+assert(
+  !byName.has("Flora"),
+  "Flora must NOT be in the catalog — confirmed 28 Sep 2026 (docs/jim-brief-prague-flora-sweep-empty-state.md) as a real, current zero-service gap (not a stop-id mapping bug), same shape as Dublin's Connolly/Saggart, excluded via coverage.json"
+);
 
 const aStations = stations.filter((s) => s.lines.includes("a"));
 const bStations = stations.filter((s) => s.lines.includes("b"));
 const cStations = stations.filter((s) => s.lines.includes("c"));
-assert(aStations.length === 17, `Line A must have 17 unique stops, got ${aStations.length}`);
+assert(aStations.length === 16, `Line A must have 16 unique stops (Flora excluded), got ${aStations.length}`);
 assert(bStations.length === 24, `Line B must have 24 unique stops, got ${bStations.length}`);
 assert(cStations.length === 20, `Line C must have 20 unique stops, got ${cStations.length}`);
 
@@ -161,6 +166,28 @@ for (const station of stations) {
     `${station.name} (${station.lat}, ${station.lng}) must fall inside Prague's CITY_BOUNDS box`
   );
 }
+
+// Static-coverage gate (docs/jim-brief-prague-flora-sweep-empty-state.md item 1): every catalog
+// station must have >= 1 metro stop_time in the committed trimmed GTFS fixture
+// (qa/fixtures/prague/gtfs, offline, no network) — this would have caught Flora before it ever
+// reached a live poll. Flora itself is correctly EXCLUDED from the catalog now (asserted above),
+// so this loop covers all 57 remaining stations and must find every one of them non-empty.
+const fixtureDir = join(ROOT, "qa/fixtures/prague/gtfs");
+assert(existsSync(fixtureDir), "qa/fixtures/prague/gtfs must be committed (small trimmed metro-only fixture)");
+const pragueStaticFixture = loadGtfsStaticFromDirectory(fixtureDir, { timeZone: PRAGUE_TIMEZONE });
+const zeroStopTimeCoverage = [];
+for (const station of stations) {
+  const hasCoverage = (station.stopIds ?? []).some(
+    (stopId) => (pragueStaticFixture.stopTimesByStopId.get(stopId)?.length ?? 0) > 0
+  );
+  if (!hasCoverage) {
+    zeroStopTimeCoverage.push(station.name);
+  }
+}
+assert(
+  zeroStopTimeCoverage.length === 0,
+  `every catalog station must have >= 1 static stop_time in the committed fixture — zero coverage at: ${zeroStopTimeCoverage.join(", ")} (this is exactly the check that would have caught Flora)`
+);
 
 // resolveCatalogEntry — exact-match, diacritic-EXACT (never fold/strip diacritics), forbidden
 // tokens reject.
@@ -366,9 +393,98 @@ const syntheticBoard = await fetchStationBoard(PRAGUE_HUB, {
 assert(syntheticBoard.realtime === "live", "fetchStationBoard must mark a board realtime: live");
 assert(syntheticBoard.trips.length === 2, "fetchStationBoard must return only the confirmed metro trips from a synthetic departures payload");
 
+// ---------------------------------------------------------------------------------------------
+// Honest empty state (docs/jim-brief-prague-flora-sweep-empty-state.md item 3), the same three
+// cases as qa/honest-empty-state.mjs's Dublin fixtures: all-empty -> reason; partial -> no
+// reason; outside hours (nothing scheduled either) -> no reason. Exercised directly at the
+// fetchStationBoard level via options.departures/options.scheduledCandidates — no network call,
+// same style as the syntheticBoard assertion above.
+// ---------------------------------------------------------------------------------------------
+const scheduledMotolTrip = mapScheduledCandidateToTrip(
+  { routeShortName: "A", stopHeadsign: "", destination: "Nemocnice Motol" },
+  PRAGUE_HUB
+);
+assert(
+  scheduledMotolTrip?.destination === "A + Nemocnice Motol",
+  "mapScheduledCandidateToTrip must map a raw GTFS-shaped scheduled row to the same marketing chip a live trip would get"
+);
+assert(
+  mapScheduledCandidateToTrip({ routeShortName: "A", destination: PRAGUE_HUB }, PRAGUE_HUB) === null,
+  "mapScheduledCandidateToTrip must drop a self-terminus scheduled row, same guard as mapDepartureToTrip"
+);
+assert(
+  mapScheduledCandidateToTrip({ routeShortName: "D", destination: "Somewhere" }, PRAGUE_HUB) === null,
+  "mapScheduledCandidateToTrip must drop an unclassifiable route, same guard as mapDepartureToTrip"
+);
+
+// Case 1: all-directions-empty live board, but the static schedule expects a metro trip here
+// right now — a live-feed gap, must set emptyReason.
+const allEmptyBoard = await fetchStationBoard(PRAGUE_HUB, {
+  departures: [],
+  scheduledCandidates: [scheduledMotolTrip],
+});
+assert(allEmptyBoard.trips.length === 0, "synthetic all-empty board must have zero live trips");
+assert(
+  allEmptyBoard.emptyReason === "no-live-predictions",
+  "an all-empty board with a non-empty static schedule must set emptyReason: no-live-predictions"
+);
+
+// Case 2: a board with at least one live trip elsewhere (partial) must never carry emptyReason,
+// even if a synthetic static schedule would otherwise justify it for some other direction.
+const partialBoard = await fetchStationBoard(PRAGUE_HUB, {
+  departures: [syntheticDeparture("A", "Depo Hostivař")],
+  scheduledCandidates: [scheduledMotolTrip],
+});
+assert(partialBoard.trips.length > 0, "partial board must carry at least one live trip");
+assert(
+  partialBoard.emptyReason === null,
+  "a board with at least one live trip must never carry emptyReason, even if scheduledCandidates would otherwise justify it"
+);
+
+// Case 3: outside service hours (or a genuine no-more-service case) — live AND static schedule
+// both empty. Must NOT set emptyReason (there is nothing for the live feed to be "gapped" on).
+const outsideHoursBoard = await fetchStationBoard(PRAGUE_HUB, {
+  departures: [],
+  scheduledCandidates: [],
+});
+assert(outsideHoursBoard.trips.length === 0, "outside-hours board must have zero live trips");
+assert(
+  outsideHoursBoard.emptyReason === null,
+  "an empty board with nothing scheduled either (outside hours / no service) must not set emptyReason"
+);
+
+// Unknown static state (computeScheduledCandidates() returning null, e.g. blob 404/stale
+// calendar/network error) must behave the same as "nothing scheduled", never fabricate a reason
+// from a side-computation failure.
+const unknownStaticBoard = await fetchStationBoard(PRAGUE_HUB, {
+  departures: [],
+  scheduledCandidates: null,
+});
+assert(
+  unknownStaticBoard.emptyReason === null,
+  "an unresolvable static snapshot must never itself produce emptyReason"
+);
+assert(Array.isArray(unknownStaticBoard.scheduledCandidates) && unknownStaticBoard.scheduledCandidates.length === 0, "scheduledCandidates on the response must always be an array, even when the static side-computation is unavailable");
+
+// End-to-end through the dogfood next-train pipeline: a direction the (synthetic) static
+// schedule expects, with zero live confirmation, surfaces emptyReason via buildNextTrainResponse;
+// a direction with no scheduled candidate at all does not.
+const allEmptyNextTrain = await getPragueDogfoodNextTrain({
+  station: PRAGUE_HUB,
+  destination: "A + Nemocnice Motol",
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+}).catch(() => null);
+// getPragueDogfoodNextTrain always calls the real fetchStationBoard (live network), which this
+// gate never exercises (no key set) — MissingGolemioApiKeyError is expected and already asserted
+// above; the emptyReason plumbing itself is unit-tested directly on buildNextTrainResponse by the
+// city-agnostic qa/honest-empty-state.mjs, and on lib/cities/prague/dogfood-next-train.js's own
+// emptyReason/scheduledForDirection logic by the fetchStationBoard-level cases above.
+assert(allEmptyNextTrain === null, "getPragueDogfoodNextTrain must still throw MissingGolemioApiKeyError with no key set — honest-empty-state wiring must never bypass that guard");
+
 // Dogfood station list comes from the catalog, not a live parse.
 const dogfoodStations = listPragueDogfoodStations();
-assert(dogfoodStations.length === 58, `dogfood stations must be the 58 catalog names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 57, `dogfood stations must be the 57 catalog names, got ${dogfoodStations.length}`);
 assert(dogfoodStations.some((row) => row.name === PRAGUE_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodStations.every((row) => typeof row.lat === "number" && typeof row.lng === "number"), "every dogfood station must carry lat/lng");
 
@@ -422,6 +538,7 @@ assert(coverage.region === "prague", "coverage.json region must be prague");
 assert(coverage.covered.some((c) => /Metro/.test(c.label)), "coverage.json must record Metro as covered");
 assert(coverage.notCovered.some((c) => /Line D/.test(c.label)), "coverage.json must explicitly record Line D as not covered");
 assert(coverage.notCovered.some((c) => /[Tt]ram/.test(c.label)), "coverage.json must explicitly record trams as not covered");
+assert(coverage.notCovered.some((c) => /Flora/.test(c.label)), "coverage.json must explicitly record Flora as excluded, with evidence");
 
 // Picker/country-regions surfaces: while `status: "planned"`, a city gets no picker entry at all
 // (Tim, 27 Sep 2026: docs/jim-brief-no-coming-soon-picker.md). Persistence + dogfood-mount
@@ -442,5 +559,5 @@ if (pragueIsLive) {
 assert(Boolean(CITY_BOUNDS.prague), "lib/cities/city-bounds.js must carry a prague box");
 
 console.log(
-  `prague-dogfood-gate: ok (status=${entry.status}, dispatch switch-cases wired, MULTI_CITY_IDS/manifest tracking registry status, D1 pack, Board eligibility section recorded, 58 stations (17/24/20 per line) each with lat/lng + GTFS stop_id inside CITY_BOUNDS (Flora kept despite zero live stop_times this session — D2 finding), hub Muzeum A x C with Můstek A x B and Florenc B x C as separate doNotGroup interchange-triangle vertices, line+terminus direction model, full-diacritic-exact station resolution (no stripped-diacritic aliasing), self-terminus guard proven end-to-end across all 58 stations via synthetic Golemio payloads, non-metro/unknown-route rows dropped, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Metro in / Line D + trams out, Perth Australia green)`
+  `prague-dogfood-gate: ok (status=${entry.status}, dispatch switch-cases wired, MULTI_CITY_IDS/manifest tracking registry status, D1 pack still records 58 (Luke's historical topology, unedited), catalog carries 57 stations (16/24/20 per line, Flora excluded — confirmed real zero-service gap, not a mapping bug, coverage.json verdict recorded) each with lat/lng + GTFS stop_id inside CITY_BOUNDS, static-coverage gate passes offline against the committed qa/fixtures/prague/gtfs snapshot (every catalog station has >= 1 metro stop_time), honest-empty-state (emptyReason: no-live-predictions) proven for all-empty/partial/outside-hours/unknown-static cases, hub Muzeum A x C with Můstek A x B and Florenc B x C as separate doNotGroup interchange-triangle vertices, line+terminus direction model, full-diacritic-exact station resolution (no stripped-diacritic aliasing), self-terminus guard proven end-to-end across all 57 stations via synthetic Golemio payloads, non-metro/unknown-route rows dropped, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Metro in / Line D + trams + Flora out, Perth Australia green)`
 );

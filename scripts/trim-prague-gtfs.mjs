@@ -131,16 +131,23 @@ export function buildTrimmedFiles(buffer) {
   }
 
   // Name-matched union (see KNOWN_STATION_NAMES comment above): a station whose name is on the
-  // D1 roster is included by its parent + child platform stops even when no metro trip's
-  // stop_times touches it today. Confirmed live 28 Sep 2026: Flora (Metro A, between Jiřího z
-  // Poděbrad and Želivského) has zero stop_times referencing either of its platform stop_ids
-  // (U118Z101P/U118Z102P) in this snapshot — every sampled Line A trip runs Jiřího z Poděbrad ->
-  // Želivského directly, skipping it (a real, current service gap, not a fixture bug) — while
-  // still carrying its own parent station row (U118S1, location_type 1) and platform children
-  // (parent_station=U118S1) distinct from the same node's bus platforms (U118Z1P-Z4P, which have
-  // no parent_station and are correctly excluded). Trip-derived matching alone would silently
-  // drop Flora's stop_id from this fixture, breaking name resolution for a station that is
-  // still real and still catalogued — see docs/prague-d1/jim-handoff.md's appended finding.
+  // D1 roster (published-network.json, Luke's original 58-name topology — kept as-is, same as
+  // Dublin's published-network.json still listing Connolly/Saggart) is included by its parent +
+  // child platform stops even when no metro trip's stop_times touches it today, so a momentary
+  // schedule gap never silently drops a real station's stop_id from this fixture.
+  //
+  // Historical finding (28 Sep 2026, docs/jim-brief-prague-flora-sweep-empty-state.md): Flora
+  // (Metro A, between Jiřího z Poděbrad and Želivského) was confirmed — via this exact
+  // mechanism, cross-checked against the live Golemio board (9/9 clean polls, zero trips every
+  // time) — to have zero metro stop_times referencing either of its platform stop_ids
+  // (U118Z101P/U118Z102P) in the current PID GTFS snapshot: every Line A trip runs Jiřího z
+  // Poděbrad -> Želivského directly, skipping it. This is a real, current service gap, not a
+  // stop-id mapping bug (Flora's own parent + platform ids resolve correctly by name match), so
+  // Flora was removed from the app's serving catalog (lib/cities/prague/stations.json, 58 -> 57)
+  // with a coverage-note exclusion (lib/cities/prague/coverage.json), same precedent as Dublin's
+  // Connolly/Saggart. published-network.json is NOT edited — it stays Luke's historical 58-name
+  // topology record; this fixture still resolves Flora's ids by name (harmless — the app simply
+  // never queries them, since Flora has no stations.json entry).
   const parentIdsByName = new Map();
   for (const stop of stops) {
     if (stop.location_type === "1" && KNOWN_STATION_NAMES.has(stop.stop_name)) {
