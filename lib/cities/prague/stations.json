@@ -1,0 +1,769 @@
+{
+  "city": "prague",
+  "hub": "Muzeum",
+  "stations": [
+    {
+      "name": "Anděl",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1040Z101P",
+        "U1040Z102P"
+      ],
+      "lat": 50.070015,
+      "lng": 14.403809
+    },
+    {
+      "name": "Bořislavka",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U157Z101P",
+        "U157Z102P"
+      ],
+      "lat": 50.09838,
+      "lng": 14.36288
+    },
+    {
+      "name": "Budějovická",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U50Z101P",
+        "U50Z102P"
+      ],
+      "lat": 50.04441,
+      "lng": 14.44879
+    },
+    {
+      "name": "Černý Most",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U897Z101P",
+        "U897Z102P"
+      ],
+      "lat": 50.10893,
+      "lng": 14.57678
+    },
+    {
+      "name": "Českomoravská",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U510Z101P",
+        "U510Z102P"
+      ],
+      "lat": 50.106159,
+      "lng": 14.491763
+    },
+    {
+      "name": "Dejvická",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U321Z101P",
+        "U321Z102P"
+      ],
+      "lat": 50.100481,
+      "lng": 14.393172
+    },
+    {
+      "name": "Depo Hostivař",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1071Z101P",
+        "U1071Z102P"
+      ],
+      "lat": 50.075093,
+      "lng": 14.515182
+    },
+    {
+      "name": "Flora",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U118Z101P",
+        "U118Z102P"
+      ],
+      "lat": 50.078289,
+      "lng": 14.462677
+    },
+    {
+      "name": "Florenc",
+      "lines": [
+        "b",
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U689Z101P",
+        "U689Z102P",
+        "U689Z121P",
+        "U689Z122P"
+      ],
+      "lat": 50.090568,
+      "lng": 14.439428
+    },
+    {
+      "name": "Háje",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U286Z101P",
+        "U286Z102P"
+      ],
+      "lat": 50.030834,
+      "lng": 14.527239
+    },
+    {
+      "name": "Hlavní nádraží",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U142Z101P",
+        "U142Z102P"
+      ],
+      "lat": 50.083505,
+      "lng": 14.434121
+    },
+    {
+      "name": "Hloubětín",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U135Z101P",
+        "U135Z102P"
+      ],
+      "lat": 50.106688,
+      "lng": 14.536435
+    },
+    {
+      "name": "Hradčanská",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U163Z101P",
+        "U163Z102P"
+      ],
+      "lat": 50.097453,
+      "lng": 14.403194
+    },
+    {
+      "name": "Hůrka",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1154Z101P",
+        "U1154Z102P"
+      ],
+      "lat": 50.050021,
+      "lng": 14.342823
+    },
+    {
+      "name": "Chodov",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U52Z101P",
+        "U52Z102P"
+      ],
+      "lat": 50.031655,
+      "lng": 14.491029
+    },
+    {
+      "name": "I. P. Pavlova",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U190Z101P",
+        "U190Z102P"
+      ],
+      "lat": 50.07433,
+      "lng": 14.43031
+    },
+    {
+      "name": "Invalidovna",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U655Z101P",
+        "U655Z102P"
+      ],
+      "lat": 50.096954,
+      "lng": 14.463499
+    },
+    {
+      "name": "Jinonice",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U685Z101P",
+        "U685Z102P"
+      ],
+      "lat": 50.054209,
+      "lng": 14.369847
+    },
+    {
+      "name": "Jiřího z Poděbrad",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U209Z101P",
+        "U209Z102P"
+      ],
+      "lat": 50.077723,
+      "lng": 14.450736
+    },
+    {
+      "name": "Kačerov",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U228Z101P",
+        "U228Z102P"
+      ],
+      "lat": 50.041844,
+      "lng": 14.459294
+    },
+    {
+      "name": "Karlovo náměstí",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U237Z101P",
+        "U237Z102P"
+      ],
+      "lat": 50.07459,
+      "lng": 14.41698
+    },
+    {
+      "name": "Kobylisy",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U675Z101P",
+        "U675Z102P"
+      ],
+      "lat": 50.12412,
+      "lng": 14.45425
+    },
+    {
+      "name": "Kolbenova",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U75Z101P",
+        "U75Z102P"
+      ],
+      "lat": 50.110383,
+      "lng": 14.516392
+    },
+    {
+      "name": "Křižíkova",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U758Z101P",
+        "U758Z102P"
+      ],
+      "lat": 50.092575,
+      "lng": 14.45147
+    },
+    {
+      "name": "Ládví",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U78Z101P",
+        "U78Z102P"
+      ],
+      "lat": 50.126641,
+      "lng": 14.469576
+    },
+    {
+      "name": "Letňany",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1000Z101P",
+        "U1000Z102P"
+      ],
+      "lat": 50.124155,
+      "lng": 14.516175
+    },
+    {
+      "name": "Luka",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1007Z101P",
+        "U1007Z102P"
+      ],
+      "lat": 50.045671,
+      "lng": 14.321366
+    },
+    {
+      "name": "Lužiny",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U258Z101P",
+        "U258Z102P"
+      ],
+      "lat": 50.044503,
+      "lng": 14.330481
+    },
+    {
+      "name": "Malostranská",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U360Z101P",
+        "U360Z102P"
+      ],
+      "lat": 50.091675,
+      "lng": 14.409241
+    },
+    {
+      "name": "Můstek",
+      "lines": [
+        "a",
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1072Z101P",
+        "U1072Z102P",
+        "U1072Z121P",
+        "U1072Z122P"
+      ],
+      "lat": 50.083812,
+      "lng": 14.424189
+    },
+    {
+      "name": "Muzeum",
+      "lines": [
+        "a",
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U400Z101P",
+        "U400Z102P",
+        "U400Z121P",
+        "U400Z122P"
+      ],
+      "lat": 50.080048,
+      "lng": 14.430857
+    },
+    {
+      "name": "Nádraží Holešovice",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U115Z101P",
+        "U115Z102P"
+      ],
+      "lat": 50.108983,
+      "lng": 14.440067
+    },
+    {
+      "name": "Nádraží Veleslavín",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U462Z101P",
+        "U462Z102P"
+      ],
+      "lat": 50.095955,
+      "lng": 14.348551
+    },
+    {
+      "name": "Náměstí Míru",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U476Z101P",
+        "U476Z102P"
+      ],
+      "lat": 50.075304,
+      "lng": 14.439106
+    },
+    {
+      "name": "Náměstí Republiky",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U480Z101P",
+        "U480Z102P"
+      ],
+      "lat": 50.088804,
+      "lng": 14.430556
+    },
+    {
+      "name": "Národní třída",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U539Z101P",
+        "U539Z102P"
+      ],
+      "lat": 50.079944,
+      "lng": 14.420302
+    },
+    {
+      "name": "Nemocnice Motol",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U306Z101P",
+        "U306Z102P"
+      ],
+      "lat": 50.075334,
+      "lng": 14.341322
+    },
+    {
+      "name": "Nové Butovice",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U602Z101P",
+        "U602Z102P"
+      ],
+      "lat": 50.050852,
+      "lng": 14.352185
+    },
+    {
+      "name": "Opatov",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U106Z101P",
+        "U106Z102P"
+      ],
+      "lat": 50.02789,
+      "lng": 14.50919
+    },
+    {
+      "name": "Palmovka",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U529Z101P",
+        "U529Z102P"
+      ],
+      "lat": 50.103897,
+      "lng": 14.474537
+    },
+    {
+      "name": "Pankrác",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U385Z101P",
+        "U385Z102P"
+      ],
+      "lat": 50.050977,
+      "lng": 14.43971
+    },
+    {
+      "name": "Petřiny",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U507Z101P",
+        "U507Z102P"
+      ],
+      "lat": 50.086585,
+      "lng": 14.345049
+    },
+    {
+      "name": "Pražského povstání",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U597Z101P",
+        "U597Z102P"
+      ],
+      "lat": 50.05683,
+      "lng": 14.43336
+    },
+    {
+      "name": "Prosek",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U603Z101P",
+        "U603Z102P"
+      ],
+      "lat": 50.1192,
+      "lng": 14.49866
+    },
+    {
+      "name": "Radlická",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U957Z101P",
+        "U957Z102P"
+      ],
+      "lat": 50.058106,
+      "lng": 14.387815
+    },
+    {
+      "name": "Rajská zahrada",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U818Z101P",
+        "U818Z102P"
+      ],
+      "lat": 50.10685,
+      "lng": 14.560488
+    },
+    {
+      "name": "Roztyly",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U601Z101P",
+        "U601Z102P"
+      ],
+      "lat": 50.037677,
+      "lng": 14.476747
+    },
+    {
+      "name": "Skalka",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U953Z101P",
+        "U953Z102P"
+      ],
+      "lat": 50.06843,
+      "lng": 14.50786
+    },
+    {
+      "name": "Smíchovské nádraží",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U458Z101P",
+        "U458Z102P"
+      ],
+      "lat": 50.061291,
+      "lng": 14.409114
+    },
+    {
+      "name": "Staroměstská",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U703Z101P",
+        "U703Z102P"
+      ],
+      "lat": 50.0882,
+      "lng": 14.41767
+    },
+    {
+      "name": "Stodůlky",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1140Z101P",
+        "U1140Z102P"
+      ],
+      "lat": 50.04668,
+      "lng": 14.306276
+    },
+    {
+      "name": "Strašnická",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U713Z101P",
+        "U713Z102P"
+      ],
+      "lat": 50.073104,
+      "lng": 14.490458
+    },
+    {
+      "name": "Střížkov",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U332Z101P",
+        "U332Z102P"
+      ],
+      "lat": 50.126166,
+      "lng": 14.489502
+    },
+    {
+      "name": "Vltavská",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U100Z101P",
+        "U100Z102P"
+      ],
+      "lat": 50.100229,
+      "lng": 14.438508
+    },
+    {
+      "name": "Vysočanská",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U474Z101P",
+        "U474Z102P"
+      ],
+      "lat": 50.110111,
+      "lng": 14.501262
+    },
+    {
+      "name": "Vyšehrad",
+      "lines": [
+        "c"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U527Z101P",
+        "U527Z102P"
+      ],
+      "lat": 50.063171,
+      "lng": 14.430518
+    },
+    {
+      "name": "Zličín",
+      "lines": [
+        "b"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U1141Z101P",
+        "U1141Z102P"
+      ],
+      "lat": 50.053264,
+      "lng": 14.29114
+    },
+    {
+      "name": "Želivského",
+      "lines": [
+        "a"
+      ],
+      "aliases": [],
+      "stopIds": [
+        "U921Z101P",
+        "U921Z102P"
+      ],
+      "lat": 50.078286,
+      "lng": 14.475499
+    }
+  ]
+}

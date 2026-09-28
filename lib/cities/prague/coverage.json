@@ -1,0 +1,39 @@
+{
+  "region": "prague",
+  "updated": "2026-09-28",
+  "covered": [
+    {
+      "label": "Metro (A, B, C)",
+      "detail": "All 58 metro stations, three lines, live departures."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Line D",
+      "detail": "Under construction; no passenger service yet. Not shown."
+    },
+    {
+      "label": "Trams",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Buses and trolleybuses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Regional rail (Esko)",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "Funicular",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Ferries",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "58 metro stations.",
+  "notes": "Muzeum is the inner-city hub where lines A and C cross; it never appears as a direction. No single station serves all three lines — Můstek (A x B) and Florenc (B x C) are the other two interchanges, each a separate stop from Muzeum. Data: Pražská integrovaná doprava (PID) – Open Data (CC BY 4.0)."
+}
