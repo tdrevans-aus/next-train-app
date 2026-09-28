@@ -52,6 +52,8 @@ import {
   isTerminatingAtStation,
   marketingLabelsForStation,
   tripMatchesMarketingChip,
+  SHORT_TURN_TERMINI,
+  isTerminusReachableFromStation,
 } from "../lib/cities/prague/marketing-directions.js";
 import {
   listPragueDogfoodStations,
@@ -190,6 +192,72 @@ assert(resolveTerminus("Some Unknown Headsign", "a") === null, "resolveTerminus 
 assert(foldKey("Můstek") === "můstek", "foldKey must fold case/whitespace only — diacritics must survive intact");
 assert(isTerminatingAtStation("Depo Hostivař", "Depo Hostivař") === true, "isTerminatingAtStation must catch a same-name arrival");
 assert(isTerminatingAtStation("Depo Hostivař", "Muzeum") === false, "isTerminatingAtStation must not flag a genuinely different destination");
+
+// Line C short-turns (docs/jim-brief-prague-line-c-short-turn.md, live-confirmed 28 Sep 2026):
+// Pražského povstání (southbound short-turn) and Chodov (northbound short-turn) are now
+// first-class terminus chips, never a bare "C" fallback for a known short-turn headsign.
+assert(LINE_TERMINI.c.includes("Pražského povstání"), "C termini must include the confirmed Pražského povstání short-turn");
+assert(LINE_TERMINI.c.includes("Chodov"), "C termini must include the confirmed Chodov short-turn");
+assert(SHORT_TURN_TERMINI.c.includes("Pražského povstání") && SHORT_TURN_TERMINI.c.includes("Chodov"), "SHORT_TURN_TERMINI.c must record both confirmed short-turns");
+assert(mapLineTerminusDestination("Pražského povstání", "c") === "C + Pražského povstání", "a Pražského povstání headsign must map to a first-class chip, never a bare C fallback");
+assert(mapLineTerminusDestination("Chodov", "c") === "C + Chodov", "a Chodov headsign must map to a first-class chip, never a bare C fallback");
+
+// Synthetic case (brief item 3): a C trip headsigned Pražského povstání must be counted and
+// chipped at a station north of it (Muzeum), and never leak a bare line-label chip.
+const muzeumPrazskehoPovstaniTrip = tripsFromDepartures(
+  [syntheticDeparture("C", "Pražského povstání")],
+  PRAGUE_HUB
+);
+assert(muzeumPrazskehoPovstaniTrip.length === 1, "a C trip headsigned Pražského povstání must be counted at Muzeum, not dropped");
+assert(muzeumPrazskehoPovstaniTrip[0].destination === "C + Pražského povstání", "the chip must be C + Pražského povstání, never a bare C");
+
+// Synthetic case (brief item 3): the same headsign AT Pražského povstání itself must be dropped
+// as a self-terminus arrival, not offered as a chip.
+const selfPrazskehoPovstaniTrip = tripsFromDepartures(
+  [syntheticDeparture("C", "Pražského povstání")],
+  "Pražského povstání"
+);
+assert(selfPrazskehoPovstaniTrip.length === 0, "a C trip headsigned Pražského povstání must never be offered AT Pražského povstání itself");
+
+// No bare line-label chip is ever produced for a known short-turn headsign at any station that
+// genuinely sees it.
+assert(
+  !muzeumPrazskehoPovstaniTrip.some((t) => t.destination === "C"),
+  "a known short-turn headsign must never fall back to a bare C chip"
+);
+
+// Reachability: the short-turn chip only ever appears for stations that short-turn's trip
+// actually passes through — never at the terminus itself, never on the wrong side of it.
+assert(isTerminusReachableFromStation("c", "Pražského povstání", "Muzeum") === true, "Muzeum (north of Pražského povstání) must be able to offer the Pražského povstání chip");
+assert(isTerminusReachableFromStation("c", "Pražského povstání", "Vyšehrad") === true, "Vyšehrad (north of Pražského povstání) must be able to offer the Pražského povstání chip");
+assert(isTerminusReachableFromStation("c", "Pražského povstání", "Pražského povstání") === false, "Pražského povstání must never offer a chip naming itself");
+assert(isTerminusReachableFromStation("c", "Pražského povstání", "Pankrác") === false, "Pankrác (south of Pražského povstání) must never offer the Pražského povstání chip — that trip never reaches it");
+assert(isTerminusReachableFromStation("c", "Pražského povstání", "Háje") === false, "Háje (south of Pražského povstání) must never offer the Pražského povstání chip");
+assert(isTerminusReachableFromStation("c", "Chodov", "Háje") === true, "Háje (south of Chodov) must be able to offer the Chodov chip");
+assert(isTerminusReachableFromStation("c", "Chodov", "Opatov") === true, "Opatov (south of Chodov) must be able to offer the Chodov chip");
+assert(isTerminusReachableFromStation("c", "Chodov", "Chodov") === false, "Chodov must never offer a chip naming itself");
+assert(isTerminusReachableFromStation("c", "Chodov", "Roztyly") === false, "Roztyly (north of Chodov) must never offer the Chodov chip — that trip never reaches it");
+assert(isTerminusReachableFromStation("c", "Chodov", "Muzeum") === false, "Muzeum (north of Chodov) must never offer the Chodov chip");
+assert(isTerminusReachableFromStation("c", "Háje", "Muzeum") === true, "a line's own full-length terminus (Háje) must remain reachable from every other station");
+assert(isTerminusReachableFromStation("a", "Depo Hostivař", "Muzeum") === true, "a line with no short-turn metadata must always report reachable");
+
+// Pankrác and Roztyly (real, catalogued C stations flanking each short-turn on the wrong side)
+// must never offer that short-turn's chip in the exhaustive dogfood picker listing.
+const pankracLabels = marketingLabelsForStation("Pankrác");
+assert(!pankracLabels.includes("C + Pražského povstání"), "Pankrác (south of Pražského povstání) must never offer C + Pražského povstání in the picker");
+const roztylyLabels = marketingLabelsForStation("Roztyly");
+assert(!roztylyLabels.includes("C + Chodov"), "Roztyly (north of Chodov) must never offer C + Chodov in the picker");
+
+// Stations that genuinely see each short-turn must still offer it in the picker.
+assert(marketingLabelsForStation(PRAGUE_HUB).includes("C + Pražského povstání"), "Muzeum (north of Pražského povstání) must offer C + Pražského povstání in the picker");
+const hajeLabels = marketingLabelsForStation("Háje");
+assert(hajeLabels.includes("C + Chodov"), "Háje (south of Chodov) must offer C + Chodov in the picker");
+
+// The short-turn termini must never offer a chip naming themselves.
+const prazskehoPovstaniLabels = marketingLabelsForStation("Pražského povstání");
+assert(!prazskehoPovstaniLabels.some((l) => l.endsWith("+ Pražského povstání")), "Pražského povstání must never offer a self-referential chip");
+const chodovLabels = marketingLabelsForStation("Chodov");
+assert(!chodovLabels.some((l) => l.endsWith("+ Chodov")), "Chodov must never offer a self-referential chip");
 
 // marketingLabelsForStation at the hub triangle — each vertex must show only its own two lines'
 // chips, and every chip must exclude a self-referential terminus (belt-and-braces; no line
