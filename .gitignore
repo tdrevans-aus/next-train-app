@@ -35,6 +35,12 @@ docs/*.xlsx
 # (docs/jim-brief-prague-flora-sweep-empty-state.md).
 qa/fixtures/auckland/gtfs/*.txt
 qa/fixtures/wellington/gtfs/*.txt
+# Copenhagen's trimmed snapshot (~43MB stop_times.txt uncompressed, ~5MB zipped) is published to
+# the shared next-train-gtfs Vercel Blob store instead (scripts/trim-copenhagen-gtfs.mjs +
+# scripts/publish-gtfs-fixture-to-blob.mjs, docs/jim-brief-copenhagen-snapshot-trim.md) — too
+# large to commit, and qa/verify-copenhagen-gtfs-snapshot.mjs checks the published blob directly
+# rather than a local file, so nothing needs this offline.
+qa/fixtures/copenhagen/gtfs/
 # Root-level scratch output from ad-hoc QA/debug runs — never source
 /qa-*.log
 /qa-*.exit

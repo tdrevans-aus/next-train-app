@@ -280,6 +280,25 @@ try {
 }
 assert(unknownThrew, "fetchStationBoard must throw for an unknown station without any network call");
 
+// Lufthavnen (M2 airport terminus) end-to-end, docs/jim-brief-copenhagen-snapshot-trim.md
+// (28 Sep 2026): the live Rejseplanen feed names this stop "Københavns Lufthavn St. (Metro)",
+// which never fold-substring-matched the catalog's printed name "Lufthavnen" or its
+// pre-existing alias "Copenhagen Airport" — resolveStopIdsForCatalogEntry() resolved to zero
+// stop_ids against BOTH the trimmed snapshot and the full untrimmed national feed, meaning this
+// station's board had been silently broken since the 26 Sep flip with nothing catching it
+// (this exact gap: an unknown-station throw, same as the "Not A Real Station" case above, but
+// for a station genuinely in-catalog). Fixed by adding "Københavns Lufthavn" as an alias
+// (stations.json) plus the name-then-aliases fallback in fetchStationBoard. This calls
+// fetchStationBoard directly (not the dogfood harness) so a regression here fails loudly
+// rather than being swallowed by getCopenhagenDogfoodDirections's own error handling.
+const lufthavnenBoard = await fetchStationBoard("Lufthavnen");
+assert(lufthavnenBoard.stationName === "Lufthavnen", "Lufthavnen board must resolve to the Lufthavnen catalog entry");
+assert(Array.isArray(lufthavnenBoard.trips) && lufthavnenBoard.trips.length > 0, "Lufthavnen board must return at least one trip");
+assert(
+  lufthavnenBoard.trips.every((trip) => trip.mapGroup === "Metro" && trip.routeShortName === "M2"),
+  "Lufthavnen (M2-only terminus) must only ever surface M2 Metro trips"
+);
+
 // Dogfood station list comes from the catalog, not a fresh GTFS parse.
 const dogfoodStations = listCopenhagenDogfoodStations();
 assert(dogfoodStations.length === 44, `dogfood stations must be the 44 catalog entries, got ${dogfoodStations.length}`);
