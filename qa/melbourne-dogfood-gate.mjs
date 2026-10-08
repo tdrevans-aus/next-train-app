@@ -424,6 +424,7 @@ async function runLiveEndToEndChecks() {
     label: "legacy hub-bound label request (Eaglemont towards Flinders Street)",
     station: "Eaglemont",
     routeCode: "HBE",
+    destinationPrefix: "Flinders Street",
     next: legacyHubLabelNextTrain.next,
   });
 }
@@ -437,12 +438,18 @@ async function runLiveEndToEndChecks() {
 // GTFS trip_id's route code (via routeCodeFromTripId) rather than by the direction-label
 // functions the regression check exists to exercise — reusing those here would just echo the
 // same bug back instead of independently confirming a trip genuinely exists on the wire.
-async function assertNextTrainOrNoService({ label, station, routeCode, next }) {
+async function assertNextTrainOrNoService({ label, station, routeCode, next, destinationPrefix = null }) {
   if (next !== null) {
     return;
   }
   const board = await fetchStationBoard(station);
-  const matchingLineTripsOnBoard = board.trips.filter((trip) => routeCodeFromTripId(trip.tripId) === routeCode);
+  const matchingLineTripsOnBoard = board.trips.filter(
+    (trip) =>
+      routeCodeFromTripId(trip.tripId) === routeCode &&
+      // Only trips in the checked direction count: outbound (Eltham/Hurstbridge) trips on the
+      // board say nothing about whether a city-bound one should resolve (8 Oct 2026 false red).
+      (!destinationPrefix || String(trip.destination ?? "").startsWith(destinationPrefix))
+  );
   if (matchingLineTripsOnBoard.length === 0) {
     console.log(
       skipLiveLine("melbourne", new Date(), {
