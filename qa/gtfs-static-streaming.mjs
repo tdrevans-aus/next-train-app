@@ -30,6 +30,19 @@ function fail(message) {
   process.exit(1);
 }
 
+// parseCsvLine's no-quote fast path (docs/jim-brief-vercel-cold-board.md) must equal the scan.
+for (const [line, expected] of [
+  ["a,b,c", ["a", "b", "c"]],
+  ["a,,c,", ["a", "", "c", ""]],
+  ["", [""]],
+  ['a,"x, y",c', ["a", "x, y", "c"]],
+  ['a,"he said ""hi""",c', ["a", 'he said "hi"', "c"]],
+]) {
+  if (JSON.stringify(parseCsvLine(line)) !== JSON.stringify(expected)) {
+    fail(`parseCsvLine(${JSON.stringify(line)}) -> ${JSON.stringify(parseCsvLine(line))}, expected ${JSON.stringify(expected)}`);
+  }
+}
+
 const dir = mkdtempSync(join(tmpdir(), "gtfs-streaming-fixture-"));
 
 try {
