@@ -1,0 +1,68 @@
+# Daily, change-driven refresh of every GTFS static snapshot that is published to the
+# next-train-gtfs Blob store by hand-run scripts (docs/jim-brief-scheduled-snapshot-refresh.md).
+# Melbourne went stale 6 Oct 2026 and Prague's snapshot would have expired 11 Oct 2026 because
+# nothing re-ran these publishers (lib/gtfs-refresh.js only covers canberra/newcastle/brisbane/
+# gold-coast).
+#
+# Cost: an unchanged city is one HEAD + one small manifest read; a run with nothing to publish is
+# ~1 minute (npm ci dominates), i.e. ~30 Actions minutes/month. A Melbourne publish downloads the
+# ~250MB statewide zip but only happens when Transport Victoria's file actually changes.
+#
+# Secrets required (job fails loudly up front if any is missing - never a silent skip):
+#   BLOB_READ_WRITE_TOKEN  - always
+#   TRAFIKLAB_API_KEY      - malmo, uppsala (Trafiklab static GTFS)
+# Prague, Dublin, Copenhagen, Brussels and Melbourne upstreams are unauthenticated.
+name: Refresh hand-published GTFS snapshots
+
+on:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
+    inputs:
+      cities:
+        description: "Comma-separated unit ids (blank = all): prague,dublin,copenhagen,brussels,melbourne,malmo,uppsala"
+        required: false
+        type: string
+      force:
+        description: "Republish even if upstream looks unchanged"
+        required: false
+        type: boolean
+        default: false
+      dry_run:
+        description: "Decide only; publish nothing"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh-hand-published-gtfs
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+      TRAFIKLAB_API_KEY: ${{ secrets.TRAFIKLAB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Refresh changed / expiring snapshots
+        env:
+          INPUT_CITIES: ${{ inputs.cities }}
+          INPUT_FORCE: ${{ inputs.force }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args=""
+          [ -n "$INPUT_CITIES" ] && args="$args --cities=$INPUT_CITIES"
+          [ "$INPUT_FORCE" = "true" ] && args="$args --force"
+          [ "$INPUT_DRY_RUN" = "true" ] && args="$args --dry-run"
+          node scripts/refresh-hand-published-gtfs.mjs $args
