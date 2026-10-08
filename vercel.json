@@ -20,10 +20,10 @@
       "maxDuration": 30
     },
     "api/board.js": {
-      "maxDuration": 30
+      "maxDuration": 120
     },
     "api/next-train.js": {
-      "maxDuration": 30
+      "maxDuration": 120
     }
   },
   "headers": [
