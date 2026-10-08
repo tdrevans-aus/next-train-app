@@ -8,9 +8,11 @@
 # ~1 minute (npm ci dominates), i.e. ~30 Actions minutes/month. A Melbourne publish downloads the
 # ~250MB statewide zip but only happens when Transport Victoria's file actually changes.
 #
-# Secrets required (job fails loudly up front if any is missing - never a silent skip):
-#   BLOB_READ_WRITE_TOKEN  - always
-#   TRAFIKLAB_API_KEY      - malmo, uppsala (Trafiklab static GTFS)
+# Secrets required (never a silent skip):
+#   BLOB_READ_WRITE_TOKEN  - always; the job fails immediately without it
+#   TRAFIKLAB_API_KEY      - malmo, uppsala (Trafiklab static GTFS). If missing, ONLY those two units are
+#                            marked FAILED and skipped; every other unit still runs, and the job exits 1.
+# A unit whose upstream is unchanged but whose published calendar ends within 3 days is also FAILED.
 # Prague, Dublin, Copenhagen, Brussels and Melbourne upstreams are unauthenticated.
 name: Refresh hand-published GTFS snapshots
 

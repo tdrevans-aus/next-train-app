@@ -14,7 +14,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CITIES } from "../lib/providers/registry.js";
-import { REFRESH_UNITS, AUTO_REFRESHED_ELSEWHERE, decideRefresh } from "../scripts/refresh-hand-published-gtfs.mjs";
+import { spawnSync } from "node:child_process";
+import { REFRESH_UNITS, AUTO_REFRESHED_ELSEWHERE, decideRefresh, missingEnvFor } from "../scripts/refresh-hand-published-gtfs.mjs";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PROVIDERS_DIR = path.join(ROOT, "lib", "providers");
@@ -79,5 +80,27 @@ assert.equal(decideRefresh({ manifest: null, probe: same, calendarMaxDate: "2026
 // probe-less (Trafiklab)
 assert.equal(decideRefresh({ manifest: { publishedAt: "2026-10-07T00:00:00Z" }, probe: null, calendarMaxDate: "20261231", now }).refresh, false, "probe-less, fresh manifest -> skip");
 assert.equal(decideRefresh({ manifest: { publishedAt: "2026-09-25T00:00:00Z" }, probe: null, calendarMaxDate: "20261231", now }).refresh, true, "probe-less, old manifest -> weekly refresh");
+
+// Stalled upstream: unchanged + calendar ends within 3 days -> FAIL (red job); 4-6 days -> warn only.
+assert.equal(decideRefresh({ manifest, probe: same, calendarMaxDate: "20261010", now }).fail, true, "unchanged + ends in 2 days -> fail");
+assert.equal(decideRefresh({ manifest, probe: same, calendarMaxDate: "20261012", now }).fail, false, "unchanged + ends in 4 days -> warn, not fail");
+assert.ok(decideRefresh({ manifest, probe: same, calendarMaxDate: "20261012", now }).warn, "7-day warning kept");
+assert.equal(decideRefresh({ manifest, probe: diff, calendarMaxDate: "20261010", now }).fail ?? false, false, "changed upstream refreshes instead of failing");
+
+// Per-unit secret gating: a missing TRAFIKLAB_API_KEY fails/skips only malmo+uppsala.
+const malmo = REFRESH_UNITS.find((u) => u.id === "malmo");
+assert.deepEqual(missingEnvFor(malmo, {}), ["TRAFIKLAB_API_KEY"]);
+assert.deepEqual(missingEnvFor(malmo, { TRAFIKLAB_API_KEY: "x" }), []);
+assert.deepEqual(missingEnvFor(REFRESH_UNITS.find((u) => u.id === "prague"), {}), [], "prague needs no per-unit secret");
+{
+  // End to end, offline: only secret-gated units selected, so no network is touched.
+  // Empty string (not deleted) so loadEnvLocal() doesn't fill it in from a developer's .env.local.
+  const env = { ...process.env, BLOB_READ_WRITE_TOKEN: "dummy", TRAFIKLAB_API_KEY: "" };
+  const res = spawnSync("node", ["scripts/refresh-hand-published-gtfs.mjs", "--cities=malmo,uppsala"], { cwd: ROOT, env, encoding: "utf8" });
+  assert.equal(res.status, 1, "job exits 1 when a unit failed");
+  assert.match(res.stdout, /malmo: missing required secret\(s\) TRAFIKLAB_API_KEY - unit SKIPPED/);
+  assert.match(res.stdout, /uppsala: missing required secret/);
+  assert.match(res.stdout, /\| malmo \| FAILED \|/);
+}
 
 console.log(`hand-published-snapshot-coverage-gate: ok (${[...covered].sort().join(", ")})`);

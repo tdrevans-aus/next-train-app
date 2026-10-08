@@ -38,6 +38,13 @@ import { STATEWIDE_GTFS_URL } from "./trim-melbourne-gtfs.mjs";
 
 export const EXPIRY_WINDOW_DAYS = 7;
 export const MAX_AGE_DAYS_WITHOUT_PROBE = 7;
+/** Unchanged upstream and the published calendar ends within this many days: FAIL the unit (red job). */
+export const FAIL_WINDOW_DAYS = 3;
+
+/** Names of this unit's required env vars that are unset. */
+export function missingEnvFor(unit, env = process.env) {
+  return (unit.requiredEnv ?? []).filter((name) => !env[name]);
+}
 
 const fixturePublish = (city, trimScript) => [
   ["node", [`scripts/${trimScript}`, `--out=qa/fixtures/${city}/gtfs`]],
@@ -151,6 +158,7 @@ export function decideRefresh({ manifest, probe, calendarMaxDate, now, force = f
     return {
       refresh: false,
       reason: probe.reason,
+      fail: calendarMaxDate < addDaysYmd(now, FAIL_WINDOW_DAYS),
       warn: expiresSoon
         ? `published calendar ends ${calendarMaxDate} (< ${EXPIRY_WINDOW_DAYS} days) and upstream has not changed`
         : undefined,
@@ -240,6 +248,10 @@ async function processUnit(unit, { now, force, dryRun }) {
     line.warn = decision.warn;
   }
 
+  if (decision.fail) {
+    throw new Error(`published calendar ends ${range.maxDate} (< ${FAIL_WINDOW_DAYS} days) and upstream has not changed - upstream feed appears stalled; riders will see stale boards soon`);
+  }
+
   if (!decision.refresh) {
     if (decision.adopt && !dryRun) {
       await writeManifest(
@@ -312,16 +324,10 @@ async function main() {
     }
   }
 
-  // Missing secrets fail loudly up front — never a silent skip.
-  const missing = new Set();
-  if (!process.env.BLOB_READ_WRITE_TOKEN) missing.add("BLOB_READ_WRITE_TOKEN");
-  for (const unit of units) {
-    for (const name of unit.requiredEnv ?? []) {
-      if (!process.env[name]) missing.add(name);
-    }
-  }
-  if (missing.size && !dryRun) {
-    console.error(`::error::Missing required secret(s): ${[...missing].join(", ")}. Add them as GitHub Actions secrets on this repo.`);
+  // BLOB_READ_WRITE_TOKEN is needed by every unit: without it nothing can run. Per-unit secrets
+  // (e.g. TRAFIKLAB_API_KEY) only fail/skip their own unit, never the others.
+  if (!process.env.BLOB_READ_WRITE_TOKEN && !dryRun) {
+    console.error("::error::Missing required secret(s): BLOB_READ_WRITE_TOKEN. Add it as a GitHub Actions secret on this repo.");
     process.exit(1);
   }
 
@@ -330,6 +336,14 @@ async function main() {
   let failed = 0;
   for (const unit of units) {
     console.log(`\n=== ${unit.id} ===`);
+    const missingEnv = missingEnvFor(unit);
+    if (missingEnv.length) {
+      failed += 1;
+      const message = `missing required secret(s) ${missingEnv.join(", ")} - unit SKIPPED (add them as GitHub Actions secrets); other units unaffected`;
+      console.log(`::error::${unit.id}: ${message}`);
+      lines.push({ id: unit.id, decision: "FAILED", reason: message, published: "?" });
+      continue;
+    }
     try {
       const line = await processUnit(unit, { now, force, dryRun });
       lines.push(line);
