@@ -1,2 +1,2 @@
 feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_contact_email
-ROPID,https://pid.cz,cs,20260928,20261011,opendata@pid.cz
+ROPID,https://pid.cz,cs,20261008,20261021,opendata@pid.cz

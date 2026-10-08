@@ -1,8 +1,8 @@
 # Prague (Metro A/B/C) GTFS fixture
 
 **Source:** https://data.pid.cz/PID_GTFS.zip
-**Trimmed:** 2026-09-28
-**Feed span:** 20260928 → 20261011
+**Trimmed:** 2026-10-08
+**Feed span:** 20261008 → 20261021
 **Kept route_short_name(s):** A, B, C
 
 ## Regenerate
