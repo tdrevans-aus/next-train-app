@@ -1,3 +1,4 @@
+import { tlog } from "../lib/board-timing.js";
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { assertCityLive } from "../lib/providers/registry.js";
@@ -22,6 +23,8 @@ import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
 import { FeedUnavailableError } from "../lib/providers/gtfs/errors.js";
 
 export default async function handler(req, res) {
+  const tReq = performance.now();
+  res.on?.("finish", () => tlog("board.total", performance.now() - tReq, { city: req.query?.city, station: req.query?.station }));
   if (applyCors(req, res)) {
     return;
   }
@@ -66,8 +69,11 @@ export default async function handler(req, res) {
       return;
     }
 
+    const tDir = performance.now();
     const { directions } = await getMultiCityDirections(city, station);
+    tlog("board.directions", performance.now() - tDir, { city, station, n: directions.length });
     const now = new Date();
+    const tFan = performance.now();
 
     // Optimize: if it's London TfL, we can fetch all arrivals in one go.
     if (city === "uk-london-tfl") {
@@ -124,6 +130,7 @@ export default async function handler(req, res) {
         })
       );
 
+      tlog("board.fanout", performance.now() - tFan, { city, station });
       const entries = results.filter((entry) => entry.data).map(({ direction, data }) => ({ direction, data }));
 
       // jim-brief-sydney-board-oom-on-429: a feed outage (every direction

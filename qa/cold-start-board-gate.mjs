@@ -27,6 +27,10 @@ const CASES = [
   { city: "copenhagen", station: "København H", coldBoundMs: 10000, minEntries: 20, requiredEnvKeys: ["REJSEPLANEN_API_KEY"] },
   // Cold ~7.7 s standalone off-Vercel (TfNSW static download+parse dominates), warm ~0 s.
   { city: "sydney", station: "Central", coldBoundMs: 14000, minEntries: 5, requiredEnvKeys: ["TFNSW_API_KEY"] },
+  // docs/jim-brief-vercel-cold-board.md: Melbourne Flinders Street redid the whole static join +
+  // loop-set build per direction (12 of them) and hit the 30 s cap on a cold Vercel instance;
+  // now one shared board per fan-out.
+  { city: "melbourne", station: "Flinders Street", coldBoundMs: 10000, minEntries: 3, requiredEnvKeys: ["VIC_OPENDATA_API_KEY"] },
 ];
 
 async function timed(path, timeoutMs) {
