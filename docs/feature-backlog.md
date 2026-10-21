@@ -72,7 +72,8 @@
 | **FB-09** | **R8 + Play deobfuscation mapping** | Process doc only. **v3 public ships minify off.** Implementation parked as **FB-45**. Brief: `docs/jim-brief-play-hygiene.md` §4. | **Done** — process absorbed by FB-41; enable later = FB-45 |
 | **FB-10** | **Play native debug symbols** | `debugSymbolLevel 'SYMBOL_TABLE'` in release. Consolidated: `docs/jim-brief-play-hygiene.md` **FB-41** §3. | **Done** — absorbed by FB-41 |
 | **FB-41** | **Play hygiene — public launch gate** | Native symbols + `release:prep` + extended `test:pre-upload`; R8 process doc. Before public v3. Brief: `docs/jim-brief-play-hygiene.md`. | **Done** (2026-08-16) |
-| **FB-45** | **Enable R8 / minify after public is stable** | First public stays `minifyEnabled false` (Play deobfuscation warning is noise until then). Later dedicated PR: keep rules (Capacitor, Billing, AdMob, Glance), `minifyEnabled true`, mapping in AAB + archive, flip `test:pre-upload` minify guard, device smoke (IAP / ads / widget / reminders). Optional `shrinkResources` follow-up. Trigger: public stable for a release or two, or AAB size / Play warning becomes worth the keep-rule risk. Do not drive-by flip minify. | Backlog — **Aug 2026** |
+| **FB-45** | **Enable R8 / minify after public is stable** | First public stayed `minifyEnabled false`. **Promoted 26 Sep 2026:** Play Console flags release 28 (3.0.4) "DEX code optimization is below our threshold": Obfuscation 1%, and anything under 25% may affect visibility/publishing. **Fix by Feb 2027.** Scope: keep rules (Capacitor, Billing, AdMob, Glance), `minifyEnabled true`, mapping to Play + Sentry, flip the `test:pre-upload` minify guard, device smoke. `shrinkResources` stays a follow-up. Brief: `docs/jim-brief-r8-dex-optimization.md`. | **Ready to code**, after Tim is back (10 Oct 2026). Play deadline Feb 2027 |
+| **FB-68** | **Edge-to-edge + large screens (Android 15/16)** | Play Console recommendations on release 28 (3.0.4), 26 Sep 2026: (A) edge-to-edge may not display for all users; (B) deprecated `LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES`, which comes from the Google Mobile Ads SDK, not our code; (C) `screenOrientation="portrait"` on `MainActivity`, `WidgetConfigureActivity` and `LeaveAlarmActivity`, which Android 16 already ignores on tablets/foldables at our targetSdk 36. Scope: `EdgeToEdge.enable()` on all API levels, remove the portrait locks, make large screens "doesn't break", tidy `AppTheme.LeaveAlarm`, bump AdMob. Brief: `docs/jim-brief-edge-to-edge-large-screens.md`. | **Ready to code**, after Tim is back (10 Oct 2026) |
 | **FB-11** | **v7: Nearby onboarding gate + 15s locate timeout** | Coach only after settled Near me face (`isNearbyFaceReadyForOnboarding`); `clearOnboardingSchedule` on entry; 15s locate timeout + emulator error copy; stale GPS cache cleared on unsupported region. Brief: `docs/jim-brief-closed-aab-v6-ship-gate.md` §v7. | **Done** (Aug 2026) |
 
 ---
@@ -130,7 +131,8 @@
 | Widget real estate redesign (FB-43) | `docs/feature-backlog.md` **FB-43** · `docs/widget-redesign-v2.md` |
 | Widget preferred-or-later live (FB-06) | `docs/feature-backlog.md` |
 | Direction line groups (one-off merges) | `docs/jim-brief-direction-line-groups.md` |
-| R8 / mapping file on Play upload | `docs/feature-backlog.md` **FB-45** · process: `docs/jim-brief-play-hygiene.md` §4 |
+| R8 / Play DEX optimization (FB-45) | `docs/jim-brief-r8-dex-optimization.md` · process: `docs/jim-brief-play-hygiene.md` §4 |
+| Edge-to-edge + large screens (FB-68) | `docs/jim-brief-edge-to-edge-large-screens.md` |
 | Native debug symbols on Play upload | `docs/jim-brief-play-hygiene.md` **FB-41** §3 |
 | Play hygiene (public gate) | `docs/jim-brief-play-hygiene.md` |
 | Target train large gap (FB-12) | `docs/feature-backlog.md` **FB-12** (v8 warn shipped; B/C dropped) |
