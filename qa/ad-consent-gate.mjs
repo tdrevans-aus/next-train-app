@@ -53,8 +53,9 @@ function makeAdmobStub({ consentInfo, consentThrows = false, formInfo } = {}) {
     async initialize() {
       calls.initialize += 1;
     },
-    async showBanner() {
+    async showBanner(options) {
       calls.showBanner += 1;
+      calls.lastBannerOptions = options;
     },
     async resumeBanner() {},
     async hideBanner() {},
@@ -161,6 +162,36 @@ async function run() {
     await ads.showNativeBanner(config);
     assert(stub.calls.showConsentForm === 0, "(AU) no consent form should be shown when status is NOT_REQUIRED");
     assert(stub.calls.showBanner === 1, "(AU) banner should still show once when consent is not required");
+  }
+
+  // --- FB-68: iOS requests non-personalised ads (npa: true); Android is unchanged ---
+  {
+    const originalCapacitor = globalThis.window.Capacitor;
+    const consentOk = {
+      status: "NOT_REQUIRED",
+      isConsentFormAvailable: false,
+      canRequestAds: true,
+      privacyOptionsRequirementStatus: "NOT_REQUIRED",
+    };
+    globalThis.window.NextTrainAdFree.isEntitled = () => false;
+
+    globalThis.window.Capacitor = { isNativePlatform: () => true, getPlatform: () => "ios" };
+    const iosStub = makeAdmobStub({ consentInfo: consentOk });
+    ads.__setAdMobClientForTests(iosStub);
+    await ads.showNativeBanner(config);
+    assert(iosStub.calls.showBanner === 1, "(FB-68 iOS) expected 1 showBanner call");
+    assert(iosStub.calls.lastBannerOptions?.npa === true, "(FB-68 iOS) showBanner must carry npa: true");
+    assert(iosStub.calls.lastBannerOptions?.margin === 0, "(FB-68 iOS) iOS margin must stay 0");
+
+    globalThis.window.Capacitor = { isNativePlatform: () => true, getPlatform: () => "android" };
+    const androidStub = makeAdmobStub({ consentInfo: consentOk });
+    ads.__setAdMobClientForTests(androidStub);
+    await ads.showNativeBanner(config);
+    assert(androidStub.calls.showBanner === 1, "(FB-68 Android) expected 1 showBanner call");
+    assert(!("npa" in (androidStub.calls.lastBannerOptions ?? {})), "(FB-68 Android) showBanner must not carry npa");
+    assert(androidStub.calls.lastBannerOptions?.margin === 72, "(FB-68 Android) Android margin must stay 72");
+
+    globalThis.window.Capacitor = originalCapacitor;
   }
 
   if (failures > 0) {
