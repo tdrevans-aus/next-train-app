@@ -38,6 +38,8 @@ import {
   listCatalogStations,
   fetchStationBoard,
   classifyAndFilterDublinTrips,
+  directionsFromStatic,
+  fetchStaticDirections,
 } from "../lib/providers/dublin.js";
 import { MissingNtaApiKeyError } from "../lib/providers/gtfs/auth.js";
 import { indexTripUpdates } from "../lib/providers/gtfs/realtime.js";
@@ -487,27 +489,84 @@ assert(!dogfoodStations.some((row) => row.name === "Connolly"), "Connolly must n
 assert(dogfoodStations.some((row) => row.name === DUBLIN_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodStations.every((row) => typeof row.lat === "number" && typeof row.lng === "number"), "every dogfood station must carry lat/lng");
 
-// Directions are derived live (no static marketing-directions list for Dublin — see
-// lib/cities/dublin/dogfood-next-train.js file header), so the dogfood/dispatch paths must
-// both surface the same MissingNtaApiKeyError rather than a silent fallback board.
-let dogfoodDirectionsThrew = false;
-try {
-  await getDublinDogfoodDirections(DUBLIN_HUB);
-} catch (err) {
-  dogfoodDirectionsThrew = err instanceof MissingNtaApiKeyError;
+// Directions are derived from the static timetable (docs/jim-brief-dublin-static-direction-chips.md),
+// so they exist with an empty/absent live feed and at any hour. Pure-function assertions on a
+// synthetic static snapshot — no network, no clock, no NTA key involved.
+function staticDirFixture() {
+  const stopsById = new Map([
+    ["s-abbey", { stop_id: "s-abbey", stop_name: "Abbey St." }],
+    ["s-tallaght", { stop_id: "s-tallaght", stop_name: "Tallaght" }],
+    ["s-saggart", { stop_id: "s-saggart", stop_name: "Saggart" }],
+    ["s-point", { stop_id: "s-point", stop_name: "The Point" }],
+    ["s-mlb", { stop_id: "s-mlb", stop_name: "Marlborough" }],
+    ["s-gpo", { stop_id: "s-gpo", stop_name: "O'Connell - GPO" }],
+    ["s-brides", { stop_id: "s-brides", stop_name: "Brides Glen" }],
+    ["s-broom", { stop_id: "s-broom", stop_name: "Broombridge" }],
+  ]);
+  const routesById = new Map([
+    ["r-red", { route_id: "r-red", route_short_name: "", route_long_name: "Luas Red Line" }],
+    ["r-green", { route_id: "r-green", route_short_name: "", route_long_name: "Luas Green Line" }],
+  ]);
+  const defs = [
+    { id: "t1", route: "r-red", head: "Tallaght", stops: ["s-abbey", "s-tallaght"] },
+    { id: "t2", route: "r-red", head: "Saggart", stops: ["s-abbey", "s-saggart"] },
+    { id: "t3", route: "r-red", head: "The Point", stops: ["s-tallaght", "s-abbey", "s-point"] },
+    // blank headsign — must resolve from the real last stop, never a bare "Red" chip
+    { id: "t4", route: "r-red", head: "", stops: ["s-abbey", "s-saggart"] },
+    // headsign nothing recognises, last stop not a terminus — dropped, never a bare chip
+    { id: "t5", route: "r-red", head: "Depot", stops: ["s-tallaght", "s-abbey"] },
+    { id: "g1", route: "r-green", head: "Brides Glen", stops: ["s-gpo", "s-mlb", "s-brides"] },
+    { id: "g2", route: "r-green", head: "Broombridge", stops: ["s-brides", "s-mlb", "s-gpo", "s-broom"] },
+  ];
+  const tripsById = new Map(defs.map((d) => [d.id, { trip_id: d.id, route_id: d.route, trip_headsign: d.head }]));
+  const stopTimesByStopId = new Map();
+  for (const d of defs) {
+    d.stops.forEach((stopId, i) => {
+      const list = stopTimesByStopId.get(stopId) ?? [];
+      list.push({ trip_id: d.id, stop_id: stopId, stop_sequence: i + 1, departure_time: "05:00:00" });
+      stopTimesByStopId.set(stopId, list);
+    });
+  }
+  return { stopsById, routesById, tripsById, stopTimesByStopId };
 }
-assert(dogfoodDirectionsThrew, "dogfood directions must surface MissingNtaApiKeyError, not a silent fallback board");
-
-let dispatchedDirectionsThrew = false;
-try {
-  await getMultiCityDirections("dublin", DUBLIN_HUB);
-} catch (err) {
-  dispatchedDirectionsThrew = err instanceof MissingNtaApiKeyError;
+{
+  const fx = staticDirFixture();
+  const at = (stationName, stopIds) => directionsFromStatic({ stopIds, staticData: fx, stationName });
+  const abbey = at("Abbey Street", ["s-abbey"]);
+  assert(
+    JSON.stringify(abbey) === JSON.stringify(["Red + Saggart", "Red + Tallaght", "Red + The Point"]),
+    `static chips at Abbey Street must be the named Red termini, got ${JSON.stringify(abbey)}`
+  );
+  assert(!abbey.some((d) => /Abbey/.test(d)) && abbey.every((d) => / \+ /.test(d)), "static chips must never be a bare colour or an Abbey Street token");
+  // Both Green directions pass every loop stop in this synthetic data; the exclusivity guard
+  // alone must reduce each loop stop to its single genuine direction.
+  const mlb = at("Marlborough", ["s-mlb"]);
+  assert(JSON.stringify(mlb) === JSON.stringify(["Green + Brides Glen"]), `Marlborough must be southbound-only, got ${JSON.stringify(mlb)}`);
+  const gpo = at("O'Connell - GPO", ["s-gpo"]);
+  assert(JSON.stringify(gpo) === JSON.stringify(["Green + Broombridge"]), `O'Connell GPO must be northbound-only, got ${JSON.stringify(gpo)}`);
+  const upper = at("O'Connell Upper", ["s-gpo"]);
+  assert(JSON.stringify(upper) === JSON.stringify(["Green + Broombridge"]), `O'Connell Upper must be northbound-only, got ${JSON.stringify(upper)}`);
+  // Self-terminus is not a chip.
+  const tallaght = at("Tallaght", ["s-tallaght"]);
+  assert(!tallaght.includes("Red + Tallaght"), "Tallaght must not offer a Red + Tallaght chip");
 }
-assert(
-  dispatchedDirectionsThrew,
-  "live-city-api dispatch for directions must surface MissingNtaApiKeyError, not a silent fallback board, even though dublin is deliberately not in MULTI_CITY_IDS yet"
-);
+// Wiring: the dogfood directions module must read the static path, not the live board.
+{
+  const dogfoodSrc = readFileSync(join(ROOT, "lib/cities/dublin/dogfood-next-train.js"), "utf8");
+  const directionsFn = dogfoodSrc.slice(
+    dogfoodSrc.indexOf("export async function getDublinDogfoodDirections"),
+    dogfoodSrc.indexOf("export async function getDublinDogfoodNextTrain")
+  );
+  assert(/fetchStaticDirections\(/.test(directionsFn) && !/fetchStationBoard/.test(directionsFn), "dogfood directions must come from fetchStaticDirections, not the live board");
+  assert(typeof fetchStaticDirections === "function" && typeof getDublinDogfoodDirections === "function", "static directions entry points must be exported");
+  let unknownDirThrew = false;
+  try {
+    await fetchStaticDirections("Not A Luas Stop");
+  } catch {
+    unknownDirThrew = true;
+  }
+  assert(unknownDirThrew, "fetchStaticDirections must throw for an unknown station (before any network call)");
+}
 
 let dispatchedNextTrainThrew = false;
 try {
@@ -577,5 +636,5 @@ assert(Boolean(CITY_BOUNDS.dublin), "lib/cities/city-bounds.js must carry a dubl
 console.log(
   `dublin-dogfood-gate: ok (status=${entry.status}, dispatch switch-cases wired, MULTI_CITY_IDS/mount/persistence/picker/country-regions lists tracking registry status (${
     dublinIsLive ? "live — all four lists must include dublin" : "planned — deliberately deferred to the status-flip commit"
-  }), D1 pack, Board eligibility section recorded (DART/buses/Connolly/Saggart out), 65 stations (Connolly + Saggart filtered — no NTA real-time coverage; Rialto confirmed intermittent and kept in) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, Red + Saggart/Connolly and Green + Parnell/Sandyford direction chips still work upstream (no bare "Red"/"Green" chip for any confirmed LINE_TERMINI entry), doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard (extended to Parnell/Sandyford short-turns), self-terminus guard fixed (rawDestination/terminus, not the mapped label) and regression-tested end-to-end via classifyAndFilterDublinTrips, missing-key throws surfaced consistently across dogfood/dispatch/directions/next-train, coverage.json records Luas in / DART + Connolly + Saggart out, Perth Australia green)`
+  }), D1 pack, Board eligibility section recorded (DART/buses/Connolly/Saggart out), 65 stations (Connolly + Saggart filtered — no NTA real-time coverage; Rialto confirmed intermittent and kept in) with real lat/lng inside CITY_BOUNDS, hub Abbey Street, Red + Saggart/Connolly and Green + Parnell/Sandyford direction chips still work upstream (no bare "Red"/"Green" chip for any confirmed LINE_TERMINI entry), doNotGroup pairs enforced, colour+terminus direction model, Green city-centre loop direction-exclusivity guard (extended to Parnell/Sandyford short-turns), self-terminus guard fixed (rawDestination/terminus, not the mapped label) and regression-tested end-to-end via classifyAndFilterDublinTrips, direction chips derived from the static timetable (empty-live-feed safe, loop exclusivity, no bare colour chip), missing-key throws surfaced for board/next-train, coverage.json records Luas in / DART + Connolly + Saggart out, Perth Australia green)`
 );
