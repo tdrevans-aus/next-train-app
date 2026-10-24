@@ -83,6 +83,17 @@ once this PR merges.
 - QA tiers: run `node qa/run-all.mjs --smoke` for a city check, `--release` only when told the
   branch is about to merge. Never run the bare (full) suite — it has no local timeouts and can
   hang your whole run; a single `node qa/<city>-*-gate.mjs` is fine for a tight loop.
+- **Bug-fix lane QA, i.e. a PR from a `docs/jim-brief-*.md` (added 24 Oct 2026, CLAUDE.md
+  "Bug-fix lane" step 4):**
+  - Don't re-run `--smoke`. CI's `web-qa` runs it on the PR head and Jim ran it before pushing.
+    Run the brief's named scripts instead.
+  - Check each acceptance criterion against the diff, including scope creep and any call Jim
+    flagged for confirmation.
+  - Run a mutation check: revert the fix but keep the new or updated QA script, confirm the
+    script fails, then restore the fix. Report it as its own line in the note.
+  - Exception: if `web-qa` no-opped for this diff, run `--smoke` yourself. You can tell because
+    `gh run view --job <id>` shows the "Web smoke (pull requests)" step skipped while the check
+    is still green.
 - **Give the smoke suite an explicit `timeout: 600000` (added 8 Sep 2026).** It takes ~460–470s,
   well past the Bash tool's default timeout, so without an explicit one the harness auto-backgrounds
   it and you end up either stopping mid-QA waiting on a run that never notifies, or reporting a
