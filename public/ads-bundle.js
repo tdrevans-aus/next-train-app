@@ -31,10 +31,10 @@ var NextTrainAdsNative = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/consent/consent-status.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/consent/consent-status.enum.js
   var AdmobConsentStatus;
   var init_consent_status_enum = __esm({
-    "../../../node_modules/@capacitor-community/admob/dist/esm/consent/consent-status.enum.js"() {
+    "node_modules/@capacitor-community/admob/dist/esm/consent/consent-status.enum.js"() {
       (function(AdmobConsentStatus2) {
         AdmobConsentStatus2["NOT_REQUIRED"] = "NOT_REQUIRED";
         AdmobConsentStatus2["OBTAINED"] = "OBTAINED";
@@ -44,10 +44,10 @@ var NextTrainAdsNative = (() => {
     }
   });
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/consent/privacy-options-requirement-status.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/consent/privacy-options-requirement-status.enum.js
   var PrivacyOptionsRequirementStatus;
   var init_privacy_options_requirement_status_enum = __esm({
-    "../../../node_modules/@capacitor-community/admob/dist/esm/consent/privacy-options-requirement-status.enum.js"() {
+    "node_modules/@capacitor-community/admob/dist/esm/consent/privacy-options-requirement-status.enum.js"() {
       (function(PrivacyOptionsRequirementStatus2) {
         PrivacyOptionsRequirementStatus2["NOT_REQUIRED"] = "NOT_REQUIRED";
         PrivacyOptionsRequirementStatus2["REQUIRED"] = "REQUIRED";
@@ -56,14 +56,14 @@ var NextTrainAdsNative = (() => {
     }
   });
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/web.js
+  // node_modules/@capacitor-community/admob/dist/esm/web.js
   var web_exports = {};
   __export(web_exports, {
     AdMobWeb: () => AdMobWeb
   });
   var import_core, AdMobWeb;
   var init_web = __esm({
-    "../../../node_modules/@capacitor-community/admob/dist/esm/web.js"() {
+    "node_modules/@capacitor-community/admob/dist/esm/web.js"() {
       import_core = __require("@capacitor/core");
       init_consent_status_enum();
       init_privacy_options_requirement_status_enum();
@@ -173,10 +173,10 @@ var NextTrainAdsNative = (() => {
     showPrivacyOptionsForm: () => showPrivacyOptionsForm
   });
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/index.js
+  // node_modules/@capacitor-community/admob/dist/esm/index.js
   var import_core2 = __require("@capacitor/core");
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/definitions.js
+  // node_modules/@capacitor-community/admob/dist/esm/definitions.js
   var MaxAdContentRating;
   (function(MaxAdContentRating2) {
     MaxAdContentRating2["General"] = "General";
@@ -185,7 +185,7 @@ var NextTrainAdsNative = (() => {
     MaxAdContentRating2["MatureAudience"] = "MatureAudience";
   })(MaxAdContentRating || (MaxAdContentRating = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/banner/banner-ad-plugin-events.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/banner/banner-ad-plugin-events.enum.js
   var BannerAdPluginEvents;
   (function(BannerAdPluginEvents2) {
     BannerAdPluginEvents2["SizeChanged"] = "bannerAdSizeChanged";
@@ -196,7 +196,7 @@ var NextTrainAdsNative = (() => {
     BannerAdPluginEvents2["AdImpression"] = "bannerAdImpression";
   })(BannerAdPluginEvents || (BannerAdPluginEvents = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/banner/banner-ad-position.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/banner/banner-ad-position.enum.js
   var BannerAdPosition;
   (function(BannerAdPosition2) {
     BannerAdPosition2["TOP_CENTER"] = "TOP_CENTER";
@@ -204,7 +204,7 @@ var NextTrainAdsNative = (() => {
     BannerAdPosition2["BOTTOM_CENTER"] = "BOTTOM_CENTER";
   })(BannerAdPosition || (BannerAdPosition = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/banner/banner-ad-size.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/banner/banner-ad-size.enum.js
   var BannerAdSize;
   (function(BannerAdSize2) {
     BannerAdSize2["BANNER"] = "BANNER";
@@ -216,7 +216,7 @@ var NextTrainAdsNative = (() => {
     BannerAdSize2["SMART_BANNER"] = "SMART_BANNER";
   })(BannerAdSize || (BannerAdSize = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/interstitial/interstitial-ad-plugin-events.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/interstitial/interstitial-ad-plugin-events.enum.js
   var InterstitialAdPluginEvents;
   (function(InterstitialAdPluginEvents2) {
     InterstitialAdPluginEvents2["Loaded"] = "interstitialAdLoaded";
@@ -226,7 +226,7 @@ var NextTrainAdsNative = (() => {
     InterstitialAdPluginEvents2["Dismissed"] = "interstitialAdDismissed";
   })(InterstitialAdPluginEvents || (InterstitialAdPluginEvents = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/reward-interstitial/reward-interstitial-ad-plugin-events.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/reward-interstitial/reward-interstitial-ad-plugin-events.enum.js
   var RewardInterstitialAdPluginEvents;
   (function(RewardInterstitialAdPluginEvents2) {
     RewardInterstitialAdPluginEvents2["Loaded"] = "onRewardedInterstitialAdLoaded";
@@ -237,7 +237,7 @@ var NextTrainAdsNative = (() => {
     RewardInterstitialAdPluginEvents2["Rewarded"] = "onRewardedInterstitialAdReward";
   })(RewardInterstitialAdPluginEvents || (RewardInterstitialAdPluginEvents = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/reward/reward-ad-plugin-events.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/reward/reward-ad-plugin-events.enum.js
   var RewardAdPluginEvents;
   (function(RewardAdPluginEvents2) {
     RewardAdPluginEvents2["Loaded"] = "onRewardedVideoAdLoaded";
@@ -248,10 +248,10 @@ var NextTrainAdsNative = (() => {
     RewardAdPluginEvents2["Rewarded"] = "onRewardedVideoAdReward";
   })(RewardAdPluginEvents || (RewardAdPluginEvents = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/consent/index.js
+  // node_modules/@capacitor-community/admob/dist/esm/consent/index.js
   init_consent_status_enum();
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/consent/consent-debug-geography.enum.js
+  // node_modules/@capacitor-community/admob/dist/esm/consent/consent-debug-geography.enum.js
   var AdmobConsentDebugGeography;
   (function(AdmobConsentDebugGeography2) {
     AdmobConsentDebugGeography2[AdmobConsentDebugGeography2["DISABLED"] = 0] = "DISABLED";
@@ -261,7 +261,7 @@ var NextTrainAdsNative = (() => {
     AdmobConsentDebugGeography2[AdmobConsentDebugGeography2["OTHER"] = 4] = "OTHER";
   })(AdmobConsentDebugGeography || (AdmobConsentDebugGeography = {}));
 
-  // ../../../node_modules/@capacitor-community/admob/dist/esm/index.js
+  // node_modules/@capacitor-community/admob/dist/esm/index.js
   var AdMob = (0, import_core2.registerPlugin)("AdMob", {
     web: () => Promise.resolve().then(() => (init_web(), web_exports)).then((m) => new m.AdMobWeb())
   });
@@ -397,14 +397,19 @@ var NextTrainAdsNative = (() => {
       initializeForTesting: admobTestMode
     });
     const adId = admobTestMode ? GOOGLE_TEST_BANNER_ID : bannerConfig.admobBannerId;
-    const margin = window.Capacitor?.getPlatform?.() === "ios" ? 0 : 72;
-    await admobClient.showBanner({
+    const isIos = window.Capacitor?.getPlatform?.() === "ios";
+    const margin = isIos ? 0 : 72;
+    const bannerOptions = {
       adId,
       adSize: "ADAPTIVE_BANNER",
       position: "BOTTOM_CENTER",
       margin,
       isTesting: admobTestMode
-    });
+    };
+    if (isIos) {
+      bannerOptions.npa = true;
+    }
+    await admobClient.showBanner(bannerOptions);
     bannerMounted = true;
     bannerVisible = true;
   }

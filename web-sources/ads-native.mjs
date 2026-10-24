@@ -193,15 +193,25 @@ export async function showNativeBanner(config) {
   // above the safe area rather than right on top of it) — the plugin
   // already respects the safe area on iOS, so no extra margin is needed
   // there (docs/jim-brief-ios-remove-ad-free-purchase.md, Part B).
-  const margin = window.Capacitor?.getPlatform?.() === "ios" ? 0 : 72;
+  const isIos = window.Capacitor?.getPlatform?.() === "ios";
+  const margin = isIos ? 0 : 72;
 
-  await admobClient.showBanner({
+  // iOS: Next Train does not track (docs/mac-brief-ios-3.0.4-build30-no-tracking.md,
+  // FB-68). We never ask for App Tracking Transparency, so request
+  // non-personalised ads explicitly rather than relying on Google's SDK
+  // default. Android is unchanged: governed by UMP and the Play data-safety form.
+  const bannerOptions = {
     adId,
     adSize: "ADAPTIVE_BANNER",
     position: "BOTTOM_CENTER",
     margin,
     isTesting: admobTestMode,
-  });
+  };
+  if (isIos) {
+    bannerOptions.npa = true;
+  }
+
+  await admobClient.showBanner(bannerOptions);
 
   bannerMounted = true;
   bannerVisible = true;
