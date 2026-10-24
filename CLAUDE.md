@@ -185,10 +185,18 @@ briefs, dispatches, and merges. The lane reuses the pipeline agents on their pin
    One Jim per bug; the worktree keeps him off the controller's checkout. Jim needs no lane lock
    unless the fix touches `lib/providers/` for a city (then `node qa/lane-lock.mjs check`
    first, as for expansion work).
-4. **QA (Mark, `subagent_type: mark`).** Reads the PR diff and the brief, runs the named scripts
-   and `--smoke`, checks the acceptance criteria one by one, and leaves a pass/fail note as a PR
-   comment. Mark flags, never fixes; a fail goes back to a fresh Jim call with the note's path in
-   the brief.
+4. **QA (Mark, `subagent_type: mark`).** Reads the PR diff and the brief, runs the named scripts,
+   checks the acceptance criteria one by one against the diff (scope creep and Jim's judgment
+   calls included), and leaves a pass/fail note as a PR comment. He also runs a **mutation
+   check**: he reverts the fix but keeps the new or updated QA script, confirms that script goes
+   red, then restores the fix. A test that passes either way proves nothing, and the author of
+   both fix and test is the worst-placed to notice. Mark does **not** re-run `--smoke`. CI's
+   required `web-qa` already runs it on the PR head, on a clean runner, and Jim ran it before
+   pushing. A third run of the same suite on the same commit added ~10–15 min and no
+   independence (PR #516, 24 Oct 2026). The exception is when `web-qa` no-opped for this diff
+   (`ci-scope.sh`, so the check is green but its "Web smoke" step was skipped). Then Mark runs
+   `--smoke` himself, so smoke always runs once somewhere independent of Jim. Mark flags, never
+   fixes; a fail goes back to a fresh Jim call with the note's path in the brief.
 5. **Merge (top-level).** Mark green + `web-qa` green → the top-level session merges (same
    standing authority as planned-expansion PRs). A brief marked `tim-review: yes` waits for Tim.
    Product bugs that change copy, IA, or the API response shape are `tim-review` by default.
