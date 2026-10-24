@@ -23,6 +23,8 @@ import {
   resolveCatalogEntry,
   listCatalogStations,
   fetchStationBoard,
+  composeStationBoard,
+  resolveStopIds,
   lineIdForRoute,
   MissingSwiftlyApiKeyError,
 } from "../lib/providers/los-angeles.js";
@@ -185,6 +187,122 @@ assert(
 // gtfs_rail.zip has EMPTY route_short_name (verified live 24 Oct 2026); the line must come from route_long_name.
 assert(lineIdForRoute("", "Metro A Line") === "a" && lineIdForRoute("", "Metro K Line") === "k" && lineIdForRoute("B", "") === "b", "lineIdForRoute must resolve lines from route_long_name when route_short_name is empty");
 
+// ---- Station matcher precedence (fixture mirrors the live gtfs_rail.zip stops.txt, 24 Oct 2026:
+// each station = platform stop (location_type 0) + parent (1) + entrance nodes (2) whose names embed
+// neighbouring stations' names - "Washington Station - Long Beach & Washington Entrance",
+// "Arcadia Station - 1st Street Ramp - North Entrance"). The old shared substring matcher merged
+// doNotGroup pairs through those entrance names.
+function fixtureStation(id, name, entranceNames = []) {
+  return [
+    { stop_id: id, stop_name: name, location_type: "0", parent_station: `${id}S` },
+    { stop_id: `${id}S`, stop_name: name, location_type: "1", parent_station: "" },
+    ...entranceNames.map((entranceName, i) => ({
+      stop_id: `${id}${String.fromCharCode(65 + i)}`,
+      stop_name: `${name} - ${entranceName}`,
+      location_type: "2",
+      parent_station: `${id}S`,
+    })),
+  ];
+}
+const fixtureStops = [
+  ...fixtureStation("80121", "Pico Station", ["Flower & 12th Entrance", "Flower & Pico Entrance"]),
+  ...fixtureStation("80407", "Pico / Aliso Station", ["Utah Entrance"]),
+  ...fixtureStation("80307", "Crenshaw C-Line Station", ["East Entrance"]).map((s) =>
+    s.location_type === "1" ? { ...s, stop_name: "Crenshaw Station" } : s
+  ),
+  ...fixtureStation("80128", "Expo / Crenshaw E-Line Station", ["Eastbound Platform Entrance"]),
+  ...fixtureStation("80709", "Expo / Crenshaw K-Line Station", ["Dual Elevators"]),
+  ...fixtureStation("80118", "Washington Station", ["Long Beach & Washington Entrance"]),
+  ...fixtureStation("80119", "San Pedro Street Station", ["Washington & San Pedro Entrance"]),
+  ...fixtureStation("80120", "Grand / LATTC Station", ["Washington & Grand Entrance"]),
+  ...fixtureStation("80419", "Lake Station", ["Northbound Lake - East Entrance"]),
+  ...fixtureStation("80210", "Westlake / MacArthur Park Station", ["South Entrance"]),
+  ...fixtureStation("80313", "Lakewood Blvd Station", ["East Entrance"]),
+  ...fixtureStation("80153", "1st Street Station", ["Long Beach & 1st Entrance"]),
+  ...fixtureStation("80422", "Arcadia Station", ["1st Street Ramp - North Entrance"]),
+  ...fixtureStation("81401", "Grand Ave Arts / Bunker Hill Station", ["Hope Entrance"]),
+  ...fixtureStation("80412", "Heritage Square / Arroyo Station", ["East Entrance"]),
+  { stop_id: "80122S", stop_name: "7th Street / Metro Center Station", location_type: "1", parent_station: "" },
+  { stop_id: "80122", stop_name: "7th Street / Metro Center Station - Metro A & E Lines", location_type: "0", parent_station: "80122S" },
+  { stop_id: "80211", stop_name: "7th Street / Metro Center Station - Metro B & D Lines", location_type: "0", parent_station: "80122S" },
+];
+const fixtureStatic = {
+  stops: fixtureStops,
+  stopsById: new Map(fixtureStops.map((s) => [s.stop_id, s])),
+};
+const resolved = async (name) => new Set(await resolveStopIds(name, fixtureStatic));
+const expectIds = (set, ids, label) =>
+  assert(
+    set.size === ids.length && ids.every((id) => set.has(id)),
+    `${label} must resolve to exactly [${ids.join(", ")}], got [${[...set].join(", ")}]`
+  );
+const pairs = [
+  ["Pico", ["80121", "80121S"], "Pico/Aliso", ["80407", "80407S"]],
+  ["Crenshaw", ["80307", "80307S"], "Expo/Crenshaw", ["80128", "80128S", "80709", "80709S"]],
+  ["Washington", ["80118", "80118S"], "Grand/LATTC", ["80120", "80120S"]],
+  ["Lake", ["80419", "80419S"], "Westlake/MacArthur Park", ["80210", "80210S"]],
+  ["Lake", ["80419", "80419S"], "Lakewood Blvd", ["80313", "80313S"]],
+  ["1st St", ["80153", "80153S"], "Arcadia", ["80422", "80422S"]],
+];
+for (const [nameA, idsA, nameB, idsB] of pairs) {
+  const a = await resolved(nameA);
+  const b = await resolved(nameB);
+  expectIds(a, idsA, nameA);
+  expectIds(b, idsB, nameB);
+  assert(![...a].some((id) => b.has(id)), `${nameA} and ${nameB} (doNotGroup) must not share any stop_id`);
+}
+expectIds(await resolved("Grand Av Arts/Bunker Hill"), ["81401", "81401S"], "Grand Av Arts/Bunker Hill");
+expectIds(await resolved("Heritage Sq"), ["80412", "80412S"], "Heritage Sq (unique-parent prefix fallback)");
+expectIds(await resolved("7th St/Metro Ctr"), ["80122S", "80122", "80211"], "7th St/Metro Ctr (all platforms)");
+{
+  const hub = await resolved("7th St/Metro Ctr");
+  assert(![...hub].some((id) => /^(80119|80120|80118)/.test(id)), "7th St/Metro Ctr must not pull any other station");
+}
+
+// ---- Live filter + board-level realtime: drive the real board path with synthetic Swiftly updates.
+// Fixture: Pico Station, Monday 26 Oct 2026 11:00 PDT; trips scheduled 11:10 (live), 11:12 (SKIPPED),
+// 11:14 (StopTimeUpdate with no times and no delay), 11:16 (arrival-only, no delay), 11:18 (not in feed).
+const nowPdt = new Date(Date.UTC(2026, 9, 26, 18, 0, 0));
+const sched = (min) => Math.floor(Date.UTC(2026, 9, 26, 18, min, 0) / 1000);
+const tripDefs = [
+  ["T-live", "11:10:00"],
+  ["T-skipped", "11:12:00"],
+  ["T-notimes", "11:14:00"],
+  ["T-arrival-only", "11:16:00"],
+  ["T-unpredicted", "11:18:00"],
+];
+const boardStatic = {
+  ...fixtureStatic,
+  routesById: new Map([["R-A", { route_id: "R-A", route_short_name: "", route_long_name: "Metro A Line" }]]),
+  tripsById: new Map(tripDefs.map(([id]) => [id, { trip_id: id, route_id: "R-A", service_id: "S", trip_headsign: "" }])),
+  stopTimesByStopId: new Map([
+    [
+      "80121",
+      tripDefs.map(([id, time], i) => ({ trip_id: id, stop_id: "80121", departure_time: time, arrival_time: time, stop_sequence: String(i + 1), pickup_type: "0" })),
+    ],
+  ]),
+  calendar: [
+    { service_id: "S", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "1", sunday: "1", start_date: "20260101", end_date: "20261231" },
+  ],
+  calendarDates: [],
+};
+const stu = (tripId, event) => ({ tripUpdate: { trip: { tripId }, stopTimeUpdate: [{ stopId: "80121", ...event }] } });
+const entities = [
+  stu("T-live", { departure: { time: sched(11) } }),
+  stu("T-skipped", { scheduleRelationship: 1, departure: { time: sched(13) } }),
+  stu("T-notimes", {}),
+  stu("T-arrival-only", { arrival: { time: sched(17) } }),
+];
+const board = await composeStationBoard("Pico", boardStatic, { entities, fetchedAt: nowPdt }, { now: nowPdt });
+assert(board.realtime === true, "Los Angeles board must carry board-level realtime: true");
+const shownIds = board.trips.map((t) => t.tripId);
+assert(shownIds.includes("T-live"), `a trip with a real departure prediction must show, got [${shownIds.join(", ")}]`);
+assert(!shownIds.includes("T-skipped"), "a SKIPPED StopTimeUpdate must never reach a rider");
+assert(!shownIds.includes("T-notimes"), "a StopTimeUpdate with null departure and null delay must never reach a rider as live");
+assert(!shownIds.includes("T-arrival-only"), "an arrival-only StopTimeUpdate (no departure, no delay) must not show the scheduled time as live");
+assert(!shownIds.includes("T-unpredicted"), "a trip Swiftly has no update for must not show (no timetable fallback)");
+assert(shownIds.length === 1, `exactly one live row expected, got [${shownIds.join(", ")}]`);
+
 console.log(
-  "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, Perth Australia green)"
+  "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, Perth Australia green)"
 );
