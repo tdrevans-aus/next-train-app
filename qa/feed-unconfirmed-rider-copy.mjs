@@ -21,6 +21,7 @@
  * Usage: node qa/feed-unconfirmed-rider-copy.mjs
  */
 import board from "../api/board.js";
+import { isEdinburghTramsLive } from "../lib/cities/edinburgh/trams-switch.js";
 import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -78,7 +79,8 @@ const FEED_UNCONFIRMED_CASES = [
   { city: "north-east", station: "Bank Foot", agency: "Tyne and Wear Metro" },
   { city: "south-yorkshire", station: "Malin Bridge", agency: "Sheffield Supertram" },
   { city: "glasgow", station: "Kelvinhall", agency: "Glasgow Subway" },
-  { city: "edinburgh", station: "Newhaven", agency: "Edinburgh Trams" },
+  // Edinburgh Trams stop being feed-unconfirmed once registry edinburgh.tramsLive is true (Newhaven is then a live board).
+  ...(isEdinburghTramsLive() ? [] : [{ city: "edinburgh", station: "Newhaven", agency: "Edinburgh Trams" }]),
 ];
 
 const allErrorStrings = [];

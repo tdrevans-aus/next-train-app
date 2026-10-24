@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { assertCityLive } from "../lib/providers/registry.js";
+import { applyEdinburghTramsCoverage } from "../lib/cities/edinburgh/trams-catalog.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -38,6 +39,11 @@ export default async function handler(req, res) {
   } catch {
     res.status(404).json({ error: "No coverage notes for this city yet", city: cityGate.city.id });
     return;
+  }
+
+  if (cityGate.city.id === "edinburgh") {
+    // Tram switch (registry edinburgh.tramsLive): same notes object when off.
+    notes = applyEdinburghTramsCoverage(notes);
   }
 
   res.setHeader("Cache-Control", "public, s-maxage=3600");

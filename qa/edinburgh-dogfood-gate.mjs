@@ -43,6 +43,7 @@ import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain, listMultiCityStations, findNearestStation } from "../lib/cities/live-city-api.js";
 import { assertNoLiveFeedStopsExcluded } from "./lib/no-live-feed-gate-helper.mjs";
+import { isEdinburghTramsLive } from "../lib/cities/edinburgh/trams-switch.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import {
@@ -132,7 +133,12 @@ assert(
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(EDINBURGH_REGION);
 assert(region?.railCount === 37, `edinburgh rail count must be 37 (UK station fill phase 1), got ${region?.railCount}`);
-assert(region?.metroCount === 22, `edinburgh tram count must be 22, got ${region?.metroCount}`);
+// Tram counts follow the registry tramsLive switch: OFF = the 22 stations.json rows; ON = the official 23 stops
+// minus the two shared-name stops (Haymarket, Edinburgh Gateway) withheld at the flip = 21.
+const TRAMS_ON = isEdinburghTramsLive();
+const EXPECT_TRAMS = TRAMS_ON ? 21 : 22;
+const EXPECT_ALL = 37 + EXPECT_TRAMS;
+assert(region?.metroCount === EXPECT_TRAMS, `edinburgh tram count must be ${EXPECT_TRAMS}, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
 const railNames = new Set(railStations.map((s) => s.name));
@@ -168,13 +174,13 @@ assert(slateford?.crs === "SLA", "Slateford must resolve with crs SLA");
 
 const tramStops = listTramStops();
 const tramNames = new Set(tramStops.map((s) => s.name));
-for (const name of ["Newhaven", "Edinburgh Airport", "Princes Street", "Haymarket"]) {
+for (const name of ["Newhaven", "Edinburgh Airport", "Princes Street", ...(TRAMS_ON ? [] : ["Haymarket"])]) {
   assert(tramNames.has(name), `Trams catalog must carry ${name}`);
 }
-assert(tramStops.length === 22, `Trams catalog must have exactly 22 stops, got ${tramStops.length}`);
+assert(tramStops.length === EXPECT_TRAMS, `Trams catalog must have exactly ${EXPECT_TRAMS} stops, got ${tramStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 59, `combined catalog must have 59 stations (37 rail + 22 tram), got ${allStations.length}`);
+assert(allStations.length === EXPECT_ALL, `combined catalog must have ${EXPECT_ALL} stations (37 rail + ${EXPECT_TRAMS} tram), got ${allStations.length}`);
 
 // doNotGroup pairs recorded and enforced structurally (distinct catalog entries, never merged).
 // Updated 24 Oct 2026 (docs/jim-brief-edinburgh-trams-wire.md): the stale Waverley tram pair is gone
@@ -271,14 +277,14 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Edinburgh Waverley's/Haymarket's doNotGroup locks need it to disambiguate).
 const dogfoodStations = listEdinburghDogfoodStations();
-assert(dogfoodStations.length === 59, `dogfood stations must be the 59 names (UK station fill phase 1), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === (TRAMS_ON ? 60 - 2 : 59), `dogfood stations must be the ${TRAMS_ON ? 58 : 59} names, got ${dogfoodStations.length}`);
 const waverleyEntries = dogfoodStations.filter((s) => s.name === "Edinburgh Waverley");
 assert(waverleyEntries.length === 1, "Edinburgh Waverley must appear once in the dogfood list (National Rail only — Trams uses no exact-name match)");
 const haymarketEntries = dogfoodStations.filter((s) => s.name === "Haymarket");
-assert(haymarketEntries.length === 2, "Haymarket must appear twice in the dogfood list (rail + tram, doNotGroup)");
+assert(haymarketEntries.length === (TRAMS_ON ? 1 : 2), "Haymarket must appear twice in the dogfood list (rail + tram, doNotGroup); once (rail only) while the tram switch is on");
 assert(
-  new Set(haymarketEntries.map((s) => s.mode)).size === 2,
-  "the two Haymarket dogfood entries must carry different modes"
+  new Set(haymarketEntries.map((s) => s.mode)).size === haymarketEntries.length,
+  "the Haymarket dogfood entries must carry different modes"
 );
 
 // National Rail board calls: real if DARWIN_LDB_TOKEN is set in this environment
@@ -412,8 +418,8 @@ assert(
   "getEdinburghDogfoodDirections must not resolve a Trams-mode lookup at 'Edinburgh Waverley' to the National Rail layer's data (no such Trams stop exists by that exact name)"
 );
 
-let tramHaymarketDirectionsThrew = false;
-try {
+let tramHaymarketDirectionsThrew = TRAMS_ON; // with the switch on the tram Haymarket is not in the catalog at all
+if (!TRAMS_ON) try {
   await getEdinburghDogfoodDirections("Haymarket", { mode: "metro" });
 } catch (err) {
   tramHaymarketDirectionsThrew = err instanceof EdinburghTramsFeedUnverifiedError;
@@ -493,7 +499,8 @@ if (previous === undefined) {
 // carries liveFeed: false, matches scripts/list-no-live-feed-stops.mjs, is
 // carried through by listMultiCityStations, and is never nominated by
 // findNearestStation.
-assertNoLiveFeedStopsExcluded({
+// Switch ON: the tram rows are live (liveFeed true via the overlay), so the no-live-feed invariant no longer applies.
+if (!TRAMS_ON) assertNoLiveFeedStopsExcluded({
   region: "edinburgh",
   readFileSync,
   join,
