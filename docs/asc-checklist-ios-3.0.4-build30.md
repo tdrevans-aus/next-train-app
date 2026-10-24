@@ -24,8 +24,15 @@ are expected, because those are prebuilt frameworks with no dSYMs. Ignore them.
 ## Still to do
 
 Go to [appstoreconnect.apple.com](https://appstoreconnect.apple.com), open **Apps**, then
-**Next Train**. You need the Account Holder or Admin role. Do the parts in order: App Privacy has
-to be published before you submit.
+**Next Train**. You need the Account Holder or Admin role. **Do Part 2 (swap the build) before Part 1.**
+App Store Connect checks the privacy label against the build *attached to the version*, not the newest
+upload. With build 29 still attached, setting Advertising Data to "not used for tracking" is refused
+with the `NSUserTrackingUsageDescription` warning (seen 24 Oct). App Privacy still has to be published
+before you submit.
+
+**Done 24 Oct 2026:** build 30 attached; Advertising Data published as not tracking (no "Data Used to
+Track You" section); reply sent; iPad TestFlight check passed; resubmitted 10:02 AM, now
+**Waiting for Review**.
 
 ### Part 1: App Privacy
 
@@ -77,8 +84,9 @@ to be published before you submit.
 ### Part 4: Submit
 
 1. Go back to **Distribution → 3.0.4**.
-2. At the top right, click **Add for Review**. After a rejection it may say
-   **Resubmit to App Review** or **Submit for Review**.
+2. At the top right, click **Update Review**. This takes you to the review submission, where the
+   item becomes **Ready for Review**. **Resubmit to App Review** stays greyed out until you've done
+   this. (The License Agreement banner on the Apps page can still be showing; it doesn't block.)
 3. Check that the summary shows **3.0.4 (30)**, then submit.
 4. - [ ] The status should change to **Waiting for Review**.
 
