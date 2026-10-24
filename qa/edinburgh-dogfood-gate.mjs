@@ -177,7 +177,14 @@ const allStations = listCatalogStations();
 assert(allStations.length === 59, `combined catalog must have 59 stations (37 rail + 22 tram), got ${allStations.length}`);
 
 // doNotGroup pairs recorded and enforced structurally (distinct catalog entries, never merged).
-assert(DO_NOT_GROUP_PAIRS.length === 3, "must document three doNotGroup pairs (Waverley, Haymarket, Edinburgh Gateway)");
+// Updated 24 Oct 2026 (docs/jim-brief-edinburgh-trams-wire.md): the stale Waverley tram pair is gone
+// (no Waverley tram stop exists); Edinburgh Park Station vs Edinburgh Park and Park Central vs Park
+// Station were added (docs/edinburgh-trams-d1/published-network.json doNotGroup).
+assert(
+  DO_NOT_GROUP_PAIRS.length === 4 &&
+    !DO_NOT_GROUP_PAIRS.some((pair) => pair.a.name === "Edinburgh Waverley" || pair.b.name === "Edinburgh Waverley"),
+  "must document four doNotGroup pairs (Haymarket, Edinburgh Gateway, Edinburgh Park Station, Park Central/Park Station) and no Waverley tram pair"
+);
 const waverleyTram = resolveCatalogEntry("Edinburgh Waverley", "metro");
 assert(waverleyTram === null, "Trams catalog must not carry an 'Edinburgh Waverley' stop by that exact name");
 const haymarketTram = resolveCatalogEntry("Haymarket", "metro");
@@ -203,7 +210,7 @@ assert(
   TRAM_DIRECTIONS.includes("T50 towards Newhaven") && TRAM_DIRECTIONS.includes("T50 towards Edinburgh Airport"),
   "must use line+terminus labels"
 );
-assert(TRAM_STATIONS.length === 22, "TRAM_STATIONS candidate order must carry all 22 stops");
+assert(TRAM_STATIONS.length === 23, "TRAM_STATIONS must carry the official 23 stops (24 Oct 2026; Edinburgh Park Station added)");
 assert(TRAM_STATION_ORDER_VERIFIED === false, "Trams stop order must stay flagged unverified, not silently trusted");
 assert(isTramStation("Princes Street") === true, "Princes Street must resolve as a Trams stop");
 assert(isTramStation("Edinburgh Waverley") === false, "Edinburgh Waverley (National Rail) must not resolve as a Trams stop");

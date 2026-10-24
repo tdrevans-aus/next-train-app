@@ -65,3 +65,117 @@ EGY and EDP: `in`, carried. "No other services call at any in-catalog tram stop 
 6. Whether a static GTFS with EDT/T50 exists at all (the earlier DFT BODS claim could not be reproduced); not needed
    for a live-only board, but it would help verify the stop order.
 7. Does the ledger edit belong in your flip PR or the controller's? Luke did not touch it.
+
+---
+
+# Wiring result (Jim, 24 Oct 2026) - wired, switched OFF
+
+Brief: `docs/jim-brief-edinburgh-trams-wire.md`. Tim closed G1 the same day (recorded in `hazard-pack.md`, G1 row).
+Edinburgh stays live for National Rail; riders see no change until Mark's flip PR sets one registry field.
+
+## The switch
+
+`tramsLive: false` on the `edinburgh` entry in `lib/providers/registry.js`, read through
+`lib/cities/edinburgh/trams-switch.js` (`isEdinburghTramsLive()`). Scoped to the tram mode only; the city `status`
+stays `live`. A registry field (a reviewed, revertable one-line PR), not an env var. With it off:
+
+- `fetchTramStopBoard()` throws `EdinburghTramsFeedUnverifiedError` exactly as before;
+- `lib/cities/edinburgh/stations.json` is untouched (22 tram rows, `liveFeed:false`). The tram overlay
+  (`trams-api.json`: platform ids, the 23rd stop) is applied by `trams-catalog.js` only when the switch is on, from the
+  two catalog loaders (`lib/providers/uk/catalog.js`, `lib/cities/live-city-api.js`); off, they return the same array;
+- the dogfood directions path falls through to its old behaviour.
+
+Byte-identity is proved by `qa/edinburgh-trams-planned-gate.mjs`: 72 rider surfaces hashed against
+`qa/fixtures/edinburgh-trams-switch-off.golden.json`, which was captured from unmodified master (commit 9f091db1)
+before any tram edit, by `qa/lib/edinburgh-trams-surface.mjs`: `/api/city-stations`, `/api/country-stations`
+(Edinburgh rows), `/api/cities` (Edinburgh entry), `/api/board` and `/api/directions` for every tram-only stop, Near me
+around all 22 tram stops, the UK region catalog, the dogfood list, `public/city-directions/edinburgh.json`.
+The switch-ON half runs offline in a child process (`qa/lib/edinburgh-trams-on-state.mjs`, 42 checks, stubbed fetch).
+
+## What was built
+
+- `lib/providers/edinburgh-trams.js`: StopEvents adapter. Typed `MissingEdinburghTramsKeyError` (a
+  `FeedUnavailableError`); `FeedUnavailableError` on network failure, non-2xx, unparseable or wrong-shaped body (#502
+  path); single-object body; 20 s per-platform server cache with in-flight de-duplication; 8 s timeout.
+- `lib/cities/edinburgh/trams-time.js`: bare `HH:MM` read as UTC, anchored to the response `time`, converted
+  explicitly to Europe/London; midnight rollover within +/-12 h of the response time.
+- `lib/cities/edinburgh/trams-api.json`: the 23 stops with Trapeze platform ids; Edinburgh Park Station coordinates.
+- `tram-directions.js`: official 23-stop list (west to east), Waverley pair removed, Edinburgh Park pairs added,
+  one chip per terminus, `waverley tram stop` / `york place` forbidden names.
+- Ledger rows (3) updated to "API found 24 Oct 2026; wired, not live".
+
+## Live probe (24 Oct 2026, 09:47 UTC = 10:47 BST, four stops through the real adapter, about 20 requests, 0.8-1.5 s apart)
+
+| Stop | Raw events (both platforms) | No live value | Countdown | Clock != sched | Clock == sched (dropped) | Live trips on board |
+|---|---|---|---|---|---|---|
+| Haymarket | 32 | 23 | 3 | 5 | 1 | 8 |
+| Edinburgh Park Station | 32 | 26 | 0 | 5 | 1 | 5 |
+| Edinburgh Airport | 16 (platform 1 only) | 11 | 2 | 2 | 1 | 4 |
+| Newhaven | 16 (platform 2 only) | 12 | 1 | 1 | 2 | 2 |
+
+Most rows carry no live value (trips not yet running), as expected from a tracked-vehicle feed. The board shows only
+the live ones. Next-train through the dogfood module for Haymarket towards Newhaven returned London-local times.
+
+## Findings that change the D1 notes
+
+- Field names are `scheduledeparturetime`, `schedulearrivaltime`, `departuretime`, `arrivaltime` (the report's
+  `sched`/`pred` are shorthand). `departuretime` is a number (countdown seconds from the response `time`), a bare
+  `HH:MM` string, or null. A `status: "delayed"` flag accompanies some string predictions.
+- **Zone resolved for the BST period (H7):** the response carries `time` as ISO-Z and each event a
+  `journey.start` ISO-Z. At 09:37:24Z a Haymarket event scheduled "09:40" belongs to a journey that started
+  09:15Z, i.e. 3 minutes away; so bare clocks are **UTC**. Countdowns agree: 608 s from 09:37:24Z is 09:47:32Z, within
+  32 s of the 09:47 schedule. A winter sample cannot repeat this; this is the BST sample G2 asked for.
+- Platform 1 departs towards Newhaven, platform 2 towards Edinburgh Airport at all 10 platforms probed (Haymarket,
+  Edinburgh Park Station, Newhaven, Edinburgh Airport, Picardy Place), including both termini. Newhaven 1 and Airport 2
+  return rows with no destination (arrivals), which the adapter drops. `GetFilteredStops` returns a national list
+  (2,559 PLT/MET stops); the 75 in the Edinburgh box include the depot (not a passenger stop, excluded) and York Place
+  (excluded).
+- `maxEvents` is honoured: asking for 40 at Haymarket 1 returned 16, so the lookahead is about 2 hours. The adapter
+  asks for 16 per platform. Unknown query parameters (`maxLookahead`) return 400; `lookahead` is ignored.
+- Edinburgh Park Station coordinates: 55.92746860761, -3.30694115169, the NaPTAN record `9400ZZEDPKS` returned by
+  `POST stops/GetFilteredStops` (same NaPTAN source and parent-record convention as the other 22 stops).
+
+## For Mark's flip PR (the flip commit, in addition to `tramsLive: true`)
+
+1. `lib/cities/edinburgh/coverage.json`: the "Edinburgh Trams ... no confirmed live-times feed" `partial` entry, the
+   "59 stations" string and the Waverley note are now wrong with the switch on. Rider copy, so left for the flip.
+2. Fix the "22 vs 23" and `liveFeed:false`/"Schedule-only v1" notes in `stations.json` (deliberately untouched so
+   the off state is byte-identical), or fold the overlay into `stations.json`.
+3. `public/station-combobox.js` already labels Edinburgh metro entries "Trams"; no change expected. Regenerate
+   `public/city-directions/edinburgh.json` only if tram chips should be precomputed (it is rail-only today).
+4. `scripts/list-no-live-feed-stops.mjs` and `qa/lib/no-live-feed-gate-helper.mjs` assert every Edinburgh metro stop is
+   `liveFeed:false`; the flip must drop Edinburgh from them (and `qa/edinburgh-dogfood-gate.mjs`'s 22-stop/59-station
+   assertions and `qa/feed-unconfirmed-rider-copy.mjs`'s Newhaven case), then keep this gate's switch-ON checks as
+   the dogfood coverage (its switch-off half becomes obsolete once `tramsLive` is true).
+5. Vercel env: `EDINBURGH_BUSTRACKER_KEY` must exist in Production before the flip (it is in `.env.local` only).
+
+## Answers to "Open questions for Jim"
+
+1. Production use and rate limits: still unknown (G6). Mitigation in place: 20 s per-platform cache, 2 calls per
+   stop per 20 s, no polling loops. The probe saw no throttling at about 1 request/s.
+2. Null `departuretime` = no live value (a scheduled, not-yet-tracked trip). Clock strings are UTC. Equal-to-schedule
+   strings are dropped until G2 shows they are real.
+3. Platform mapping: see above; Newhaven 2 and Airport 1 are the departing platforms.
+4. v1.2 is what answers; a v1.1 retirement notice was not found (unchanged).
+5. Edinburgh Park Station coordinates: found (above).
+6. Static GTFS: not needed and not pursued.
+7. The ledger edit was made in this PR (three rows).
+
+## Open for G2-G6
+
+- G2: whether `pred == sched` strings are ever real, and whether countdown numbers can echo the schedule (a
+  countdown exactly matching sched cannot be told from an echo; none observed). Two trams predicted a minute apart at
+  Edinburgh Airport (10:59 and 11:00 BST) look like bunching or a stale prediction - worth a person at the stop.
+- G4: Stop Services check at all 23 stops not done (only operator `EDT` / service `T50` seen in the probe).
+- G5: stop order and full-length running not verified; direction chips do not depend on them.
+- G6: the all-stations sweep has not been run; and the shared-name stops (Haymarket, Edinburgh Gateway) cannot be
+  addressed as trams by `/api/board?station=<name>` because the API has no `mode` parameter and resolves rail
+  first (next section).
+
+## Known limit to decide before the flip
+
+`/api/board`, `/api/directions` and `/api/next-train` take a station *name* only. For Haymarket and Edinburgh Gateway
+a tram request resolves to the National Rail station first, as for the existing Metrolink/Supertram/NET regions with
+shared names. The picker already disambiguates visually ("Trams"), but the request carries the bare name. Edinburgh
+Park Station is safe (the rail name is "Edinburgh Park"). Making the tram stop addressable needs a client or API `mode`
+change, which is outside this brief (shared product UI / API shape); flagged, not done.

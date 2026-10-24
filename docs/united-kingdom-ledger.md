@@ -84,7 +84,7 @@ not re-researched:**
 | Greater Manchester | Metrolink | none confirmed | TfGM developer portal deprecated, no new keys issued, no GTFS-RT confirmed anywhere — `MetrolinkFeedUnconfirmedError` |
 | Liverpool City Region | Merseyrail | **Darwin** (corrected 4 Sep 2026) | Live — see Provider decision above; not a second feed at all |
 | Glasgow | Subway (SPT) | TravelWhiz community static aggregation | Unverified stop order, no confirmed GTFS-RT — `GlasgowSubwayFeedUnverifiedError` |
-| Edinburgh | Trams (T50) | DFT BODS static GTFS (confirmed reachable, OGL 3.0) | Not fetched/parsed by this pack; no confirmed real-time (TfE Open Data API inactive) — `EdinburghTramsFeedUnverifiedError` |
+| Edinburgh | Trams (T50) | Trapeze BusTracker Open API (`StopEvents`, generic/v1.2, key `EDINBURGH_BUSTRACKER_KEY`) | **API found 24 Oct 2026; wired, not live.** Live-times-only board in `lib/providers/edinburgh-trams.js` behind the off-by-default `tramsLive` registry switch; riders still see National Rail only. Flip gates G2-G6 stand (G1 closed by Tim, 24 Oct 2026). Evidence: `docs/edinburgh-trams-d1/oracle-clash-report.md`. With the switch off the old `EdinburghTramsFeedUnverifiedError` behaviour is unchanged. |
 
 **Northern Ireland: out of UK v1.** NIR (Translink) is not on Darwin and is not planned — separate
 railway, separate ticketing, `docs/uk-architecture.md` §1 locks GB-only. Buses are out UK-wide
@@ -219,8 +219,11 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
   (Rhymney, Coryton, TfW) alongside main-line services. The Valley Lines are heavy rail with CRS
   codes and are therefore in scope for South Wales whenever Tim chooses to rescope; the pack's
   "not wired" status is a scope decision now, not a data gap.
-- **Edinburgh Trams** — static GTFS confirmed reachable (DFT BODS, OGL 3.0) but not fetched/parsed;
-  no confirmed real-time successor (TfE Open Data API inactive).
+- **Edinburgh Trams** — API found 24 Oct 2026; wired, not live. The Trapeze BusTracker Open API
+  serves live `StopEvents` for all 23 T50 stops (oracle report: `docs/edinburgh-trams-d1/oracle-clash-report.md`).
+  The adapter is in `lib/providers/edinburgh-trams.js`, switched off by `tramsLive: false` on the
+  `edinburgh` registry entry until Mark's flip gates G2-G6 pass. (The earlier "no confirmed real-time
+  successor" finding is superseded; the DFT BODS static GTFS is not needed for a live-only board.)
 - **Glasgow Subway** — schedule-only at best: static candidate (TravelWhiz community aggregation)
   reachable but unverified stop order and unclear license; no confirmed GTFS-RT.
 - **West Midlands Metro (TfWM)** — credentials gap (`TFWM_API_APP_ID`/`TFWM_API_APP_KEY` unset,
@@ -264,7 +267,7 @@ Nexus.
 | North East · Metro | Nexus reply (draft ready, send after store launch - FB-56) | Yes, after launch |
 | Greater Manchester · Metrolink | TfGM publishing a feed | No |
 | South Yorkshire · Supertram | SYFTL publishing any public feed | No |
-| Edinburgh · Trams | Edinburgh Trams publishing a feed | No |
+| Edinburgh · Trams | API found 24 Oct 2026; wired, not live - awaiting Mark's flip gates G2-G6 (`tramsLive` switch off) | Mark |
 | Glasgow · Subway | SPT publishing an official feed | No |
 | West Midlands · Metro | not parked - code done; confirm TfWM keys in production (FB-48) | Tim |
 
