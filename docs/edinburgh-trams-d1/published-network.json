@@ -1,0 +1,501 @@
+{
+  "city": "edinburgh",
+  "displayName": "Edinburgh",
+  "packType": "second-mode-addition",
+  "status": "planned",
+  "parentRegion": "edinburgh (live, National Rail slice, #307)",
+  "timezone": "Europe/London",
+  "architecture": "Trams join the existing Edinburgh city as a second mode (mode: metro, catalogId prefix tram:), the Dublin Luas / Copenhagen Metro pattern. One point-to-point line (T50), 23 stops, no branches, no short-workings evidenced. NO tram hub-lock: no tram stop exists at Waverley. Three rail/tram pairs are doNotGroup (Haymarket, Edinburgh Gateway, Edinburgh Park) plus the two Edinburgh Park tram stops are kept distinct from each other.",
+  "agency": [
+    "Edinburgh Trams Ltd (operator code EDT, service T50, fleet ET2xx)"
+  ],
+  "source": "docs/edinburgh-trams-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico, 24 Oct 2026; Option A approved by Tim 24 Oct 2026)",
+      "url": "docs/edinburgh-trams-d1/oracle-clash-report.md"
+    },
+    {
+      "role": "Ledger",
+      "url": "docs/united-kingdom-ledger.md",
+      "note": "Edinburgh row, parked-modes table and coverage bullets still say 'no confirmed real-time / parked'; to be updated when the re-scope lands. Not edited by Luke."
+    },
+    {
+      "role": "Realtime (candidate; terms unseen)",
+      "title": "Trapeze 'NRT Open API Edinburgh CEC Bus tracker Open Interface'",
+      "url": "https://devportal-public.trapezegroupazure.co.uk/",
+      "auth": "Ocp-Apim-Subscription-Key header, env var EDINBURGH_BUSTRACKER_KEY (value never written to any file)",
+      "endpoints": [
+        "POST /stops/GetFilteredStops (stoptypes PLT/MET)",
+        "GET /stops/StopEvents (v1.1 and v1.2 identical in the probe)"
+      ],
+      "note": "Terms not public. Flip gate G1."
+    },
+    {
+      "role": "Static GTFS",
+      "note": "None verified. Do not assume DFT BODS carries EDT/T50 (the earlier 'T50 route confirmed' claim could not be reproduced)."
+    }
+  ],
+  "retrievedAt": "2026-10-24T00:00:00Z",
+  "scopeNote": "Edinburgh Trams T50 only, Edinburgh Airport to Newhaven, 23 official stops. York Place (closed 10 Feb 2022) is excluded. Live times only, no timetable fallback. Existing National Rail entries are untouched except the cross-mode doNotGroup corrections recorded here.",
+  "lines": [
+    {
+      "id": "t50",
+      "number": "T50",
+      "name": "Edinburgh Trams",
+      "operator": "EDT",
+      "mapGroup": "Light Rail",
+      "topology": "point-to-point - two termini, no branches",
+      "termini": [
+        "Edinburgh Airport",
+        "Newhaven"
+      ],
+      "destinationStrings": [
+        "Edinburgh Airport",
+        "Newhaven"
+      ],
+      "directions": [
+        "T50 towards Edinburgh Airport",
+        "T50 towards Newhaven"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "hubLock": null,
+      "stationOrder": "Edinburgh Airport -> Newhaven (official 23-stop list, oracle report section 4)",
+      "stationOrderVerified": false,
+      "stationOrderConfidence": "medium (single search-summarised official list; edinburghtrams.com/stops returned 404; west-east geography corroborates it)",
+      "stations": [
+        "Edinburgh Airport",
+        "Ingliston Park & Ride",
+        "Gogarburn",
+        "Edinburgh Gateway",
+        "Gyle Centre",
+        "Edinburgh Park Central",
+        "Edinburgh Park Station",
+        "Bankhead",
+        "Saughton",
+        "Balgreen",
+        "Murrayfield Stadium",
+        "Haymarket",
+        "West End",
+        "Princes Street",
+        "St Andrew Square",
+        "Picardy Place",
+        "McDonald Road",
+        "Balfour Street",
+        "Foot of the Walk",
+        "The Shore",
+        "Port of Leith",
+        "Ocean Terminal",
+        "Newhaven"
+      ]
+    }
+  ],
+  "stops": [
+    {
+      "sequence": 1,
+      "name": "Edinburgh Airport",
+      "catalogId": "tram:edinburgh-airport",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.94761850016,
+      "lng": -3.36051223861,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": true,
+      "liveFeed": false,
+      "note": "terminus (west)"
+    },
+    {
+      "sequence": 2,
+      "name": "Ingliston Park & Ride",
+      "catalogId": "tram:ingliston-park-and-ride",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.94043509974,
+      "lng": -3.35596953325,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 3,
+      "name": "Gogarburn",
+      "catalogId": "tram:gogarburn",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.93792631235,
+      "lng": -3.33225195206,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 4,
+      "name": "Edinburgh Gateway",
+      "catalogId": "tram:edinburgh-gateway",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.94046551171,
+      "lng": -3.32175624086,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false,
+      "note": "interchange: National Rail Edinburgh Gateway (EGY), covered footbridge"
+    },
+    {
+      "sequence": 5,
+      "name": "Gyle Centre",
+      "catalogId": "tram:gyle-centre",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.93795104615,
+      "lng": -3.31826059385,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 6,
+      "name": "Edinburgh Park Central",
+      "catalogId": "tram:edinburgh-park-central",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.93131184549,
+      "lng": -3.31478574772,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 7,
+      "name": "Edinburgh Park Station",
+      "catalogId": "tram:edinburgh-park-station",
+      "mode": "metro",
+      "stopId": null,
+      "lat": null,
+      "lng": null,
+      "coordSource": "none - not in existing catalog; geocode from NaPTAN before wiring",
+      "terminus": false,
+      "liveFeed": false,
+      "note": "interchange: National Rail Edinburgh Park (EDP)"
+    },
+    {
+      "sequence": 8,
+      "name": "Bankhead",
+      "catalogId": "tram:bankhead",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.92895005919,
+      "lng": -3.29343427112,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 9,
+      "name": "Saughton",
+      "catalogId": "tram:saughton",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.93232757912,
+      "lng": -3.27544293701,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 10,
+      "name": "Balgreen",
+      "catalogId": "tram:balgreen",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.93811903816,
+      "lng": -3.25221165933,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 11,
+      "name": "Murrayfield Stadium",
+      "catalogId": "tram:murrayfield-stadium",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.9419816991,
+      "lng": -3.23720605439,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 12,
+      "name": "Haymarket",
+      "catalogId": "tram:haymarket",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.94579511408,
+      "lng": -3.21973003985,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false,
+      "note": "interchange: National Rail Haymarket (HYM)"
+    },
+    {
+      "sequence": 13,
+      "name": "West End",
+      "catalogId": "tram:west-end",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.94841338106,
+      "lng": -3.21209388435,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false,
+      "note": "separate stop from Princes Street"
+    },
+    {
+      "sequence": 14,
+      "name": "Princes Street",
+      "catalogId": "tram:princes-street",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.95170953761,
+      "lng": -3.19847221611,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false,
+      "note": "nearest tram stop to Waverley by walk (interchange note only, not a hub-lock)"
+    },
+    {
+      "sequence": 15,
+      "name": "St Andrew Square",
+      "catalogId": "tram:st-andrew-square",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.95461766514,
+      "lng": -3.19231585862,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false,
+      "note": "nearest tram stop to Waverley by walk (interchange note only, not a hub-lock)"
+    },
+    {
+      "sequence": 16,
+      "name": "Picardy Place",
+      "catalogId": "tram:picardy-place",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.956817,
+      "lng": -3.1867936,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false,
+      "note": "Newhaven extension (opened 7 Jun 2023); replaced closed York Place"
+    },
+    {
+      "sequence": 17,
+      "name": "McDonald Road",
+      "catalogId": "tram:mcdonald-road",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.960678,
+      "lng": -3.1814655,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 18,
+      "name": "Balfour Street",
+      "catalogId": "tram:balfour-street",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.965364,
+      "lng": -3.1762575,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 19,
+      "name": "Foot of the Walk",
+      "catalogId": "tram:foot-of-the-walk",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.970777,
+      "lng": -3.1711344,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 20,
+      "name": "The Shore",
+      "catalogId": "tram:the-shore",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.974815,
+      "lng": -3.167026,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 21,
+      "name": "Port of Leith",
+      "catalogId": "tram:port-of-leith",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.978074,
+      "lng": -3.1663549,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 22,
+      "name": "Ocean Terminal",
+      "catalogId": "tram:ocean-terminal",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.980204,
+      "lng": -3.1776696,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": false,
+      "liveFeed": false
+    },
+    {
+      "sequence": 23,
+      "name": "Newhaven",
+      "catalogId": "tram:newhaven",
+      "mode": "metro",
+      "stopId": null,
+      "lat": 55.979921,
+      "lng": -3.1884628,
+      "coordSource": "existing lib/cities/edinburgh/stations.json (NaPTAN StopType MET, pulled 2026-09-07)",
+      "terminus": true,
+      "liveFeed": false,
+      "note": "terminus (east)"
+    }
+  ],
+  "doNotGroup": [
+    {
+      "a": {
+        "name": "Haymarket",
+        "mode": "metro",
+        "catalogId": "tram:haymarket"
+      },
+      "b": {
+        "name": "Haymarket",
+        "mode": "train",
+        "crs": "HYM"
+      },
+      "reason": "Same printed name, different mode and infrastructure; walk interchange. Mode-scoped lookup, never a merged board. The existing edinburgh pack wrongly says 'Trams: none' at Haymarket.",
+      "source": "oracle report section 5; probe Haymarket 1/2 events"
+    },
+    {
+      "a": {
+        "name": "Edinburgh Gateway",
+        "mode": "metro",
+        "catalogId": "tram:edinburgh-gateway"
+      },
+      "b": {
+        "name": "Edinburgh Gateway",
+        "mode": "train",
+        "crs": "EGY"
+      },
+      "reason": "Same printed name; covered footbridge interchange; separate boards by mode.",
+      "source": "oracle report section 5; already in lib/cities/edinburgh/tram-directions.js DO_NOT_GROUP_PAIRS"
+    },
+    {
+      "a": {
+        "name": "Edinburgh Park Station",
+        "mode": "metro",
+        "catalogId": "tram:edinburgh-park-station"
+      },
+      "b": {
+        "name": "Edinburgh Park",
+        "mode": "train",
+        "crs": "EDP"
+      },
+      "reason": "Near-identical printed names (prefix collision under fold/prefix matching); walk interchange; separate boards by mode. NR EDP is already catalogued (station fill phase 1, Darwin-verified 13 Sep 2026), which supersedes the report's 'keep out of the rail side for v1'.",
+      "source": "oracle report section 5 plus existing stations.json EDP entry"
+    },
+    {
+      "a": {
+        "name": "Edinburgh Park Central",
+        "mode": "metro",
+        "catalogId": "tram:edinburgh-park-central"
+      },
+      "b": {
+        "name": "Edinburgh Park Station",
+        "mode": "metro",
+        "catalogId": "tram:edinburgh-park-station"
+      },
+      "reason": "Two distinct tram stops on the same line, adjacent (sequence 6 and 7). Never collapse to one 'Edinburgh Park' stop.",
+      "source": "oracle report section 4"
+    }
+  ],
+  "removedFromExistingPack": [
+    {
+      "item": "'Edinburgh Waverley' tram stop and the Waverley-vs-trams doNotGroup (edinburgh-d1 published-network.json; first entry of DO_NOT_GROUP_PAIRS in lib/cities/edinburgh/tram-directions.js)",
+      "reason": "No Waverley tram stop on the official 23-stop list. Waverley has no tram hub-lock; the nearest stops (Princes Street, St Andrew Square) are a walk, an interchange note only.",
+      "source": "oracle report sections 5 and 8"
+    }
+  ],
+  "forbiddenCollapseNames": [
+    "trams",
+    "edinburgh trams",
+    "t50",
+    "tram",
+    "national rail",
+    "waverley tram stop",
+    "edinburgh waverley tram stop"
+  ],
+  "excludedStations": [
+    {
+      "name": "York Place",
+      "reason": "Permanently closed 10 Feb 2022 (one source says 9 Feb); replaced by Picardy Place when the Newhaven extension opened 7 Jun 2023. Still answers StopEvents with 0 events: a stale API entry, not an outage. Must not appear in the catalog, picker, or any QA expected-stop list.",
+      "source": "edinburghtrams.com/news/closure-york-place-stop-marks-tram-project-milestone"
+    }
+  ],
+  "boardEligibility": [
+    {
+      "service": "Edinburgh Trams T50 (EDT)",
+      "calls": "all 23 stops",
+      "verdict": "in",
+      "reason": "Contactless tap-on, no reservation, no check-in barrier. Conditional on the live-only display rule (a display rule, not a verdict).",
+      "evidence": "Edinburgh Trams accessibility/FAQ pages as cited in edinburgh-d1 report; not re-fetched"
+    },
+    {
+      "service": "ScotRail at Edinburgh Gateway (EGY) and Edinburgh Park (EDP)",
+      "verdict": "in",
+      "reason": "Carried from the live Edinburgh record; both NR stations already catalogued."
+    }
+  ],
+  "boardEligibilityOpen": "Other operators calling at tram stops: not verified. The API Stop Services operation must be checked at all 23 stops before 'no other services call at any in-catalog tram stop - verified' can be written (flip gate G4).",
+  "displayPolicy": [
+    "Show a countdown or predicted time only when events[].departuretime (seconds) or a pred value is present.",
+    "Never render sched as a departure time. No timetable fallback.",
+    "Event with no live value: drop it. Stop with none: 'No live predictions for this stop right now' (honest-empty-state rule, 27 Sep 2026).",
+    "pred equal to sched is NOT presented as live until flip gate G2 resolves echo vs real on-time prediction.",
+    "Zero events at a stop is not an outage signal on its own."
+  ],
+  "license": {
+    "name": "none public - governed by the Trapeze subscription terms Tim accepted",
+    "redistribution": "unclear",
+    "commercial": "unclear",
+    "attribution": "none found",
+    "confidence": "not found (licence); unclear (commercial use, redistribution)",
+    "gate": "G1: Tim reads the portal terms and confirms in writing that display in a paid app and relay through our server are permitted. Record nothing as 'allowed' until then."
+  },
+  "coverageGaps": [
+    "Stop order comes from one search-summarised official list; not checked against the edinburghtrams.com map or the API Service/Stop Timetable.",
+    "No static GTFS verified for EDT/T50.",
+    "Edinburgh Park Station has no coordinates in the existing catalog.",
+    "stopIds (NaPTAN 9400ZZED..., Newhaven extension 9400ZZTWWJ..., platform suffix 1/2) are not recorded: resolve via GetFilteredStops at wire time. This pack never called the API.",
+    "Null semantics, pred==sched echo and sched/pred time zone unresolved (single probe sample).",
+    "Short-workings (Gyle/Ingliston/Picardy Place): none evidenced; confirm every T50 runs end to end.",
+    "Rate limits, production-server key use and IP allow-listing unknown."
+  ]
+}
