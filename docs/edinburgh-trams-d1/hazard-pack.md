@@ -82,7 +82,7 @@ while the UK was on BST). Hazards:
 
 | Gate | What | Owner |
 |---|---|---|
-| G1 | Tim reads the Trapeze portal terms under his subscription and confirms **in writing** that display in a paid app and onward relay through our server are permitted. No licence text is quoted as operative anywhere in this pack. | Tim |
+| G1 | Tim reads the Trapeze portal terms under his subscription and confirms **in writing** that display in a paid app and onward relay through our server are permitted. No licence text is quoted as operative anywhere in this pack. **CLOSED by Tim's decision, 24 Oct 2026** (in chat): "Get jim to build it and I'm assuming we can use it." Tim accepted the Trapeze/Journeo licence risk himself: there are no published terms (the product terms field is empty), no approval was required, and the access email states no conditions. No email was sent or drafted. G2-G6 still stand and belong to Mark at the flip. | Tim (closed) |
 | G2 | Realtime sampling test: poll every 1-2 min for at least one peak hour at Haymarket 1 and 2, Edinburgh Airport 1, Picardy Place and Newhaven 2. Countdowns fall between polls; events vanish on departure; `pred` moves off `sched` when late; equal-to-schedule values do not persist across a disruption; a known tram matches the zone assumption; compare with a person at a stop or the Lothian app. | Jim / Mark |
 | G3 | Provenance: confirm (Viv question 3) the T50 data is the feed behind the Edinburgh Trams / Lothian apps and stop displays. | Viv / Tim |
 | G4 | Stop Services check at all 23 stops: no operator other than EDT/T50 calls. Until done, the "no other services call - verified" sentence cannot be written. | Jim |

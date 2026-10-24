@@ -1,0 +1,249 @@
+{
+  "note": "Edinburgh Trams T50 API wiring data. Stop ids are the Trapeze BusTracker Open API (generic/v1.2) GetFilteredStops records (stoptypes PLT/MET) pulled 24 Oct 2026 (Jim). Platform suffix 1 departs towards Newhaven, 2 towards Edinburgh Airport at every stop sampled (10 platforms probed 24 Oct 2026; flip gate G5 re-checks all 23). York Place (closed 10 Feb 2022) and the Edinburgh Tram Depot are deliberately absent.",
+  "retrievedAt": "2026-10-24",
+  "apiBase": "https://apim-public.trapezegroupazure.co.uk/edinburgh-cec-openapi/generic/v1.2/",
+  "stationOrderVerified": false,
+  "addedStop": {
+    "name": "Edinburgh Park Station",
+    "catalogId": "tram:edinburgh-park-station",
+    "mode": "metro",
+    "stopId": null,
+    "aliases": [],
+    "lat": 55.92746860761,
+    "lng": -3.30694115169,
+    "coordSource": "NaPTAN record 9400ZZEDPKS (Edinburgh Park Station (Edinburgh Trams), StopType MET), as returned by the Trapeze BusTracker Open API POST /stops/GetFilteredStops on 24 Oct 2026; platforms 9400ZZEDPKS1/2 sit within 5 m of it. Same NaPTAN source and parent-record convention as the other 22 stops in stations.json.",
+    "class": "Edinburgh Trams T50 intermediate stop. Separate from Edinburgh Park Central and from the National Rail station Edinburgh Park (EDP)."
+  },
+  "stops": [
+    {
+      "sequence": 1,
+      "name": "Edinburgh Airport",
+      "catalogId": "tram:edinburgh-airport",
+      "apiName": "Edinburgh Airport (Edinburgh Trams)",
+      "parentCode": "9400ZZEDAIR",
+      "terminus": "west",
+      "towardsNewhaven": "9400ZZEDAIR1",
+      "towardsAirport": null
+    },
+    {
+      "sequence": 2,
+      "name": "Ingliston Park & Ride",
+      "catalogId": "tram:ingliston-park-and-ride",
+      "apiName": "Ingliston Park & Ride (Edinburgh Trams)",
+      "parentCode": "9400ZZEDING",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDING1",
+      "towardsAirport": "9400ZZEDING2"
+    },
+    {
+      "sequence": 3,
+      "name": "Gogarburn",
+      "catalogId": "tram:gogarburn",
+      "apiName": "Gogarburn (Edinburgh Trams)",
+      "parentCode": "9400ZZEDGOG",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDGOG1",
+      "towardsAirport": "9400ZZEDGOG2"
+    },
+    {
+      "sequence": 4,
+      "name": "Edinburgh Gateway",
+      "catalogId": "tram:edinburgh-gateway",
+      "apiName": "Edinburgh Gateway (Edinburgh Trams)",
+      "parentCode": "9400ZZEDGAT",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDGAT1",
+      "towardsAirport": "9400ZZEDGAT2"
+    },
+    {
+      "sequence": 5,
+      "name": "Gyle Centre",
+      "catalogId": "tram:gyle-centre",
+      "apiName": "Gyle Centre (Edinburgh Trams)",
+      "parentCode": "9400ZZEDGYL",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDGYL1",
+      "towardsAirport": "9400ZZEDGYL2"
+    },
+    {
+      "sequence": 6,
+      "name": "Edinburgh Park Central",
+      "catalogId": "tram:edinburgh-park-central",
+      "apiName": "Edinburgh Park Central (Edinburgh Trams)",
+      "parentCode": "9400ZZEDPKC",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDPKC1",
+      "towardsAirport": "9400ZZEDPKC2"
+    },
+    {
+      "sequence": 7,
+      "name": "Edinburgh Park Station",
+      "catalogId": "tram:edinburgh-park-station",
+      "apiName": "Edinburgh Park Station (Edinburgh Trams)",
+      "parentCode": "9400ZZEDPKS",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDPKS1",
+      "towardsAirport": "9400ZZEDPKS2"
+    },
+    {
+      "sequence": 8,
+      "name": "Bankhead",
+      "catalogId": "tram:bankhead",
+      "apiName": "Bankhead (Edinburgh Trams)",
+      "parentCode": "9400ZZEDBAN",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDBAN1",
+      "towardsAirport": "9400ZZEDBAN2"
+    },
+    {
+      "sequence": 9,
+      "name": "Saughton",
+      "catalogId": "tram:saughton",
+      "apiName": "Saughton (Edinburgh Trams)",
+      "parentCode": "9400ZZEDSAU",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDSAU1",
+      "towardsAirport": "9400ZZEDSAU2"
+    },
+    {
+      "sequence": 10,
+      "name": "Balgreen",
+      "catalogId": "tram:balgreen",
+      "apiName": "Balgreen (Edinburgh Trams)",
+      "parentCode": "9400ZZEDBAL",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDBAL1",
+      "towardsAirport": "9400ZZEDBAL2"
+    },
+    {
+      "sequence": 11,
+      "name": "Murrayfield Stadium",
+      "catalogId": "tram:murrayfield-stadium",
+      "apiName": "Murrayfield Stadium (Edinburgh Trams)",
+      "parentCode": "9400ZZEDMUR",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDMUR1",
+      "towardsAirport": "9400ZZEDMUR2"
+    },
+    {
+      "sequence": 12,
+      "name": "Haymarket",
+      "catalogId": "tram:haymarket",
+      "apiName": "Haymarket (Edinburgh Trams)",
+      "parentCode": "9400ZZEDHAY",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDHAY1",
+      "towardsAirport": "9400ZZEDHAY2"
+    },
+    {
+      "sequence": 13,
+      "name": "West End",
+      "catalogId": "tram:west-end",
+      "apiName": "West End - Princes Street (Edinburgh Trams)",
+      "parentCode": "9400ZZEDSHA",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDSHA1",
+      "towardsAirport": "9400ZZEDSHA2"
+    },
+    {
+      "sequence": 14,
+      "name": "Princes Street",
+      "catalogId": "tram:princes-street",
+      "apiName": "Princes Street (Edinburgh Trams)",
+      "parentCode": "9400ZZEDPRS",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDPRS1",
+      "towardsAirport": "9400ZZEDPRS2"
+    },
+    {
+      "sequence": 15,
+      "name": "St Andrew Square",
+      "catalogId": "tram:st-andrew-square",
+      "apiName": "St Andrew Square (Edinburgh Trams)",
+      "parentCode": "9400ZZEDSTA",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZEDSTA1",
+      "towardsAirport": "9400ZZEDSTA2"
+    },
+    {
+      "sequence": 16,
+      "name": "Picardy Place",
+      "catalogId": "tram:picardy-place",
+      "apiName": "Picardy Place",
+      "parentCode": "9400ZZTWWJU",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZTWWJU1",
+      "towardsAirport": "9400ZZTWWJU2"
+    },
+    {
+      "sequence": 17,
+      "name": "McDonald Road",
+      "catalogId": "tram:mcdonald-road",
+      "apiName": "McDonald Road",
+      "parentCode": "9400ZZTWWJT",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZTWWJT1",
+      "towardsAirport": "9400ZZTWWJT2"
+    },
+    {
+      "sequence": 18,
+      "name": "Balfour Street",
+      "catalogId": "tram:balfour-street",
+      "apiName": "Balfour Street",
+      "parentCode": "9400ZZTWWJS",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZTWWJS1",
+      "towardsAirport": "9400ZZTWWJS2"
+    },
+    {
+      "sequence": 19,
+      "name": "Foot of the Walk",
+      "catalogId": "tram:foot-of-the-walk",
+      "apiName": "Foot of the Walk",
+      "parentCode": "9400ZZTWWJR",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZTWWJR1",
+      "towardsAirport": "9400ZZTWWJR2"
+    },
+    {
+      "sequence": 20,
+      "name": "The Shore",
+      "catalogId": "tram:the-shore",
+      "apiName": "The Shore",
+      "parentCode": "9400ZZTWWJQ",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZTWWJQ1",
+      "towardsAirport": "9400ZZTWWJQ2"
+    },
+    {
+      "sequence": 21,
+      "name": "Port of Leith",
+      "catalogId": "tram:port-of-leith",
+      "apiName": "Port of Leith",
+      "parentCode": "9400ZZTWWJP",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZTWWJP1",
+      "towardsAirport": "9400ZZTWWJP2"
+    },
+    {
+      "sequence": 22,
+      "name": "Ocean Terminal",
+      "catalogId": "tram:ocean-terminal",
+      "apiName": "Ocean Terminal",
+      "parentCode": "9400ZZTWWJO",
+      "terminus": null,
+      "towardsNewhaven": "9400ZZTWWJO1",
+      "towardsAirport": "9400ZZTWWJO2"
+    },
+    {
+      "sequence": 23,
+      "name": "Newhaven",
+      "catalogId": "tram:newhaven",
+      "apiName": "Newhaven",
+      "parentCode": "9400ZZTWWJN",
+      "terminus": "east",
+      "towardsNewhaven": null,
+      "towardsAirport": "9400ZZTWWJN2"
+    }
+  ]
+}
