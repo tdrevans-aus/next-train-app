@@ -24,6 +24,7 @@
 import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { isEdinburghTramsLive } from "../lib/cities/edinburgh/trams-switch.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -40,6 +41,10 @@ export const NO_LIVE_FEED_REGIONS = [
 export function listNoLiveFeedStops() {
   const rows = [];
   for (const region of NO_LIVE_FEED_REGIONS) {
+    // Edinburgh Trams have a live feed once registry edinburgh.tramsLive is true.
+    if (region === "edinburgh" && isEdinburghTramsLive()) {
+      continue;
+    }
     const file = join(ROOT, "lib", "cities", region, "stations.json");
     const json = JSON.parse(readFileSync(file, "utf8"));
     const stops = Array.isArray(json.stops) ? json.stops : [];

@@ -21,6 +21,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
 import { listNoLiveFeedStops, NO_LIVE_FEED_REGIONS } from "../scripts/list-no-live-feed-stops.mjs";
+import { isEdinburghTramsLive } from "../lib/cities/edinburgh/trams-switch.js";
 import { listMultiCityStations } from "../lib/cities/live-city-api.js";
 import cityStationsHandler from "../api/city-stations.js";
 import { BASE, ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
@@ -62,6 +63,9 @@ async function checkOffline() {
   const derived = listNoLiveFeedStops();
 
   for (const region of NO_LIVE_FEED_REGIONS) {
+    if (region === "edinburgh" && isEdinburghTramsLive()) {
+      continue; // Edinburgh Trams have a live feed once registry edinburgh.tramsLive is true
+    }
     const derivedNames = new Set(derived.filter((row) => row.region === region).map((row) => row.name));
     assert(derivedNames.size > 0, `${region}: expected at least one derived no-live-feed stop`);
 

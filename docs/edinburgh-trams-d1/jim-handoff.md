@@ -179,3 +179,56 @@ a tram request resolves to the National Rail station first, as for the existing 
 shared names. The picker already disambiguates visually ("Trams"), but the request carries the bare name. Edinburgh
 Park Station is safe (the rail name is "Edinburgh Park"). Making the tram stop addressable needs a client or API `mode`
 change, which is outside this brief (shared product UI / API shape); flagged, not done.
+
+---
+
+# Flip prep (Jim, 24 Oct 2026) - switch still OFF
+
+Brief: `docs/jim-brief-edinburgh-trams-flip-prep.md`. Mark's PASS note on #523:
+https://github.com/tdrevans-aus/next-train-app/pull/523#issuecomment-6382867176. `tramsLive` is still `false`;
+switch-off output is unchanged (the 72-surface golden still matches with 0 diffs, and `/api/coverage-notes?city=edinburgh`
+is asserted byte-identical to `coverage.json`).
+
+## Decision (Tim, 24 Oct 2026): first flip withholds the tram Haymarket and tram Edinburgh Gateway
+
+`/api/board`, `/api/directions` and `/api/next-train` take a bare name and resolve rail first, so a rider tapping the
+tram Haymarket would get the rail board. With the switch ON, `applyEdinburghTramsToStops()`
+(`lib/cities/edinburgh/trams-catalog.js`, ids in `TRAM_SHARED_NAME_HIDDEN_CATALOG_IDS`) drops `tram:haymarket` and
+`tram:edinburgh-gateway`, so they are absent from the picker, Near me, the station lists, the UK region catalog and
+directions (every catalog consumer goes through that one function). Result: 21 tram stops (58 Edinburgh entries).
+HYM and EGY (rail) are untouched; Edinburgh Park Station and Edinburgh Park Central are unaffected. The coverage note
+("Trams at Haymarket and Edinburgh Gateway aren't shown yet; their rail departures are.") is in
+`lib/cities/edinburgh/coverage-trams.json`, served by `api/coverage-notes.js` in place of `coverage.json` only while
+the switch is on (`applyEdinburghTramsCoverage`).
+
+**Follow-up, not built:** give the API and client a `mode` (or stop-id) parameter so these two stops can return.
+Removing the two ids from `TRAM_SHARED_NAME_HIDDEN_CATALOG_IDS` and editing the coverage note is then the whole catalog
+change. `trams-api.json` still carries both stops' platform ids.
+
+## Bundling
+
+`trams-api.json` (and `coverage-trams.json`) are now static `import ... with { type: "json" }` (the repo's existing
+pattern, e.g. `lib/cities/sydney/marketing-directions.js`), not a computed-path `readFileSync`. Proven with
+`@vercel/nft` run on `api/board.js`, `api/directions.js`, `api/next-train.js` and `api/coverage-notes.js`: all four
+trace `lib/cities/edinburgh/trams-api.json`, `coverage-trams.json`, `trams-catalog.js`, `trams-switch.js`,
+`trams-time.js`. No `vercel.json` change.
+
+## HTTP error propagation
+
+`qa/lib/edinburgh-trams-on-state.mjs` now serves a 429 with `Retry-After: 120` and a valid JSON body, and a 503 with
+a valid JSON body; both must give `FeedUnavailableError` with the same `status` and (429) `retryAfterMs === 120000`.
+Mutation: `if (!response.ok)` -> `if (false)` turns the gate red on those three checks (before, it stayed green).
+
+## Flip to-do list: done vs left
+
+Done now (safe with the switch off): `coverage.json` copy (as `coverage-trams.json`, switch-selected); the
+no-live-feed script/gate exemption (`scripts/list-no-live-feed-stops.mjs` and `qa/no-live-feed-stops-gate.mjs` skip
+Edinburgh once the switch is on; `qa/edinburgh-dogfood-gate.mjs` skips its helper call and uses switch-aware
+counts 22/59 -> 21/58); the Newhaven case in `qa/feed-unconfirmed-rider-copy.mjs` (omitted once the switch is on).
+
+Left for the flip PR: set `tramsLive: true`; the picker entry (no Coming Soon); the stale `stations.json` notes
+("22 vs 23", `liveFeed:false`/"Schedule-only v1") - left because `stations.json` feeds the golden; the rest of
+`qa/edinburgh-dogfood-gate.mjs`, whose remaining assertions are still switch-off-only (e.g. "Haymarket must resolve as
+a Trams entry", the `EdinburghTramsFeedUnverifiedError` expectations) and should be dropped in favour of the planned
+gate's switch-ON checks; `qa/edinburgh-trams-planned-gate.mjs`' switch-off half becomes obsolete; Vercel Production
+env `EDINBURGH_BUSTRACKER_KEY`; ledger rows; G2-G6.
