@@ -23,8 +23,10 @@ import {
   resolveCatalogEntry,
   listCatalogStations,
   fetchStationBoard,
+  lineIdForRoute,
   MissingSwiftlyApiKeyError,
 } from "../lib/providers/los-angeles.js";
+import { swiftlyAuthHeaders } from "../lib/providers/gtfs/auth.js";
 import {
   foldKey,
   isForbiddenCollapseName,
@@ -172,6 +174,16 @@ assert(
   missingKeyThrew,
   "fetchStationBoard must throw MissingSwiftlyApiKeyError when no key is configured — no silent timetable fallback"
 );
+
+// Swiftly rejects "Bearer <key>" (401); the raw key is the accepted Authorization value.
+const swiftlyHeaders = swiftlyAuthHeaders("k");
+assert(
+  JSON.stringify(swiftlyHeaders) === JSON.stringify({ Authorization: "k" }),
+  "swiftlyAuthHeaders must return exactly { Authorization: <raw key> } with no Bearer prefix"
+);
+
+// gtfs_rail.zip has EMPTY route_short_name (verified live 24 Oct 2026); the line must come from route_long_name.
+assert(lineIdForRoute("", "Metro A Line") === "a" && lineIdForRoute("", "Metro K Line") === "k" && lineIdForRoute("B", "") === "b", "lineIdForRoute must resolve lines from route_long_name when route_short_name is empty");
 
 console.log(
   "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, Perth Australia green)"
