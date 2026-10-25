@@ -62,6 +62,20 @@ Chip text is `route_short_name + exact GTFS stop_name` (`AV Line + Lancaster`). 
 - `node qa/run-all.mjs --smoke` in the foreground with a 600000 ms timeout. Do not start a second copy. Do not leave a dev server or a poll loop running.
 - `node qa/lane-lock.mjs check united-states` first. The controller saw it free on 25 Oct 2026. Then `node qa/lane-lock.mjs acquire united-states los-angeles jim cursor/la-metrolink-in-ruling-84bf` before editing `lib/providers/`.
 
+## Follow-up (controller, 25 Oct 2026) — false empty reason
+
+`aba910a` merges live Metrolink rows and keeps Metro rows when the key or the fetch fails. That part stands. The empty state does not.
+
+`scheduledDestinationsToday` / `scheduledDestinationsRemaining` are built from the Metro static feed only. `buildLosAngelesNextTrainFromBoard` then treats any chip missing from those lists as `not-currently-served`. A Metrolink chip with no live row — missing `METROLINK_API_KEY`, a failed fetch, or simply no prediction this minute — is told to the rider as "not currently served". The trains are served. The feed is missing or quiet.
+
+Required:
+
+- A Metrolink chip at Union Station or Pomona North that the Metrolink static timetable still expects today gets `no-live-predictions` when the live row is absent, including when `metrolinkPartial` is set.
+- It gets `not-currently-served` only when the Metrolink timetable itself has no remaining trip for that chip today.
+- Metro chips are unchanged.
+- Add a gate assertion that a Union Station Metrolink chip on a `metrolinkPartial` board is `no-live-predictions`, and that the same assertion goes red if that chip is classified `not-currently-served`.
+- Do not wire Surfliner. Do not flip the city. Same branch, commit, push, no new PR.
+
 ## Git
 
 Stay on `cursor/la-metrolink-in-ruling-84bf`. Commit your files and push that branch. Do not open a pull request and do not use `gh` to create one. PR #535 already tracks this branch. Do not commit `docs/pacific-surfliner-d1/` if you did not change it. Leave no background loops.
