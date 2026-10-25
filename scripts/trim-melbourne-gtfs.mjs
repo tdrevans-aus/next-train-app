@@ -2,7 +2,7 @@
 /**
  * Melbourne (Metropolitan Train + V/Line) GTFS trim: extract folder 2 (metro) and folder 1
  * (V/Line) from the Transport Victoria Open Data Portal's statewide GTFS zip-of-zips and strip
- * each to the six tables lib/providers/gtfs/static-cache.js reads (plus feed_info.txt, carried through), filtered to the routes the
+ * each to the six tables lib/providers/gtfs/static-cache.js reads (plus feed_info.txt and agency.txt, carried through), filtered to the routes the
  * adapter keeps. Pure functions are exported for scripts/publish-melbourne-gtfs-to-blob.mjs and
  * scripts/refresh-hand-published-gtfs.mjs; run directly to write the two trimmed snapshots to a
  * directory (docs/jim-brief-scheduled-snapshot-refresh.md — Melbourne went stale 6 Oct 2026
@@ -108,6 +108,13 @@ export function stripToConfig(files, config) {
   const feedInfoKey = findEntry(files, "feed_info.txt");
   if (feedInfoKey) {
     output["feed_info.txt"] = files[feedInfoKey];
+  }
+  // agency.txt likewise (docs/jim-brief-melbourne-feed-info-exception.md addendum): Transport
+  // Victoria ships no feed_info.txt, so the integrity gate's Melbourne exemption relies on
+  // agency.txt naming a real agency. Byte-for-byte, never fabricated.
+  const agencyKey = findEntry(files, "agency.txt");
+  if (agencyKey) {
+    output["agency.txt"] = files[agencyKey];
   }
   return output;
 }

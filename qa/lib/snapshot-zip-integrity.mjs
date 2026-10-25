@@ -22,6 +22,32 @@ export const MIN_ZIP_BYTES = 5 * 1024;
 export const MIN_TRIP_COUNT = 5;
 export const MAX_CALENDAR_SPAN_DAYS = 400;
 
+// Cities whose upstream genuinely ships no feed_info.txt. For these ONLY, an absent feed_info.txt
+// is accepted when agency.txt names a real agency (see agencyAcceptsMissingFeedInfo). A feed_info.txt
+// that IS present gets the normal checks. Keep this to exactly these two entries; adding a city needs a
+// recorded decision. Brussels must keep failing closed.
+export const FEED_INFO_EXEMPT = {
+  // Transport Victoria's statewide upstream has no feed_info.txt in the metro folder (2).
+  // Tim, 25 Oct 2026 ("option A for melbourne is fine"), docs/jim-brief-melbourne-feed-info-exception.md.
+  melbourne: "Transport Victoria ships none",
+  // Same statewide upstream, V/Line folder (1). Tim, 25 Oct 2026.
+  "melbourne-vline": "Transport Victoria ships none",
+};
+
+function agencyAcceptsMissingFeedInfo(files) {
+  const text = readTableText(files, "agency.txt");
+  if (!text) return { ok: false, why: "agency.txt is missing too" };
+  const real = parseCsv(text).find((row) => {
+    const name = String(row.agency_name ?? "").trim();
+    if (!name) return false;
+    if (SYNTHETIC_PUBLISHER_MARKERS.some((m) => name.toLowerCase().includes(m))) return false;
+    return /^https?:\/\//i.test(String(row.agency_url ?? "").trim());
+  });
+  return real
+    ? { ok: true, name: String(real.agency_name).trim() }
+    : { ok: false, why: "agency.txt has no row with a real (non-synthetic) agency_name and an http(s) agency_url" };
+}
+
 function findEntry(files, name) {
   return Object.keys(files).find((entry) => entry === name || entry.endsWith(`/${name}`)) ?? null;
 }
@@ -51,9 +77,10 @@ export function calendarSpanDays(calendarText, calendarDatesText) {
 /**
  * @param {Record<string, Uint8Array>} files unzipped snapshot
  * @param {number} zipBytes compressed size of the zip
- * @returns {{ reasons: string[], marker: string|undefined, publisher: string }}
+ * @param {string} [city] blob city id; only consulted for the FEED_INFO_EXEMPT absence exception
+ * @returns {{ reasons: string[], marker: string|undefined, publisher: string, notes: string[] }}
  */
-export function inspectSnapshotZip(files, zipBytes) {
+export function inspectSnapshotZip(files, zipBytes, city) {
   const feedInfoText = readTableText(files, "feed_info.txt");
   const feedInfoRow = feedInfoText ? (parseCsv(feedInfoText)[0] ?? null) : null;
   const publisher = String(feedInfoRow?.feed_publisher_name ?? "");
@@ -67,6 +94,7 @@ export function inspectSnapshotZip(files, zipBytes) {
   const spanDays = calendarSpanDays(calendarText, calendarDatesText);
 
   const reasons = [];
+  const notes = [];
 
   if (marker) {
     reasons.push(`feed_info.feed_publisher_name ("${publisher}") looks like test/dogfood data (matched "${marker}")`);
@@ -74,7 +102,14 @@ export function inspectSnapshotZip(files, zipBytes) {
     // stale-snapshot.md) is Newcastle's blob carrying such a publisher string; the gate
     // decides "known" per city.
   }
-  if (!feedInfoText) {
+  if (!feedInfoText && Object.hasOwn(FEED_INFO_EXEMPT, city ?? "")) {
+    const agency = agencyAcceptsMissingFeedInfo(files);
+    if (agency.ok) {
+      notes.push(`${city}: feed_info.txt absent upstream (${FEED_INFO_EXEMPT[city]}) — accepted via agency.txt ("${agency.name}"), Tim 25 Oct 2026`);
+    } else {
+      reasons.push(`feed_info.txt is missing from the published zip and ${city}'s exemption does not apply: ${agency.why}`);
+    }
+  } else if (!feedInfoText) {
     reasons.push("feed_info.txt is missing from the published zip entirely (failing closed — absence is not evidence of a real feed)");
   }
   if (zipBytes < MIN_ZIP_BYTES) {
@@ -87,5 +122,5 @@ export function inspectSnapshotZip(files, zipBytes) {
     reasons.push(`calendar spans ${spanDays} days (> ${MAX_CALENDAR_SPAN_DAYS}) — implausibly long, characteristic of a perpetual test calendar`);
   }
 
-  return { reasons, marker, publisher };
+  return { reasons, marker, publisher, notes };
 }

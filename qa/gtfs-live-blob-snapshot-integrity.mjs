@@ -173,7 +173,8 @@ async function checkContentIntegrity(city) {
   const buffer = Buffer.from(await response.arrayBuffer());
   const files = unzipSync(new Uint8Array(buffer));
 
-  const { reasons, marker } = inspectSnapshotZip(files, buffer.length);
+  const { reasons, marker, notes } = inspectSnapshotZip(files, buffer.length, city);
+  for (const note of notes) console.log(note);
   let known = false;
   if (marker) {
     // The specific, already-diagnosed incident (docs/jim-brief-newcastle-

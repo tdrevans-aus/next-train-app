@@ -69,8 +69,60 @@ assert.equal(
   "melbourne: feed_info.txt must not be fabricated"
 );
 
+// agency.txt is carried byte-for-byte (the Melbourne exemption depends on it).
+{
+  const AG = "agency_id,agency_name,agency_url\n1,Transport Victoria,https://transport.vic.gov.au/\n";
+  for (const [id, type, names] of [["2", "400", ["Alamein", "Belgrave"]], ["1", "2", ["Geelong", "Ballarat"]]]) {
+    const f = fixture({ routeType: type, shortNames: names, withFeedInfo: false });
+    f["agency.txt"] = enc(AG);
+    const out = stripToConfig(f, MELBOURNE_CONFIG[id]);
+    assert.ok(out["agency.txt"], `melbourne folder ${id}: agency.txt not carried`);
+    assert.equal(Buffer.from(out["agency.txt"]).toString(), AG, `melbourne folder ${id}: agency.txt altered`);
+    delete f["agency.txt"];
+    assert.equal(stripToConfig(f, MELBOURNE_CONFIG[id])["agency.txt"], undefined, "agency.txt must not be fabricated");
+  }
+}
+
 // Gate logic still fails closed with none.
 const none = inspectSnapshotZip(unzipSync(zipSync(stripToMetro(fixture({ routeType: "1", shortNames: ["1", "2", "5", "6"], withFeedInfo: false })))), 10 * 1024);
 assert.ok(none.reasons.some((r) => r.includes("feed_info.txt is missing")), "gate must still fail closed without feed_info.txt");
+
+// Melbourne feed_info.txt absence exception (docs/jim-brief-melbourne-feed-info-exception.md).
+const noFeedInfo = (extra = {}) => ({
+  ...fixture({ routeType: "400", shortNames: ["Alamein", "Belgrave"], withFeedInfo: false }),
+  ...extra,
+});
+const REAL_AGENCY = enc(
+  "agency_id,agency_name,agency_url,agency_timezone\n1,Transport Victoria,https://transport.vic.gov.au/,Australia/Melbourne\n"
+);
+const inspect = (files, city) => inspectSnapshotZip(unzipSync(zipSync(files)), 10 * 1024, city);
+// 1. Melbourne, no feed_info, real agency: passes and reports why.
+{
+  const r = inspect(noFeedInfo({ "agency.txt": REAL_AGENCY }), "melbourne");
+  assert.deepEqual(r.reasons, [], "melbourne without feed_info but real agency.txt must pass");
+  assert.ok(r.notes.some((n) => n.includes("absent upstream")), "exception reason must be reported");
+  assert.deepEqual(inspect(noFeedInfo({ "agency.txt": REAL_AGENCY }), "melbourne-vline").reasons, []);
+}
+// 2. Melbourne, no feed_info, agency missing / synthetic / no url: fails.
+{
+  const noAgency = noFeedInfo();
+  delete noAgency["agency.txt"];
+  assert.ok(inspect(noAgency, "melbourne").reasons.some((x) => x.includes("feed_info.txt is missing")), "missing agency.txt must fail");
+  const synth = noFeedInfo({ "agency.txt": enc("agency_id,agency_name,agency_url\n1,Next-Train Dogfood,https://example.org\n") });
+  assert.ok(inspect(synth, "melbourne").reasons.length, "synthetic agency must fail");
+  const noUrl = noFeedInfo({ "agency.txt": enc("agency_id,agency_name,agency_url\n1,Transport Victoria,\n") });
+  assert.ok(inspect(noUrl, "melbourne").reasons.length, "agency without url must fail");
+}
+// 3. Brussels (any non-exempt city), no feed_info: fails closed even with a real agency.
+assert.ok(inspect(noFeedInfo({ "agency.txt": REAL_AGENCY }), "brussels").reasons.some((x) => x.includes("feed_info.txt is missing")), "brussels must fail closed");
+assert.ok(inspect(noFeedInfo({ "agency.txt": REAL_AGENCY }), undefined).reasons.length, "no city must fail closed");
+// 4. Melbourne WITH a synthetic feed_info.txt: normal checks apply, fails.
+{
+  const synthFi = noFeedInfo({
+    "agency.txt": REAL_AGENCY,
+    "feed_info.txt": enc("feed_publisher_name,feed_publisher_url,feed_lang\nnext-train dogfood,https://example.org,en\n"),
+  });
+  assert.ok(inspect(synthFi, "melbourne").reasons.some((x) => x.includes("test/dogfood")), "melbourne with synthetic feed_info must fail");
+}
 
 console.log("snapshot-feed-info-carried: ok");
