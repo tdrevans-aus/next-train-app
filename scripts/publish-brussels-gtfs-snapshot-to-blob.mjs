@@ -12,10 +12,13 @@
  *
  * @see docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md
  *
- * Usage: node scripts/publish-brussels-gtfs-snapshot-to-blob.mjs
+ * Usage: node scripts/publish-brussels-gtfs-snapshot-to-blob.mjs [--out=<file.zip>]
+ *   --out writes the stripped zip locally and uploads nothing (no token needed).
  * Requires BLOB_READ_WRITE_TOKEN (in .env.local). The discovery URL below
  * is unauthenticated (confirmed 200 application/zip, no key needed).
  */
+import { writeFileSync } from "fs";
+import { fileURLToPath } from "url";
 import { put } from "@vercel/blob";
 import { unzipSync, zipSync } from "fflate";
 import { loadEnvLocal } from "../lib/load-env-local.js";
@@ -63,13 +66,16 @@ function readTable(files, name) {
  * scripts/publish-gtfs-snapshot-to-blob.mjs's stripToConfig, generalized
  * to a single route_type filter since Brussels' route_short_name ("1",
  * "2", "5", "6") isn't unique across route_types in this feed (route_id
- * is the only reliable key). shapes.txt/translations.txt/agency.txt/
- * feed_info.txt are dropped entirely — lib/providers/gtfs/static-cache.js
- * never reads them (only stops/routes/calendar/calendar_dates/trips/
- * stop_times). calendar.txt/calendar_dates.txt are kept unfiltered (small,
+ * is the only reliable key). shapes.txt/translations.txt/agency.txt are
+ * dropped entirely — lib/providers/gtfs/static-cache.js never reads them
+ * (only stops/routes/calendar/calendar_dates/trips/stop_times). feed_info.txt
+ * is carried through byte-for-byte (tiny, ignored by static-cache.js) because
+ * qa/gtfs-live-blob-snapshot-integrity.mjs fails closed on a published zip
+ * without it (docs/jim-brief-snapshot-feed-info.md). It is never fabricated:
+ * if the upstream has none, none is written. calendar.txt/calendar_dates.txt are kept unfiltered (small,
  * and activeServicesForDate() needs every service_id trips.txt references).
  */
-function stripToMetro(files) {
+export function stripToMetro(files) {
   const routes = readTable(files, "routes.txt");
   const trips = readTable(files, "trips.txt");
   const stopTimes = readTable(files, "stop_times.txt");
@@ -128,6 +134,10 @@ function stripToMetro(files) {
       serializeCsv(Object.keys(calendarDates[0] ?? { service_id: "" }), keptCalendarDates)
     );
   }
+  const feedInfoKey = findEntry(files, "feed_info.txt");
+  if (feedInfoKey) {
+    output["feed_info.txt"] = files[feedInfoKey];
+  }
   return output;
 }
 
@@ -152,6 +162,14 @@ async function main() {
     `brussels: downloaded ${(beforeBytes / 1024 / 1024).toFixed(2)} MB, publishing ${(zipped.length / 1024).toFixed(0)} KB stripped to metro (route_type=1, lines ${BRUSSELS_METRO_SHORT_NAMES.join("/")})`
   );
 
+  const outArg = process.argv.find((a) => a.startsWith("--out="));
+  if (outArg) {
+    const outPath = outArg.slice("--out=".length);
+    writeFileSync(outPath, zipped);
+    console.log(`Wrote ${outPath} (not uploaded)`);
+    return;
+  }
+
   const pathname = "gtfs/brussels.zip";
   const blob = await put(pathname, Buffer.from(zipped), {
     access: "public",
@@ -162,7 +180,9 @@ async function main() {
   console.log(`Published brussels: ${blob.url}`);
 }
 
-main().catch((err) => {
-  console.error(err?.stack || err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(err?.stack || err);
+    process.exit(1);
+  });
+}
