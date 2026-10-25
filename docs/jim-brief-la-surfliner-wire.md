@@ -59,6 +59,20 @@ Required:
 - Add a gate fixture whose realtime trip id is `2026-10-24_AMTK_595` and whose static `trip_short_name` is `595` / `route_id` `78`, and assert a live row appears. A mutation that joins on `trip_id` instead must go red. An entity `2026-10-24_AMTK_11` (Coast Starlight's shape) must not appear.
 - Do not flip the city. Same branch. Commit and push. No new pull request.
 
+## Follow-up 2 (controller, 25 Oct 2026) — duplicate train numbers
+
+`dc33320` joins `AMTK_<number>` to the first static trip with that `trip_short_name`. Route 78 has 54 trips and only 37 distinct short names. Twelve numbers are reused. Train 777 is three trips (`314739` to Los Angeles, `314740` to Goleta, `314741` to San Luis Obispo) on three different `service_id`s. Keeping the first one can put the wrong terminus on the board, or attach a timetable that is not running today.
+
+Required:
+
+- Among route-78 trips with that `trip_short_name`, keep the ones whose `service_id` operates on the board's local date in `America/Los_Angeles` (`calendar.txt` / `calendar_dates.txt`, same helper the Metro path already uses).
+- If one remains, use it.
+- If several remain, keep the ones that call at the board stop (`LAX`). If one remains, use it.
+- If several still remain, do not keep file order. Skip the realtime row rather than show a guessed terminus.
+- Gate: two static trips share `trip_short_name` `761`, only one service is active on the fixture date, and the live row's chip is that active trip's final stop. A mutation that keeps the inactive trip must go red.
+
+Same branch. Commit and push. No new pull request. Do not flip the city. Run `node qa/los-angeles-dogfood-gate.mjs` only.
+
 ## Lane lock
 
 `node qa/lane-lock.mjs check united-states` currently exits 1 because this same branch already holds los-angeles. That is this work. Continue. Do not acquire another region. Do not release the lock.
