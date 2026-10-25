@@ -21,8 +21,8 @@ D1 has no stop-level IDs in this pack. Jim will resolve GTFS stop_id `107` (`L.A
 ## H3 — thin / event / overlay
 
 - **Inland Empire–Orange County (IE-OC) Line**: Does not call at Union Station or Pomona North. IE-OC produces no chip at any in-catalog station board. (Source: oracle clash report — "IE-OC calls at neither")
-- **Redlands–University limited service**: The SB Line has limited weekday trips that continue to Redlands–University beyond San Bernardino–Downtown. Whether these generate a separate direction chip ("SB Line → Redlands–University") is an **open question for Tim** — see H.flag.1 below. Do not suppress; do not assert as the primary terminus without Tim's decision.
-- **SB Line service patterns A/B/D at Union Station vs A only at Pomona North**: The oracle records that all service patterns (A, B, D) call at Union Station (stop_id 107), but only pattern A calls at Pomona North (stop_id 109). This is a departure-frequency difference, not a direction-chip difference; the board at Pomona North will see fewer SB Line departures than Union Station. Jim must filter stop_times by stop_id 109 for the Pomona North board. (Source: oracle clash report §Metrolink lines table)
+- **Redlands - University is not a chip at these stations.** The static zip (opened 25 Oct 2026) has 39 San Bernardino Line trips that end at `Redlands - University`, and none of them call at stop 107 or 109. The trips that do call at both stations and run past San Bernardino end at `Redlands - Downtown`: one each way, weekday `service_id` 1146. That final stop is a chip under the same short-turn rule LA Metro already uses. See H5.
+- **"A/B/D" is Metro Rail, not a Metrolink calendar.** In the oracle table it means Metro lines A, B and D serve Union Station, and only the A Line serves Pomona North. Both stations get the same SB Line trips (30 to `San Bernardino - Downtown`, 25 back to Union Station, plus the one Redlands pair). Filter by stop_id, not by a pattern letter.
 - **Metrolink/Amtrak/FlyAway logos** on the Metro Rail map: already flagged as transfers in the LA Metro Rail hazard pack H3. This pack covers Metrolink only. Amtrak Pacific Surfliner has a separate research report (`docs/pacific-surfliner-d1/oracle-clash-report.md`); its live wiring is also blocked pending Tim's approval of redistribution terms (US ledger §LA table).
 - **Metro A Line Extension Project** (dashed, east of Pomona North) and **D Line Extension** (west of Wilshire/La Cienega): overlay / future; not Metrolink stops; not affected by this pack.
 
@@ -30,8 +30,8 @@ D1 has no stop-level IDs in this pack. Jim will resolve GTFS stop_id `107` (`L.A
 
 | node | Metrolink direction chips | evidence |
 | --- | --- | --- |
-| **Union Station** | AV Line → Lancaster; VC Line → Ventura–East; OC Line → Oceanside; 91/Perris Valley Line → Perris–South; RIV Line → Riverside–Downtown; SB Line → San Bernardino–Downtown (+ limited SB Line → Redlands–University — see H.flag.1) | Oracle clash report §Lines table. All six lines depart Union Station outbound. Trains arriving and terminating at Union Station are not chips there. |
-| **Pomona North** | SB Line → San Bernardino–Downtown (eastbound); SB Line → Union Station (westbound) | Oracle clash report: SB Line is the only Metrolink line at Pomona North. Pomona North is an intermediate station; both directions are present. |
+| **Union Station** | Primary: `AV Line + Lancaster`, `VC Line + Ventura - East`, `OC Line + Oceanside`, `91-PV Line + Perris - South`, `RIV Line + Riverside - Downtown`, `SB Line + San Bernardino - Downtown`. Short turns that are real final stops of trips calling at stop 107 are also chips (H5). | `stops.txt` / `stop_times.txt` join, 25 Oct 2026. Strings are exact GTFS `stop_name`s. Trains whose final stop is 107 are not chips here. |
+| **Pomona North** | `SB Line + San Bernardino - Downtown`, `SB Line + Union Station`, and `SB Line + Redlands - Downtown` for the one weekday trip that ends there. | Same join. Only the SB Line calls at stop 109. Westbound chip uses the catalog name `Union Station` (GTFS `L.A. Union Station`). |
 
 A trip that terminates at the board station is **not** a direction chip at that station. (Source: oracle clash report §Direction facts for Luke)
 
@@ -39,7 +39,29 @@ Dropping any of the six lines from the Union Station board is a silent board cut
 
 ## H5 — nested short turns
 
-No official Metrolink short-turn codes in this pack. The SB Line's Redlands–University trips are limited weekday service, not a timetabled short-turn set with their own code. Record as a separate chip only if Tim confirms it (H.flag.1); otherwise treat San Bernardino–Downtown as the canonical SB terminus.
+Same rule as LA Metro (`docs/jim-brief-la-short-turn-chips.md`): if a trip calls at the board station and its final stop is somewhere else, that final stop is a chip. Counts below are trips in the 5 May 2026 zip whose path includes the station. Primary termini are the majority; the rest are short turns, not optional.
+
+**Union Station (stop 107), final stops other than Union Station:**
+
+| route_id | route_short_name | final stop_name | trips |
+| --- | --- | --- | --- |
+| Antelope Valley Line | AV Line | Lancaster | 19 |
+| Antelope Valley Line | AV Line | Via Princessa | 6 |
+| Antelope Valley Line | AV Line | Vista Canyon | 4 |
+| Ventura County Line | VC Line | Moorpark | 9 |
+| Ventura County Line | VC Line | Ventura - East | 6 |
+| Ventura County Line | VC Line | Chatsworth | 1 |
+| Orange County Line | OC Line | Oceanside | 14 |
+| Orange County Line | OC Line | Laguna Niguel / Mission Viejo | 11 |
+| 91 Line | 91-PV Line | Perris - South | 17 |
+| 91 Line | 91-PV Line | Riverside - Downtown | 1 |
+| Riverside Line | RIV Line | Riverside - Downtown | 5 |
+| San Bernardino Line | SB Line | San Bernardino - Downtown | 30 |
+| San Bernardino Line | SB Line | Redlands - Downtown | 1 |
+
+**Pomona North (stop 109):** the same SB Line trips. Eastbound finals are `San Bernardino - Downtown` (30) and `Redlands - Downtown` (1). Westbound finals are `L.A. Union Station` (26, including the Redlands trip). Chip text for that westbound end is `SB Line + Union Station`.
+
+`Redlands - University` (stop_id 191) is a real SB Line terminus for 39 other trips. None of those trips call at 107 or 109, so it is not a chip on either board.
 
 ## H6 — inner city (where §3 lives)
 
@@ -74,15 +96,16 @@ Alerts endpoint (`https://cdn.simplifytransit.com/metrolink/alerts/service-alert
 | los-angeles-metrolink vs los-angeles (Metro Rail pack) | Second-operator supplement — do not overwrite Metro Rail pack |
 | Other-city hub strings (Chicago Loop, Beurs, T-Centralen, Brunnsparken, Centraal Station, Waitematā Station, Metro Center, Rautatientori) | Do not copy |
 
-## Ambiguities flagged for Tim
+## Flags closed from the static zip (25 Oct 2026)
 
-**H.flag.1 — SB Line Redlands–University chip**: The oracle confirms "limited weekday trips to Redlands–University" beyond San Bernardino–Downtown on the SB Line. Should the board at Union Station and Pomona North show a separate chip "SB Line → Redlands–University" for these trips, or group them all under "SB Line → San Bernardino–Downtown"? The oracle does not decide this. Jim cannot wire without Tim's answer. (Source: oracle clash report §Direction facts for Luke — "SB Line's far ends are San Bernardino–Downtown, with limited weekday trips to Redlands–University")
+The four flags in the first draft of this pack are closed. `route_id` in this feed is the long line name, not the short name.
 
-**H.flag.2 — SB Line service pattern A/B/D meaning**: The oracle records "A/B/D serve" at Union Station and "A only serves in catalog" at Pomona North for the SB Line, and uses the same "A/B/D serve" notation for the other five lines at Union Station. The oracle does not define what A, B, D denote (likely calendar types: weekday / Saturday / Sunday). Jim should identify the service_id values in `calendar.txt` before writing stop_times filters. This does not affect which direction chips appear but does affect departure counts per day.
+- **H.flag.1.** `Redlands - University` does not call at Union Station or Pomona North. The catalog-reaching extension ends at `Redlands - Downtown` (one weekday trip each way) and is a short-turn chip. Not a Tim question.
+- **H.flag.2.** "A/B/D" in the oracle is Metro Rail lines. It is not a Metrolink `service_id`. Weekday services in `calendar.txt` are the `service_id`s with Monday–Friday set (1141, 1142, 1146, 1149–1151, 1153). The Redlands - Downtown pair is 1146.
+- **H.flag.3.** Exact `stop_name`s, hyphen with spaces: `Ventura - East` (169), `Perris - South` (184), `Riverside - Downtown` (123), `San Bernardino - Downtown` (185), `Redlands - Downtown` (190), `L.A. Union Station` (107), `Pomona - North` (109), `Lancaster` (162), `Oceanside` (144). Also short-turn names `Via Princessa`, `Vista Canyon`, `Moorpark`, `Chatsworth`, `Laguna Niguel / Mission Viejo`.
+- **H.flag.4.** `route_id` / `route_short_name`: `Antelope Valley Line` / `AV Line`; `Ventura County Line` / `VC Line`; `Orange County Line` / `OC Line`; `91 Line` / `91-PV Line`; `Riverside Line` / `RIV Line`; `San Bernardino Line` / `SB Line`; `Inland Emp.-Orange Co. Line` / `IE-OC Line` (out of scope).
 
-**H.flag.3 — Far terminus GTFS stop_name values**: The oracle gives "Lancaster," "Ventura–East," "Oceanside," "Perris–South," "Riverside–Downtown," "San Bernardino–Downtown," "Redlands–University" as the far termini for the six lines. It does not confirm whether these are the exact `stop_name` values in Metrolink's `stops.txt`. Jim must verify from the GTFS zip before wiring direction chip strings. "Ventura–East" and "Perris–South" in particular are oracle shorthand and may differ from GTFS. (Source: oracle clash report §Lines table notes)
-
-**H.flag.4 — GTFS route_id values**: The oracle confirms stop_ids 107 and 109 and route short names (AV Line, VC Line, OC Line, 91-PV Line, RIV Line, SB Line), but does not list the individual `route_id` values for each line from Metrolink's `routes.txt`. Jim must extract these from the GTFS zip.
+The GTFS-RT EULA is still open. That one waits on Tim. It is not one of these four flags.
 
 ## What I did not do
 

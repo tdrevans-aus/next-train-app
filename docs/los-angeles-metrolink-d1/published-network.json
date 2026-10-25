@@ -51,10 +51,9 @@
     "7th St/Metro Ctr is the Metro Rail hub lock (A × B × D × E). Never a Metrolink direction token. No Metrolink line calls at 7th St/Metro Ctr.",
     "A trip terminating at the board station is not a direction chip there. Union Station is the Metrolink terminal for all six lines; only outbound departures generate chips at Union Station. Pomona North is an intermediate SB Line station; both directions appear.",
     "Timezone America/Los_Angeles HAS DST (PDT/PST). Do not copy Perth / Brisbane no-DST.",
-    "SB Line service patterns: A, B, D all serve Union Station (stop_id 107). Pattern A only serves Pomona North (stop_id 109). Jim must filter stop_times by stop_id 109 for the Pomona North board.",
-    "SB Line limited service: some weekday trips extend to Redlands–University beyond San Bernardino–Downtown. Whether this generates a separate direction chip is an open question for Tim — see H.flag.1 in hazard-pack.md.",
-    "GTFS route_id values not included in oracle report. Jim must extract from routes.txt in the Metrolink GTFS zip (H.flag.4 in hazard-pack.md).",
-    "Far terminus GTFS stop_name values for Ventura–East, Perris–South, and Riverside–Downtown are oracle shorthand and need verification from stops.txt before wiring direction chips (H.flag.3 in hazard-pack.md).",
+    "Oracle 'A/B/D serve' means Metro Rail lines A, B and D, not a Metrolink service pattern. Pomona North and Union Station see the same SB Line trips. Filter by stop_id.",
+    "Redlands - University (39 SB trips) does not call at stop 107 or 109. The extension that does is one weekday trip each way to Redlands - Downtown (service_id 1146). It is a short-turn chip. Counts and route_ids are in hazard-pack.md H5.",
+    "Chip text is route_short_name + exact GTFS stop_name, joined with ' + '. route_id is the long line name (91 Line, not 91-PV Line). Westbound at Pomona North uses the catalog name Union Station.",
     "Dropping any of the six Metrolink lines from the Union Station board is a silent board cut. Source: oracle clash report §Catalog cut.",
     "Live wiring blocked. GTFS-RT EULA §3 bars distribution without Metrolink written consent. Status stays planned until Tim approves. Do not write provider code in lib/.",
     "City id: los-angeles (same as the Metro Rail pack). This is the Metrolink second-operator supplement. Do not overwrite docs/los-angeles-d1/published-network.json."
@@ -67,45 +66,19 @@
       "directionGroup": "Metrolink",
       "metrolinkLinesServed": ["AV Line", "VC Line", "OC Line", "91-PV Line", "RIV Line", "SB Line"],
       "directionChips": [
-        {
-          "label": "AV Line → Lancaster",
-          "gtfsShortName": "AV Line",
-          "direction": "outbound from Union Station"
-        },
-        {
-          "label": "VC Line → Ventura–East",
-          "gtfsShortName": "VC Line",
-          "direction": "outbound from Union Station",
-          "flag": "H.flag.3: 'Ventura–East' is oracle shorthand — verify exact GTFS stop_name from stops.txt before wiring"
-        },
-        {
-          "label": "OC Line → Oceanside",
-          "gtfsShortName": "OC Line",
-          "direction": "outbound from Union Station"
-        },
-        {
-          "label": "91/Perris Valley Line → Perris–South",
-          "gtfsShortName": "91-PV Line",
-          "direction": "outbound from Union Station",
-          "flag": "H.flag.3: 'Perris–South' is oracle shorthand — verify exact GTFS stop_name from stops.txt before wiring. H.flag.4: confirm board label (91-PV Line vs 91/Perris Valley Line)"
-        },
-        {
-          "label": "RIV Line → Riverside–Downtown",
-          "gtfsShortName": "RIV Line",
-          "direction": "outbound from Union Station",
-          "flag": "H.flag.3: 'Riverside–Downtown' is oracle shorthand — verify exact GTFS stop_name from stops.txt before wiring"
-        },
-        {
-          "label": "SB Line → San Bernardino–Downtown",
-          "gtfsShortName": "SB Line",
-          "direction": "outbound from Union Station"
-        },
-        {
-          "label": "SB Line → Redlands–University (limited weekday)",
-          "gtfsShortName": "SB Line",
-          "direction": "outbound from Union Station",
-          "flag": "H.flag.1: Tim must decide whether limited Redlands–University trips generate a separate chip or are grouped under San Bernardino–Downtown"
-        }
+        {"label": "AV Line + Lancaster", "routeId": "Antelope Valley Line", "gtfsShortName": "AV Line", "finalStopName": "Lancaster", "trips": 19},
+        {"label": "AV Line + Via Princessa", "routeId": "Antelope Valley Line", "gtfsShortName": "AV Line", "finalStopName": "Via Princessa", "trips": 6},
+        {"label": "AV Line + Vista Canyon", "routeId": "Antelope Valley Line", "gtfsShortName": "AV Line", "finalStopName": "Vista Canyon", "trips": 4},
+        {"label": "VC Line + Moorpark", "routeId": "Ventura County Line", "gtfsShortName": "VC Line", "finalStopName": "Moorpark", "trips": 9},
+        {"label": "VC Line + Ventura - East", "routeId": "Ventura County Line", "gtfsShortName": "VC Line", "finalStopName": "Ventura - East", "trips": 6},
+        {"label": "VC Line + Chatsworth", "routeId": "Ventura County Line", "gtfsShortName": "VC Line", "finalStopName": "Chatsworth", "trips": 1},
+        {"label": "OC Line + Oceanside", "routeId": "Orange County Line", "gtfsShortName": "OC Line", "finalStopName": "Oceanside", "trips": 14},
+        {"label": "OC Line + Laguna Niguel / Mission Viejo", "routeId": "Orange County Line", "gtfsShortName": "OC Line", "finalStopName": "Laguna Niguel / Mission Viejo", "trips": 11},
+        {"label": "91-PV Line + Perris - South", "routeId": "91 Line", "gtfsShortName": "91-PV Line", "finalStopName": "Perris - South", "trips": 17},
+        {"label": "91-PV Line + Riverside - Downtown", "routeId": "91 Line", "gtfsShortName": "91-PV Line", "finalStopName": "Riverside - Downtown", "trips": 1},
+        {"label": "RIV Line + Riverside - Downtown", "routeId": "Riverside Line", "gtfsShortName": "RIV Line", "finalStopName": "Riverside - Downtown", "trips": 5},
+        {"label": "SB Line + San Bernardino - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "San Bernardino - Downtown", "trips": 30},
+        {"label": "SB Line + Redlands - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "Redlands - Downtown", "trips": 1, "serviceId": "1146"}
       ],
       "doNotEmit": [
         "to 7th St/Metro Ctr",
@@ -124,19 +97,10 @@
       "gtfsStopName": "Pomona - North",
       "directionGroup": "Metrolink",
       "metrolinkLinesServed": ["SB Line"],
-      "servicePatternNote": "Served by SB Line service pattern A only. Patterns B and D serve Union Station (stop_id 107) but not Pomona North. Board will show fewer SB Line departures per day than Union Station.",
       "directionChips": [
-        {
-          "label": "SB Line → San Bernardino–Downtown",
-          "gtfsShortName": "SB Line",
-          "direction": "eastbound"
-        },
-        {
-          "label": "SB Line → Union Station",
-          "gtfsShortName": "SB Line",
-          "direction": "westbound",
-          "note": "Union Station is the Metrolink terminus; chip uses catalog name 'Union Station'."
-        }
+        {"label": "SB Line + San Bernardino - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "San Bernardino - Downtown", "trips": 30},
+        {"label": "SB Line + Redlands - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "Redlands - Downtown", "trips": 1, "serviceId": "1146"},
+        {"label": "SB Line + Union Station", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "L.A. Union Station", "catalogLabelStop": "Union Station", "trips": 26}
       ],
       "doNotAdd": ["AV Line", "VC Line", "OC Line", "91-PV Line", "RIV Line", "IE-OC Line"],
       "doNotConfuse": "Pomona - Downtown (Metrolink GTFS stop_id 120) is a different station, not in catalog, never added here.",
@@ -148,7 +112,9 @@
       "id": "AV",
       "gtfsShortName": "AV Line",
       "displayName": "Antelope Valley Line",
+      "routeId": "Antelope Valley Line",
       "termini": ["L.A. Union Station", "Lancaster"],
+      "shortTurnFinalsAtUnionStation": ["Via Princessa", "Vista Canyon"],
       "catalogStationsServed": ["Union Station"],
       "note": "Does not call at Pomona North or any other in-catalog LA station."
     },
@@ -156,8 +122,9 @@
       "id": "VC",
       "gtfsShortName": "VC Line",
       "displayName": "Ventura County Line",
-      "termini": ["L.A. Union Station", "Ventura–East"],
-      "terminusNameFlag": "H.flag.3: 'Ventura–East' is oracle shorthand — verify exact GTFS stop_name from stops.txt",
+      "routeId": "Ventura County Line",
+      "termini": ["L.A. Union Station", "Ventura - East"],
+      "shortTurnFinalsAtUnionStation": ["Moorpark", "Chatsworth"],
       "catalogStationsServed": ["Union Station"],
       "note": "Does not call at Pomona North or any other in-catalog LA station."
     },
@@ -165,7 +132,9 @@
       "id": "OC",
       "gtfsShortName": "OC Line",
       "displayName": "Orange County Line",
+      "routeId": "Orange County Line",
       "termini": ["L.A. Union Station", "Oceanside"],
+      "shortTurnFinalsAtUnionStation": ["Laguna Niguel / Mission Viejo"],
       "catalogStationsServed": ["Union Station"],
       "note": "Does not call at Pomona North or any other in-catalog LA station."
     },
@@ -173,8 +142,9 @@
       "id": "91PV",
       "gtfsShortName": "91-PV Line",
       "displayName": "91/Perris Valley Line",
-      "termini": ["L.A. Union Station", "Perris–South"],
-      "terminusNameFlag": "H.flag.3: 'Perris–South' is oracle shorthand — verify exact GTFS stop_name from stops.txt",
+      "routeId": "91 Line",
+      "termini": ["L.A. Union Station", "Perris - South"],
+      "shortTurnFinalsAtUnionStation": ["Riverside - Downtown"],
       "catalogStationsServed": ["Union Station"],
       "note": "Does not call at Pomona North or any other in-catalog LA station."
     },
@@ -182,8 +152,8 @@
       "id": "RIV",
       "gtfsShortName": "RIV Line",
       "displayName": "Riverside Line",
-      "termini": ["L.A. Union Station", "Riverside–Downtown"],
-      "terminusNameFlag": "H.flag.3: 'Riverside–Downtown' is oracle shorthand — verify exact GTFS stop_name from stops.txt",
+      "routeId": "Riverside Line",
+      "termini": ["L.A. Union Station", "Riverside - Downtown"],
       "catalogStationsServed": ["Union Station"],
       "note": "Does not call at Pomona North or any other in-catalog LA station."
     },
@@ -191,14 +161,17 @@
       "id": "SB",
       "gtfsShortName": "SB Line",
       "displayName": "San Bernardino Line",
-      "termini": ["L.A. Union Station", "San Bernardino–Downtown"],
-      "limitedServiceTerminus": {
-        "name": "Redlands–University",
-        "serviceType": "limited weekday trips only",
-        "flag": "H.flag.1: Tim must decide whether these trips generate a separate direction chip or are grouped under San Bernardino–Downtown"
+      "routeId": "San Bernardino Line",
+      "termini": ["L.A. Union Station", "San Bernardino - Downtown"],
+      "catalogReachingExtension": {
+        "finalStopName": "Redlands - Downtown",
+        "stopId": "190",
+        "tripsEachWayThroughUnionAndPomona": 1,
+        "serviceId": "1146"
       },
+      "notOnTheseBoards": "Redlands - University (stop_id 191) is the end of 39 other SB trips. None call at stop 107 or 109.",
       "catalogStationsServed": ["Union Station", "Pomona North"],
-      "pomona_north_note": "Pomona North (GTFS stop_id 109) is served by SB Line service pattern A only, not patterns B or D. Intermediate stops between Union Station and Pomona North — Cal State L.A., El Monte, Baldwin Park, Covina — are not in the LA catalog and are not added.",
+      "pomona_north_note": "Intermediate stops between Union Station and Pomona North — Cal State LA, El Monte, Baldwin Park, Covina — are not in the LA catalog and are not added.",
       "note": "The only Metrolink line calling at Pomona North."
     }
   ],

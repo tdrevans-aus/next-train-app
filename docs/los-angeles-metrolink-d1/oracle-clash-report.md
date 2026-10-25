@@ -34,6 +34,8 @@ The LA catalog prints these stations as `Union Station` and `Pomona North` (`lib
 | Riverside Line | L.A. Union Station ↔ Riverside–Downtown | **Union Station** (A/B/D serve) | Does not call at Pomona North. |
 | Inland Empire–Orange County Line | San Bernardino–Downtown ↔ Oceanside | Not applicable | Does not serve Union Station. Does not call at Pomona North. |
 
+**"A/B/D serve" in the table above means LA Metro Rail lines A, B and D call at that station.** "A only" at Pomona North means only Metro's A Line. It is not a Metrolink service-pattern code.
+
 **Catalog cut (this pass):** Metrolink departures are added only at in-catalog stations where Metrolink actually calls: Union Station and Pomona North. No other Metrolink station is added. At Union Station the board owes all six lines in the table above. At Pomona North the board owes the San Bernardino Line only. Filtering the other five lines off Union Station would be a silent board cut.
 
 **Direction facts for Luke:** Each line uses its GTFS short name plus the far terminus (AV Line, VC Line, OC Line, 91-PV Line, RIV Line, SB Line). SB Line's far ends are San Bernardino–Downtown, with limited weekday trips to Redlands–University. A trip that terminates at the board station is not a direction chip for that station. Metrolink chips stay in their own direction group, not collapsed into Metro Rail's "A Line + …" chips. Same shape as Brussels STIB + SNCB: one station board, directions not merged. The Metro hub lock stays 7th St/Metro Ctr and is never a Metrolink direction.
