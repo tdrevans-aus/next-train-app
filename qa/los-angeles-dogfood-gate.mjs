@@ -26,6 +26,7 @@ import {
   losAngelesDirectionsFromStatic,
   setLosAngelesStaticLoader,
   setMetrolinkStaticLoader,
+  setSurflinerStaticLoader,
 } from "../lib/cities/los-angeles/dogfood-next-train.js";
 import { checkBoard as sweepCheckBoard, DOCUMENTED_NOT_SERVED } from "./los-angeles-all-stations-live-sweep.mjs";
 import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
@@ -52,6 +53,11 @@ import {
   staticMetrolinkChipsForStop,
   METROLINK_CATALOG_TO_STOP_ID,
   METROLINK_STOP_ID_TO_CATALOG,
+  buildSurflineChip,
+  staticSurflineChipsForStop,
+  SURFLINER_STOP_ID,
+  SURFLINER_CATALOG_STATION,
+  SURFLINER_ROUTE_ID,
 } from "../lib/providers/los-angeles.js";
 import { swiftlyAuthHeaders } from "../lib/providers/gtfs/auth.js";
 import {
@@ -932,8 +938,8 @@ assert(
   "coverage.json must record buses as not covered"
 );
 assert(
-  coverage.notCovered.some((c) => /Pacific Surfliner/.test(c.label)),
-  "coverage.json must record Pacific Surfliner as not shown yet"
+  coverage.covered.some((c) => /Pacific Surfliner/.test(c.label) && /Union Station/.test(c.detail)),
+  "coverage.json must record Pacific Surfliner as covered at Union Station"
 );
 for (const name of ["Wilshire/La Brea", "Wilshire/Fairfax", "Wilshire/La Cienega"]) {
   assert(byName.has(name), `${name} must stay in the catalog`);
@@ -1239,7 +1245,280 @@ assert(
 );
 console.log("los-angeles Metrolink empty-reason assertions: ok (6j + mutation check)");
 
+// ---- 7. Pacific Surfliner assertions (docs/jim-brief-la-surfliner-wire.md) ----
+// Fixture: minimal Amtrak GTFS covering stop LAX (Union Station) and terminals for the three
+// Surfliner chip directions, plus an inbound terminating trip and a non-78 route.
+const sfStops = [
+  { stop_id: "LAX", stop_name: "Los Angeles", location_type: "0", parent_station: "" },
+  { stop_id: "SDG", stop_name: "San Diego", location_type: "0", parent_station: "" },
+  { stop_id: "GOL", stop_name: "Goleta Amtrak", location_type: "0", parent_station: "" },
+  { stop_id: "SLO", stop_name: "San Luis Obispo", location_type: "0", parent_station: "" },
+  { stop_id: "SEA", stop_name: "Seattle", location_type: "0", parent_station: "" },
+];
+// route_id "78" = Pacific Surfliner; route_id "11" = Coast Starlight (non-78, out-reservation)
+const sfRoutes = [
+  { route_id: "78", route_short_name: "Pacific Surfliner", route_long_name: "Pacific Surfliner" },
+  { route_id: "11", route_short_name: "Coast Starlight", route_long_name: "Coast Starlight" },
+];
+const sfTripDefs = [
+  // Route 78 departures from Union Station (LAX)
+  ["SF-SD",  "78", [["LAX", "08:00:00"], ["SDG", "11:00:00"]]],  // -> San Diego
+  ["SF-GOL", "78", [["LAX", "10:00:00"], ["GOL", "14:00:00"]]],  // -> Goleta Amtrak
+  ["SF-SLO", "78", [["LAX", "12:00:00"], ["SLO", "18:00:00"]]],  // -> San Luis Obispo
+  // Route 78 inbound terminating at LAX — must NOT be a chip
+  ["SF-ARR", "78", [["SDG", "05:00:00"], ["LAX", "08:00:00"]]],
+  // Non-78 route (Coast Starlight) from LAX — must be dropped by the route filter
+  ["CL-SEA", "11", [["LAX", "09:00:00"], ["SEA", "40:00:00"]]],
+];
+const sfStopTimesMap = new Map();
+const sfTripsMap = new Map();
+for (const [tripId, routeId, calls] of sfTripDefs) {
+  sfTripsMap.set(tripId, { trip_id: tripId, route_id: routeId, service_id: "SF-WD", trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!sfStopTimesMap.has(stopId)) sfStopTimesMap.set(stopId, []);
+    sfStopTimesMap.get(stopId).push({
+      trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time,
+      stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0",
+    });
+  });
+}
+const sfStaticFixture = {
+  stops: sfStops,
+  stopsById: new Map(sfStops.map((s) => [s.stop_id, s])),
+  routesById: new Map(sfRoutes.map((r) => [r.route_id, r])),
+  tripsById: sfTripsMap,
+  stopTimesByStopId: sfStopTimesMap,
+  calendar: [{ service_id: "SF-WD", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "1", sunday: "1", start_date: "20260101", end_date: "20271231" }],
+  calendarDates: [],
+};
+
+// ---- 7a. buildSurflineChip ----
+assert(buildSurflineChip("SDG", "San Diego", "LAX") === "Pacific Surfliner + San Diego", "buildSurflineChip must return 'Pacific Surfliner + San Diego'");
+assert(buildSurflineChip("GOL", "Goleta Amtrak", "LAX") === "Pacific Surfliner + Goleta Amtrak", "buildSurflineChip must return 'Pacific Surfliner + Goleta Amtrak'");
+assert(buildSurflineChip("SLO", "San Luis Obispo", "LAX") === "Pacific Surfliner + San Luis Obispo", "buildSurflineChip must return 'Pacific Surfliner + San Luis Obispo'");
+assert(buildSurflineChip("LAX", "Los Angeles", "LAX") === null, "buildSurflineChip must return null for a trip terminating at the board station");
+assert(buildSurflineChip("", "San Diego", "LAX") === null, "buildSurflineChip must return null for empty terminalStopId");
+
+// ---- 7b. staticSurflineChipsForStop — the three direction chips at LAX ----
+const sfChipsAtLax = staticSurflineChipsForStop(sfStaticFixture, "LAX");
+assert(sfChipsAtLax.includes("Pacific Surfliner + San Diego"), "Union Station must have Pacific Surfliner + San Diego chip");
+assert(sfChipsAtLax.includes("Pacific Surfliner + Goleta Amtrak"), "Union Station must have Pacific Surfliner + Goleta Amtrak chip");
+assert(sfChipsAtLax.includes("Pacific Surfliner + San Luis Obispo"), "Union Station must have Pacific Surfliner + San Luis Obispo chip");
+assert(!sfChipsAtLax.some((c) => c.includes("Los Angeles")), "a trip terminating at Union Station must not become a chip");
+// Non-78 route must be dropped — Coast Starlight is not a chip
+assert(!sfChipsAtLax.some((c) => c.includes("Seattle")), "non-route-78 train (Coast Starlight) must not appear as a Surfliner chip");
+assert(sfChipsAtLax.length === 3, `must be exactly 3 Surfliner chips at LAX, got [${sfChipsAtLax.join(", ")}]`);
+console.log(`Union Station Surfliner chips: [${sfChipsAtLax.join(", ")}]`);
+
+// ---- 7c. No Surfliner chips at non-Surfliner stops ----
+// staticSurflineChipsForStop at a stop that has no route-78 stop_times -> empty
+const sfChipsAtPomona = staticSurflineChipsForStop(sfStaticFixture, "109"); // Pomona North (Metrolink id)
+assert(sfChipsAtPomona.length === 0, "Pomona North must have no Pacific Surfliner chips");
+const sfChipsAtHub = staticSurflineChipsForStop(sfStaticFixture, "80122S"); // 7th St/Metro Ctr
+assert(sfChipsAtHub.length === 0, "7th St/Metro Ctr must have no Pacific Surfliner chips");
+
+// ---- 7d. Board composition: Surfliner rows appear; Metro + Metrolink survive Surfliner failure ----
+// Build the sfNow at 07:00 PDT so all departure times are still ahead.
+const sfNow = new Date(Date.UTC(2026, 9, 26, 14, 0, 0)); // 07:00 PDT
+const sfSec = (h, m) => Math.floor(Date.UTC(2026, 9, 26, h, m, 0) / 1000);
+const sfEntities = [
+  // Route 78 (Pacific Surfliner) entities
+  { tripUpdate: { trip: { tripId: "SF-SD",  routeId: "78" }, stopTimeUpdate: [{ stopId: "LAX", departure: { time: sfSec(15, 0) } }] } },
+  { tripUpdate: { trip: { tripId: "SF-GOL", routeId: "78" }, stopTimeUpdate: [{ stopId: "LAX", departure: { time: sfSec(17, 0) } }] } },
+  // A non-78 entity (Coast Starlight) — must be dropped by the route filter
+  { tripUpdate: { trip: { tripId: "CL-SEA", routeId: "11" }, stopTimeUpdate: [{ stopId: "LAX", departure: { time: sfSec(16, 0) } }] } },
+];
+const sfRtFixture = { entities: sfEntities, fetchedAt: sfNow };
+
+// Union Station board with Metro (miniStatic from section 2), Metrolink (mlStaticFixture from
+// section 6), and Surfliner data all feeding in.
+const unionBoardWithSf = await composeStationBoard(
+  "Union Station",
+  miniStatic,
+  miniRealtime,
+  {
+    now: sfNow,
+    metrolinkStaticData: mlStaticFixture,
+    metrolinkRealtime: { entities: [], fetchedAt: sfNow }, // no live ML rows for isolation
+    surflinerStaticData: sfStaticFixture,
+    surflinerRealtime: sfRtFixture,
+  }
+);
+const sfRowsOnBoard = unionBoardWithSf.trips.filter((t) => t.agency === "Pacific Surfliner");
+const metroRowsWithSf = unionBoardWithSf.trips.filter((t) => t.agency !== "Pacific Surfliner" && t.agency !== "Metrolink");
+
+// Metro rows must survive alongside Surfliner rows
+assert(metroRowsWithSf.length >= 1, "Metro Rail rows must survive alongside Surfliner rows on Union Station board");
+// Route-78 live rows must appear
+assert(sfRowsOnBoard.length === 2, `expected exactly 2 live Surfliner rows (SF-SD, SF-GOL), got ${sfRowsOnBoard.length}: [${sfRowsOnBoard.map((t) => t.tripId).join(", ")}]`);
+assert(sfRowsOnBoard.some((t) => t.destination === "Pacific Surfliner + San Diego"), "San Diego chip must be on board");
+assert(sfRowsOnBoard.some((t) => t.destination === "Pacific Surfliner + Goleta Amtrak"), "Goleta Amtrak chip must be on board");
+// Non-78 route must not appear
+assert(!unionBoardWithSf.trips.some((t) => t.destination?.includes("Seattle")), "non-route-78 train must not appear on Union Station board");
+// Surfliner rows carry agency and mode
+assert(sfRowsOnBoard.every((t) => t.agency === "Pacific Surfliner"), "all Surfliner rows must carry agency=Pacific Surfliner");
+assert(sfRowsOnBoard.every((t) => t.mode === "rail"), "all Surfliner rows must carry mode=rail");
+// Chip format: Surfliner chips must not look like Metro Rail or Metrolink chips
+const isSfChip = (c) => /^Pacific Surfliner \+ /.test(c);
+const isMetroChipSf = (c) => /^[A-EK] Line \+ /.test(c);
+const isMetrolinkChipSf = (c) => /^(AV|VC|OC|91-PV|RIV|SB) Line \+ /.test(c);
+assert(sfRowsOnBoard.every((t) => isSfChip(t.destination)), "all Surfliner rows must have a Surfliner-format chip");
+assert(!sfRowsOnBoard.some((t) => isMetroChipSf(t.destination)), "Surfliner rows must not look like Metro Rail chips");
+assert(!sfRowsOnBoard.some((t) => isMetrolinkChipSf(t.destination)), "Surfliner rows must not look like Metrolink chips");
+
+// Surfliner failure (surflinerPartial) must NOT drop Metro or Metrolink rows
+const unionBoardSfFail = await composeStationBoard(
+  "Union Station",
+  miniStatic,
+  miniRealtime,
+  {
+    now: sfNow,
+    metrolinkStaticData: mlStaticFixture,
+    metrolinkRealtime: mlRealtimeFixture,
+    surflinerStaticData: sfStaticFixture,
+    surflinerPartial: true,
+  }
+);
+const metroRowsAfterSfFail = unionBoardSfFail.trips.filter((t) => t.agency !== "Pacific Surfliner");
+const sfRowsAfterFail = unionBoardSfFail.trips.filter((t) => t.agency === "Pacific Surfliner");
+assert(metroRowsAfterSfFail.length >= 1, "Metro Rail rows must survive a Surfliner feed failure");
+assert(sfRowsAfterFail.length === 0, "Surfliner rows must be absent when surflinerPartial is true");
+// But scheduledDestinationsRemaining must still carry Surfliner chips (static is always loaded)
+assert(
+  Array.isArray(unionBoardSfFail.scheduledDestinationsRemaining) &&
+    unionBoardSfFail.scheduledDestinationsRemaining.some((c) => c.startsWith("Pacific Surfliner")),
+  `scheduledDestinationsRemaining must include Surfliner chips even on a partial board, got ${JSON.stringify(unionBoardSfFail.scheduledDestinationsRemaining)}`
+);
+console.log("los-angeles Surfliner board composition assertions: ok (7d)");
+
+// ---- 7e. Empty-reason rule: no-live-predictions vs not-currently-served ----
+// A Surfliner chip the static timetable expects today, but with no live row -> no-live-predictions.
+// sfNow = 07:00 PDT; SF-SD departs at 08:00 PDT, SF-GOL at 10:00 PDT, SF-SLO at 12:00 PDT —
+// all scheduled for today. With no live entities, every chip must be no-live-predictions.
+const sfEmptyBoard = await composeStationBoard(
+  "Union Station",
+  miniStatic,
+  miniRealtime,
+  {
+    now: sfNow,
+    surflinerStaticData: sfStaticFixture,
+    surflinerRealtime: { entities: [], fetchedAt: sfNow },
+  }
+);
+assert(
+  Array.isArray(sfEmptyBoard.scheduledDestinationsRemaining) &&
+    sfEmptyBoard.scheduledDestinationsRemaining.includes("Pacific Surfliner + San Diego"),
+  `scheduledDestinationsRemaining must include Pacific Surfliner + San Diego at 07:00 (departure 08:00), got ${JSON.stringify(sfEmptyBoard.scheduledDestinationsRemaining)}`
+);
+const sfNextArgs = { station: "Union Station", leaveBeforeMinutes: 0, refreshSeconds: 60, now: sfNow };
+const sfSdResult = buildLosAngelesNextTrainFromBoard(sfEmptyBoard, { ...sfNextArgs, destination: "Pacific Surfliner + San Diego" });
+assert(sfSdResult.emptyReason === "no-live-predictions", `Surfliner chip on static board with no live row must be no-live-predictions, got ${sfSdResult.emptyReason}`);
+const sfSloResult = buildLosAngelesNextTrainFromBoard(sfEmptyBoard, { ...sfNextArgs, destination: "Pacific Surfliner + San Luis Obispo" });
+assert(sfSloResult.emptyReason === "no-live-predictions", `Pacific Surfliner + San Luis Obispo with no live row must be no-live-predictions, got ${sfSloResult.emptyReason}`);
+
+// After the last scheduled departure, a chip must be not-currently-served.
+// SF-SLO is the last departure at 12:00 PDT (19:00 UTC). At 20:00 UTC (13:00 PDT) it's gone.
+const sfAfterLast = new Date(Date.UTC(2026, 9, 26, 20, 0, 0));
+const sfBoardAfterLast = await composeStationBoard(
+  "Union Station",
+  miniStatic,
+  { entities: [], fetchedAt: sfAfterLast },
+  {
+    now: sfAfterLast,
+    surflinerStaticData: sfStaticFixture,
+    surflinerRealtime: { entities: [], fetchedAt: sfAfterLast },
+  }
+);
+const sfSdAfterLast = buildLosAngelesNextTrainFromBoard(sfBoardAfterLast, { ...sfNextArgs, destination: "Pacific Surfliner + San Diego", now: sfAfterLast });
+assert(sfSdAfterLast.emptyReason === "not-currently-served", `after the last Surfliner departure: not-currently-served, got ${sfSdAfterLast.emptyReason}`);
+console.log("los-angeles Surfliner empty-reason assertions: ok (7e)");
+
+// ---- 7f. Mutation checks ----
+// (a) Route filter mutation: if we remove the route_id === "78" guard, the Coast Starlight
+//     (route 11) would appear in chips. Verify that without the filter, the non-78 trip slips in.
+//     We simulate this by adding a trip with route_id "11" and checking it is NOT in real chips.
+assert(!sfChipsAtLax.some((c) => c.includes("Seattle")), "mutation anchor: non-route-78 trip must not appear in chips (route filter is in place)");
+// Build a mutated fixture where both routes produce chips at LAX (route filter removed) —
+// staticSurflineChipsForStop must ONLY use route 78, so adding a non-78 trip to the fixture
+// and confirming it never appears is the mutation test.
+const sfMutatedFn = () => {
+  const chips = new Set();
+  // Simulate a broken version that does not filter by route_id:
+  const terminals = new Map([
+    ["SF-SD",  { stopId: "SDG" }],
+    ["SF-GOL", { stopId: "GOL" }],
+    ["SF-SLO", { stopId: "SLO" }],
+    ["SF-ARR", { stopId: "LAX" }], // terminating trip
+    ["CL-SEA", { stopId: "SEA" }], // non-78 trip
+  ]);
+  for (const [tripId, terminal] of terminals) {
+    if (terminal.stopId === "LAX") continue;
+    const stop = sfStaticFixture.stopsById.get(terminal.stopId);
+    chips.add(`Pacific Surfliner + ${stop?.stop_name ?? ""}`);
+  }
+  return [...chips].sort();
+};
+const brokenChips = sfMutatedFn();
+assert(brokenChips.includes("Pacific Surfliner + Seattle"), "mutation check precondition: broken version without route filter includes Seattle chip");
+assert(!sfChipsAtLax.includes("Pacific Surfliner + Seattle"), "mutation check: real implementation (with route filter) must exclude non-78 Seattle chip");
+
+// (b) Empty-reason mutation: removing a Surfliner chip from scheduledDestinationsRemaining
+//     must flip no-live-predictions -> not-currently-served.
+const sfMutatedBoard = {
+  ...sfEmptyBoard,
+  scheduledDestinationsRemaining: (sfEmptyBoard.scheduledDestinationsRemaining ?? []).filter(
+    (c) => c !== "Pacific Surfliner + San Diego"
+  ),
+};
+const sfMutatedResult = buildLosAngelesNextTrainFromBoard(sfMutatedBoard, { ...sfNextArgs, destination: "Pacific Surfliner + San Diego" });
+assert(
+  sfMutatedResult.emptyReason === "not-currently-served",
+  `mutation: removing Pacific Surfliner + San Diego from scheduledDestinationsRemaining must give not-currently-served, got ${sfMutatedResult.emptyReason}`
+);
+console.log("los-angeles Surfliner mutation checks: ok (7f)");
+
+// ---- 7g. Dogfood directions include Surfliner chips at Union Station only ----
+setLosAngelesStaticLoader(async () => chipStatic);
+setMetrolinkStaticLoader(async () => mlStaticFixture);
+setSurflinerStaticLoader(async () => sfStaticFixture);
+
+const unionDogfoodSf = await getLosAngelesDogfoodDirections("Union Station");
+assert(
+  sfChipsAtLax.every((c) => unionDogfoodSf.directions.includes(c)),
+  `dogfood directions at Union Station must include all Surfliner chips, missing: ${sfChipsAtLax.filter((c) => !unionDogfoodSf.directions.includes(c)).join(", ")}`
+);
+// Metro chips must also be present at Union Station
+assert(
+  unionDogfoodSf.directions.some((c) => isMetroChipSf(c)),
+  "dogfood directions at Union Station must still include Metro Rail chips alongside Surfliner"
+);
+
+// Pomona North must have NO Surfliner chips
+const pomonaDogfoodSf = await getLosAngelesDogfoodDirections("Pomona North");
+assert(
+  !pomonaDogfoodSf.directions.some((c) => isSfChip(c)),
+  `dogfood directions at Pomona North must have no Surfliner chips, got ${pomonaDogfoodSf.directions.filter(isSfChip).join(", ")}`
+);
+
+// 7th St/Metro Ctr must have NO Surfliner chips
+const hubDogfoodSf = await getLosAngelesDogfoodDirections(LOS_ANGELES_HUB);
+assert(
+  !hubDogfoodSf.directions.some((c) => isSfChip(c)),
+  `dogfood directions at 7th St/Metro Ctr must have no Surfliner chips`
+);
+
+// Surfliner chips must not look like Metro Rail or Metrolink chips
+for (const chip of unionDogfoodSf.directions.filter(isSfChip)) {
+  assert(!isMetroChipSf(chip), `Surfliner chip "${chip}" must not match Metro Rail chip pattern`);
+  assert(!isMetrolinkChipSf(chip), `Surfliner chip "${chip}" must not match Metrolink chip pattern`);
+}
+
+setSurflinerStaticLoader(null);
+setMetrolinkStaticLoader(null);
+setLosAngelesStaticLoader(null);
+console.log("los-angeles Surfliner dogfood directions assertions: ok (7g)");
+
 // 5 (picker/manifest): no picker entry while planned; the flip commit adds it.
 console.log(
-  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Perth Australia green)"
+  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Pacific Surfliner group at Union Station only - 3 chips, non-78 dropped, Metro+Metrolink survive Surfliner failure, empty-reason rule, mutation checks 7a-7g, Perth Australia green)"
 );

@@ -9,14 +9,14 @@
     {
       "label": "Metrolink",
       "detail": "Live departures at Union Station (AV, VC, OC, 91-PV, RIV, SB lines — GTFS stop 107) and Pomona North (SB Line only — GTFS stop 109). Requires METROLINK_API_KEY. Shown in a separate direction group on the same station board; Metro Rail boards render even if the Metrolink feed is unavailable."
+    },
+    {
+      "label": "Amtrak Pacific Surfliner",
+      "detail": "Live departures at Union Station only (Amtrak stop_id LAX). Route 78 only via the transitdocs GTFS-RT feed (https://asm-backend.transitdocs.com/gtfs/amtrak, keyless). Three direction chips: Pacific Surfliner + San Diego, Pacific Surfliner + Goleta Amtrak, Pacific Surfliner + San Luis Obispo. Shown in a separate direction group on the same station board; Metro Rail and Metrolink boards render even if the Surfliner feed is unavailable. Long-distance Amtrak (Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle) is excluded — compulsory reservation. Tim approved this feed on 25 Oct 2026."
     }
   ],
   "partial": [],
   "notCovered": [
-    {
-      "label": "Amtrak Pacific Surfliner",
-      "detail": "Not shown yet."
-    },
     {
       "label": "Amtrak long-distance trains (Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle)",
       "detail": "Excluded - booking a seat is compulsory."
