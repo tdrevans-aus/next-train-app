@@ -1,28 +1,31 @@
 {
   "region": "edinburgh",
-  "updated": "2026-09-07",
+  "updated": "2026-10-25",
   "covered": [
     {
       "label": "National Rail",
       "detail": "Every train calling at Edinburgh Waverley, Haymarket and Slateford, from the UK's national real-time feed."
-    }
-  ],
-  "partial": [
+    },
     {
       "label": "Edinburgh Trams",
-      "detail": "On the catalog, but no confirmed live-times feed exists at the moment — Trams stops aren't offered in the station picker or Near me for now, rather than being selectable and then showing an error. They stay on file for when a confirmed feed exists."
+      "detail": "20 tram stops between Edinburgh Airport and Newhaven, live predictions only - a tram only appears once the operator's real-time feed is confirming it, never filled in from the printed timetable."
     }
   ],
+  "partial": [],
   "notCovered": [
     {
+      "label": "Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station",
+      "detail": "Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are."
+    },
+    {
       "label": "Caledonian Sleeper",
-      "detail": "Excluded at Edinburgh Waverley — booking a berth is compulsory."
+      "detail": "Excluded at Edinburgh Waverley - booking a berth is compulsory."
     },
     {
       "label": "Buses",
       "detail": "Not covered."
     }
   ],
-  "stations": "59 stations and stops: 37 National Rail stations across Edinburgh and the Lothians (13 Sep 2026 UK station fill), plus the Trams line from Newhaven to the Airport.",
-  "notes": "The Trams stop named Edinburgh Waverley is a separate stop from the rail station of the same name, with no automatic interchange."
+  "stations": "57 stations and stops: 37 National Rail stations across Edinburgh and the Lothians, plus 20 stops on the Trams line from Newhaven to the Airport.",
+  "notes": "Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are. There is no Waverley tram stop, so for Waverley use the rail station."
 }

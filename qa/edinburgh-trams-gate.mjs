@@ -2,17 +2,14 @@
  * Edinburgh Trams (T50) wiring gate — offline, no key, no network.
  * docs/jim-brief-edinburgh-trams-wire.md; D1 pack docs/edinburgh-trams-d1/.
  *
- * Edinburgh is LIVE for National Rail; the tram mode ships wired but switched
- * OFF (`tramsLive: false` on the edinburgh registry entry) until Mark's flip PR.
- * This gate proves three things:
+ * Edinburgh Trams went live on 25 Oct 2026 (`tramsLive: true` on the edinburgh registry entry). This gate
+ * proves three things:
  *
- *  1. SWITCH OFF = BYTE-IDENTICAL. Every rider-reachable Edinburgh surface
- *     (/api/city-stations, /api/country-stations, /api/cities, /api/board and
- *     /api/directions for every tram-only stop, Near me around every tram stop,
- *     the UK region catalog, the dogfood list, public/city-directions) hashes
- *     to the golden captured from unmodified master
- *     (qa/fixtures/edinburgh-trams-switch-off.golden.json, produced by
- *     qa/lib/edinburgh-trams-surface.mjs before any tram edit).
+ *  1. LIVE CONFIG. The switch is on, the city is live, the catalog carries exactly 20 tram rows live (22 rows
+ *     in stations.json, liveFeed true; Haymarket, Edinburgh Gateway and Edinburgh Park Station withheld by the
+ *     overlay), and the coverage text's station count equals the /api/city-stations count so it cannot drift.
+ *     (The switch-off half and its 72-surface golden were retired at the flip; they no longer describe production.)
+
  *  2. The pure parsing/time rules: UTC "HH:MM" -> Europe/London in BST and GMT,
  *     midnight rollover, null and schedule-echo predictions dropped.
  *  3. With the switch ON (child process, stubbed fetch — qa/lib/
@@ -21,17 +18,17 @@
  *     Station real coordinates, single-object StopEvents, typed missing-key and
  *     FeedUnavailableError paths, no self-terminus chip, honest empty state.
  *
- * Usage: node qa/edinburgh-trams-planned-gate.mjs
+ * Usage: node qa/edinburgh-trams-gate.mjs
  */
 import { spawnSync } from "child_process";
-import { readFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { getCity } from "../lib/providers/registry.js";
 import { isEdinburghTramsLive } from "../lib/cities/edinburgh/trams-switch.js";
 import { resolveBareUtcClock, formatLondonClock, liveDepartureMs } from "../lib/cities/edinburgh/trams-time.js";
 import { parseStopEventsBody, tripsFromStopEvents } from "../lib/providers/edinburgh-trams.js";
-import { captureEdinburghSurface } from "./lib/edinburgh-trams-surface.mjs";
+import { listMultiCityStations } from "../lib/cities/live-city-api.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -45,31 +42,28 @@ const read = (...parts) => readFileSync(join(ROOT, ...parts), "utf8");
 // --- 1. the switch is off, and Edinburgh is still live ----------------------
 const entry = getCity("edinburgh");
 assert(entry?.status === "live", "edinburgh must stay live (National Rail slice)");
-assert(entry.tramsLive === false, "registry edinburgh.tramsLive must be exactly false until Mark's flip PR");
-assert(isEdinburghTramsLive() === false, "isEdinburghTramsLive() must be false while the registry switch is off");
+assert(entry.tramsLive === true, "registry edinburgh.tramsLive must be exactly true (flipped 25 Oct 2026)");
+assert(isEdinburghTramsLive() === true, "isEdinburghTramsLive() must be true");
 assert((entry.envKeys ?? []).includes("EDINBURGH_BUSTRACKER_KEY"), "edinburgh must declare EDINBURGH_BUSTRACKER_KEY as an envKey");
 
-// --- 2. switch off => byte-identical to master ------------------------------
-const golden = JSON.parse(read("qa", "fixtures", "edinburgh-trams-switch-off.golden.json")).surface;
-const surface = await captureEdinburghSurface();
-const goldenKeys = Object.keys(golden);
-assert(goldenKeys.length >= 70, `golden must cover the full Edinburgh surface, has ${goldenKeys.length} entries`);
-for (const key of new Set([...goldenKeys, ...Object.keys(surface)])) {
-  assert(surface[key] !== undefined, `switch-off surface lost "${key}" (it was captured from master)`);
-  assert(golden[key] !== undefined, `switch-off surface gained "${key}" that master did not have`);
-  assert(surface[key] === golden[key], `switch OFF must be byte-identical to master, but "${key}" changed`);
-}
-// Coverage notes: with the switch off /api/coverage-notes?city=edinburgh serves coverage.json verbatim.
+// --- 2. coverage text, and its station count tied to /api/city-stations -----
 {
   const { default: coverageNotes } = await import("../api/coverage-notes.js");
   const res = { code: 0, body: null, setHeader() {}, status(c) { this.code = c; return this; }, json(b) { this.body = b; return this; }, end() {} };
   await coverageNotes({ method: "GET", query: { city: "edinburgh" }, headers: { "x-forwarded-for": "10.77.0.1" } }, res);
   const fileNotes = JSON.parse(read("lib", "cities", "edinburgh", "coverage.json"));
-  assert(res.code === 200 && JSON.stringify(res.body) === JSON.stringify({ region: "edinburgh", ...fileNotes }), "switch OFF: /api/coverage-notes?city=edinburgh must serve coverage.json byte-for-byte");
-  const on = JSON.parse(read("lib", "cities", "edinburgh", "coverage-trams.json"));
-  assert(on.region === "edinburgh" && /^\d{4}-\d{2}-\d{2}$/.test(on.updated) && Array.isArray(on.covered) && Array.isArray(on.partial) && Array.isArray(on.notCovered) && typeof on.stations === "string" && typeof on.notes === "string", "coverage-trams.json must have the coverage-notes shape");
-  assert(JSON.stringify(on).includes("Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are."), "coverage-trams.json must carry the shared-name coverage note naming all three withheld stops");
-  assert(!/TODO|D1|oracle|CRS/.test(JSON.stringify(on)), "coverage-trams.json must be rider prose");
+  assert(res.code === 200 && JSON.stringify(res.body) === JSON.stringify({ region: "edinburgh", ...fileNotes }), "/api/coverage-notes?city=edinburgh must serve coverage.json byte-for-byte");
+  assert(!existsSync(join(ROOT, "lib", "cities", "edinburgh", "coverage-trams.json")), "coverage-trams.json was folded into coverage.json at the flip and must not return");
+  const on = fileNotes;
+  assert(on.region === "edinburgh" && /^\d{4}-\d{2}-\d{2}$/.test(on.updated) && Array.isArray(on.covered) && Array.isArray(on.partial) && Array.isArray(on.notCovered) && typeof on.stations === "string" && typeof on.notes === "string", "coverage.json must have the coverage-notes shape");
+  assert(JSON.stringify(on).includes("Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are."), "coverage.json must carry the shared-name coverage note naming all three withheld stops");
+  assert(!/TODO|D1|oracle|CRS/.test(JSON.stringify(on)), "coverage.json must be rider prose");
+  assert(!/no confirmed live-times feed|59 stations/.test(JSON.stringify(on)) && on.partial.length === 0 && /20 tram stops/.test(JSON.stringify(on)), "coverage.json must describe the live trams (no stale 'no confirmed feed' / '59 stations' text)");
+  // F1 (Mark, 25 Oct 2026): the station count quoted in the coverage text must equal the catalog count the API serves.
+  const quoted = Number(/^(\d+) stations and stops/.exec(on.stations)?.[1]);
+  const served = listMultiCityStations("edinburgh").length;
+  assert(Number.isInteger(quoted) && quoted === served, `coverage.json "stations" quotes ${quoted} but /api/city-stations serves ${served}`);
+  assert(served === 57, `/api/city-stations must serve 57 Edinburgh entries (37 rail + 20 tram), got ${served}`);
 }
 // The overlay is a static JSON import (traced by the Vercel bundler), not a computed-path readFileSync.
 {
@@ -77,10 +71,10 @@ for (const key of new Set([...goldenKeys, ...Object.keys(surface)])) {
   assert(/import overlayJson from "\.\/trams-api\.json" with \{ type: "json" \}/.test(src), "trams-api.json must be loaded by a static JSON import so it is bundled");
   assert(!/readFileSync/.test(src), "trams-catalog.js must not readFileSync the overlay (untraced by the bundler)");
 }
-// stations.json itself is untouched: 22 tram stops, all liveFeed:false, none for York Place or an Edinburgh Park Station.
+// stations.json: 22 tram rows, all liveFeed:true (the overlay withholds three), none for York Place or an Edinburgh Park Station.
 const stops = JSON.parse(read("lib", "cities", "edinburgh", "stations.json")).stops;
 const tramRows = stops.filter((s) => s.mode === "metro");
-assert(tramRows.length === 22 && tramRows.every((s) => s.liveFeed === false), "stations.json must still carry the 22 tram rows, all liveFeed:false (the 23rd stop arrives via the overlay)");
+assert(tramRows.length === 22 && tramRows.every((s) => s.liveFeed === true), "stations.json must carry the 22 tram rows, all liveFeed:true (the 23rd stop arrives via the overlay)");
 assert(!stops.some((s) => /york place|edinburgh park station/i.test(s.name)), "stations.json must carry neither York Place nor the overlay-only Edinburgh Park Station");
 
 // --- 3. time handling -------------------------------------------------------
@@ -185,7 +179,7 @@ const failed = results.filter((r) => !r.ok);
 assert(failed.length === 0, `switch-ON checks failed:\n${failed.map((r) => `  - ${r.name}: ${r.detail}`).join("\n")}`);
 
 console.log(
-  `edinburgh-trams-planned-gate: ok (tramsLive off, status live; ${goldenKeys.length} rider surfaces byte-identical to master; ` +
+  `edinburgh-trams-gate: ok (tramsLive on, status live; coverage text count == /api/city-stations (57); ` +
     `UTC->London BST/GMT + midnight rollover; null/echo predictions dropped; single-object StopEvents; 23 stops, York Place absent, ` +
     `Edinburgh Park Station coordinates cited; switch ON: 20 tram stops with Haymarket + Edinburgh Gateway + Edinburgh Park Station withheld and the coverage note, bare-name shadow guard, emptyReason no-live-predictions, 429/503 status + Retry-After propagation; ${results.length} switch-ON checks passed offline; G1 + ledger recorded)`
 );

@@ -125,13 +125,26 @@
    * "trains" whenever the manifest hasn't loaded a city yet (e.g. still `planned`) rather than
    * guessing.
    */
-  function nearbyModeVehicleNoun(cityId) {
+  function nearbyModeVehicleNoun(cityId, station) {
     const modes = window.CityManifest?.get?.(cityId)?.modes;
     if (Array.isArray(modes) && modes.some((m) => m === "tram" || m === "light_rail")) {
       return "trams";
     }
+    // Mixed-mode UK regions (National Rail + a tram system registered as mode "metro", e.g. Edinburgh
+    // Trams): the noun follows the focused station's mode, not the city's, so a tram stop in a feed gap
+    // reads "Trams are running..." while a rail station in the same city keeps "Trains". Only when every
+    // catalog entry of that printed name is "metro" in a region whose metro is a tram system.
+    if (station && NEARBY_TRAM_METRO_REGIONS.has(String(cityId))) {
+      const stationModes = window.NextTrainBrisbaneDogfood?.getStationModesByName?.()?.[station];
+      if (Array.isArray(stationModes) && stationModes.length > 0 && stationModes.every((m) => m === "metro")) {
+        return "trams";
+      }
+    }
     return "trains";
   }
+
+  /** Regions whose catalog "metro" mode is a tram system (picker label "Trams"). */
+  const NEARBY_TRAM_METRO_REGIONS = new Set(["edinburgh"]);
 
   const KNOWN_EMPTY_REASONS = new Set(["no-live-predictions", "not-currently-served"]);
 
@@ -2621,7 +2634,7 @@ function renderNearbyBoard({ stale = false } = {}) {
         deps.departDisplayTimeEl.textContent = "No live predictions for this stop right now";
       }
       if (deps.heroScheduledTimeEl) {
-        const noun = nearbyModeVehicleNoun(readNearbyCity());
+        const noun = nearbyModeVehicleNoun(readNearbyCity(), nearbySession?.station);
         deps.heroScheduledTimeEl.textContent =
           `${noun.charAt(0).toUpperCase()}${noun.slice(1)} are running but the operator's live feed has no times for this stop at the moment. Try again in a minute or check a nearby stop.`;
         deps.heroScheduledTimeEl.hidden = false;
@@ -3405,6 +3418,7 @@ function init(nextDeps = {}) {
     pauseNearbyRelocateLoop,
     nearbyBoardHasDepartures,
     nearbyBoardLooksEmpty,
+    nearbyModeVehicleNoun,
     nearbyLoadingHeroCopy,
     nearbyLoadingRouteCopy,
     nearbyPinExpiryMs,
