@@ -2,7 +2,7 @@
 
 **Lane:** Nico research (feed verification & license). **Date:** 2026-10-25. **City:** Los Angeles. **Scope:** Pacific Surfliner GTFS-RT feed and redistribution-terms verification for LA Metro Rail board.
 
-**Status:** Feed exists (third-party conversion); redistribution terms remain uncleared. Wiring gate **remains blocked** pending Tim's approval of redistribution terms.
+**Status:** Tim, 25 Oct 2026 (Australia/Perth), approved serving the third-party transitdocs feed to riders. Wiring is allowed. The Amtrak site terms are unchanged and still do not grant that use in writing; the approval is Tim's product decision, recorded in the US ledger.
 
 ---
 
@@ -24,7 +24,22 @@
 **Union Station only.** Pacific Surfliner calls at:
 - **Los Angeles Union Station** (800 N. Alameda St., Los Angeles, CA 90012) — confirmed staffed station on official schedule.
 
-**Pomona North:** Not served by Pacific Surfliner. Pomona North is an Inland Empire–Orange County Line Metrolink station (https://metrolinktrains.com/globalassets/rider-info/general-info/metrolink_system-map_editable_may_2026b.pdf). Pacific Surfliner terminates at Union Station northbound; it does not continue into San Gabriel Valley.
+**Pomona North:** Not served by Pacific Surfliner. Pomona North is an Inland Empire–Orange County Line Metrolink station. Surfliner does not run into the San Gabriel Valley.
+
+**Correction (controller, 25 Oct 2026, Amtrak static GTFS opened the same day).** An earlier sentence said northbound Surfliners terminate at Union Station. They do not, as a rule. Stop id is `LAX`, stop name `Los Angeles`, route_id `78`. Trips that call there, counted by origin and final stop:
+
+| trips | origin | final stop |
+| --- | --- | --- |
+| 13 | Los Angeles | San Diego |
+| 13 | San Diego | Los Angeles (terminates here; not a chip) |
+| 6 | Goleta Amtrak | San Diego |
+| 5 | San Diego | Goleta Amtrak |
+| 3 | San Luis Obispo | San Diego |
+| 2 | San Diego | San Luis Obispo |
+| 1 | Los Angeles | Goleta Amtrak |
+| 1 | Los Angeles | San Luis Obispo |
+
+Departures from Union Station therefore end at `San Diego` (22), `Goleta Amtrak` (6), or `San Luis Obispo` (3). Chip text is `Pacific Surfliner +` that final stop name. A trip whose final stop is Los Angeles is not a chip there. No other in-catalog LA station is on these trips.
 
 ---
 
@@ -53,7 +68,7 @@ Metro Rail only (A/B/C/D/E/K). Pacific Surfliner is a separate operator and sepa
 
 | Service | Station(s) | Verdict | Status | Notes |
 |---|---|---|---|---|
-| **Amtrak Pacific Surfliner** | Union Station | `in` | **Tim, 25 Oct 2026** | Unreserved coach (ledger §2). Walk-up ticketing at station machines; no compulsory reservation (pacificsurfliner.com FAQ). Passes board-eligibility tests 1 & 2. Verdict affirmed per ledger. **Feed gate remains blocked:** GTFS-RT is third-party-converted from Track-A-Train (not official Amtrak endpoint). Redistribution terms uncleared. Wiring this service onto the board is contingent on Tim's approval of redistribution license terms. |
+| **Amtrak Pacific Surfliner** | Union Station | `in` | **Tim, 25 Oct 2026** | Unreserved coach (ledger §2). **Feed gate open the same day:** Tim approved serving the transitdocs GTFS-RT to riders. Amtrak has still not given written permission. Long-distance Amtrak stays `out-reservation` and must not be taken from this feed onto the board. |
 
 **Correction note (Tim, 25 Oct 2026, Australia/Perth session):** The proposed `out-product` verdict for Pacific Surfliner was withdrawn. Service remains `in` (walk-up unreserved). Ledger records both the verdict (`in`) and the blocker (feed & redistribution terms unverified). This oracle report is the feed-verification step.
 
