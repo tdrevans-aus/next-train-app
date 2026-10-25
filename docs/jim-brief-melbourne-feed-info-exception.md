@@ -53,3 +53,13 @@ calendars are real (30 metro rows, 39 V/Line rows).
 
 Don't upload to Blob or trigger workflows. Open a PR that links this brief, and leave no background loops
 running.
+
+## Addendum (25 Oct 2026, controller) — carry agency.txt too
+
+Jim's #530 found that production `gtfs/melbourne.zip` (and `melbourne-vline`) contains **no `agency.txt`**:
+`stripToConfig` in `scripts/trim-melbourne-gtfs.mjs` keeps only six tables plus `feed_info.txt`. The exception
+correctly refuses without it. Extend #530 (same branch, same PR): carry `agency.txt` through `stripToConfig`
+byte-for-byte for both metro and V/Line, exactly like `feed_info.txt`; extend `qa/snapshot-feed-info-carried.mjs`
+to assert agency.txt is carried (mutation-check it). Run the trim locally once against the real upstream
+(download at most once; Blob/transfer limits) and show the integrity helper passes the produced Melbourne zip
+via the exemption. Do NOT upload or trigger the workflow — the controller republishes after merge.

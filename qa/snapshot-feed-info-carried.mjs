@@ -69,6 +69,20 @@ assert.equal(
   "melbourne: feed_info.txt must not be fabricated"
 );
 
+// agency.txt is carried byte-for-byte (the Melbourne exemption depends on it).
+{
+  const AG = "agency_id,agency_name,agency_url\n1,Transport Victoria,https://transport.vic.gov.au/\n";
+  for (const [id, type, names] of [["2", "400", ["Alamein", "Belgrave"]], ["1", "2", ["Geelong", "Ballarat"]]]) {
+    const f = fixture({ routeType: type, shortNames: names, withFeedInfo: false });
+    f["agency.txt"] = enc(AG);
+    const out = stripToConfig(f, MELBOURNE_CONFIG[id]);
+    assert.ok(out["agency.txt"], `melbourne folder ${id}: agency.txt not carried`);
+    assert.equal(Buffer.from(out["agency.txt"]).toString(), AG, `melbourne folder ${id}: agency.txt altered`);
+    delete f["agency.txt"];
+    assert.equal(stripToConfig(f, MELBOURNE_CONFIG[id])["agency.txt"], undefined, "agency.txt must not be fabricated");
+  }
+}
+
 // Gate logic still fails closed with none.
 const none = inspectSnapshotZip(unzipSync(zipSync(stripToMetro(fixture({ routeType: "1", shortNames: ["1", "2", "5", "6"], withFeedInfo: false })))), 10 * 1024);
 assert.ok(none.reasons.some((r) => r.includes("feed_info.txt is missing")), "gate must still fail closed without feed_info.txt");
