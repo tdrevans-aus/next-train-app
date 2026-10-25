@@ -39,6 +39,8 @@ import {
   listCatalogStations,
   fetchStationBoard,
   composeStationBoard,
+  loadLosAngelesStatic,
+  scheduledDestinationsRemainingToday,
   resolveStopIds,
   lineIdForRoute,
   destinationForTrip,
@@ -683,6 +685,155 @@ const unionNh = chipNext("Union Station", "B Line + North Hollywood");
 assert(unionNh.emptyReason === "no-live-predictions", "B + North Hollywood scheduled, other directions live: still per-direction no-live-predictions");
 const arcPom = chipNext("Arcadia", "A Line + Pomona North");
 assert(arcPom.next != null && !arcPom.emptyReason, "Arcadia A + Pomona North has its live row");
+
+// 2b. Time-aware per-direction empty reason (docs/jim-brief-la-chip-polish.md). A chip with zero
+// live rows says "no-live-predictions" only while a scheduled departure from THIS station to that
+// terminus is still ahead in the service day; after the last one it is "not-currently-served".
+// C-a-monrovia leaves Union 11:30, C-a-pomona 11:35, C-b-nh 11:10 (PDT, 26 Oct 2026).
+const pdt = (h, m, day = 26) => new Date(Date.UTC(2026, 9, day, 7 + h, m, 0));
+const unionAt = async (when) => {
+  const b = await composeStationBoard("Union Station", chipStatic, { entities: [], fetchedAt: when }, { now: when });
+  return (chip) =>
+    buildLosAngelesNextTrainFromBoard(b, { station: "Union Station", destination: chip, leaveBeforeMinutes: 0, refreshSeconds: 60, now: when }).emptyReason;
+};
+const at1125 = await unionAt(pdt(11, 25));
+const at1131 = await unionAt(pdt(11, 31));
+const at0500 = await unionAt(pdt(5, 0));
+assert(at1125("A Line + Monrovia") === "no-live-predictions", "11:25: the 11:30 Monrovia departure is ahead -> no-live-predictions");
+assert(at1131("A Line + Monrovia") === "not-currently-served", `11:31: the last Monrovia departure has passed -> not-currently-served, got ${at1131("A Line + Monrovia")}`);
+assert(at1131("A Line + Pomona North") === "no-live-predictions", "11:31: the 11:35 Pomona North departure is still ahead");
+assert(at1131("B Line + North Hollywood") === "not-currently-served", "11:31: B + North Hollywood left at 11:10 and has none later -> not-currently-served");
+assert(at0500("B Line + North Hollywood") === "no-live-predictions", "05:00: B + North Hollywood still to come today -> no-live-predictions");
+assert(at0500("D Line + Wilshire/La Cienega") === "not-currently-served", "05:00: La Cienega service has not started -> not-currently-served");
+// The remaining list itself, with its boundaries.
+const remainingAtUnion = (when) => scheduledDestinationsRemainingToday(chipStatic, ["80214", "80214S"], { now: when });
+assert(JSON.stringify(remainingAtUnion(pdt(11, 31))) === JSON.stringify(["A Line + Pomona North"]), `11:31 remaining at Union must be only A Pomona North, got ${JSON.stringify(remainingAtUnion(pdt(11, 31)))}`);
+assert(remainingAtUnion(pdt(11, 30)).includes("A Line + Monrovia"), "a departure at exactly now is still remaining (60 s grace)");
+assert(remainingAtUnion(pdt(12, 0)).length === 0, "after the last departure of the day the remaining list is empty, not null");
+assert(scheduledDestinationsRemainingToday(chipStatic, ["80214"], { now: new Date(Date.UTC(2027, 5, 1, 19)) }) === null, "no active services (calendar unknown) -> null, so callers fall back to the old rules");
+// Terminating trips never count: C-d-union ends at Union, so no remaining chip may point at Union.
+assert(!remainingAtUnion(pdt(5, 0)).some((c) => c.endsWith("+ Union Station")), "terminating trips are not remaining departures");
+// Fallback: a board without scheduledDestinationsRemaining keeps the old behaviour.
+const oldBoard = { stationName: "Union Station", lastUpdate: pdt(11, 31).toISOString(), trips: [], scheduledCandidates: [{ destination: "A Line + Monrovia" }], realtime: true };
+assert(
+  buildLosAngelesNextTrainFromBoard(oldBoard, { station: "Union Station", destination: "A Line + Monrovia", leaveBeforeMinutes: 0, refreshSeconds: 60, now: pdt(11, 31) }).emptyReason === "no-live-predictions",
+  "a board without the remaining list keeps the scheduledCandidates rule (calendar-unknown fallback)"
+);
+// Previous-service-day 24:00+ trips: service SY ran Mon 26 Oct only and files an A trip to Monrovia at
+// 24:30; service SZ (Tue 27 Oct) has only a Pomona North trip at 08:00. At 00:10 on the 27th the
+// Monrovia chip survives only through the previous service day.
+const lateTrips = [
+  ["LATE-mon", "A", "SY", [["80214", "24:30:00"], ["80425", "24:50:00"], ["80423", "25:10:00"]]],
+  ["DAY-pom", "A", "SZ", [["80214", "08:00:00"], ["801103", "09:00:00"]]],
+];
+const lateStopTimes = new Map();
+const lateTripMap = new Map();
+for (const [tripId, line, service, calls] of lateTrips) {
+  lateTripMap.set(tripId, { trip_id: tripId, route_id: `R-${line}`, service_id: service, trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!lateStopTimes.has(stopId)) lateStopTimes.set(stopId, []);
+    lateStopTimes.get(stopId).push({ trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time, stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0" });
+  });
+}
+const onlyDay = (service_id, d) => ({ service_id, monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "1", sunday: "1", start_date: d, end_date: d });
+const lateStatic = {
+  ...chipStatic,
+  tripsById: lateTripMap,
+  stopTimesByStopId: lateStopTimes,
+  calendar: [onlyDay("SY", "20261026"), onlyDay("SZ", "20261027")],
+  calendarDates: [],
+};
+const lateUnion = async (when) => {
+  const b = await composeStationBoard("Union Station", lateStatic, { entities: [], fetchedAt: when }, { now: when });
+  return { board: b, reason: (chip) => buildLosAngelesNextTrainFromBoard(b, { station: "Union Station", destination: chip, leaveBeforeMinutes: 0, refreshSeconds: 60, now: when }).emptyReason };
+};
+const late0010 = await lateUnion(pdt(0, 10, 27));
+assert(late0010.board.scheduledDestinationsRemaining?.includes("A Line + Monrovia"), `00:10: a 24:30 trip of the previous service day must count as remaining, got ${JSON.stringify(late0010.board.scheduledDestinationsRemaining)}`);
+assert(late0010.reason("A Line + Monrovia") === "no-live-predictions", "00:10: the 24:30 Monrovia trip is still to come -> no-live-predictions");
+assert(late0010.reason("A Line + Pomona North") === "no-live-predictions", "00:10: today's 08:00 Pomona North trip is ahead");
+const late0040 = await lateUnion(pdt(0, 40, 27));
+assert(late0040.reason("A Line + Monrovia") === "not-currently-served", `00:40: the 24:30 trip has gone -> not-currently-served, got ${late0040.reason("A Line + Monrovia")}`);
+const late2300 = await lateUnion(pdt(23, 0, 26));
+assert(late2300.reason("A Line + Monrovia") === "no-live-predictions", "23:00 on the 26th: the 24:30 trip is later in this service day");
+
+// 2c. Real-feed reachability (docs/jim-brief-la-chip-polish.md). For every one of the 110 catalog
+// stations, take every trip's LAST STOP from the real feed's stop_times (not from OBSERVED_TERMINALS,
+// not through staticDirectionsForStopIds), skip trips that end at that station, and require the
+// resulting "<Line> + <terminus>" to be among the chips the DOGFOOD function offers. Static data:
+// qa/fixtures/los-angeles/rail-trip-patterns.json, the distinct stop patterns of the real
+// gtfs_rail.zip (regenerate: node scripts/build-la-trip-patterns.mjs). Offline by default - smoke and CI
+// never download the zip (the feed lives on GitLab, not Vercel Blob). QA_LA_REAL_FEED=1 runs the same
+// check against the live zip instead (one download; by hand or nightly, never smoke).
+let realStatic;
+if (process.env.QA_LA_REAL_FEED === "1") {
+  realStatic = await loadLosAngelesStatic();
+} else {
+  const pinned = JSON.parse(readFileSync(join(ROOT, "qa/fixtures/los-angeles/rail-trip-patterns.json"), "utf8"));
+  const realStopTimes = new Map();
+  const realTrips = new Map();
+  pinned.patterns.forEach((p, pi) => {
+    const tripId = `P${pi}`;
+    realTrips.set(tripId, { trip_id: tripId, route_id: p.route_id, service_id: "S", trip_headsign: "" });
+    p.stops.forEach((stopId, i) => {
+      if (!realStopTimes.has(stopId)) realStopTimes.set(stopId, []);
+      realStopTimes.get(stopId).push({ trip_id: tripId, stop_id: stopId, stop_sequence: String(i + 1), stop_headsign: p.headsigns[i] ?? "" });
+    });
+  });
+  realStatic = {
+    stops: pinned.stops,
+    stopsById: new Map(pinned.stops.map((s) => [s.stop_id, s])),
+    routesById: new Map(pinned.routes.map((r) => [r.route_id, r])),
+    tripsById: realTrips,
+    stopTimesByStopId: realStopTimes,
+    calendar: [],
+    calendarDates: [],
+  };
+}
+setLosAngelesStaticLoader(async () => realStatic);
+{
+  // Last stop per trip, straight from stop_times.
+  const lastStop = new Map();
+  for (const list of realStatic.stopTimesByStopId.values()) {
+    for (const st of list) {
+      const seq = Number(st.stop_sequence);
+      if (!lastStop.has(st.trip_id) || seq > lastStop.get(st.trip_id).seq) lastStop.set(st.trip_id, { seq, stopId: st.stop_id });
+    }
+  }
+  const stationOf = (stopId) => realStatic.stopsById.get(stopId)?.parent_station || stopId;
+  let pairs = 0;
+  let stationsWithChips = 0;
+  const unreached = [];
+  const unresolvedTermini = new Set();
+  for (const station of stations) {
+    const stopIds = await resolveStopIds(station.name, realStatic);
+    const stationKeys = new Set(stopIds.flatMap((id) => [id, stationOf(id)]));
+    const expected = new Set();
+    for (const stopId of stopIds) {
+      for (const st of realStatic.stopTimesByStopId.get(stopId) ?? []) {
+        const last = lastStop.get(st.trip_id);
+        if (!last || stationKeys.has(last.stopId) || stationKeys.has(stationOf(last.stopId))) continue; // terminates here
+        const trip = realStatic.tripsById.get(st.trip_id);
+        const route = realStatic.routesById.get(trip?.route_id);
+        const lineId = route ? lineIdForRoute(route.route_short_name, route.route_long_name) : null;
+        const terminalName = realStatic.stopsById.get(last.stopId)?.stop_name ?? "";
+        const chip = lineId ? mapLineTerminusDestination(terminalName, lineId) : null;
+        if (chip) expected.add(chip);
+        else unresolvedTermini.add(`${lineId ?? "?"}:${terminalName}`);
+      }
+    }
+    const offered = (await getLosAngelesDogfoodDirections(station.name)).directions;
+    for (const chip of expected) {
+      pairs += 1;
+      if (!offered.includes(chip)) unreached.push(`${station.name}: "${chip}"`);
+    }
+    if (offered.length > 0) stationsWithChips += 1;
+  }
+  assert(unreached.length === 0, `real-feed reachability: ${unreached.length} terminus chip(s) not offered by the dogfood directions, e.g. ${unreached.slice(0, 5).join("; ")}`);
+  assert(unresolvedTermini.size === 0, `real-feed reachability: trips whose terminus resolves to no chip (rows would be dropped): ${[...unresolvedTermini].join("; ")}`);
+  assert(pairs >= 300 && stationsWithChips >= 100, `real-feed reachability looked at too little: ${pairs} station/terminus pairs, ${stationsWithChips} stations with chips`);
+  console.log(`los-angeles real-feed reachability: ${pairs} station/terminus pairs over ${stationsWithChips} stations, 0 unreached`);
+}
+setLosAngelesStaticLoader(null);
 
 // Dispatch wired regardless of status (production routes gate on assertCityLive first); the static
 // loader is stubbed so the gate never touches the network.
