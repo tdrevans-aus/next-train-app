@@ -1197,7 +1197,49 @@ assert(!isMetrolinkChip(sampleMetroChip), `mutation anchor: Metro chip "${sample
 
 console.log("los-angeles Metrolink assertions: ok (6a-6i)");
 
+// ---- 6j. metrolinkPartial board: Metrolink chip gets no-live-predictions, not not-currently-served ----
+// When the live feed or key is absent, scheduledDestinationsRemaining must still carry Metrolink
+// chips derived from the static GTFS so the dogfood layer can emit the honest reason.
+// mlNow = 05:00 PDT — ML-AV-1 departs stop 107 at 06:00 PDT (still ahead). ML-WD is Mon-Fri active.
+const partialWithStaticBoard = await composeStationBoard(
+  "Union Station",
+  miniStatic,
+  miniRealtime,
+  { now: mlNow, metrolinkStaticData: mlStaticFixture, metrolinkPartial: true, metrolinkStopId: "107" }
+);
+assert(partialWithStaticBoard.metrolinkPartial === true, "6j: metrolinkPartial flag must be set");
+assert(
+  partialWithStaticBoard.trips.every((t) => t.agency !== "Metrolink"),
+  "6j: no Metrolink live rows on a partial board"
+);
+// The static GTFS has ML trips departing after mlNow, so the remaining list must include AV Line + Lancaster.
+assert(
+  Array.isArray(partialWithStaticBoard.scheduledDestinationsRemaining) &&
+    partialWithStaticBoard.scheduledDestinationsRemaining.includes("AV Line + Lancaster"),
+  `6j: scheduledDestinationsRemaining must include AV Line + Lancaster on a partial board, got ${JSON.stringify(partialWithStaticBoard.scheduledDestinationsRemaining)}`
+);
+// buildLosAngelesNextTrainFromBoard must give no-live-predictions for that chip (not not-currently-served).
+const mlPartialArgs = { station: "Union Station", destination: "AV Line + Lancaster", leaveBeforeMinutes: 0, refreshSeconds: 60, now: mlNow };
+const mlPartialResult = buildLosAngelesNextTrainFromBoard(partialWithStaticBoard, mlPartialArgs);
+assert(
+  mlPartialResult.emptyReason === "no-live-predictions",
+  `6j: Metrolink chip on partial board must be no-live-predictions, got ${mlPartialResult.emptyReason}`
+);
+// Mutation check: removing the chip from scheduledDestinationsRemaining must give not-currently-served.
+const mutatedPartialBoard = {
+  ...partialWithStaticBoard,
+  scheduledDestinationsRemaining: (partialWithStaticBoard.scheduledDestinationsRemaining ?? []).filter(
+    (c) => c !== "AV Line + Lancaster"
+  ),
+};
+const mutatedResult = buildLosAngelesNextTrainFromBoard(mutatedPartialBoard, mlPartialArgs);
+assert(
+  mutatedResult.emptyReason === "not-currently-served",
+  `6j mutation: removing AV Line + Lancaster from scheduledDestinationsRemaining must give not-currently-served, got ${mutatedResult.emptyReason}`
+);
+console.log("los-angeles Metrolink empty-reason assertions: ok (6j + mutation check)");
+
 // 5 (picker/manifest): no picker entry while planned; the flip commit adds it.
 console.log(
-  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6i, Perth Australia green)"
+  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Perth Australia green)"
 );
