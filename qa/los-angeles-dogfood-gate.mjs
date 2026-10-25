@@ -60,6 +60,7 @@ import {
   SURFLINER_ROUTE_ID,
 } from "../lib/providers/los-angeles.js";
 import { swiftlyAuthHeaders } from "../lib/providers/gtfs/auth.js";
+import { indexTripUpdates } from "../lib/providers/gtfs/realtime.js";
 import {
   foldKey,
   isForbiddenCollapseName,
@@ -1477,6 +1478,96 @@ assert(
 );
 console.log("los-angeles Surfliner mutation checks: ok (7f)");
 
+// ---- 7h. Real transitdocs trip_id format: AMTK_<number> joined via trip_short_name ----
+// The real feed uses trip_ids like "2026-10-24_AMTK_595" and carries no routeId field.
+// Amtrak static GTFS uses numeric trip_ids ("312161") with the train number in trip_short_name.
+// Verify: the short-name join produces a live row; joining on trip_id directly (mutation) does not.
+
+// Static fixture with numeric trip_ids and trip_short_name (matches real Amtrak GTFS shape).
+const sfV2Stops = [
+  { stop_id: "LAX", stop_name: "Los Angeles", location_type: "0", parent_station: "" },
+  { stop_id: "SDG", stop_name: "San Diego",   location_type: "0", parent_station: "" },
+  { stop_id: "SEA", stop_name: "Seattle",     location_type: "0", parent_station: "" },
+];
+const sfV2Routes = [
+  { route_id: "78", route_short_name: "Pacific Surfliner", route_long_name: "Pacific Surfliner" },
+  { route_id: "14", route_short_name: "Coast Starlight",   route_long_name: "Coast Starlight"   },
+];
+// trip_id "312161": route 78, train 595 (San Diego) — same as a real Amtrak GTFS row
+// trip_id "444001": route 14, train 11 (Coast Starlight) — must never appear on the board
+const sfV2TripDefs = [
+  ["312161", "78", "595", [["LAX", "08:00:00"], ["SDG", "11:00:00"]]],
+  ["444001", "14", "11",  [["LAX", "09:00:00"], ["SEA", "40:00:00"]]],
+];
+const sfV2StopTimesMap = new Map();
+const sfV2TripsMap = new Map();
+for (const [tripId, routeId, tsn, calls] of sfV2TripDefs) {
+  sfV2TripsMap.set(tripId, { trip_id: tripId, route_id: routeId, trip_short_name: tsn, service_id: "SF-WD", trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!sfV2StopTimesMap.has(stopId)) sfV2StopTimesMap.set(stopId, []);
+    sfV2StopTimesMap.get(stopId).push({
+      trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time,
+      stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0",
+    });
+  });
+}
+const sfStaticFixtureV2 = {
+  stops: sfV2Stops,
+  stopsById: new Map(sfV2Stops.map((s) => [s.stop_id, s])),
+  routesById: new Map(sfV2Routes.map((r) => [r.route_id, r])),
+  tripsById: sfV2TripsMap,
+  stopTimesByStopId: sfV2StopTimesMap,
+  calendar: [{ service_id: "SF-WD", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "1", sunday: "1", start_date: "20260101", end_date: "20271231" }],
+  calendarDates: [],
+};
+
+// Realtime entities using the real transitdocs trip_id format (date prefix + AMTK_<number>).
+// 2026-10-24_AMTK_595 → train 595 → route 78 static trip_id 312161 → live San Diego row.
+// 2026-10-24_AMTK_11  → train 11  → no route-78 trip with trip_short_name "11" → dropped.
+const sfV2Entities = [
+  { tripUpdate: { trip: { tripId: "2026-10-24_AMTK_595" }, stopTimeUpdate: [{ stopId: "LAX", departure: { time: sfSec(15, 0) } }] } },
+  { tripUpdate: { trip: { tripId: "2026-10-24_AMTK_11"  }, stopTimeUpdate: [{ stopId: "LAX", departure: { time: sfSec(16, 0) } }] } },
+];
+const sfV2Rt = { entities: sfV2Entities, fetchedAt: sfNow };
+
+// Mutation check precondition: without resolveTripId, indexTripUpdates keys on the raw trip_id.
+// The static trip_id "312161" would NOT be found in stopUpdates → 0 live rows → assertion goes red.
+const brokenRtIndex = indexTripUpdates(sfV2Entities);
+assert(
+  !brokenRtIndex.stopUpdates.has("312161:LAX"),
+  "7h mutation: without resolveTripId, stopUpdates has no entry under static trip_id 312161"
+);
+assert(
+  brokenRtIndex.stopUpdates.has("2026-10-24_AMTK_595:LAX"),
+  "7h mutation precondition: without resolveTripId, entry is keyed under raw realtime trip_id"
+);
+
+// Real board: the short-name join must produce a live row for 2026-10-24_AMTK_595.
+const sfV2Board = await composeStationBoard("Union Station", miniStatic, miniRealtime, {
+  now: sfNow,
+  surflinerStaticData: sfStaticFixtureV2,
+  surflinerRealtime: sfV2Rt,
+});
+const sfV2Rows = sfV2Board.trips.filter((t) => t.agency === "Pacific Surfliner");
+assert(
+  sfV2Rows.length >= 1,
+  `7h: 2026-10-24_AMTK_595 must produce a live row via trip_short_name join, got ${sfV2Rows.length}`
+);
+assert(
+  sfV2Rows.some((t) => t.destination === "Pacific Surfliner + San Diego"),
+  `7h: live row must carry destination 'Pacific Surfliner + San Diego', got ${sfV2Rows.map((t) => t.destination).join(", ")}`
+);
+// 2026-10-24_AMTK_11 is Coast Starlight (train 11, route 14) — must not appear.
+assert(
+  !sfV2Board.trips.some((t) => t.tripId === "444001"),
+  "7h: 2026-10-24_AMTK_11 (Coast Starlight) must not appear on the board"
+);
+assert(
+  !sfV2Board.trips.some((t) => t.destination?.includes("Seattle")),
+  "7h: no Seattle destination may appear (Coast Starlight dropped by short-name join)"
+);
+console.log("los-angeles Surfliner AMTK trip_id join assertions: ok (7h)");
+
 // ---- 7g. Dogfood directions include Surfliner chips at Union Station only ----
 setLosAngelesStaticLoader(async () => chipStatic);
 setMetrolinkStaticLoader(async () => mlStaticFixture);
@@ -1520,5 +1611,5 @@ console.log("los-angeles Surfliner dogfood directions assertions: ok (7g)");
 
 // 5 (picker/manifest): no picker entry while planned; the flip commit adds it.
 console.log(
-  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Pacific Surfliner group at Union Station only - 3 chips, non-78 dropped, Metro+Metrolink survive Surfliner failure, empty-reason rule, mutation checks 7a-7g, Perth Australia green)"
+  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Pacific Surfliner group at Union Station only - 3 chips, non-78 dropped, Metro+Metrolink survive Surfliner failure, empty-reason rule, mutation checks 7a-7g, AMTK trip_id join via trip_short_name - 2026-10-24_AMTK_595 live, mutation check 7h, Perth Australia green)"
 );
