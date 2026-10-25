@@ -422,6 +422,7 @@ const miniStops = [
   ...miniStop("80101", "Downtown Long Beach Station"),
   ...miniStop("801103", "Pomona North Station"),
   ...miniStop("80423", "Monrovia Station"),
+  ...miniStop("80217", "Wilshire / La Brea Station"), // in the catalog, but no scheduled trip calls here
   ...miniStop("80000", "Wilshire / Normandie Station"), // a stop that is NOT a terminus of D
 ];
 const miniTripDefs = [
@@ -485,6 +486,20 @@ assert(dtlbById.get("TA-leave-dtlb") === "A Line + Pomona North", "Downtown Long
 assert(dtlbById.get("TA-leave-dtlb-monrovia") === "A Line + Monrovia", "A short-turn to Monrovia shows as A Line + Monrovia");
 assert(![...dtlbById.values()].some((d) => d.endsWith("+ Downtown Long Beach")), "no self-terminus row at Downtown Long Beach");
 
+// Honest empty state (docs/jim-brief-la-honest-empty-state.md). The reason is additive and comes
+// from the static feed alone.
+const boardFor = (name, opts = {}) => composeStationBoard(name, miniStatic, miniRealtime, { now: nowPdt, ...opts });
+const laBrea = await boardFor("Wilshire/La Brea");
+assert(laBrea.trips.length === 0, "Wilshire/La Brea fixture board must be empty");
+assert(laBrea.emptyReason === "not-currently-served", `no scheduled service today -> not-currently-served, got ${laBrea.emptyReason}`);
+const westernBoard = await boardFor("Wilshire/Western"); // scheduled arrivals only (terminating trips are dropped)
+assert(westernBoard.trips.length === 0, "Wilshire/Western fixture board must be empty (arrivals only)");
+assert(westernBoard.emptyReason === "no-live-predictions", `scheduled service but no live rows -> no-live-predictions, got ${westernBoard.emptyReason}`);
+const unionBoard = await boardFor("Union Station");
+assert(unionBoard.trips.length > 0 && !("emptyReason" in unionBoard), "a board with live rows must carry no emptyReason");
+const throwing = await boardFor("Wilshire/La Brea", { hasScheduledService: () => { throw new Error("boom"); } });
+assert(throwing.trips.length === 0 && !("emptyReason" in throwing), "a throwing service check must omit emptyReason and not throw");
+
 // tripTerminatesAtStops: the parent id also counts as "this station".
 assert(tripTerminatesAtStops("TB-arrive-union", new Set(["80214S"]), miniStatic) === true, "a terminal platform whose parent is the station terminates there");
 assert(tripTerminatesAtStops("TB-leave-union", new Set(["80214", "80214S"]), miniStatic) === false, "a trip that continues past the station does not terminate there");
@@ -496,5 +511,5 @@ assert(destinationForTrip({ lineId: "d", stopHeadsign: "", terminalName: "Wilshi
 assert(destinationForTrip({ lineId: "a", stopHeadsign: "Metro A Line - Pomona Station", terminalName: "Pomona North Station" }) === "A Line + Pomona North", "A Pomona headsign falls through to the last stop");
 
 console.log(
-  "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, Perth Australia green)"
+  "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Perth Australia green)"
 );
