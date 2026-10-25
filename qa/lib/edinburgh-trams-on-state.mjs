@@ -1,5 +1,5 @@
 /**
- * Child-process half of qa/edinburgh-trams-planned-gate.mjs: exercises the
+ * Child-process half of qa/edinburgh-trams-gate.mjs: exercises the
  * Edinburgh Trams wiring with the switch turned ON, entirely offline.
  *
  * It must run in its own process because the tram switch is read when the

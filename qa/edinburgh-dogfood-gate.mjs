@@ -42,7 +42,6 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain, listMultiCityStations, findNearestStation } from "../lib/cities/live-city-api.js";
-import { assertNoLiveFeedStopsExcluded } from "./lib/no-live-feed-gate-helper.mjs";
 import { isEdinburghTramsLive } from "../lib/cities/edinburgh/trams-switch.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
@@ -133,10 +132,11 @@ assert(
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(EDINBURGH_REGION);
 assert(region?.railCount === 37, `edinburgh rail count must be 37 (UK station fill phase 1), got ${region?.railCount}`);
-// Tram counts follow the registry tramsLive switch: OFF = the 22 stations.json rows; ON = the official 23 stops
-// minus the two shared-name stops (Haymarket, Edinburgh Gateway) withheld at the flip = 21.
+// Tram counts: the official 23 stops minus the three shared-name stops withheld at the flip (Haymarket,
+// Edinburgh Gateway, Edinburgh Park Station) = 20.
 const TRAMS_ON = isEdinburghTramsLive();
-const EXPECT_TRAMS = TRAMS_ON ? 21 : 22;
+assert(TRAMS_ON === true, "registry edinburgh.tramsLive must be true (flipped 25 Oct 2026)");
+const EXPECT_TRAMS = 20;
 const EXPECT_ALL = 37 + EXPECT_TRAMS;
 assert(region?.metroCount === EXPECT_TRAMS, `edinburgh tram count must be ${EXPECT_TRAMS}, got ${region?.metroCount}`);
 
@@ -194,8 +194,7 @@ assert(
 const waverleyTram = resolveCatalogEntry("Edinburgh Waverley", "metro");
 assert(waverleyTram === null, "Trams catalog must not carry an 'Edinburgh Waverley' stop by that exact name");
 const haymarketTram = resolveCatalogEntry("Haymarket", "metro");
-assert(haymarketTram?.catalogId === "tram:haymarket", "Haymarket must resolve as a Trams entry");
-assert(haymarketTram?.name === haymarketRail?.name, "Haymarket tram/rail entries share a printed name but are distinct catalog rows");
+assert(haymarketTram === null, "the tram Haymarket is withheld (shared name resolves to rail), so no Trams entry resolves");
 
 // Caledonian Sleeper excluded at Edinburgh Waverley only, enforced via the shared
 // excludeOperators option (not just documented).
@@ -277,11 +276,11 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Edinburgh Waverley's/Haymarket's doNotGroup locks need it to disambiguate).
 const dogfoodStations = listEdinburghDogfoodStations();
-assert(dogfoodStations.length === (TRAMS_ON ? 60 - 2 : 59), `dogfood stations must be the ${TRAMS_ON ? 58 : 59} names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 57, `dogfood stations must be the 57 names, got ${dogfoodStations.length}`);
 const waverleyEntries = dogfoodStations.filter((s) => s.name === "Edinburgh Waverley");
 assert(waverleyEntries.length === 1, "Edinburgh Waverley must appear once in the dogfood list (National Rail only — Trams uses no exact-name match)");
 const haymarketEntries = dogfoodStations.filter((s) => s.name === "Haymarket");
-assert(haymarketEntries.length === (TRAMS_ON ? 1 : 2), "Haymarket must appear twice in the dogfood list (rail + tram, doNotGroup); once (rail only) while the tram switch is on");
+assert(haymarketEntries.length === 1, "Haymarket must appear once in the dogfood list (rail only; the tram Haymarket is withheld)");
 assert(
   new Set(haymarketEntries.map((s) => s.mode)).size === haymarketEntries.length,
   "the Haymarket dogfood entries must carry different modes"
@@ -384,29 +383,10 @@ if (edinburghParkProbe.ok) {
   console.log("edinburgh-dogfood-gate: DARWIN_LDB_TOKEN not set — Edinburgh Park board not probed against a real payload (expected outside Vercel prod).");
 }
 
-// Edinburgh Trams: no confirmed real-time feed exists at all (see file
-// header). fetchTramStopBoard() must throw EdinburghTramsFeedUnverifiedError
-// unconditionally, and the dogfood dispatch must surface that documented
-// error class rather than fabricate a schedule from the static label list.
-// This holds REGARDLESS of whether DARWIN_LDB_TOKEN is set — Trams has no
-// token-gated path at all, it is a genuinely unconfirmed feed, not an
-// account block.
-let tramBoardThrew = false;
-try {
-  await fetchTramStopBoard("Princes Street");
-} catch (err) {
-  tramBoardThrew = err instanceof EdinburghTramsFeedUnverifiedError;
-}
-assert(tramBoardThrew, "fetchTramStopBoard must throw EdinburghTramsFeedUnverifiedError — no confirmed Trams real-time feed exists");
-
-let tramDirectionsThrew = false;
-try {
-  await getEdinburghDogfoodDirections("Princes Street", { mode: "metro" });
-} catch (err) {
-  tramDirectionsThrew = err instanceof EdinburghTramsFeedUnverifiedError;
-}
-assert(tramDirectionsThrew, "getEdinburghDogfoodDirections must surface EdinburghTramsFeedUnverifiedError for Trams stops, not swallow it");
-
+// Edinburgh Trams are live (registry tramsLive true, 25 Oct 2026). The tram boards, time handling, empty
+// states and error propagation are covered offline by qa/edinburgh-trams-gate.mjs (switch-ON child
+// process, stubbed Trapeze feed). Here: a Trams-mode lookup must never resolve to the rail layer, and the
+// withheld shared-name tram stops are not in the catalog.
 let tramWaverleyDirectionsThrew = false;
 try {
   await getEdinburghDogfoodDirections("Edinburgh Waverley", { mode: "metro" });
@@ -418,44 +398,9 @@ assert(
   "getEdinburghDogfoodDirections must not resolve a Trams-mode lookup at 'Edinburgh Waverley' to the National Rail layer's data (no such Trams stop exists by that exact name)"
 );
 
-let tramHaymarketDirectionsThrew = TRAMS_ON; // with the switch on the tram Haymarket is not in the catalog at all
-if (!TRAMS_ON) try {
-  await getEdinburghDogfoodDirections("Haymarket", { mode: "metro" });
-} catch (err) {
-  tramHaymarketDirectionsThrew = err instanceof EdinburghTramsFeedUnverifiedError;
+for (const withheld of ["tram:haymarket", "tram:edinburgh-gateway", "tram:edinburgh-park-station"]) {
+  assert(!tramStops.some((st) => st.catalogId === withheld), `${withheld} must be withheld from the Trams catalog`);
 }
-assert(
-  tramHaymarketDirectionsThrew,
-  "getEdinburghDogfoodDirections must surface EdinburghTramsFeedUnverifiedError for Haymarket's Trams layer (doNotGroup), not the rail layer's data"
-);
-
-let tramNextTrainThrew = false;
-try {
-  await getEdinburghDogfoodNextTrain({ station: "Princes Street", mode: "metro", destination: "T50 towards Newhaven" });
-} catch (err) {
-  tramNextTrainThrew = err instanceof EdinburghTramsFeedUnverifiedError;
-}
-assert(tramNextTrainThrew, "getEdinburghDogfoodNextTrain must surface EdinburghTramsFeedUnverifiedError for Trams stops, not fabricate a schedule");
-
-let dispatchTramThrew = false;
-try {
-  await getMultiCityDirections("edinburgh", "Princes Street");
-} catch (err) {
-  dispatchTramThrew = err instanceof EdinburghTramsFeedUnverifiedError;
-}
-assert(dispatchTramThrew, "live-city-api dispatch must surface EdinburghTramsFeedUnverifiedError for Trams stops, not swallow it");
-
-// The production dispatch dispatcher (bare name, no mode) at Haymarket
-// resolves rail-first — same order as lib/providers/edinburgh.js's own
-// fetchStationBoard() dispatcher — so the doNotGroup hub-adjacent name never
-// silently returns the Trams layer.
-let dispatchThrew = false;
-try {
-  await fetchStationBoard("Princes Street");
-} catch {
-  dispatchThrew = true;
-}
-assert(dispatchThrew, "fetchStationBoard dispatcher must not silently succeed for Trams");
 
 let unknownThrew = false;
 try {
@@ -500,17 +445,7 @@ if (previous === undefined) {
 // carried through by listMultiCityStations, and is never nominated by
 // findNearestStation.
 // Switch ON: the tram rows are live (liveFeed true via the overlay), so the no-live-feed invariant no longer applies.
-if (!TRAMS_ON) assertNoLiveFeedStopsExcluded({
-  region: "edinburgh",
-  readFileSync,
-  join,
-  ROOT,
-  listMultiCityStations,
-  findNearestStation,
-  assert,
-  sample: { name: "Newhaven", lat: 55.979921, lng: -3.1884628 },
-});
 
 console.log(
-  "edinburgh-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 37 rail + 22 Trams stations (UK station fill phase 1, 13 Sep 2026), single-hub shape distinct from Glasgow, doNotGroup at Edinburgh Waverley, Haymarket and Edinburgh Gateway, Falkirk High + Edinburgh Park now catalogued (no remaining exclusions), Caledonian Sleeper excluded at Waverley only, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Trams dispatch correctly surfaces EdinburghTramsFeedUnverifiedError rather than the static label list, all 22 Trams stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
+  "edinburgh-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 37 rail + 20 Trams stations (tramsLive on, 25 Oct 2026), single-hub shape distinct from Glasgow, doNotGroup at Edinburgh Waverley, Haymarket and Edinburgh Gateway, Falkirk High + Edinburgh Park now catalogued (no remaining exclusions), Caledonian Sleeper excluded at Waverley only, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Trams-mode lookup never resolves to the rail layer, tram Haymarket / Edinburgh Gateway / Edinburgh Park Station withheld, Edinburgh no longer in the no-live-feed lists, Perth Australia stays green)"
 );
