@@ -16,8 +16,8 @@
  *  2. The pure parsing/time rules: UTC "HH:MM" -> Europe/London in BST and GMT,
  *     midnight rollover, null and schedule-echo predictions dropped.
  *  3. With the switch ON (child process, stubbed fetch — qa/lib/
- *     edinburgh-trams-on-state.mjs): 21 tram stops (the shared-name Haymarket and
- *     Edinburgh Gateway are withheld, with a coverage note), York Place absent, Edinburgh Park
+ *     edinburgh-trams-on-state.mjs): 20 tram stops (the shared-name Haymarket, Edinburgh
+ *     Gateway and Edinburgh Park Station are withheld, with a coverage note), no tram name shadowed by a rail entry, York Place absent, Edinburgh Park
  *     Station real coordinates, single-object StopEvents, typed missing-key and
  *     FeedUnavailableError paths, no self-terminus chip, honest empty state.
  *
@@ -68,7 +68,7 @@ for (const key of new Set([...goldenKeys, ...Object.keys(surface)])) {
   assert(res.code === 200 && JSON.stringify(res.body) === JSON.stringify({ region: "edinburgh", ...fileNotes }), "switch OFF: /api/coverage-notes?city=edinburgh must serve coverage.json byte-for-byte");
   const on = JSON.parse(read("lib", "cities", "edinburgh", "coverage-trams.json"));
   assert(on.region === "edinburgh" && /^\d{4}-\d{2}-\d{2}$/.test(on.updated) && Array.isArray(on.covered) && Array.isArray(on.partial) && Array.isArray(on.notCovered) && typeof on.stations === "string" && typeof on.notes === "string", "coverage-trams.json must have the coverage-notes shape");
-  assert(JSON.stringify(on).includes("Trams at Haymarket and Edinburgh Gateway aren't shown yet; their rail departures are."), "coverage-trams.json must carry the shared-name coverage note");
+  assert(JSON.stringify(on).includes("Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are."), "coverage-trams.json must carry the shared-name coverage note naming all three withheld stops");
   assert(!/TODO|D1|oracle|CRS/.test(JSON.stringify(on)), "coverage-trams.json must be rider prose");
 }
 // The overlay is a static JSON import (traced by the Vercel bundler), not a computed-path readFileSync.
@@ -187,5 +187,5 @@ assert(failed.length === 0, `switch-ON checks failed:\n${failed.map((r) => `  - 
 console.log(
   `edinburgh-trams-planned-gate: ok (tramsLive off, status live; ${goldenKeys.length} rider surfaces byte-identical to master; ` +
     `UTC->London BST/GMT + midnight rollover; null/echo predictions dropped; single-object StopEvents; 23 stops, York Place absent, ` +
-    `Edinburgh Park Station coordinates cited; switch ON: 21 tram stops with Haymarket + Edinburgh Gateway withheld and the coverage note, 429/503 status + Retry-After propagation; ${results.length} switch-ON checks passed offline; G1 + ledger recorded)`
+    `Edinburgh Park Station coordinates cited; switch ON: 20 tram stops with Haymarket + Edinburgh Gateway + Edinburgh Park Station withheld and the coverage note, bare-name shadow guard, emptyReason no-live-predictions, 429/503 status + Retry-After propagation; ${results.length} switch-ON checks passed offline; G1 + ledger recorded)`
 );

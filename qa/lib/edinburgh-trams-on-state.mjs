@@ -83,45 +83,54 @@ const { getEdinburghDogfoodDirections, getEdinburghDogfoodNextTrain } = await im
 // --- catalog (switch ON) ----------------------------------------------------
 const tram = listTramStops();
 const names = tram.map((s) => s.name);
-check("on: 21 tram stops (23 official minus the two shared-name stops)", tram.length === 21, `got ${tram.length}`);
+check("on: 20 tram stops (23 official minus the three shared-name stops)", tram.length === 20, `got ${tram.length}`);
 check("on: tram Haymarket is NOT in the catalog", !names.includes("Haymarket") && resolveCatalogEntry("Haymarket", "metro") === null);
 check("on: tram Edinburgh Gateway is NOT in the catalog", !names.includes("Edinburgh Gateway") && resolveCatalogEntry("Edinburgh Gateway", "metro") === null);
 check("on: rail Haymarket and rail Edinburgh Gateway are untouched", resolveCatalogEntry("Haymarket", "train")?.crs === "HYM" && resolveCatalogEntry("Edinburgh Gateway", "train")?.crs === "EGY");
 check("on: a bare-name lookup of Haymarket still resolves to RAIL (never a tram entry)", resolveCatalogEntry("Haymarket")?.mode === "train" && resolveCatalogEntry("Edinburgh Gateway")?.mode === "train");
-check("on: Edinburgh Park Station present", names.includes("Edinburgh Park Station"));
+check("on: tram Edinburgh Park Station is NOT in the catalog (bare name resolves to rail EDP)", !names.includes("Edinburgh Park Station") && resolveCatalogEntry("Edinburgh Park Station", "metro") === null);
+check("on: bare-name Edinburgh Park Station resolves to rail EDP, rail untouched", resolveCatalogEntry("Edinburgh Park Station")?.crs === "EDP" && resolveCatalogEntry("Edinburgh Park", "train")?.crs === "EDP");
+// General guard (B1 class): no in-catalog tram stop name may resolve, via the bare-name resolver
+// the API uses, to anything but that same tram stop.
+{
+  const shadowed = tram.filter((s) => {
+    const r = resolveCatalogEntry(s.name);
+    return !r || r.mode !== "metro" || r.catalogId !== s.catalogId;
+  });
+  check("on: no in-catalog tram stop name resolves to a non-tram entry through bare-name resolveCatalogEntry", shadowed.length === 0, JSON.stringify(shadowed.map((s) => [s.name, resolveCatalogEntry(s.name)?.mode])));
+}
 check("on: Edinburgh Park Central still present and separate", names.includes("Edinburgh Park Central"));
 check("on: York Place absent", !names.some((n) => /york place/i.test(n)));
 check("on: no Waverley tram stop", resolveCatalogEntry("Edinburgh Waverley", "metro") === null);
 check("on: every tram stop liveFeed true", tram.every((s) => s.liveFeed === true));
-const eps = resolveCatalogEntry("Edinburgh Park Station", "metro");
-check("on: Edinburgh Park Station has real coordinates", eps && Number.isFinite(eps.lat) && Number.isFinite(eps.lng) && eps.lat > 55.9 && eps.lat < 55.95, JSON.stringify(eps));
-check("on: Edinburgh Park Station is not the rail Edinburgh Park", resolveCatalogEntry("Edinburgh Park", "train")?.mode === "train" && eps?.mode === "metro");
+const eps = resolveCatalogEntry("Edinburgh Park Central", "metro");
+check("on: Edinburgh Park Central has real coordinates", eps && Number.isFinite(eps.lat) && Number.isFinite(eps.lng) && eps.lat > 55.9 && eps.lat < 55.95, JSON.stringify(eps));
 const api = listMultiCityStations("edinburgh");
-check("on: city-stations lists Edinburgh Park Station once, liveFeed true", api.filter((s) => s.name === "Edinburgh Park Station" && s.liveFeed === true).length === 1);
-check("on: city-stations carries 58 entries (37 rail + 21 tram)", api.length === 58, `got ${api.length}`);
+check("on: city-stations has no tram Edinburgh Park Station, one rail Edinburgh Park, and Park Central once", !api.some((s) => s.name === "Edinburgh Park Station") && api.filter((s) => s.name === "Edinburgh Park").length === 1 && api.filter((s) => s.name === "Edinburgh Park Central" && s.liveFeed === true).length === 1);
+check("on: city-stations carries 57 entries (37 rail + 20 tram)", api.length === 57, `got ${api.length}`);
 check("on: city-stations lists exactly one Haymarket and one Edinburgh Gateway (the rail ones)", ["Haymarket", "Edinburgh Gateway"].every((n) => api.filter((s) => s.name === n).length === 1), JSON.stringify(api.filter((s) => /haymarket|gateway/i.test(s.name)).map((s) => [s.name, s.mode])));
 {
   const { listCatalogStations } = await import("../../lib/providers/uk/catalog.js");
   const uk = listCatalogStations("edinburgh");
-  check("on: UK region catalog has 21 tram stops and no tram Haymarket/Gateway", uk.filter((s) => s.mode === "metro").length === 21 && !uk.some((s) => s.mode === "metro" && /^(haymarket|edinburgh gateway)$/i.test(s.name)), String(uk.filter((s) => s.mode === "metro").length));
+  check("on: UK region catalog has 20 tram stops and no tram Haymarket/Gateway/Park Station", uk.filter((s) => s.mode === "metro").length === 20 && !uk.some((s) => s.mode === "metro" && /^(haymarket|edinburgh gateway|edinburgh park station)$/i.test(s.name)), String(uk.filter((s) => s.mode === "metro").length));
   const mod = await import("../../api/coverage-notes.js");
   const res = { code: 0, body: null, headers: {}, setHeader(k, v) { this.headers[k] = v; }, status(c) { this.code = c; return this; }, json(b) { this.body = b; return this; }, end() {} };
   await mod.default({ method: "GET", query: { city: "edinburgh" }, headers: { "x-forwarded-for": "10.88.0.1" } }, res);
   const text = JSON.stringify(res.body ?? {});
-  check("on: coverage note says trams at Haymarket and Edinburgh Gateway aren't shown yet", res.code === 200 && text.includes("Trams at Haymarket and Edinburgh Gateway aren't shown yet; their rail departures are."), `${res.code} ${text.slice(0, 200)}`);
-  check("on: coverage note no longer says Trams have no confirmed live feed", !/no confirmed live-times feed/.test(text) && (res.body?.partial ?? []).length === 0 && /21 tram stops/.test(text));
+  check("on: coverage note names all three withheld tram stops", res.code === 200 && text.includes("Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are."), `${res.code} ${text.slice(0, 200)}`);
+  check("on: coverage note no longer says Trams have no confirmed live feed", !/no confirmed live-times feed/.test(text) && (res.body?.partial ?? []).length === 0 && /20 tram stops/.test(text));
 }
-check("on: Near me finds Edinburgh Park Station at its own coordinates", findNearestStation("edinburgh", eps.lat, eps.lng) === "Edinburgh Park Station", findNearestStation("edinburgh", eps.lat, eps.lng));
+check("on: Near me finds Edinburgh Park Central at its own coordinates", findNearestStation("edinburgh", eps.lat, eps.lng) === "Edinburgh Park Central", findNearestStation("edinburgh", eps.lat, eps.lng));
 
 // --- directions (switch ON) -------------------------------------------------
 const dNew = await getEdinburghDogfoodDirections("Newhaven", { mode: "metro" });
 const dAir = await getEdinburghDogfoodDirections("Edinburgh Airport", { mode: "metro" });
 const dMur = await getEdinburghDogfoodDirections("Murrayfield Stadium", { mode: "metro" });
-const dPk = await getEdinburghDogfoodDirections("Edinburgh Park Station", { mode: "metro" });
+const dPk = await getEdinburghDogfoodDirections("Edinburgh Park Central", { mode: "metro" });
 check("on: Newhaven offers only T50 towards Edinburgh Airport", JSON.stringify(dNew.directions) === JSON.stringify(["T50 towards Edinburgh Airport"]), JSON.stringify(dNew));
 check("on: Edinburgh Airport offers only T50 towards Newhaven", JSON.stringify(dAir.directions) === JSON.stringify(["T50 towards Newhaven"]), JSON.stringify(dAir));
 check("on: Murrayfield Stadium offers both chips", dMur.directions.length === 2 && dMur.directions.includes("T50 towards Newhaven") && dMur.directions.includes("T50 towards Edinburgh Airport"), JSON.stringify(dMur));
-check("on: Edinburgh Park Station offers both chips", dPk.directions.length === 2);
+check("on: Edinburgh Park Central offers both chips", dPk.directions.length === 2);
 const dDispatch = await getMultiCityDirections("edinburgh", "Newhaven");
 check("on: live-city-api dispatch serves the tram chips", JSON.stringify(dDispatch.directions) === JSON.stringify(["T50 towards Edinburgh Airport"]), JSON.stringify(dDispatch));
 check("on: directions made no upstream call", requests.length === 0, `${requests.length} requests`);
@@ -202,19 +211,21 @@ requests.length = 0;
 const air = await fetchTramStopBoard("Edinburgh Airport", { tramsLive: true, now: 4_000_000 });
 check("on: Edinburgh Airport queries only platform 1 and drops self-chip", requests.length === 1 && requests[0].atcocode === "9400ZZEDAIR1" && air.trips.length === 1 && air.trips[0].destination === "T50 towards Newhaven", JSON.stringify({ r: requests.map((r) => r.atcocode), t: air.trips }));
 
-// --- Edinburgh Park Station (the 23rd stop) ---------------------------------
+// --- Edinburgh Park Station (the 23rd stop) is withheld; Park Central is its own stop -------------
 clearEdinburghTramsCache();
-bodies = { "9400ZZEDPKS2": { time: bodiesTime, events: [ev("Edinburgh Airport", "09:41", 200)] } };
+bodies = {};
 requests.length = 0;
-const pks = await fetchTramStopBoard("Edinburgh Park Station", { tramsLive: true, now: 5_000_000 });
-check("on: Edinburgh Park Station board uses its own platform ids", requests.some((r) => r.atcocode === "9400ZZEDPKS2") && requests.every((r) => /^9400ZZEDPKS[12]$/.test(r.atcocode)) && pks.trips.length === 1, JSON.stringify(requests.map((r) => r.atcocode)));
-check("on: Edinburgh Park Central is a different stop (own ids)", await (async () => { requests.length = 0; clearEdinburghTramsCache(); await fetchTramStopBoard("Edinburgh Park Central", { tramsLive: true, now: 6_000_000 }); return requests.every((r) => /^9400ZZEDPKC[12]$/.test(r.atcocode)); })());
+const pksErr = await rejects(fetchTramStopBoard("Edinburgh Park Station", { tramsLive: true, now: 5_000_000 }));
+check("on: Edinburgh Park Station has no tram board (withheld, never answered with another stop's)", pksErr && /Unknown Edinburgh Trams stop/.test(pksErr.message) && requests.length === 0, `${pksErr?.message} ${requests.length}`);
+check("on: Edinburgh Park Central is a different stop (own ids)", await (async () => { requests.length = 0; clearEdinburghTramsCache(); await fetchTramStopBoard("Edinburgh Park Central", { tramsLive: true, now: 6_000_000 }); return requests.length > 0 && requests.every((r) => /^9400ZZEDPKC[12]$/.test(r.atcocode)); })());
 
 // --- honest empty state -----------------------------------------------------
 clearEdinburghTramsCache();
 bodies = { "9400ZZEDMUR1": { time: bodiesTime, events: [ev("Newhaven", "09:40", null)] }, "9400ZZEDMUR2": { time: bodiesTime } };
 const empty = await fetchTramStopBoard("Murrayfield Stadium", { tramsLive: true, now: 7_000_000 });
 check("on: no live values -> empty trips, not an error (honest empty state)", empty.trips.length === 0 && empty.realtime === "live");
+check("on: empty tram board carries emptyReason no-live-predictions", empty.emptyReason === "no-live-predictions", String(empty.emptyReason));
+check("on: a non-empty tram board carries no emptyReason", hay.emptyReason === null, String(hay.emptyReason));
 
 // --- faults -----------------------------------------------------------------
 for (const [label, m] of [["HTTP 500", "http500"], ["network rejection", "reject"], ["non-JSON 200", "html"]]) {
@@ -264,6 +275,25 @@ const nt = await getEdinburghDogfoodNextTrain({
 const upcoming = nt.upcoming ?? [];
 check("on: next-train returns only the chosen direction", upcoming.length === 2 && upcoming.every((t) => t.destination === "T50 towards Newhaven"), JSON.stringify(upcoming.map((t) => [t.destination, t.displayTime])));
 check("on: next-train times are London local (BST)", upcoming[0]?.displayTime === "10:47" && upcoming[1]?.displayTime === "10:55", JSON.stringify(upcoming.map((t) => t.displayTime)));
+
+// --- empty-feed next-train / board carry the honest empty state ------------
+{
+  clearEdinburghTramsCache();
+  bodiesTime = "2026-10-24T09:37:24Z";
+  bodies = { "9400ZZTWWJN2": { time: bodiesTime, events: [ev("Edinburgh Airport", "09:50", null)] } };
+  const ntEmpty = await getEdinburghDogfoodNextTrain({ station: "Newhaven", mode: "metro", destination: "T50 towards Edinburgh Airport", leaveBeforeMinutes: 2, refreshSeconds: 30, now: new Date("2026-10-24T09:37:30Z") });
+  check("on: empty-feed next-train (metro) has no trains and carries emptyReason no-live-predictions", (ntEmpty.upcoming ?? []).length === 0 && ntEmpty.next == null && ntEmpty.emptyReason === "no-live-predictions", JSON.stringify(ntEmpty).slice(0, 300));
+  clearEdinburghTramsCache();
+  const { default: boardHandler } = await import("../../api/board.js");
+  const res = { code: 0, body: null, setHeader() {}, status(c) { this.code = c; return this; }, json(b) { this.body = b; return this; }, end() {} };
+  await boardHandler({ method: "GET", query: { city: "edinburgh", station: "Newhaven" }, headers: { "x-forwarded-for": "10.99.0.1" } }, res);
+  const e0 = res.body?.entries?.[0];
+  check("on: empty-feed /api/board for Newhaven is 200 with emptyReason on the entry", res.code === 200 && e0?.data?.emptyReason === "no-live-predictions" && !e0?.data?.next, `${res.code} ${JSON.stringify(res.body).slice(0, 300)}`);
+  clearEdinburghTramsCache();
+  bodies = { "9400ZZEDMUR1": { time: bodiesTime, events: [ev("Newhaven", "09:47", 608)] }, "9400ZZEDMUR2": { time: bodiesTime, events: [] } };
+  const ntOther = await getEdinburghDogfoodNextTrain({ station: "Murrayfield Stadium", mode: "metro", destination: "T50 towards Newhaven", leaveBeforeMinutes: 2, refreshSeconds: 30, now: new Date("2026-10-24T09:37:30Z") });
+  check("on: a direction with a live tram carries no emptyReason", (ntOther.upcoming ?? []).length === 1 && ntOther.emptyReason === undefined, JSON.stringify(ntOther).slice(0, 300));
+}
 
 // --- off again: the explicit override still gives the old error -------------
 const offErr = await rejects(fetchTramStopBoard("Murrayfield Stadium", { tramsLive: false }));
