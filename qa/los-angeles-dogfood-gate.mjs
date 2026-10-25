@@ -23,6 +23,8 @@ import {
   getLosAngelesDogfoodDirections,
   getLosAngelesDogfoodNextTrain,
   listLosAngelesDogfoodStations,
+  losAngelesDirectionsFromStatic,
+  setLosAngelesStaticLoader,
 } from "../lib/cities/los-angeles/dogfood-next-train.js";
 import { checkBoard as sweepCheckBoard, DOCUMENTED_NOT_SERVED } from "./los-angeles-all-stations-live-sweep.mjs";
 import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
@@ -423,6 +425,15 @@ for (const [index, station] of stations.entries()) {
     assert(foldKey(terminus) !== foldKey(station.name), `${station.name}: self-terminus chip "${chip}" (terminating-here trips must not be a direction)`);
     assert(foldKey(terminus) !== foldKey(LOS_ANGELES_HUB), `${station.name}: hub ${LOS_ANGELES_HUB} must never be a direction token ("${chip}")`);
   }
+  // Reachability (short-turn chips): every terminus a trip from this station can end at (other than
+  // the station itself) is an offered chip - independent of the implementation, from the observed table.
+  for (const lineId of station.lines.map((l) => l.toLowerCase())) {
+    for (const [terminalLine, , , terminalStation] of OBSERVED_TERMINALS) {
+      if (terminalLine !== lineId || foldKey(terminalStation) === foldKey(station.name)) continue;
+      const expected = `${LINE_LABELS[lineId]} + ${terminalStation}`;
+      assert(chips.includes(expected), `${station.name}: terminus chip "${expected}" must be offered (short-turn reachability), got [${chips.join(", ")}]`);
+    }
+  }
   assert(
     chips.length > 0 || station.lines.length === 0 || station.lines.every((l) => OBSERVED_TERMINALS.every(([tl, , , ts]) => tl.toUpperCase() !== l.toUpperCase() || foldKey(ts) === foldKey(station.name))),
     `${station.name}: expected at least one direction chip`
@@ -560,12 +571,134 @@ assert(!("emptyReasonMessage" in notServed), "no new rider copy: no emptyReasonM
 const plain = buildLosAngelesNextTrainFromBoard(emptyBoard(undefined, []), { ...nextArgs, destination: "D Line + Union Station" });
 assert(!("emptyReason" in plain), "a board with no emptyReason produces none");
 
-// 2. Dispatch wired regardless of status (production routes gate on assertCityLive first).
-const dogfoodHubChips = getLosAngelesDogfoodDirections(LOS_ANGELES_HUB);
+// 2. Short-turn chips (docs/jim-brief-la-short-turn-chips.md): fixture network, no network calls.
+// Service S runs today; service S2 (D to Wilshire/La Cienega) only starts 1 Nov, like the live feed.
+const cStops = [
+  ...miniStop("80214", "Union Station - Metro B & D Lines"),
+  ...miniStop("80122", "7th Street / Metro Center Station"),
+  ...miniStop("80213", "Wilshire / Vermont Station"),
+  ...miniStop("80216", "Wilshire / Western Station"),
+  ...miniStop("80218", "Wilshire / La Cienega Station"),
+  ...miniStop("80201", "North Hollywood Station"),
+  ...miniStop("80101", "Downtown Long Beach Station"),
+  ...miniStop("801103", "Pomona North Station"),
+  ...miniStop("80423", "Monrovia Station"),
+  ...miniStop("80425", "Arcadia Station"),
+];
+// [tripId, line, service, expectedChip (hand-written), [[stopId, time], ...]]
+const cTrips = [
+  ["C-d-west-1", "D", "S", "D Line + Wilshire/Western", [["80214", "11:12:00"], ["80213", "11:20:00"], ["80216", "11:30:00"]]],
+  ["C-d-west-2", "D", "S", "D Line + Wilshire/Western", [["80122", "11:15:00"], ["80213", "11:22:00"], ["80216", "11:32:00"]]],
+  ["C-d-lacienega", "D", "S2", "D Line + Wilshire/La Cienega", [["80214", "11:40:00"], ["80122", "11:45:00"], ["80213", "11:52:00"], ["80216", "12:00:00"], ["80218", "12:08:00"]]],
+  ["C-d-union", "D", "S", "D Line + Union Station", [["80216", "11:05:00"], ["80213", "11:12:00"], ["80122", "11:18:00"], ["80214", "11:24:00"]]],
+  ["C-b-nh", "B", "S", "B Line + North Hollywood", [["80214", "11:10:00"], ["80201", "11:40:00"]]],
+  ["C-a-monrovia", "A", "S", "A Line + Monrovia", [["80122", "11:20:00"], ["80214", "11:30:00"], ["80425", "11:50:00"], ["80423", "12:00:00"]]],
+  ["C-a-pomona", "A", "S", "A Line + Pomona North", [["80122", "11:25:00"], ["80214", "11:35:00"], ["80425", "12:00:00"], ["80423", "12:10:00"], ["801103", "12:40:00"]]],
+  ["C-a-dtlb", "A", "S", "A Line + Downtown Long Beach", [["80425", "11:30:00"], ["80122", "11:50:00"], ["80101", "12:30:00"]]],
+];
+const cStopTimes = new Map();
+const cTripMap = new Map();
+for (const [tripId, line, service, , calls] of cTrips) {
+  cTripMap.set(tripId, { trip_id: tripId, route_id: `R-${line}`, service_id: service, trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!cStopTimes.has(stopId)) cStopTimes.set(stopId, []);
+    cStopTimes.get(stopId).push({ trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time, stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0" });
+  });
+}
+const chipStatic = {
+  stops: cStops,
+  stopsById: new Map(cStops.map((st) => [st.stop_id, st])),
+  routesById: new Map(["A", "B", "D"].map((l) => [`R-${l}`, { route_id: `R-${l}`, route_short_name: "", route_long_name: `Metro ${l} Line` }])),
+  tripsById: cTripMap,
+  stopTimesByStopId: cStopTimes,
+  calendar: [
+    { service_id: "S", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "1", sunday: "1", start_date: "20260101", end_date: "20261231" },
+    { service_id: "S2", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "1", sunday: "1", start_date: "20261101", end_date: "20261231" },
+  ],
+  calendarDates: [],
+};
+const chipEntities = [];
+const livePredict = (tripId, stopId, time) => {
+  const [h, m] = time.split(":").map(Number);
+  chipEntities.push({ tripUpdate: { trip: { tripId }, stopTimeUpdate: [{ stopId, departure: { time: Math.floor(Date.UTC(2026, 9, 26, 7 + h, m, 0) / 1000) } }] } });
+};
+livePredict("C-d-west-1", "80214", "11:12:00"); // one live D -> Western row at Union Station
+livePredict("C-a-pomona", "80425", "12:00:00"); // one live A -> Pomona North row at Arcadia
+const chipRealtime = { entities: chipEntities, fetchedAt: nowPdt };
+
+const chipsAt = (name) => losAngelesDirectionsFromStatic(name, chipStatic);
+const unionChips = await chipsAt("Union Station");
+assert(unionChips.includes("D Line + Wilshire/Western"), `Union Station must offer D Line + Wilshire/Western, got [${unionChips.join(", ")}]`);
+assert(unionChips.includes("D Line + Wilshire/La Cienega"), "Union Station must still offer D Line + Wilshire/La Cienega");
+assert(unionChips.includes("A Line + Monrovia"), "Union Station must offer the A Line + Monrovia short-turn");
+assert(JSON.stringify(unionChips) === JSON.stringify(["A Line + Pomona North", "A Line + Downtown Long Beach", "A Line + Monrovia", "B Line + North Hollywood", "D Line + Wilshire/La Cienega", "D Line + Wilshire/Western"]), `Union Station chip set (ordered), got [${unionChips.join(", ")}]`);
+const hubChipsS = await chipsAt(LOS_ANGELES_HUB);
+assert(hubChipsS.includes("D Line + Wilshire/Western") && hubChipsS.includes("A Line + Monrovia"), "7th St/Metro Ctr must offer the D Western and A Monrovia short-turns");
+assert(!hubChipsS.some((c) => c.includes("7th")), "7th St/Metro Ctr must never be a direction token");
+const vermontChips = await chipsAt("Wilshire/Vermont");
+assert(vermontChips.includes("D Line + Wilshire/Western") && vermontChips.includes("D Line + Wilshire/La Cienega"), "Wilshire/Vermont must offer both D westbound termini");
+const arcadiaChips = await chipsAt("Arcadia");
+assert(arcadiaChips.includes("A Line + Monrovia") && arcadiaChips.includes("A Line + Pomona North"), `Arcadia (an A station) must offer A Line + Monrovia, got [${arcadiaChips.join(", ")}]`);
+assert(!(await chipsAt("Monrovia")).includes("A Line + Monrovia"), "Monrovia must not offer a self chip");
+assert(!(await chipsAt("Wilshire/Western")).includes("D Line + Wilshire/Western"), "Wilshire/Western must not offer a self chip");
+
+// Reachability: every board row / static candidate at every fixture station maps to an offered chip,
+// and so does every non-terminating trip's hand-written expected chip.
+const bareOrSelfOrHub = (name, chip) =>
+  bareLineChip.test(chip) || foldKey(chip.split(" + ")[1] ?? "") === foldKey(name) || foldKey(chip.split(" + ")[1] ?? "") === foldKey(LOS_ANGELES_HUB);
+const cStationNames = ["Union Station", LOS_ANGELES_HUB, "Wilshire/Vermont", "Wilshire/Western", "Wilshire/La Cienega", "North Hollywood", "Downtown Long Beach", "Pomona North", "Monrovia", "Arcadia"];
+const chipBoards = new Map();
+for (const name of cStationNames) {
+  const chips = await chipsAt(name);
+  const cBoard = await composeStationBoard(name, chipStatic, chipRealtime, { now: nowPdt });
+  chipBoards.set(name, cBoard);
+  for (const c of chips) assert(!bareOrSelfOrHub(name, c), `${name}: chip "${c}" is bare, self or hub`);
+  for (const row of [...cBoard.scheduledCandidates, ...cBoard.trips]) {
+    assert(chips.includes(row.destination), `${name}: board destination "${row.destination}" is not reachable through any chip [${chips.join(", ")}]`);
+  }
+  const stopIds = new Set(await resolveStopIds(name, chipStatic));
+  for (const [tripId, , , expected, calls] of cTrips) {
+    const callsHere = calls.findIndex(([stopId]) => stopIds.has(stopId));
+    if (callsHere === -1 || callsHere === calls.length - 1) continue; // not served here, or terminates here
+    assert(chips.includes(expected), `${name}: trip ${tripId} (${expected}) is not reachable through any chip [${chips.join(", ")}]`);
+  }
+}
+
+// Every offered chip returns trips or carries an honest emptyReason (never silent).
+const chipNext = (name, chip) =>
+  buildLosAngelesNextTrainFromBoard(chipBoards.get(name), { station: name, destination: chip, leaveBeforeMinutes: 0, refreshSeconds: 60, now: nowPdt });
+for (const name of cStationNames) {
+  for (const chip of await chipsAt(name)) {
+    const res = chipNext(name, chip);
+    assert(res.upcoming.length > 0 || ["no-live-predictions", "not-currently-served"].includes(res.emptyReason), `${name} + "${chip}": zero rows with no emptyReason (silent empty chip)`);
+  }
+}
+const unionWest = chipNext("Union Station", "D Line + Wilshire/Western");
+assert(unionWest.next != null && !unionWest.emptyReason, "Union Station D + Wilshire/Western has a live row and no emptyReason");
+const unionLaCienega = chipNext("Union Station", "D Line + Wilshire/La Cienega");
+assert(unionLaCienega.emptyReason === "not-currently-served", `D + La Cienega runs only from 1 Nov: not-currently-served, got ${unionLaCienega.emptyReason}`);
+const unionMonrovia = chipNext("Union Station", "A Line + Monrovia");
+assert(unionMonrovia.emptyReason === "no-live-predictions", `scheduled A + Monrovia with no live row: no-live-predictions, got ${unionMonrovia.emptyReason}`);
+const unionNh = chipNext("Union Station", "B Line + North Hollywood");
+assert(unionNh.emptyReason === "no-live-predictions", "B + North Hollywood scheduled, other directions live: still per-direction no-live-predictions");
+const arcPom = chipNext("Arcadia", "A Line + Pomona North");
+assert(arcPom.next != null && !arcPom.emptyReason, "Arcadia A + Pomona North has its live row");
+
+// Dispatch wired regardless of status (production routes gate on assertCityLive first); the static
+// loader is stubbed so the gate never touches the network.
+setLosAngelesStaticLoader(async () => chipStatic);
+const dogfoodHubChips = await getLosAngelesDogfoodDirections(LOS_ANGELES_HUB);
 assert(dogfoodHubChips.source === "los-angeles-marketing-ends", "directions source must be los-angeles-marketing-ends");
-assert(JSON.stringify(dogfoodHubChips.directions) === JSON.stringify(marketingLabelsForStation(LOS_ANGELES_HUB)), "dogfood directions must match marketingLabelsForStation");
+assert(JSON.stringify(dogfoodHubChips.directions) === JSON.stringify(hubChipsS), "dogfood directions must be the static-derived chips");
 const dispatched = await getMultiCityDirections("los-angeles", LOS_ANGELES_HUB);
 assert(JSON.stringify(dispatched.directions) === JSON.stringify(dogfoodHubChips.directions), "live-city-api dispatch must return the same chips as the dogfood harness");
+setLosAngelesStaticLoader(async () => { throw new Error("static feed unavailable"); });
+const warnSaved = console.warn;
+console.warn = () => {};
+const fallbackChips = await getLosAngelesDogfoodDirections(LOS_ANGELES_HUB);
+console.warn = warnSaved;
+assert(JSON.stringify(fallbackChips.directions) === JSON.stringify(marketingLabelsForStation(LOS_ANGELES_HUB)), "if the static feed is unavailable, directions degrade to the printed primary chips");
+setLosAngelesStaticLoader(null);
 const savedSwiftlyKey = process.env.SWIFTLY_API_KEY;
 delete process.env.SWIFTLY_API_KEY;
 try {
