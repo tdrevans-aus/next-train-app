@@ -26,3 +26,23 @@ Swiftly usage: 9 TripUpdates requests (limit 180 / 15 min). Appended to `live-sw
 - Union Station, `A Line + Pomona North`: 5 upcoming, no `emptyReason`. Chips: A + Pomona North, A + Downtown Long Beach, B + North Hollywood, D + Wilshire/La Cienega.
 - Wilshire/La Brea, `D Line + Union Station`: 0 upcoming, `emptyReason: "not-currently-served"`.
 - Wilshire/Western, `D Line + Union Station`: 5 upcoming, no `emptyReason`.
+
+## Flip QA re-run (Mark, Sat 24 Oct 2026 20:16-20:26 PDT, 25 Oct 03:16 UTC), master 52c49ca1
+
+`node --env-file=<main>/.env.local qa/los-angeles-all-stations-live-sweep.mjs`, evening service, 9 polls, 9 Swiftly requests.
+
+| Poll | Live rows | Stations live | not-currently-served | Zero / silent-empty |
+|---|---|---|---|---|
+| 1 | 663 | 107 | 3 | 0 |
+| 2 | 674 | 107 | 3 | 0 |
+| 3 | 668 | 107 | 3 | 0 |
+| 4 | 663 | 107 | 3 | 0 |
+| 5 | 665 | 107 | 3 | 0 |
+| 6 | 655 | 107 | 3 | 0 |
+| 7 | 667 | 107 | 3 | 0 |
+| 8 | 666 | 107 | 3 | 0 |
+| 9 | 646 | 107 | 3 | 0 |
+
+The 3 not-currently-served are the documented Wilshire/La Brea, Wilshire/Fairfax, Wilshire/La Cienega (no D trips until the -90 timetable on 1 Nov). Result: ok, appended to `live-sweep-log.jsonl`.
+
+Rider path sampled through `/api/board`, `/api/directions`, `/api/next-train`, `/api/cities`, `/api/coverage-notes` on a local dev server with the flip applied: 7th St/Metro Ctr (A/B/D/E chips, no hub token), Union Station (no B/D + Union Station self chips), Wilshire/La Cienega (D + Union Station = not-currently-served), Wilshire/Vermont, Expo/Crenshaw, Atlantic, Norwalk. Zero bare chips, zero self chips; every empty chip carried `emptyReason` (`no-live-predictions` for A + APU/Citrus College, `not-currently-served` for D + Wilshire/La Cienega and C + Aviation/Century off-pattern). `fetchStationBoard` returns `realtime: true`.

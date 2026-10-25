@@ -434,6 +434,28 @@ window.__CITY_MANIFEST_SEED__ = {
       "directionsVersion": "8a0be7c6"
     },
     {
+      "id": "los-angeles",
+      "displayName": "Los Angeles",
+      "status": "live",
+      "country": {
+        "id": "us",
+        "name": "United States"
+      },
+      "timeZone": "America/Los_Angeles",
+      "bounds": {
+        "minLat": 33.72,
+        "maxLat": 34.22,
+        "minLng": -118.55,
+        "maxLng": -117.7
+      },
+      "modes": [
+        "metro",
+        "light_rail"
+      ],
+      "nearbyEligible": true,
+      "directionsVersion": "b77b62e9"
+    },
+    {
       "id": "hong-kong",
       "displayName": "Hong Kong",
       "status": "live",
@@ -1248,6 +1270,11 @@ window.__CITY_MANIFEST_SEED__ = {
           "id": "boston",
           "name": "Boston",
           "timeZone": "America/New_York"
+        },
+        {
+          "id": "los-angeles",
+          "name": "Los Angeles",
+          "timeZone": "America/Los_Angeles"
         },
         {
           "id": "washington",
