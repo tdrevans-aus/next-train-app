@@ -76,7 +76,7 @@ Metro Rail only (A/B/C/D/E/K). Pacific Surfliner is a separate operator and sepa
 
 ## Skip risk
 
-**Wiring stays blocked.** No official Amtrak GTFS-RT, and redistribution of the third-party feed is not cleared. Specific risks:
+**Tim approved wiring on 25 Oct 2026.** The risks below are still true; they are no longer a gate. Specific risks:
 
 1. **Unofficial real-time feed:** Transitdocs' GTFS-RT is a third-party conversion of Amtrak's private Track-A-Train endpoint. Not an official Amtrak API. No service-level agreement or stability guarantee from Amtrak or transitdocs.
 2. **Redistribution terms unconfirmed:** Amtrak's general web terms prohibit redistribution without permission. No public open license or written permission for downstream use in a third-party app has been verified. Transitdocs permits free API access but does not formally authorize redistribution by this app.
@@ -93,6 +93,4 @@ Metro Rail only (A/B/C/D/E/K). Pacific Surfliner is a separate operator and sepa
 2. **Real-time data available via third-party conversion:** transitdocs (https://asm-backend.transitdocs.com/gtfs/amtrak), keyless, derived from Amtrak's Track-A-Train map.
 3. **Los Angeles station:** Union Station only. Pacific Surfliner does not call at Pomona North.
 4. **Redistribution terms:** Amtrak's general terms prohibit redistribution without permission. No open license published. Transitdocs permits free API use but does not authorize downstream redistribution by a third-party app without further agreement.
-5. **Board eligibility:** Verdict `in` (Tim, 25 Oct 2026); feed gate remains blocked pending redistribution clearance.
-
-**Next step:** Tim decides whether to approve redistribution terms for the transitdocs feed or request Amtrak direct authorization (unlikely; Amtrak does not publicly support GTFS-RT).
+5. **Board eligibility:** Verdict `in`. Tim approved the transitdocs feed for rider-facing boards on 25 Oct 2026. Long-distance Amtrak in the same feed stays off the board.
