@@ -26,6 +26,9 @@ import {
   composeStationBoard,
   resolveStopIds,
   lineIdForRoute,
+  destinationForTrip,
+  staticDirectionsForStopIds,
+  tripTerminatesAtStops,
   MissingSwiftlyApiKeyError,
 } from "../lib/providers/los-angeles.js";
 import { swiftlyAuthHeaders } from "../lib/providers/gtfs/auth.js";
@@ -133,8 +136,15 @@ assert(LINE_TERMINI.a.includes("Pomona North") && LINE_TERMINI.a.includes("Downt
 assert(!LINE_TERMINI.a.includes("Pacific Av"), "A termini must not include the Long Beach loop stop Pacific Av");
 assert(LINE_TERMINI.e.includes("Downtown Santa Monica") && LINE_TERMINI.e.includes("Atlantic"), "E termini must be Downtown Santa Monica/Atlantic");
 assert(LINE_TERMINI.k.includes("Expo/Crenshaw") && LINE_TERMINI.k.includes("Redondo Beach"), "K termini must be Expo/Crenshaw/Redondo Beach");
-assert(A_LINE_SHORT_TURNS.includes("Monrovia") && A_LINE_SHORT_TURNS.includes("Wardlow"), "A Line short-turns must be recorded, not treated as termini");
-assert(!LINE_TERMINI.a.includes("Monrovia"), "A Line short-turns must never leak into the termini list");
+assert(A_LINE_SHORT_TURNS.includes("Monrovia") && A_LINE_SHORT_TURNS.includes("Wardlow"), "A Line short-turns must stay recorded");
+// Short-turn termini real trips end at (24 Oct 2026 gtfs_rail.zip) must resolve, so no bare chip.
+assert(LINE_TERMINI.a.includes("Monrovia") && LINE_TERMINI.a.includes("APU/Citrus College"), "A short-turns Monrovia/APU/Citrus College must be resolvable termini");
+assert(LINE_TERMINI.c.includes("Aviation/Century"), "C short-turn Aviation/Century must be a resolvable terminus");
+assert(LINE_TERMINI.d.includes("Wilshire/Western"), "D terminus Wilshire/Western must be a resolvable terminus");
+assert(!LINE_TERMINI.a.includes("Wardlow"), "Wardlow has no static trip ending there, so it is not a terminus");
+for (const lineId of Object.keys(LINE_TERMINI)) {
+  assert(!LINE_TERMINI[lineId].some((t) => foldKey(t) === foldKey(LOS_ANGELES_HUB)), "the hub is never a direction token");
+}
 
 assert(resolveTerminus("Pomona North", "a") === "Pomona North", "resolveTerminus must resolve an exact terminus match");
 assert(mapLineTerminusDestination("Pomona North", "a") === "A Line + Pomona North", "direction chip must be line + terminus");
@@ -142,8 +152,13 @@ assert(mapLineTerminusDestination("Atlantic", "e") === "E Line + Atlantic", "dir
 assert(mapLineTerminusDestination("Redondo Beach", "k") === "K Line + Redondo Beach", "direction chip must be line + terminus");
 // 7th St/Metro Ctr must NEVER appear as a direction — it isn't in any line's termini list, so an
 // unresolvable/hub headsign always falls back to the bare line label.
-assert(mapLineTerminusDestination("7th St/Metro Ctr", "a") === "A Line", "7th St/Metro Ctr must never appear as a direction token");
-assert(mapLineTerminusDestination("City", "e") === "E Line", "City must never appear as a direction token");
+assert(mapLineTerminusDestination("7th St/Metro Ctr", "a") === null, "7th St/Metro Ctr must never appear as a direction token (and never a bare line chip)");
+assert(mapLineTerminusDestination("City", "e") === null, "City must never appear as a direction token (and never a bare line chip)");
+assert(mapLineTerminusDestination("Wilshire / Western Station", "d") === "D Line + Wilshire/Western", "D trips ending at Wilshire/Western give D Line + Wilshire/Western");
+assert(mapLineTerminusDestination("Monrovia Station", "a") === "A Line + Monrovia", "A short-turn Monrovia resolves");
+assert(mapLineTerminusDestination("APU / Citrus College Station", "a") === "A Line + APU/Citrus College", "A short-turn APU/Citrus College resolves");
+assert(mapLineTerminusDestination("Aviation / Century Station", "c") === "C Line + Aviation/Century", "C short-turn Aviation/Century resolves");
+assert(mapLineTerminusDestination("Wilshire / Western Station", "a") === null, "a terminus is only valid on the line that serves it");
 assert(resolveTerminus("Some Unknown Headsign", "a") === null, "resolveTerminus must not fabricate an unknown terminus");
 
 const hubChips = marketingLabelsForStation(LOS_ANGELES_HUB);
@@ -222,6 +237,7 @@ const fixtureStops = [
   ...fixtureStation("80422", "Arcadia Station", ["1st Street Ramp - North Entrance"]),
   ...fixtureStation("81401", "Grand Ave Arts / Bunker Hill Station", ["Hope Entrance"]),
   ...fixtureStation("80412", "Heritage Square / Arroyo Station", ["East Entrance"]),
+  ...fixtureStation("801103", "Pomona North Station"),
   { stop_id: "80122S", stop_name: "7th Street / Metro Center Station", location_type: "1", parent_station: "" },
   { stop_id: "80122", stop_name: "7th Street / Metro Center Station - Metro A & E Lines", location_type: "0", parent_station: "80122S" },
   { stop_id: "80211", stop_name: "7th Street / Metro Center Station - Metro B & D Lines", location_type: "0", parent_station: "80122S" },
@@ -278,7 +294,11 @@ const boardStatic = {
   stopTimesByStopId: new Map([
     [
       "80121",
-      tripDefs.map(([id, time], i) => ({ trip_id: id, stop_id: "80121", departure_time: time, arrival_time: time, stop_sequence: String(i + 1), pickup_type: "0" })),
+      tripDefs.map(([id, time]) => ({ trip_id: id, stop_id: "80121", departure_time: time, arrival_time: time, stop_sequence: "1", pickup_type: "0" })),
+    ],
+    [
+      "801103",
+      tripDefs.map(([id]) => ({ trip_id: id, stop_id: "801103", departure_time: "12:00:00", arrival_time: "12:00:00", stop_sequence: "2", stop_headsign: "Metro A Line - Pomona Station", pickup_type: "0" })),
     ],
   ]),
   calendar: [
@@ -303,6 +323,178 @@ assert(!shownIds.includes("T-arrival-only"), "an arrival-only StopTimeUpdate (no
 assert(!shownIds.includes("T-unpredicted"), "a trip Swiftly has no update for must not show (no timetable fallback)");
 assert(shownIds.length === 1, `exactly one live row expected, got [${shownIds.join(", ")}]`);
 
+// ---- Pre-flip chips (docs/jim-brief-la-preflip-chips.md): no bare line chip, no terminating-here row.
+// Terminal stops observed in LA Metro's gtfs_rail.zip (24 Oct 2026): every distinct final stop of
+// every trip, with trip counts, per line. `station` is the catalog station the stop belongs to.
+const OBSERVED_TERMINALS = [
+  ["a", "APU / Citrus College Station", "Metro A Line - APU / Citrus College Station", "APU/Citrus College"],
+  ["a", "Downtown Long Beach Station", "Metro A Line - Downtown Long Beach Station", "Downtown Long Beach"],
+  ["a", "Monrovia Station", "Metro A Line - Monrovia Station", "Monrovia"],
+  ["a", "Pomona North Station", "Metro A Line - Pomona Station", "Pomona North"],
+  ["b", "North Hollywood Station", "Metro B Line - North Hollywood Station", "North Hollywood"],
+  ["b", "Union Station - Metro B & D Lines", "Metro B Line - Union Station", "Union Station"],
+  ["c", "Aviation / Century Station", "Metro C Line - Aviation / Century Station", "Aviation/Century"],
+  ["c", "LAX / Metro Transit Center", "Metro C Line - LAX / Metro Transit Center", "LAX/Metro Transit Center"],
+  ["c", "Norwalk Station", "Metro C Line - Norwalk Station", "Norwalk"],
+  ["d", "Union Station - Metro B & D Lines", "Metro D Line - Union Station", "Union Station"],
+  ["d", "Wilshire / La Cienega Station", "Metro D Line - Wilshire / La Cienega Station", "Wilshire/La Cienega"],
+  ["d", "Wilshire / Western Station", "Metro D Line - Wilshire / Western Station", "Wilshire/Western"],
+  ["e", "Atlantic Station", "Metro E Line - Atlantic Station", "Atlantic"],
+  ["e", "Downtown Santa Monica Station", "Metro E Line - Downtown Santa Monica Station", "Downtown Santa Monica"],
+  ["k", "Expo / Crenshaw K-Line Station", "Metro K Line - Expo / Crenshaw Station", "Expo/Crenshaw"],
+  ["k", "Redondo Beach Station", "Metro K Line - Redondo Beach Station", "Redondo Beach"],
+];
+// Terminal -> the catalog station it is (so a terminal at the board's own station is "terminating here").
+const bareLineChip = /^[A-EK] Line$/;
+
+// 1. Iterate the whole catalog: for every station and every line calling there, schedule one trip to
+// each terminal observed for that line (the terminal at the station's own stop when it IS that
+// station). No static-derived direction may be a bare line chip, an unresolved terminus, the hub, or
+// the station's own name.
+let stationsChecked = 0;
+for (const [index, station] of stations.entries()) {
+  const stationStopId = `X${index}`;
+  const stops = [
+    { stop_id: stationStopId, stop_name: `${station.name} Station`, location_type: "0", parent_station: `${stationStopId}S` },
+    { stop_id: `${stationStopId}S`, stop_name: `${station.name} Station`, location_type: "1", parent_station: "" },
+  ];
+  const stopTimes = new Map([[stationStopId, []]]);
+  const trips = new Map();
+  const routes = new Map();
+  let n = 0;
+  for (const lineId of station.lines.map((l) => l.toLowerCase())) {
+    routes.set(`R-${lineId}`, { route_id: `R-${lineId}`, route_short_name: "", route_long_name: `Metro ${lineId.toUpperCase()} Line` });
+    for (const [terminalLine, terminalStopName, headsign, terminalStation] of OBSERVED_TERMINALS) {
+      if (terminalLine !== lineId) continue;
+      const tripId = `T${index}-${n++}`;
+      trips.set(tripId, { trip_id: tripId, route_id: `R-${lineId}`, service_id: "S", trip_headsign: "" });
+      let terminalStopId = `${stationStopId}-term-${n}`;
+      if (foldKey(terminalStation) === foldKey(station.name)) {
+        terminalStopId = stationStopId; // trip ends at this very station
+      } else {
+        stops.push({ stop_id: terminalStopId, stop_name: terminalStopName, location_type: "0", parent_station: "" });
+      }
+      stopTimes.get(stationStopId).push({ trip_id: tripId, stop_id: stationStopId, stop_sequence: "1", stop_headsign: headsign });
+      if (terminalStopId !== stationStopId) {
+        stopTimes.set(terminalStopId, [{ trip_id: tripId, stop_id: terminalStopId, stop_sequence: "2", stop_headsign: headsign }]);
+      } else {
+        stopTimes.get(stationStopId).push({ trip_id: tripId, stop_id: stationStopId, stop_sequence: "2", stop_headsign: headsign });
+      }
+    }
+  }
+  const data = {
+    stops,
+    stopsById: new Map(stops.map((s) => [s.stop_id, s])),
+    tripsById: trips,
+    routesById: routes,
+    stopTimesByStopId: stopTimes,
+  };
+  const { chips, unresolved } = staticDirectionsForStopIds(data, [stationStopId, `${stationStopId}S`]);
+  assert(unresolved === 0, `${station.name}: every observed trip terminus must resolve, got ${unresolved} unresolved`);
+  for (const chip of chips) {
+    assert(!bareLineChip.test(chip), `${station.name}: bare line chip "${chip}" must never be offered`);
+    assert(/^[A-EK] Line \+ \S/.test(chip), `${station.name}: chip "${chip}" must be "Line + terminus"`);
+    const terminus = chip.split(" + ")[1];
+    assert(foldKey(terminus) !== foldKey(station.name), `${station.name}: self-terminus chip "${chip}" (terminating-here trips must not be a direction)`);
+    assert(foldKey(terminus) !== foldKey(LOS_ANGELES_HUB), `${station.name}: hub ${LOS_ANGELES_HUB} must never be a direction token ("${chip}")`);
+  }
+  assert(
+    chips.length > 0 || station.lines.length === 0 || station.lines.every((l) => OBSERVED_TERMINALS.every(([tl, , , ts]) => tl.toUpperCase() !== l.toUpperCase() || foldKey(ts) === foldKey(station.name))),
+    `${station.name}: expected at least one direction chip`
+  );
+  stationsChecked += 1;
+}
+assert(stationsChecked === 110, `all 110 catalog stations must be iterated, got ${stationsChecked}`);
+
+// 2. Targeted board fixtures at the three named failure points. A mini network with the exact stop
+// shapes of the live feed: platform stops (type 0) under a parent (type 1), trips B/D/A.
+function miniStop(id, name) {
+  return [
+    { stop_id: id, stop_name: name, location_type: "0", parent_station: `${id}S` },
+    { stop_id: `${id}S`, stop_name: name.replace(/ - Metro .*$/, ""), location_type: "1", parent_station: "" },
+  ];
+}
+const miniStops = [
+  ...miniStop("80214", "Union Station - Metro B & D Lines"),
+  ...miniStop("80215", "Wilshire / Vermont Station"),
+  ...miniStop("80216", "Wilshire / Western Station"),
+  ...miniStop("80201", "North Hollywood Station"),
+  ...miniStop("80101", "Downtown Long Beach Station"),
+  ...miniStop("801103", "Pomona North Station"),
+  ...miniStop("80423", "Monrovia Station"),
+  ...miniStop("80000", "Wilshire / Normandie Station"), // a stop that is NOT a terminus of D
+];
+const miniTripDefs = [
+  // [tripId, route, [[stopId, "hh:mm:ss"], ...]]
+  ["TB-arrive-union", "R-B", [["80215", "11:05:00"], ["80214", "11:20:00"]]], // B terminating at Union
+  ["TD-arrive-union", "R-D", [["80215", "11:06:00"], ["80214", "11:21:00"]]], // D terminating at Union
+  ["TB-leave-union", "R-B", [["80214", "11:10:00"], ["80201", "11:40:00"]]], // B Union -> North Hollywood
+  ["TD-leave-union-ww", "R-D", [["80214", "11:12:00"], ["80216", "11:30:00"]]], // D Union -> Wilshire/Western
+  ["TD-leave-union-odd", "R-D", [["80214", "11:14:00"], ["80000", "11:32:00"]]], // D Union -> unresolvable terminus
+  ["TA-arrive-dtlb", "R-A", [["801103", "10:30:00"], ["80101", "11:15:00"]]], // A terminating at Downtown Long Beach
+  ["TA-leave-dtlb", "R-A", [["80101", "11:16:00"], ["801103", "12:00:00"]]], // A Downtown Long Beach -> Pomona North
+  ["TA-leave-dtlb-monrovia", "R-A", [["80101", "11:18:00"], ["80423", "11:59:00"]]], // A short-turn to Monrovia
+];
+const miniStopTimes = new Map();
+const miniTrips = new Map();
+for (const [tripId, routeId, calls] of miniTripDefs) {
+  miniTrips.set(tripId, { trip_id: tripId, route_id: routeId, service_id: "S", trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!miniStopTimes.has(stopId)) miniStopTimes.set(stopId, []);
+    // stop_headsign deliberately empty: the terminal stop name must carry the terminus.
+    miniStopTimes.get(stopId).push({ trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time, stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0" });
+  });
+}
+const miniStatic = {
+  stops: miniStops,
+  stopsById: new Map(miniStops.map((s) => [s.stop_id, s])),
+  routesById: new Map(["A", "B", "D"].map((l) => [`R-${l}`, { route_id: `R-${l}`, route_short_name: "", route_long_name: `Metro ${l} Line` }])),
+  tripsById: miniTrips,
+  stopTimesByStopId: miniStopTimes,
+  calendar: [
+    { service_id: "S", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "1", sunday: "1", start_date: "20260101", end_date: "20261231" },
+  ],
+  calendarDates: [],
+};
+const miniEntities = [];
+for (const [tripId, , calls] of miniTripDefs) {
+  for (const [stopId, time] of calls) {
+    const [h, m] = time.split(":").map(Number);
+    miniEntities.push({
+      tripUpdate: { trip: { tripId }, stopTimeUpdate: [{ stopId, departure: { time: Math.floor(Date.UTC(2026, 9, 26, 7 + h, m, 0) / 1000) } }] },
+    });
+  }
+}
+const miniRealtime = { entities: miniEntities, fetchedAt: nowPdt };
+const rows = async (name) => (await composeStationBoard(name, miniStatic, miniRealtime, { now: nowPdt })).trips;
+
+const unionRows = await rows("Union Station");
+const unionById = new Map(unionRows.map((t) => [t.tripId, t.destination]));
+assert(unionById.get("TB-leave-union") === "B Line + North Hollywood", `Union Station B departure must be "B Line + North Hollywood", got ${unionById.get("TB-leave-union")}`);
+assert(unionById.get("TD-leave-union-ww") === "D Line + Wilshire/Western", `D trips ending at Wilshire/Western must give "D Line + Wilshire/Western", got ${unionById.get("TD-leave-union-ww")}`);
+assert(!unionById.has("TB-arrive-union"), "a B trip ending at Union Station must not appear on Union Station's board");
+assert(!unionById.has("TD-arrive-union"), "a D trip ending at Union Station must not appear on Union Station's board");
+assert(!unionById.has("TD-leave-union-odd"), "a trip whose terminus can't be resolved must produce no row (never a bare D Line)");
+assert(unionRows.length === 2, `Union Station board expected exactly 2 rows, got [${[...unionById].join(", ")}]`);
+assert(unionRows.every((t) => !bareLineChip.test(t.destination)), "no bare line chip on any board row");
+
+const dtlbRows = await rows("Downtown Long Beach");
+const dtlbById = new Map(dtlbRows.map((t) => [t.tripId, t.destination]));
+assert(!dtlbById.has("TA-arrive-dtlb"), "an A trip ending at Downtown Long Beach must not appear on that board");
+assert(dtlbById.get("TA-leave-dtlb") === "A Line + Pomona North", "Downtown Long Beach A departure to Pomona North");
+assert(dtlbById.get("TA-leave-dtlb-monrovia") === "A Line + Monrovia", "A short-turn to Monrovia shows as A Line + Monrovia");
+assert(![...dtlbById.values()].some((d) => d.endsWith("+ Downtown Long Beach")), "no self-terminus row at Downtown Long Beach");
+
+// tripTerminatesAtStops: the parent id also counts as "this station".
+assert(tripTerminatesAtStops("TB-arrive-union", new Set(["80214S"]), miniStatic) === true, "a terminal platform whose parent is the station terminates there");
+assert(tripTerminatesAtStops("TB-leave-union", new Set(["80214", "80214S"]), miniStatic) === false, "a trip that continues past the station does not terminate there");
+
+// destinationForTrip: headsign first, then last stop; unresolvable is null, never the bare label.
+assert(destinationForTrip({ lineId: "d", stopHeadsign: "Metro D Line - Wilshire / Western Station", terminalName: "" }) === "D Line + Wilshire/Western", "headsign resolves D Wilshire/Western");
+assert(destinationForTrip({ lineId: "d", stopHeadsign: "", terminalName: "Wilshire / Western Station" }) === "D Line + Wilshire/Western", "last stop resolves D Wilshire/Western");
+assert(destinationForTrip({ lineId: "d", stopHeadsign: "", terminalName: "Wilshire / Normandie Station" }) === null, "unresolvable terminus is null, not 'D Line'");
+assert(destinationForTrip({ lineId: "a", stopHeadsign: "Metro A Line - Pomona Station", terminalName: "Pomona North Station" }) === "A Line + Pomona North", "A Pomona headsign falls through to the last stop");
+
 console.log(
-  "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, Perth Australia green)"
+  "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, Perth Australia green)"
 );
