@@ -1,6 +1,9 @@
 /**
- * Los Angeles stays planned (adapter wired, not flipped live). Perth (Australia) stays live.
- * Usage: node qa/los-angeles-planned-gate.mjs
+ * Los Angeles dogfood gate (replaces los-angeles-planned-gate.mjs; docs/jim-brief-la-flip-follow-through.md).
+ * Status-agnostic: every assertion that depends on registry status reads `entry.status` at runtime
+ * and branches (same shape as qa/prague-dogfood-gate.mjs), so Mark's flip commit never edits it.
+ * Perth (Australia) stays live.
+ * Usage: node qa/los-angeles-dogfood-gate.mjs
  *
  * Deliberately does NOT call the live Swiftly GTFS-RT feed (api.goswift.ly) or LA Metro's
  * static rail GTFS zip — that's real network work not appropriate for a smoke-tier gate, and
@@ -14,6 +17,16 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
+import {
+  buildLosAngelesNextTrainFromBoard,
+  getLosAngelesDogfoodDirections,
+  getLosAngelesDogfoodNextTrain,
+  listLosAngelesDogfoodStations,
+} from "../lib/cities/los-angeles/dogfood-next-train.js";
+import { checkBoard as sweepCheckBoard, DOCUMENTED_NOT_SERVED } from "./los-angeles-all-stations-live-sweep.mjs";
+import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
+import { buildCityManifest } from "../lib/cities/city-manifest.js";
 import {
   LOS_ANGELES_HUB,
   LOS_ANGELES_TIME_ZONE,
@@ -53,12 +66,24 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
-const live = assertCityLive("los-angeles");
-assert(live?.ok === false, "assertCityLive(los-angeles) must fail");
-assert(live?.status === 501, "los-angeles must be 501 planned");
-
 const entry = getCity("los-angeles");
-assert(entry?.status === "planned", "los-angeles registry status must be planned");
+assert(entry, "los-angeles must be registered");
+assert(
+  entry.status === "planned" || entry.status === "live",
+  `los-angeles registry status must be planned or live, got ${entry.status}`
+);
+const laIsLive = entry.status === "live";
+const live = assertCityLive("los-angeles");
+if (laIsLive) {
+  assert(live?.ok === true, "assertCityLive(los-angeles) must pass once los-angeles is live");
+} else {
+  assert(live?.ok === false, "assertCityLive(los-angeles) must fail while planned");
+  assert(live?.status === 501, "los-angeles must be 501 planned while planned");
+}
+assert(
+  isMultiCity("los-angeles") === laIsLive,
+  "los-angeles MULTI_CITY_IDS membership must track registry status exactly"
+);
 assert(entry?.adapterReady === true, "los-angeles adapterReady must be true");
 assert(entry?.displayName === "Los Angeles", "los-angeles display name must be Los Angeles");
 assert(entry?.timeZone === "America/Los_Angeles", "los-angeles timezone must be America/Los_Angeles");
@@ -510,6 +535,104 @@ assert(destinationForTrip({ lineId: "d", stopHeadsign: "", terminalName: "Wilshi
 assert(destinationForTrip({ lineId: "d", stopHeadsign: "", terminalName: "Wilshire / Normandie Station" }) === null, "unresolvable terminus is null, not 'D Line'");
 assert(destinationForTrip({ lineId: "a", stopHeadsign: "Metro A Line - Pomona Station", terminalName: "Pomona North Station" }) === "A Line + Pomona North", "A Pomona headsign falls through to the last stop");
 
+// ---- Dogfood module, dispatch, bounds, coordinates, coverage, manifest ----
+// 1. emptyReason pass-through (docs/jim-brief-la-flip-follow-through.md): "no-live-predictions" only
+// for a direction the schedule expects (board.scheduledCandidates); "not-currently-served" always.
+const fixtureBoard = await composeStationBoard("Wilshire/Western", miniStatic, miniRealtime, { now: nowPdt });
+assert(Array.isArray(fixtureBoard.scheduledCandidates), "board must expose scheduledCandidates (additive)");
+const nextArgs = { station: "Wilshire/Western", leaveBeforeMinutes: 0, refreshSeconds: 60, now: nowPdt };
+const emptyBoard = (reason, sched) => ({
+  stationName: "Wilshire/Western",
+  lastUpdate: nowPdt.toISOString(),
+  trips: [],
+  scheduledCandidates: sched,
+  ...(reason ? { emptyReason: reason } : {}),
+  realtime: true,
+});
+const schedD = [{ destination: "D Line + Union Station" }];
+const gated = buildLosAngelesNextTrainFromBoard(emptyBoard("no-live-predictions", schedD), { ...nextArgs, destination: "D Line + Union Station" });
+assert(gated.emptyReason === "no-live-predictions", "no-live-predictions must pass through for a direction the schedule expects");
+const ungated = buildLosAngelesNextTrainFromBoard(emptyBoard("no-live-predictions", schedD), { ...nextArgs, destination: "D Line + Wilshire/La Cienega" });
+assert(!("emptyReason" in ungated), "no-live-predictions must NOT pass through for a direction the schedule does not expect");
+const notServed = buildLosAngelesNextTrainFromBoard(emptyBoard("not-currently-served", []), { ...nextArgs, destination: "D Line + Union Station" });
+assert(notServed.emptyReason === "not-currently-served", "not-currently-served must always pass through");
+assert(!("emptyReasonMessage" in notServed), "no new rider copy: no emptyReasonMessage");
+const plain = buildLosAngelesNextTrainFromBoard(emptyBoard(undefined, []), { ...nextArgs, destination: "D Line + Union Station" });
+assert(!("emptyReason" in plain), "a board with no emptyReason produces none");
+
+// 2. Dispatch wired regardless of status (production routes gate on assertCityLive first).
+const dogfoodHubChips = getLosAngelesDogfoodDirections(LOS_ANGELES_HUB);
+assert(dogfoodHubChips.source === "los-angeles-marketing-ends", "directions source must be los-angeles-marketing-ends");
+assert(JSON.stringify(dogfoodHubChips.directions) === JSON.stringify(marketingLabelsForStation(LOS_ANGELES_HUB)), "dogfood directions must match marketingLabelsForStation");
+const dispatched = await getMultiCityDirections("los-angeles", LOS_ANGELES_HUB);
+assert(JSON.stringify(dispatched.directions) === JSON.stringify(dogfoodHubChips.directions), "live-city-api dispatch must return the same chips as the dogfood harness");
+const savedSwiftlyKey = process.env.SWIFTLY_API_KEY;
+delete process.env.SWIFTLY_API_KEY;
+try {
+  const nextTrainCalls = [
+    () => getMultiCityNextTrain("los-angeles", { station: LOS_ANGELES_HUB, destination: "A Line + Pomona North", leaveBeforeMinutes: 5, refreshSeconds: 60 }),
+    () => getLosAngelesDogfoodNextTrain({ station: LOS_ANGELES_HUB, destination: "A Line + Pomona North", leaveBeforeMinutes: 5, refreshSeconds: 60 }),
+  ];
+  for (const call of nextTrainCalls) {
+    let threw = false;
+    try {
+      await call();
+    } catch (err) {
+      threw = err instanceof MissingSwiftlyApiKeyError;
+    }
+    assert(threw, "next-train must surface MissingSwiftlyApiKeyError, not a silent fallback board");
+  }
+} finally {
+  if (savedSwiftlyKey !== undefined) process.env.SWIFTLY_API_KEY = savedSwiftlyKey;
+}
+
+// 3. Coordinates (LA Metro gtfs_rail stops.txt) inside the bounds box.
+assert(Boolean(CITY_BOUNDS["los-angeles"]), "lib/cities/city-bounds.js must carry a los-angeles box");
+const box = CITY_BOUNDS["los-angeles"];
+const dogfoodStations = listLosAngelesDogfoodStations();
+assert(dogfoodStations.length === 110, "dogfood station list must carry all 110 stations");
+for (const st of dogfoodStations) {
+  assert(Number.isFinite(st.lat) && Number.isFinite(st.lng), `${st.name}: missing lat/lng`);
+  assert(
+    st.lat >= box.minLat && st.lat <= box.maxLat && st.lng >= box.minLng && st.lng <= box.maxLng,
+    `${st.name}: outside the los-angeles bounds box`
+  );
+}
+
+// 4. Coverage notes: Metro Rail in; the three Wilshire D stations kept in the catalog, not excluded.
+const coverage = JSON.parse(readFileSync(join(ROOT, "lib/cities/los-angeles/coverage.json"), "utf8"));
+assert(coverage.region === "los-angeles", "coverage.json region must be los-angeles");
+assert(
+  coverage.covered.some((c) => /Metro Rail/.test(c.label) && /La Brea/.test(c.detail) && /1 November/.test(c.detail)),
+  "coverage.json must record the three Wilshire D stations as in-catalog, not served until 1 November"
+);
+assert(
+  coverage.notCovered.some((c) => /Metrolink/.test(c.label)) && coverage.notCovered.some((c) => /bus/i.test(c.label)),
+  "coverage.json must record Metrolink and buses as not covered"
+);
+for (const name of ["Wilshire/La Brea", "Wilshire/Fairfax", "Wilshire/La Cienega"]) {
+  assert(byName.has(name), `${name} must stay in the catalog`);
+}
+
+// 4b. The live sweep's per-board assertions (qa/los-angeles-all-stations-live-sweep.mjs) proven on
+// fixtures, since the sweep itself needs a key and LA service hours.
+const okRow = { destination: "D Line + Union Station" };
+assert(sweepCheckBoard("Wilshire/Western", { realtime: true, trips: [okRow] }).length === 0, "sweep: a clean live board has no violations");
+assert(sweepCheckBoard("Wilshire/Western", { realtime: true, trips: [{ destination: "D Line" }] }).length > 0, "sweep: a bare line chip is a violation");
+assert(sweepCheckBoard("Wilshire/Western", { realtime: true, trips: [{ destination: "D Line + Wilshire/Western" }] }).length > 0, "sweep: a self-terminus row is a violation");
+assert(sweepCheckBoard("Wilshire/Western", { realtime: true, trips: [] }).length > 0, "sweep: a silent empty board (no emptyReason) is a violation");
+assert(sweepCheckBoard("Wilshire/Western", { realtime: true, trips: [], emptyReason: "no-live-predictions" }).length === 0, "sweep: an honest no-live-predictions empty board is fine");
+assert(sweepCheckBoard("Wilshire/Western", { realtime: true, trips: [], emptyReason: "not-currently-served" }).length > 0, "sweep: not-currently-served at an undocumented station is a violation");
+assert(sweepCheckBoard("Wilshire/La Brea", { realtime: true, trips: [], emptyReason: "not-currently-served" }).length === 0, "sweep: not-currently-served at a documented station is fine");
+assert(DOCUMENTED_NOT_SERVED.size === 3 && [...DOCUMENTED_NOT_SERVED].every((n) => byName.has(n)), "sweep's documented not-served set is the three in-catalog Wilshire D stations");
+
+// 5. Picker/manifest: no picker entry while planned; the flip commit adds it.
+const manifestIds = buildCityManifest().cities.map((c) => c.id);
+assert(
+  manifestIds.includes("los-angeles") === laIsLive,
+  laIsLive ? "the /api/cities manifest must list Los Angeles now that it is live" : "the /api/cities manifest must not list Los Angeles while planned"
+);
+
 console.log(
-  "los-angeles-planned-gate: ok (planned/501, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Perth Australia green)"
+  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Perth Australia green)"
 );

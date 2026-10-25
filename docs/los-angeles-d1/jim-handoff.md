@@ -36,3 +36,25 @@ H7: America/Los_Angeles **HAS DST** (PDT/PST). Do not copy Perth / Brisbane no-D
   - Wilshire/Vermont, 16 trips: B + North Hollywood 4, B + Union Station 4, D + Wilshire/Western 4, D + Union Station 4.
   - 4 Swiftly TripUpdates fetches in total.
 - **Still open:** the after-midnight previous-service-day gap in the shared builder (Tim, 24 Oct: documented known limit, builder untouched).
+
+## 25 Oct 2026 - flip follow-through (brief `docs/jim-brief-la-flip-follow-through.md`) - status stays planned
+
+**In this PR (all code-side, nothing exposes LA while `planned`):**
+- `lib/cities/los-angeles/dogfood-next-train.js` (`getLosAngelesDogfoodNextTrain`, `getLosAngelesDogfoodDirections`, pure `buildLosAngelesNextTrainFromBoard`). Passes `emptyReason` through: `no-live-predictions` only for a direction in `board.scheduledCandidates` (new additive field on the board from `composeStationBoard`: near-term departures with a resolvable line + terminus, live or not; never rendered as rows), `not-currently-served` always. No new rider copy, no `emptyReasonMessage`.
+- `live-city-api.js` dispatch cases in `directionsFor` and `getMultiCityNextTrain` (not in `MULTI_CITY_IDS`).
+- `lib/cities/city-bounds.js` `los-angeles` box.
+- `stations.json`: all 110 stations now carry lat/lng from `gtfs_rail.zip` stops.txt (parent station coordinate, else mean of platform stops; entrances excluded). 110/110, none needed manual fill.
+- `lib/cities/los-angeles/coverage.json` (required by `coverage-notes-gate` once live) and registry coverage notes: Metro Rail only; Wilshire/La Brea, Wilshire/Fairfax, Wilshire/La Cienega stay in the catalog and show `not-currently-served` until the `-90` timetable from 1 Nov.
+- `qa/los-angeles-dogfood-gate.mjs` replaces `los-angeles-planned-gate.mjs` (all its assertions kept; status-agnostic, same shape as Prague's). `qa/los-angeles-all-stations-live-sweep.mjs` (one Swiftly request per poll; SKIP-LIVE without a key; not registered in run-all, like Prague/Dublin). Evidence: `live-sweep-log.jsonl`, `ci-live-evidence.md`.
+- `public/city-directions/los-angeles.json`; `write-city-directions.mjs` bundles `los-angeles` via `EXTRA_BUNDLED_CITY_IDS` (as Dublin).
+- `docs/united-states-ledger.md`: LA board-eligibility verdicts. **Metrolink and Pacific Surfliner are recorded `out-product` as PROPOSED, pending Tim's sign-off** (the oracle report says `in`; the ledger's BART/Caltrain and MARC/VRE precedent is Tim's `out-product` ruling, which I cannot make for him).
+
+**Flip PR contents (Mark; match Prague #498 / Dublin #501):**
+1. `lib/providers/registry.js`: LA `status: "live"`.
+2. `lib/cities/live-city-api.js`: add `"los-angeles"` to the `MultiCityId` typedef and `MULTI_CITY_IDS`.
+3. `lib/cities/country-regions.js`: `CITY_COUNTRY` `"los-angeles": "us"` (the picker row).
+4. Regenerate `public/city-manifest.seed.{json,js}` (`node scripts/write-city-manifest.mjs`).
+5. `docs/los-angeles-d1/{mark-qa-note.md}`; re-run the sweep in LA service hours and append to `live-sweep-log.jsonl` / `ci-live-evidence.md`.
+6. Check `qa/live-city-lists-sync.mjs` for any further list it names (journey-model persisted lists, brisbane-dogfood mount map); the Prague flip needed none.
+
+**Open for the flip:** (a) Tim's sign-off on the Metrolink / Surfliner `out-product` verdict. (b) Short-turn termini (D to Wilshire/Western, A to Monrovia / APU/Citrus College, C to Aviation/Century) are shown as rows but are not direction chips, so a rider at Union Station choosing `D Line + Wilshire/La Cienega` never sees the D trips that end at Wilshire/Western. This is the existing 25 Oct chip design, unchanged here. (c) After 1 Nov re-check the three Wilshire D stations go live.
