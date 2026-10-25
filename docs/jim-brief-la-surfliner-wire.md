@@ -42,6 +42,23 @@ If the live fetch fails, Metro and Metrolink still render. A Surfliner chip the 
 - `lib/providers/registry.js` notes: one sentence that Surfliner at Union Station comes from the transitdocs feed, route 78 only, by Tim's 25 Oct 2026 decision. Status stays `planned`.
 - `qa/los-angeles-dogfood-gate.mjs`: the three chips at Union Station, none at Pomona North or 7th St/Metro Ctr, a non-78 route dropped, Metro and Metrolink rows surviving a Surfliner failure, and the empty-reason rule. A mutation of the route filter and of the empty-reason rule must go red.
 
+## Follow-up (controller, 25 Oct 2026) — live trips never join
+
+`82f57d8` builds the right chips from the static zip and drops a fixture entity whose `routeId` is not `"78"`. Against the real transitdocs feed that filter removes every train.
+
+Checked the same afternoon, `https://asm-backend.transitdocs.com/gtfs/amtrak` (about 30KB of protobuf):
+
+- Trip ids look like `2026-10-24_AMTK_595`. There is no string `78` anywhere in the message, so `trip.routeId === "78"` is false for every entity and `composeSurflineTripRows` indexes an empty list.
+- Amtrak static `trips.txt` for route 78 uses numeric `trip_id`s (`312161`) and puts the public train number in `trip_short_name` (`595`). Those two id spaces do not overlap, so a join on `trip_id` matches nothing.
+
+Required:
+
+- Parse the train number out of the realtime trip id (`AMTK_<number>`). Join it to static `trip_short_name`. A row is Surfliner only when that static trip's `route_id` is `78`.
+- Do not require the realtime entity to carry `routeId` `"78"`. If the field is present and is some other route, still drop it.
+- Keep the second check on the static route so a train number that is not route 78 cannot reach the board.
+- Add a gate fixture whose realtime trip id is `2026-10-24_AMTK_595` and whose static `trip_short_name` is `595` / `route_id` `78`, and assert a live row appears. A mutation that joins on `trip_id` instead must go red. An entity `2026-10-24_AMTK_11` (Coast Starlight's shape) must not appear.
+- Do not flip the city. Same branch. Commit and push. No new pull request.
+
 ## Lane lock
 
 `node qa/lane-lock.mjs check united-states` currently exits 1 because this same branch already holds los-angeles. That is this work. Continue. Do not acquire another region. Do not release the lock.
