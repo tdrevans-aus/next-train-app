@@ -756,6 +756,33 @@ assert(late0040.reason("A Line + Monrovia") === "not-currently-served", `00:40: 
 const late2300 = await lateUnion(pdt(23, 0, 26));
 assert(late2300.reason("A Line + Monrovia") === "no-live-predictions", "23:00 on the 26th: the 24:30 trip is later in this service day");
 
+// scheduledCandidates vs remaining-today (docs/jim-brief-la-remaining-test-gap.md). Service TD runs
+// Mon 26 Oct only (A -> Pomona North 08:00); service TM runs Tue 27 Oct only (A -> Monrovia 08:00).
+// At 23:00 on the 26th (tomorrow 08:00 is inside the 18 h empty-board horizon) the builder's tomorrow look-ahead puts Monrovia in scheduledCandidates, but it
+// is NOT in scheduledDestinationsRemaining. The chip must be not-currently-served: consulting
+// scheduledCandidates in the remaining-today branch would wrongly say no-live-predictions.
+const tmrTrips = [
+  ["TD-pom", "A", "TD", [["80214", "08:00:00"], ["801103", "09:00:00"]]],
+  ["TM-mon", "A", "TM", [["80214", "08:00:00"], ["80425", "08:20:00"], ["80423", "08:40:00"]]],
+];
+const tmrStopTimes = new Map();
+const tmrTripMap = new Map();
+for (const [tripId, line, service, calls] of tmrTrips) {
+  tmrTripMap.set(tripId, { trip_id: tripId, route_id: `R-${line}`, service_id: service, trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!tmrStopTimes.has(stopId)) tmrStopTimes.set(stopId, []);
+    tmrStopTimes.get(stopId).push({ trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time, stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0" });
+  });
+}
+const tmrStatic = { ...chipStatic, tripsById: tmrTripMap, stopTimesByStopId: tmrStopTimes, calendar: [onlyDay("TD", "20261026"), onlyDay("TM", "20261027")], calendarDates: [] };
+const tmrWhen = pdt(23, 0);
+const tmrBoard = await composeStationBoard("Union Station", tmrStatic, { entities: [], fetchedAt: tmrWhen }, { now: tmrWhen });
+const tmrCandidateChips = (tmrBoard.scheduledCandidates ?? []).map((t) => t.destination);
+assert(tmrCandidateChips.some((d) => String(d).includes("Monrovia")), `fixture precondition: tomorrow-only Monrovia must be in scheduledCandidates via look-ahead, got ${JSON.stringify(tmrCandidateChips)}`);
+assert(Array.isArray(tmrBoard.scheduledDestinationsRemaining) && !tmrBoard.scheduledDestinationsRemaining.includes("A Line + Monrovia"), `fixture precondition: Monrovia must NOT be in scheduledDestinationsRemaining, got ${JSON.stringify(tmrBoard.scheduledDestinationsRemaining)}`);
+const tmrReason = buildLosAngelesNextTrainFromBoard(tmrBoard, { station: "Union Station", destination: "A Line + Monrovia", leaveBeforeMinutes: 0, refreshSeconds: 60, now: tmrWhen }).emptyReason;
+assert(tmrReason === "not-currently-served", `tomorrow-only chip after today's last departure -> not-currently-served, got ${tmrReason}`);
+
 // 2c. Real-feed reachability (docs/jim-brief-la-chip-polish.md). For every one of the 110 catalog
 // stations, take every trip's LAST STOP from the real feed's stop_times (not from OBSERVED_TERMINALS,
 // not through staticDirectionsForStopIds), skip trips that end at that station, and require the
