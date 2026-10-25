@@ -54,9 +54,8 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { unzipSync } from "../lib/vendor/fflate.mjs";
-import { parseCsv } from "../lib/providers/gtfs/csv.js";
 import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
-import { calendarRangeFromTrimmedOutput } from "../lib/providers/gtfs/snapshot-manifest.js";
+import { inspectSnapshotZip } from "./lib/snapshot-zip-integrity.mjs";
 import { resolvedShareForRealtime, STALE_RESOLVED_SHARE_THRESHOLD } from "../lib/providers/gtfs/board.js";
 import { fetchTripUpdates, indexTripUpdates } from "../lib/providers/gtfs/realtime.js";
 import { CITIES as REGISTRY_CITIES } from "../lib/providers/registry.js";
@@ -152,49 +151,7 @@ const RESOLVED_SHARE_CONFIG = {
   uppsala: { loadStatic: loadUppsalaStatic, rtUrl: null, needsKey: true },
 };
 
-// Substrings that should never appear in a real transit agency's
-// feed_publisher_name — deliberately narrow (our own product name, and the
-// words used for test/placeholder data) to avoid false positives against a
-// real agency's name.
-const SYNTHETIC_PUBLISHER_MARKERS = ["next-train", "dogfood", "fixture", "placeholder", "synthetic"];
-
-// Structural signals that don't depend on any naming convention — harder to
-// fake by accident than a publisher string. Newcastle's dogfood fixture was
-// 2041 bytes, 2 trips, and a calendar spanning 20260101-20271231 (~730
-// days); a genuine published feed for any of these cities is comfortably
-// past all three thresholds. These are deliberately conservative (a real
-// feed should never be this close to the line) to avoid false positives.
-const MIN_ZIP_BYTES = 5 * 1024;
-const MIN_TRIP_COUNT = 5;
-const MAX_CALENDAR_SPAN_DAYS = 400;
-
 const failures = [];
-
-function findEntry(files, name) {
-  return Object.keys(files).find((entry) => entry === name || entry.endsWith(`/${name}`)) ?? null;
-}
-
-function readTableText(files, name) {
-  const key = findEntry(files, name);
-  return key ? Buffer.from(files[key]).toString("utf8") : null;
-}
-
-function parseYyyymmdd(value) {
-  const text = String(value ?? "");
-  if (!/^\d{8}$/.test(text)) return null;
-  return Date.UTC(Number(text.slice(0, 4)), Number(text.slice(4, 6)) - 1, Number(text.slice(6, 8)));
-}
-
-function calendarSpanDays(calendarText, calendarDatesText) {
-  const range = calendarRangeFromTrimmedOutput({
-    "calendar.txt": calendarText ?? "",
-    "calendar_dates.txt": calendarDatesText ?? "",
-  });
-  const start = parseYyyymmdd(range.minDate);
-  const end = parseYyyymmdd(range.maxDate);
-  if (start === null || end === null) return null;
-  return Math.round((end - start) / (24 * 60 * 60 * 1000));
-}
 
 /**
  * Fetch the published blob once and report every content-integrity signal
@@ -216,43 +173,15 @@ async function checkContentIntegrity(city) {
   const buffer = Buffer.from(await response.arrayBuffer());
   const files = unzipSync(new Uint8Array(buffer));
 
-  const feedInfoText = readTableText(files, "feed_info.txt");
-  const feedInfoRow = feedInfoText ? (parseCsv(feedInfoText)[0] ?? null) : null;
-  const publisher = String(feedInfoRow?.feed_publisher_name ?? "");
-  const marker = SYNTHETIC_PUBLISHER_MARKERS.find((needle) => publisher.toLowerCase().includes(needle));
-
-  const tripsText = readTableText(files, "trips.txt");
-  const tripCount = tripsText ? parseCsv(tripsText).length : null;
-
-  const calendarText = readTableText(files, "calendar.txt");
-  const calendarDatesText = readTableText(files, "calendar_dates.txt");
-  const spanDays = calendarSpanDays(calendarText, calendarDatesText);
-
-  const reasons = [];
+  const { reasons, marker } = inspectSnapshotZip(files, buffer.length);
   let known = false;
-
   if (marker) {
-    reasons.push(`feed_info.feed_publisher_name ("${publisher}") looks like test/dogfood data (matched "${marker}")`);
     // The specific, already-diagnosed incident (docs/jim-brief-newcastle-
     // stale-snapshot.md) is Newcastle's blob carrying a publisher string
-    // naming our own product/test vocabulary — the other structural
-    // signals below fire alongside it for the same blob and don't change
-    // that identification. Restricted to "newcastle" specifically: the
-    // same marker on a DIFFERENT city's blob would be a new incident, not
-    // a recurrence of this tracked one, and must not be swallowed as known.
+    // naming our own product/test vocabulary. Restricted to "newcastle"
+    // specifically: the same marker on a DIFFERENT city's blob would be a
+    // new incident and must not be swallowed as known.
     known = city === "newcastle";
-  }
-  if (!feedInfoText) {
-    reasons.push("feed_info.txt is missing from the published zip entirely (failing closed — absence is not evidence of a real feed)");
-  }
-  if (buffer.length < MIN_ZIP_BYTES) {
-    reasons.push(`published zip is only ${buffer.length} bytes (< ${MIN_ZIP_BYTES}) — implausibly small for a real feed`);
-  }
-  if (tripCount !== null && tripCount < MIN_TRIP_COUNT) {
-    reasons.push(`trips.txt has only ${tripCount} trip(s) (< ${MIN_TRIP_COUNT}) — implausibly few for a real feed`);
-  }
-  if (spanDays !== null && spanDays > MAX_CALENDAR_SPAN_DAYS) {
-    reasons.push(`calendar spans ${spanDays} days (> ${MAX_CALENDAR_SPAN_DAYS}) — implausibly long, characteristic of a perpetual test calendar`);
   }
 
   if (reasons.length) {
