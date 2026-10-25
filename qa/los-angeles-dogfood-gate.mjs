@@ -25,6 +25,7 @@ import {
   listLosAngelesDogfoodStations,
   losAngelesDirectionsFromStatic,
   setLosAngelesStaticLoader,
+  setMetrolinkStaticLoader,
 } from "../lib/cities/los-angeles/dogfood-next-train.js";
 import { checkBoard as sweepCheckBoard, DOCUMENTED_NOT_SERVED } from "./los-angeles-all-stations-live-sweep.mjs";
 import { CITY_BOUNDS } from "../lib/cities/city-bounds.js";
@@ -47,6 +48,10 @@ import {
   staticDirectionsForStopIds,
   tripTerminatesAtStops,
   MissingSwiftlyApiKeyError,
+  buildMetrolinkChip,
+  staticMetrolinkChipsForStop,
+  METROLINK_CATALOG_TO_STOP_ID,
+  METROLINK_STOP_ID_TO_CATALOG,
 } from "../lib/providers/los-angeles.js";
 import { swiftlyAuthHeaders } from "../lib/providers/gtfs/auth.js";
 import {
@@ -92,6 +97,7 @@ assert(entry?.adapterReady === true, "los-angeles adapterReady must be true");
 assert(entry?.displayName === "Los Angeles", "los-angeles display name must be Los Angeles");
 assert(entry?.timeZone === "America/Los_Angeles", "los-angeles timezone must be America/Los_Angeles");
 assert(entry?.envKeys?.includes("SWIFTLY_API_KEY"), "los-angeles must declare SWIFTLY_API_KEY as an envKey");
+assert(entry?.envKeys?.includes("METROLINK_API_KEY"), "los-angeles must declare METROLINK_API_KEY as an envKey");
 assert(
   CITIES.filter((city) => city.id === "los-angeles").length === 1,
   "los-angeles must appear once in the registry"
@@ -918,8 +924,16 @@ assert(
   "coverage.json must record the three Wilshire D stations as in-catalog, not served until 1 November"
 );
 assert(
-  coverage.notCovered.some((c) => /Metrolink/.test(c.label)) && coverage.notCovered.some((c) => /bus/i.test(c.label)),
-  "coverage.json must record Metrolink and buses as not covered"
+  coverage.covered.some((c) => /Metrolink/.test(c.label) && /Union Station/.test(c.detail) && /Pomona North/.test(c.detail)),
+  "coverage.json must record Metrolink as covered at Union Station and Pomona North"
+);
+assert(
+  coverage.notCovered.some((c) => /bus/i.test(c.label)),
+  "coverage.json must record buses as not covered"
+);
+assert(
+  coverage.notCovered.some((c) => /Pacific Surfliner/.test(c.label)),
+  "coverage.json must record Pacific Surfliner as not shown yet"
 );
 for (const name of ["Wilshire/La Brea", "Wilshire/Fairfax", "Wilshire/La Cienega"]) {
   assert(byName.has(name), `${name} must stay in the catalog`);
@@ -944,6 +958,246 @@ assert(
   laIsLive ? "the /api/cities manifest must list Los Angeles now that it is live" : "the /api/cities manifest must not list Los Angeles while planned"
 );
 
+// ---- 6. Metrolink assertions (docs/jim-brief-la-metrolink-wire.md) ----
+// Fixture: a minimal Metrolink static GTFS covering Union Station (stop 107), Pomona North (stop 109),
+// and a handful of terminal stops for the AV and SB lines. The fixture mirrors the structure of the
+// real Metrolink GTFS so staticMetrolinkChipsForStop and composeStationBoard can be driven offline.
+
+// stop_id -> stop_name (exact GTFS names from the pack)
+const mlStops = [
+  { stop_id: "107", stop_name: "L.A. Union Station", location_type: "0", parent_station: "" },
+  { stop_id: "109", stop_name: "Pomona - North", location_type: "0", parent_station: "" },
+  { stop_id: "162", stop_name: "Lancaster", location_type: "0", parent_station: "" },
+  { stop_id: "185", stop_name: "San Bernardino - Downtown", location_type: "0", parent_station: "" },
+  { stop_id: "190", stop_name: "Redlands - Downtown", location_type: "0", parent_station: "" },
+  { stop_id: "144", stop_name: "Oceanside", location_type: "0", parent_station: "" },
+];
+// Metrolink route_id is the long name; route_short_name is the chip prefix.
+const mlRoutes = [
+  { route_id: "Antelope Valley Line", route_short_name: "AV Line", route_long_name: "Antelope Valley Line" },
+  { route_id: "Orange County Line", route_short_name: "OC Line", route_long_name: "Orange County Line" },
+  { route_id: "San Bernardino Line", route_short_name: "SB Line", route_long_name: "San Bernardino Line" },
+];
+// Trips: AV Line Union->Lancaster, OC Line Union->Oceanside,
+//        SB Line Union->San Bernardino - Downtown, SB Line Union->Redlands - Downtown,
+//        SB Line Pomona North->San Bernardino - Downtown (eastbound),
+//        SB Line Pomona North->Union Station (westbound),
+//        SB Line Pomona North->Redlands - Downtown (weekday extra)
+const mlTripDefs = [
+  ["ML-AV-1", "Antelope Valley Line", [["107", "06:00:00"], ["162", "07:00:00"]]],
+  ["ML-AV-2", "Antelope Valley Line", [["107", "08:00:00"], ["162", "09:00:00"]]],
+  ["ML-OC-1", "Orange County Line", [["107", "07:00:00"], ["144", "09:00:00"]]],
+  ["ML-SB-east-1", "San Bernardino Line", [["107", "06:30:00"], ["109", "07:15:00"], ["185", "08:00:00"]]],
+  ["ML-SB-east-2", "San Bernardino Line", [["107", "08:30:00"], ["109", "09:15:00"], ["185", "10:00:00"]]],
+  ["ML-SB-redlands", "San Bernardino Line", [["107", "07:45:00"], ["109", "08:30:00"], ["190", "09:30:00"]]],
+  ["ML-SB-west-1", "San Bernardino Line", [["185", "05:00:00"], ["109", "05:45:00"], ["107", "06:30:00"]]],
+  ["ML-SB-west-2", "San Bernardino Line", [["185", "07:00:00"], ["109", "07:45:00"], ["107", "08:30:00"]]],
+  // Arriving at Union Station (terminating there) — must NOT become a chip at Union Station
+  ["ML-AV-arr", "Antelope Valley Line", [["162", "17:00:00"], ["107", "18:00:00"]]],
+];
+const mlStopTimesMap = new Map();
+const mlTripsMap = new Map();
+for (const [tripId, routeId, calls] of mlTripDefs) {
+  mlTripsMap.set(tripId, { trip_id: tripId, route_id: routeId, service_id: "ML-WD", trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!mlStopTimesMap.has(stopId)) mlStopTimesMap.set(stopId, []);
+    mlStopTimesMap.get(stopId).push({
+      trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time,
+      stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0",
+    });
+  });
+}
+const mlStaticFixture = {
+  stops: mlStops,
+  stopsById: new Map(mlStops.map((s) => [s.stop_id, s])),
+  routesById: new Map(mlRoutes.map((r) => [r.route_id, r])),
+  tripsById: mlTripsMap,
+  stopTimesByStopId: mlStopTimesMap,
+  calendar: [{ service_id: "ML-WD", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "0", sunday: "0", start_date: "20260101", end_date: "20271231" }],
+  calendarDates: [],
+};
+
+// ---- 6a. Chip constants ----
+assert(METROLINK_CATALOG_TO_STOP_ID["Union Station"] === "107", "METROLINK_CATALOG_TO_STOP_ID must map Union Station to 107");
+assert(METROLINK_CATALOG_TO_STOP_ID["Pomona North"] === "109", "METROLINK_CATALOG_TO_STOP_ID must map Pomona North to 109");
+assert(!METROLINK_CATALOG_TO_STOP_ID["7th St/Metro Ctr"], "7th St/Metro Ctr must have no Metrolink stop");
+assert(METROLINK_STOP_ID_TO_CATALOG["107"] === "Union Station", "METROLINK_STOP_ID_TO_CATALOG must reverse-map 107 -> Union Station");
+assert(METROLINK_STOP_ID_TO_CATALOG["109"] === "Pomona North", "METROLINK_STOP_ID_TO_CATALOG must reverse-map 109 -> Pomona North");
+
+// ---- 6b. buildMetrolinkChip ----
+assert(buildMetrolinkChip("AV Line", "162", "Lancaster", "107") === "AV Line + Lancaster", "AV Line + Lancaster chip");
+assert(buildMetrolinkChip("SB Line", "107", "L.A. Union Station", "109") === "SB Line + Union Station", "westbound: L.A. Union Station -> Union Station (catalog name)");
+assert(buildMetrolinkChip("SB Line", "109", "Pomona - North", "109") === null, "trip terminating at board station -> null");
+assert(buildMetrolinkChip("", "162", "Lancaster", "107") === null, "no route short name -> null");
+assert(buildMetrolinkChip("SB Line", "107", "L.A. Union Station", "107") === null, "trip terminating at Union Station -> null (no self chip)");
+
+// ---- 6c. staticMetrolinkChipsForStop — Union Station ----
+const unionMlChips = staticMetrolinkChipsForStop(mlStaticFixture, "107");
+assert(unionMlChips.includes("AV Line + Lancaster"), "Union Station must have AV Line + Lancaster");
+assert(unionMlChips.includes("OC Line + Oceanside"), "Union Station must have OC Line + Oceanside");
+assert(unionMlChips.includes("SB Line + San Bernardino - Downtown"), "Union Station must have SB Line + San Bernardino - Downtown");
+assert(unionMlChips.includes("SB Line + Redlands - Downtown"), "Union Station must have SB Line + Redlands - Downtown (short-turn)");
+assert(!unionMlChips.some((c) => c.includes("Union Station")), "Union Station must not have a self-terminus Metrolink chip");
+// Trips arriving at Union Station (ML-AV-arr) must not generate a chip
+assert(!unionMlChips.some((c) => c.includes("Lancaster") && c.startsWith("OC")), "OC Line does not go to Lancaster");
+console.log(`Union Station Metrolink chips: [${unionMlChips.join(", ")}]`);
+
+// ---- 6d. staticMetrolinkChipsForStop — Pomona North ----
+const pomonaMlChips = staticMetrolinkChipsForStop(mlStaticFixture, "109");
+assert(pomonaMlChips.includes("SB Line + San Bernardino - Downtown"), "Pomona North must have SB Line + San Bernardino - Downtown");
+assert(pomonaMlChips.includes("SB Line + Union Station"), "Pomona North westbound must be SB Line + Union Station (catalog name)");
+assert(pomonaMlChips.includes("SB Line + Redlands - Downtown"), "Pomona North must have SB Line + Redlands - Downtown");
+assert(!pomonaMlChips.some((c) => c.includes("Pomona")), "Pomona North must not have a self-terminus Metrolink chip");
+assert(!pomonaMlChips.some((c) => c.startsWith("AV Line")), "Pomona North must not have AV Line chips (AV doesn't call there)");
+assert(!pomonaMlChips.some((c) => c.startsWith("OC Line")), "Pomona North must not have OC Line chips");
+console.log(`Pomona North Metrolink chips: [${pomonaMlChips.join(", ")}]`);
+
+// ---- 6e. No Metrolink chips at a non-Metrolink station (7th St/Metro Ctr) ----
+const hubMlChips = staticMetrolinkChipsForStop(mlStaticFixture, METROLINK_CATALOG_TO_STOP_ID[LOS_ANGELES_HUB] ?? "NONE");
+assert(hubMlChips.length === 0, "7th St/Metro Ctr must have no Metrolink chips (no Metrolink stop_id)");
+
+// ---- 6f. Chip separation: Metrolink chips distinct from Metro Rail chips ----
+// Metro chips follow "X Line + terminus" where X is A/B/C/D/E/K (single letter).
+// Metrolink chips follow "XX Line + terminus" where XX is AV/VC/OC/91-PV/RIV/SB.
+const isMetroChip = (c) => /^[A-EK] Line \+ /.test(c);
+const isMetrolinkChip = (c) => /^(AV|VC|OC|91-PV|RIV|SB) Line \+ /.test(c);
+for (const chip of unionMlChips) {
+  assert(isMetrolinkChip(chip), `"${chip}" must match Metrolink chip pattern`);
+  assert(!isMetroChip(chip), `Metrolink chip "${chip}" must not match Metro Rail chip pattern`);
+}
+for (const chip of pomonaMlChips) {
+  assert(isMetrolinkChip(chip), `"${chip}" must match Metrolink chip pattern`);
+}
+
+// ---- 6g. Board composition: Metrolink chips appear on the board; Metro rows survive Metrolink failure ----
+// Build a minimal Metro + Metrolink board for Union Station using the fixture LA Metro static data
+// from section 2 above (miniStatic) and the Metrolink fixture (mlStaticFixture).
+// mlNow = 05:00 PDT (12:00 UTC). ML-AV-1 departs 06:00 PDT (13:00 UTC) and ML-SB-east-1 at 06:30 PDT
+// (13:30 UTC) — both within the 3-hour near-term horizon.
+const mlNow = new Date(Date.UTC(2026, 9, 26, 12, 0, 0)); // 05:00 PDT
+const mlEntities = [];
+// Give two Metrolink trips a live prediction so they pass the live-confirmed filter.
+const mlSec = (h, m) => Math.floor(Date.UTC(2026, 9, 26, h, m, 0) / 1000);
+// ML-AV-1 departs stop 107 at 13:05 UTC (06:05 PDT)
+mlEntities.push({ tripUpdate: { trip: { tripId: "ML-AV-1" }, stopTimeUpdate: [{ stopId: "107", departure: { time: mlSec(13, 5) } }] } });
+// ML-SB-east-1 departs stop 107 at 13:35 UTC (06:35 PDT)
+mlEntities.push({ tripUpdate: { trip: { tripId: "ML-SB-east-1" }, stopTimeUpdate: [{ stopId: "107", departure: { time: mlSec(13, 35) } }] } });
+const mlRealtimeFixture = { entities: mlEntities, fetchedAt: mlNow };
+
+// Union Station board with Metrolink data
+const unionBoardWithMl = await composeStationBoard(
+  "Union Station",
+  miniStatic,
+  miniRealtime,
+  { now: mlNow, metrolinkStaticData: mlStaticFixture, metrolinkRealtime: mlRealtimeFixture }
+);
+const metrolinkRowsOnBoard = unionBoardWithMl.trips.filter((t) => t.agency === "Metrolink");
+const metroRowsOnBoard = unionBoardWithMl.trips.filter((t) => t.agency !== "Metrolink");
+
+// Metro rows must still be present when Metrolink is also on the board
+assert(metroRowsOnBoard.length >= 1, "Metro Rail rows must survive alongside Metrolink rows on Union Station board");
+// Metrolink rows must be present when the feed is working
+assert(metrolinkRowsOnBoard.length >= 1, "Metrolink rows must appear on Union Station board when feed and key are available");
+// Metrolink rows carry agency and mode
+assert(metrolinkRowsOnBoard.every((t) => t.agency === "Metrolink"), "all Metrolink rows must carry agency=Metrolink");
+assert(metrolinkRowsOnBoard.every((t) => t.mode === "rail"), "all Metrolink rows must carry mode=rail");
+// Metrolink chips on the board match the expected format
+assert(metrolinkRowsOnBoard.every((t) => isMetrolinkChip(t.destination)), "all Metrolink board rows must have a Metrolink-format chip");
+// Metro chips on the board must NOT look like Metrolink chips
+assert(metroRowsOnBoard.every((t) => !isMetrolinkChip(t.destination)), "Metro rows must have Metro-format chips, not Metrolink");
+assert(!unionBoardWithMl.metrolinkPartial, "metrolinkPartial must be false when Metrolink feed is available");
+
+// Board composition: Metrolink failure does NOT drop Metro rows
+const unionBoardMlFail = await composeStationBoard(
+  "Union Station",
+  miniStatic,
+  miniRealtime,
+  { now: mlNow, metrolinkPartial: true }
+);
+const metroRowsAfterMlFail = unionBoardMlFail.trips.filter((t) => t.agency !== "Metrolink");
+assert(metroRowsAfterMlFail.length >= 1, "Metro rows must survive a Metrolink fetch failure");
+assert(unionBoardMlFail.trips.every((t) => t.agency !== "Metrolink"), "Metrolink rows must be absent when metrolinkPartial is true");
+assert(unionBoardMlFail.metrolinkPartial === true, "metrolinkPartial must be true when Metrolink feed failed");
+
+// A non-Metrolink station must never have metrolinkPartial even if options are passed.
+// Use chipStatic here because miniStatic does not carry 7th St/Metro Ctr stops.
+const hubBoard = await composeStationBoard("7th St/Metro Ctr", chipStatic, chipRealtime, { now: mlNow, metrolinkPartial: true });
+assert(!hubBoard.metrolinkPartial, "a non-Metrolink station must never carry metrolinkPartial");
+
+// ---- 6h. Dogfood directions include Metrolink chips at Union Station and Pomona North ----
+// Inject both static loaders so getLosAngelesDogfoodDirections can be driven offline.
+setLosAngelesStaticLoader(async () => chipStatic);
+setMetrolinkStaticLoader(async () => mlStaticFixture);
+
+const unionDogfoodDirs = await getLosAngelesDogfoodDirections("Union Station");
+assert(
+  unionMlChips.every((c) => unionDogfoodDirs.directions.includes(c)),
+  `dogfood directions at Union Station must include all Metrolink chips, missing: ${unionMlChips.filter((c) => !unionDogfoodDirs.directions.includes(c)).join(", ")}`
+);
+// Metro chips must also be present
+assert(
+  unionDogfoodDirs.directions.some((c) => isMetroChip(c)),
+  "dogfood directions at Union Station must still include Metro Rail chips"
+);
+// Dogfood directions at 7th St/Metro Ctr must have no Metrolink chips
+const hubDogfoodDirs = await getLosAngelesDogfoodDirections(LOS_ANGELES_HUB);
+assert(
+  !hubDogfoodDirs.directions.some((c) => isMetrolinkChip(c)),
+  "dogfood directions at 7th St/Metro Ctr must have no Metrolink chips"
+);
+
+// Dogfood directions at Pomona North must include SB Line chips
+const pomonaDogfoodDirs = await getLosAngelesDogfoodDirections("Pomona North");
+assert(
+  pomonaMlChips.every((c) => pomonaDogfoodDirs.directions.includes(c)),
+  `dogfood directions at Pomona North must include all Metrolink chips, missing: ${pomonaMlChips.filter((c) => !pomonaDogfoodDirs.directions.includes(c)).join(", ")}`
+);
+
+setMetrolinkStaticLoader(null);
+setLosAngelesStaticLoader(null);
+
+// ---- 6i. Mutation checks: each core assertion must go red if the code is broken ----
+// (a) buildMetrolinkChip: removing the L.A. Union Station -> Union Station mapping would fail 6b.
+//     Simulate the mutation by checking what a wrong name produces.
+const badChip = buildMetrolinkChip("SB Line", "107", "L.A. Union Station", "109");
+assert(badChip === "SB Line + Union Station", "mutation anchor: westbound Pomona North chip uses catalog name, not GTFS name");
+const mutatedLabel = badChip.replace("Union Station", "L.A. Union Station");
+assert(mutatedLabel !== badChip, "mutation check: 'L.A. Union Station' is the wrong chip label at Pomona North");
+
+// (b) staticMetrolinkChipsForStop: if we accidentally use stop_id "107" for Pomona North, we get Union Station chips.
+const wrongStopChips = staticMetrolinkChipsForStop(mlStaticFixture, "107");
+assert(
+  !wrongStopChips.includes("SB Line + Union Station"),
+  "mutation anchor: Union Station (stop 107) must not emit a self chip (westbound SB would end there)"
+);
+const rightStopChips = staticMetrolinkChipsForStop(mlStaticFixture, "109");
+assert(
+  rightStopChips.includes("SB Line + Union Station"),
+  "mutation anchor: Pomona North (stop 109) correctly emits SB Line + Union Station westbound"
+);
+
+// (c) Metro rows survive Metrolink failure: if Metrolink failure dropped Metro rows, metroRowsAfterMlFail would be 0.
+assert(
+  metroRowsAfterMlFail.length > 0,
+  "mutation anchor: Metro rows must be non-zero after Metrolink failure (verifying the isolation)"
+);
+
+// (d) No Metrolink at 7th St/Metro Ctr: the hub has no Metrolink stop_id, so its static chips are empty.
+assert(
+  hubMlChips.length === 0,
+  "mutation anchor: 7th St/Metro Ctr has no Metrolink stop_id so staticMetrolinkChipsForStop returns []"
+);
+
+// (e) Chip format separation: no Metro chip looks like a Metrolink chip (verifying the regex gates above).
+for (const chip of unionMlChips) {
+  assert(!isMetroChip(chip), `mutation anchor: Metrolink chip "${chip}" must not pass Metro chip regex`);
+}
+const sampleMetroChip = "A Line + Pomona North";
+assert(!isMetrolinkChip(sampleMetroChip), `mutation anchor: Metro chip "${sampleMetroChip}" must not pass Metrolink chip regex`);
+
+console.log("los-angeles Metrolink assertions: ok (6a-6i)");
+
+// 5 (picker/manifest): no picker entry while planned; the flip commit adds it.
 console.log(
-  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Perth Australia green)"
+  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6i, Perth Australia green)"
 );

@@ -5,12 +5,16 @@
     {
       "label": "LA Metro Rail (A, B, C, D, E, K)",
       "detail": "110 of 110 stations on the six Metro Rail lines, live departures. Three D Line stations west of Wilshire/Western (Wilshire/La Brea, Wilshire/Fairfax, Wilshire/La Cienega) are in the app but show no service until the new timetable starts on 1 November; the app detects this automatically from the published timetable and says so instead of showing a blank board, and resumes live departures by itself when service starts."
+    },
+    {
+      "label": "Metrolink",
+      "detail": "Live departures at Union Station (AV, VC, OC, 91-PV, RIV, SB lines — GTFS stop 107) and Pomona North (SB Line only — GTFS stop 109). Requires METROLINK_API_KEY. Shown in a separate direction group on the same station board; Metro Rail boards render even if the Metrolink feed is unavailable."
     }
   ],
   "partial": [],
   "notCovered": [
     {
-      "label": "Metrolink and Amtrak Pacific Surfliner",
+      "label": "Amtrak Pacific Surfliner",
       "detail": "Not shown yet."
     },
     {
@@ -26,6 +30,6 @@
       "detail": "Not covered."
     }
   ],
-  "stations": "110 Metro Rail stations.",
+  "stations": "110 Metro Rail stations; Metrolink at Union Station and Pomona North.",
   "notes": "7th St/Metro Ctr is the A x B x D x E hub; Union Station, Civic Ctr/Grand Park, Pershing Square and Historic Broadway are separate stations, not the same stop."
 }
