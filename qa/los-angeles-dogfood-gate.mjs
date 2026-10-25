@@ -1568,6 +1568,103 @@ assert(
 );
 console.log("los-angeles Surfliner AMTK trip_id join assertions: ok (7h)");
 
+// ---- 7i. Duplicate short names: calendar-aware selection (Follow-up 2, 25 Oct 2026) ----
+// Route 78 reuses train numbers across service calendars. Train 761 has two static trips:
+//   "76101": service SF-7I-WE (weekends only, saturday+sunday) → terminal Goleta Amtrak
+//   "76102": service SF-7I-WD (weekdays only, monday-friday)   → terminal San Diego
+// sfNow is Monday 2026-10-26; SF-7I-WD is active, SF-7I-WE is not.
+// The board must select the active (weekday) trip and show "Pacific Surfliner + San Diego".
+// Mutation: reverting resolveSurflineTripId to keep only the first trip (old behaviour)
+// would select the inactive "76101" → destination "Pacific Surfliner + Goleta Amtrak"
+// → the assertion on "San Diego" goes red.
+
+const sfV3Stops = [
+  { stop_id: "LAX", stop_name: "Los Angeles",  location_type: "0", parent_station: "" },
+  { stop_id: "SDG", stop_name: "San Diego",     location_type: "0", parent_station: "" },
+  { stop_id: "GOL", stop_name: "Goleta Amtrak", location_type: "0", parent_station: "" },
+];
+const sfV3Routes = [
+  { route_id: "78", route_short_name: "Pacific Surfliner", route_long_name: "Pacific Surfliner" },
+];
+// "76101" inserted first (would be chosen by old first-wins behaviour); its service is inactive Monday.
+// "76102" inserted second;  its service is active Monday.
+const sfV3TripDefs = [
+  ["76101", "78", "761", "SF-7I-WE", [["LAX", "08:00:00"], ["GOL", "13:00:00"]]],
+  ["76102", "78", "761", "SF-7I-WD", [["LAX", "09:00:00"], ["SDG", "12:00:00"]]],
+];
+const sfV3StopTimesMap = new Map();
+const sfV3TripsMap = new Map();
+for (const [tripId, routeId, tsn, svc, calls] of sfV3TripDefs) {
+  sfV3TripsMap.set(tripId, { trip_id: tripId, route_id: routeId, trip_short_name: tsn, service_id: svc, trip_headsign: "" });
+  calls.forEach(([stopId, time], i) => {
+    if (!sfV3StopTimesMap.has(stopId)) sfV3StopTimesMap.set(stopId, []);
+    sfV3StopTimesMap.get(stopId).push({
+      trip_id: tripId, stop_id: stopId, departure_time: time, arrival_time: time,
+      stop_sequence: String(i + 1), stop_headsign: "", pickup_type: "0",
+    });
+  });
+}
+const sfStaticFixtureV3 = {
+  stops: sfV3Stops,
+  stopsById: new Map(sfV3Stops.map((s) => [s.stop_id, s])),
+  routesById: new Map(sfV3Routes.map((r) => [r.route_id, r])),
+  tripsById: sfV3TripsMap,
+  stopTimesByStopId: sfV3StopTimesMap,
+  calendar: [
+    { service_id: "SF-7I-WE", monday: "0", tuesday: "0", wednesday: "0", thursday: "0", friday: "0", saturday: "1", sunday: "1", start_date: "20260101", end_date: "20271231" },
+    { service_id: "SF-7I-WD", monday: "1", tuesday: "1", wednesday: "1", thursday: "1", friday: "1", saturday: "0", sunday: "0", start_date: "20260101", end_date: "20271231" },
+  ],
+  calendarDates: [],
+};
+
+// Live entity for train 761 (real transitdocs date-prefixed format).
+const sfV3Entities = [
+  { tripUpdate: { trip: { tripId: "2026-10-26_AMTK_761" }, stopTimeUpdate: [{ stopId: "LAX", departure: { time: sfSec(15, 0) } }] } },
+];
+const sfV3Rt = { entities: sfV3Entities, fetchedAt: sfNow };
+
+// Real board: calendar-aware selection must pick the active (weekday) trip → San Diego.
+const sfV3Board = await composeStationBoard("Union Station", miniStatic, miniRealtime, {
+  now: sfNow,
+  surflinerStaticData: sfStaticFixtureV3,
+  surflinerRealtime: sfV3Rt,
+});
+const sfV3SfRows = sfV3Board.trips.filter((t) => t.agency === "Pacific Surfliner");
+assert(
+  sfV3SfRows.length >= 1,
+  `7i: 2026-10-26_AMTK_761 with one active and one inactive trip must produce a live row, got ${sfV3SfRows.length}`
+);
+assert(
+  sfV3SfRows.some((t) => t.destination === "Pacific Surfliner + San Diego"),
+  `7i: live row must carry 'Pacific Surfliner + San Diego' (active weekday service), got ${sfV3SfRows.map((t) => t.destination).join(", ")}`
+);
+// Confirm the inactive (weekend) trip is NOT chosen.
+assert(
+  !sfV3SfRows.some((t) => t.destination === "Pacific Surfliner + Goleta Amtrak"),
+  "7i: inactive weekend trip (Goleta Amtrak) must not appear when weekday service is active"
+);
+
+// Mutation precondition: if we kept only the inactive trip for "761" (old first-wins behaviour),
+// the resolveTripId function would return "76101" and the board would show Goleta Amtrak.
+// Verify this by running composeStationBoard with a static fixture that has ONLY the inactive trip.
+const sfV3MutTripsMap = new Map([["76101", sfV3TripsMap.get("76101")]]);
+const sfV3MutStopTimesMap = new Map([
+  ["LAX", (sfV3StopTimesMap.get("LAX") ?? []).filter((st) => st.trip_id === "76101")],
+  ["GOL", sfV3StopTimesMap.get("GOL") ?? []],
+]);
+const sfStaticFixtureV3Mut = { ...sfStaticFixtureV3, tripsById: sfV3MutTripsMap, stopTimesByStopId: sfV3MutStopTimesMap };
+const sfV3MutBoard = await composeStationBoard("Union Station", miniStatic, miniRealtime, {
+  now: sfNow,
+  surflinerStaticData: sfStaticFixtureV3Mut,
+  surflinerRealtime: sfV3Rt,
+});
+const sfV3MutRows = sfV3MutBoard.trips.filter((t) => t.agency === "Pacific Surfliner");
+assert(
+  sfV3MutRows.length === 0,
+  `7i mutation: only-inactive-trip fixture must produce 0 live rows (inactive service → skipped), got ${sfV3MutRows.length}`
+);
+console.log("los-angeles Surfliner duplicate short-name calendar selection assertions: ok (7i)");
+
 // ---- 7g. Dogfood directions include Surfliner chips at Union Station only ----
 setLosAngelesStaticLoader(async () => chipStatic);
 setMetrolinkStaticLoader(async () => mlStaticFixture);
@@ -1611,5 +1708,5 @@ console.log("los-angeles Surfliner dogfood directions assertions: ok (7g)");
 
 // 5 (picker/manifest): no picker entry while planned; the flip commit adds it.
 console.log(
-  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Pacific Surfliner group at Union Station only - 3 chips, non-78 dropped, Metro+Metrolink survive Surfliner failure, empty-reason rule, mutation checks 7a-7g, AMTK trip_id join via trip_short_name - 2026-10-24_AMTK_595 live, mutation check 7h, Perth Australia green)"
+  "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Pacific Surfliner group at Union Station only - 3 chips, non-78 dropped, Metro+Metrolink survive Surfliner failure, empty-reason rule, mutation checks 7a-7g, AMTK trip_id join via trip_short_name - 2026-10-24_AMTK_595 live, mutation check 7h, duplicate short-name calendar selection - 761 active service, mutation check 7i, Perth Australia green)"
 );
