@@ -8,14 +8,14 @@
     },
     {
       "label": "Edinburgh Trams",
-      "detail": "21 tram stops between Edinburgh Airport and Newhaven, live predictions only - a tram only appears once the operator's real-time feed is confirming it, never filled in from the printed timetable."
+      "detail": "20 tram stops between Edinburgh Airport and Newhaven, live predictions only - a tram only appears once the operator's real-time feed is confirming it, never filled in from the printed timetable."
     }
   ],
   "partial": [],
   "notCovered": [
     {
-      "label": "Trams at Haymarket and Edinburgh Gateway",
-      "detail": "Trams at Haymarket and Edinburgh Gateway aren't shown yet; their rail departures are."
+      "label": "Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station",
+      "detail": "Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are."
     },
     {
       "label": "Caledonian Sleeper",
@@ -26,6 +26,6 @@
       "detail": "Not covered."
     }
   ],
-  "stations": "58 stations and stops: 37 National Rail stations across Edinburgh and the Lothians, plus 21 stops on the Trams line from Newhaven to the Airport.",
-  "notes": "Trams at Haymarket and Edinburgh Gateway aren't shown yet; their rail departures are. There is no Waverley tram stop, so for Waverley use the rail station."
+  "stations": "58 stations and stops: 37 National Rail stations across Edinburgh and the Lothians, plus 20 stops on the Trams line from Newhaven to the Airport.",
+  "notes": "Trams at Haymarket, Edinburgh Gateway and Edinburgh Park Station aren't shown yet; their rail departures are. There is no Waverley tram stop, so for Waverley use the rail station."
 }
