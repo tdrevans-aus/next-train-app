@@ -1,7 +1,7 @@
 {
   "city": "los-angeles",
   "agency": "LA Metro",
-  "source": "docs/los-angeles-d1/published-network.json (hand-transcribed official Metro Rail & Busway map, printed May 2026)",
+  "source": "docs/los-angeles-d1/published-network.json (hand-transcribed official Metro Rail & Busway map, printed May 2026); lat/lng from LA Metro gtfs_rail.zip stops.txt (parent station coordinate, else mean of platform stops; 25 Oct 2026)",
   "hubLock": "7th St/Metro Ctr",
   "stations": [
     {
@@ -9,133 +9,171 @@
       "name": "Pomona North",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.094,
+      "lng": -117.7522
     },
     {
       "id": "la-verne-fairplex",
       "name": "La Verne/Fairplex",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.0972,
+      "lng": -117.7681
     },
     {
       "id": "san-dimas",
       "name": "San Dimas",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.1052,
+      "lng": -117.8058
     },
     {
       "id": "glendora",
       "name": "Glendora",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.1319,
+      "lng": -117.8663
     },
     {
       "id": "apu-citrus-college",
       "name": "APU/Citrus College",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.136814,
+      "lng": -117.891636
     },
     {
       "id": "azusa-downtown",
       "name": "Azusa Downtown",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.135863,
+      "lng": -117.906631
     },
     {
       "id": "irwindale",
       "name": "Irwindale",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.129048,
+      "lng": -117.932506
     },
     {
       "id": "duarte-city-of-hope",
       "name": "Duarte/City of Hope",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.132518,
+      "lng": -117.96768
     },
     {
       "id": "monrovia",
       "name": "Monrovia",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.133155,
+      "lng": -118.003473
     },
     {
       "id": "arcadia",
       "name": "Arcadia",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.14286,
+      "lng": -118.029199
     },
     {
       "id": "sierra-madre-villa",
       "name": "Sierra Madre Villa",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.147752,
+      "lng": -118.081212
     },
     {
       "id": "allen",
       "name": "Allen",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.152417,
+      "lng": -118.114348
     },
     {
       "id": "lake",
       "name": "Lake",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.151806,
+      "lng": -118.13139
     },
     {
       "id": "memorial-park",
       "name": "Memorial Park",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.148356,
+      "lng": -118.147512
     },
     {
       "id": "del-mar",
       "name": "Del Mar",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.14191,
+      "lng": -118.148214
     },
     {
       "id": "fillmore",
       "name": "Fillmore",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.133521,
+      "lng": -118.148126
     },
     {
       "id": "south-pasadena",
       "name": "South Pasadena",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.115186,
+      "lng": -118.157886
     },
     {
       "id": "highland-park",
       "name": "Highland Park",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.111179,
+      "lng": -118.192606
     },
     {
       "id": "southwest-museum",
       "name": "Southwest Museum",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.098243,
+      "lng": -118.206712
     },
     {
       "id": "heritage-sq",
@@ -145,21 +183,27 @@
       ],
       "aliases": [
         "Heritage Square"
-      ]
+      ],
+      "lat": 34.087227,
+      "lng": -118.213213
     },
     {
       "id": "lincoln-cypress",
       "name": "Lincoln/Cypress",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.080949,
+      "lng": -118.220429
     },
     {
       "id": "chinatown",
       "name": "Chinatown",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.063861,
+      "lng": -118.23584
     },
     {
       "id": "union-station",
@@ -169,7 +213,9 @@
         "B",
         "D"
       ],
-      "doNotGroupNote": "A/B/D transfer building. NOT the 7th St/Metro Ctr hub. Metrolink/Amtrak/FlyAway are transfers, not D1 stops (doNotGroup)."
+      "doNotGroupNote": "A/B/D transfer building. NOT the 7th St/Metro Ctr hub. Metrolink/Amtrak/FlyAway are transfers, not D1 stops (doNotGroup).",
+      "lat": 34.056197,
+      "lng": -118.234249
     },
     {
       "id": "little-tokyo-arts-dist",
@@ -180,7 +226,9 @@
       ],
       "aliases": [
         "Little Tokyo/Arts District"
-      ]
+      ],
+      "lat": 34.048845,
+      "lng": -118.238757
     },
     {
       "id": "historic-broadway",
@@ -189,7 +237,9 @@
         "A",
         "E"
       ],
-      "doNotGroupNote": "A/E only. NOT Pershing Square."
+      "doNotGroupNote": "A/E only. NOT Pershing Square.",
+      "lat": 34.052156,
+      "lng": -118.246321
     },
     {
       "id": "grand-av-arts-bunker-hill",
@@ -201,7 +251,9 @@
       "aliases": [
         "Grand Avenue Arts/Bunker Hill"
       ],
-      "doNotGroupNote": "A x E; distinct from Grand/LATTC and Civic Ctr/Grand Park (doNotGroup)."
+      "doNotGroupNote": "A x E; distinct from Grand/LATTC and Civic Ctr/Grand Park (doNotGroup).",
+      "lat": 34.054724,
+      "lng": -118.251531
     },
     {
       "id": "7th-st-metro-ctr",
@@ -215,7 +267,9 @@
       "aliases": [
         "7th Street/Metro Center"
       ],
-      "doNotGroupNote": "Hub lock (A x B x D x E). NOT Union Station, Civic Ctr/Grand Park, Pershing Square, or Historic Broadway."
+      "doNotGroupNote": "Hub lock (A x B x D x E). NOT Union Station, Civic Ctr/Grand Park, Pershing Square, or Historic Broadway.",
+      "lat": 34.04861,
+      "lng": -118.258822
     },
     {
       "id": "pico",
@@ -224,7 +278,9 @@
         "A",
         "E"
       ],
-      "doNotGroupNote": "A x E. NOT Pico/Aliso."
+      "doNotGroupNote": "A x E. NOT Pico/Aliso.",
+      "lat": 34.040735,
+      "lng": -118.266118
     },
     {
       "id": "grand-lattc",
@@ -235,49 +291,63 @@
       "aliases": [
         "Grand/LA Trade-Tech College"
       ],
-      "doNotGroupNote": "A only; distinct from LATTC/Ortho Institute (E) and Grand Av Arts/Bunker Hill (doNotGroup)."
+      "doNotGroupNote": "A only; distinct from LATTC/Ortho Institute (E) and Grand Av Arts/Bunker Hill (doNotGroup).",
+      "lat": 34.033155,
+      "lng": -118.269333
     },
     {
       "id": "san-pedro-st",
       "name": "San Pedro St",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.026807,
+      "lng": -118.255505
     },
     {
       "id": "washington",
       "name": "Washington",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.01965,
+      "lng": -118.243084
     },
     {
       "id": "vernon",
       "name": "Vernon",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 34.00292,
+      "lng": -118.243303
     },
     {
       "id": "slauson",
       "name": "Slauson",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.98876,
+      "lng": -118.243398
     },
     {
       "id": "florence",
       "name": "Florence",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.97374,
+      "lng": -118.243271
     },
     {
       "id": "firestone",
       "name": "Firestone",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.959611,
+      "lng": -118.243205
     },
     {
       "id": "103rd-st-watts-towers",
@@ -287,7 +357,9 @@
       ],
       "aliases": [
         "103rd Street/Watts Towers"
-      ]
+      ],
+      "lat": 33.94222,
+      "lng": -118.243159
     },
     {
       "id": "willowbrook-rosa-parks",
@@ -299,35 +371,45 @@
       "aliases": [
         "Rosa Parks/Willowbrook"
       ],
-      "doNotGroupNote": "A x C shared stop."
+      "doNotGroupNote": "A x C shared stop.",
+      "lat": 33.928048,
+      "lng": -118.237555
     },
     {
       "id": "compton",
       "name": "Compton",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.89749,
+      "lng": -118.224249
     },
     {
       "id": "artesia",
       "name": "Artesia",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.876082,
+      "lng": -118.222503
     },
     {
       "id": "del-amo",
       "name": "Del Amo",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.848222,
+      "lng": -118.211017
     },
     {
       "id": "wardlow",
       "name": "Wardlow",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.819865,
+      "lng": -118.19609
     },
     {
       "id": "willow-st",
@@ -337,14 +419,18 @@
       ],
       "aliases": [
         "Willow Street"
-      ]
+      ],
+      "lat": 33.807079,
+      "lng": -118.189834
     },
     {
       "id": "pacific-coast-hwy",
       "name": "Pacific Coast Hwy",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.78909,
+      "lng": -118.189382
     },
     {
       "id": "anaheim-st",
@@ -354,7 +440,9 @@
       ],
       "aliases": [
         "Anaheim Street"
-      ]
+      ],
+      "lat": 33.78183,
+      "lng": -118.189384
     },
     {
       "id": "5th-st",
@@ -364,7 +452,9 @@
       ],
       "aliases": [
         "5th Street"
-      ]
+      ],
+      "lat": 33.773598,
+      "lng": -118.189412
     },
     {
       "id": "1st-st",
@@ -374,14 +464,18 @@
       ],
       "aliases": [
         "1st Street"
-      ]
+      ],
+      "lat": 33.76874,
+      "lng": -118.189362
     },
     {
       "id": "downtown-long-beach",
       "name": "Downtown Long Beach",
       "lines": [
         "A"
-      ]
+      ],
+      "lat": 33.768071,
+      "lng": -118.192921
     },
     {
       "id": "pacific-av",
@@ -392,63 +486,81 @@
       "aliases": [
         "Pacific Avenue"
       ],
-      "doNotGroupNote": "A Line Long Beach clockwise loop stop, not a second south terminus (doNotGroup vs Downtown Long Beach)."
+      "doNotGroupNote": "A Line Long Beach clockwise loop stop, not a second south terminus (doNotGroup vs Downtown Long Beach).",
+      "lat": 33.772258,
+      "lng": -118.1937
     },
     {
       "id": "north-hollywood",
       "name": "North Hollywood",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.168504,
+      "lng": -118.376808
     },
     {
       "id": "universal-city-studio-city",
       "name": "Universal City/Studio City",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.140002,
+      "lng": -118.362699
     },
     {
       "id": "hollywood-highland",
       "name": "Hollywood/Highland",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.101547,
+      "lng": -118.338549
     },
     {
       "id": "hollywood-vine",
       "name": "Hollywood/Vine",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.10163,
+      "lng": -118.32518
     },
     {
       "id": "hollywood-western",
       "name": "Hollywood/Western",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.101737,
+      "lng": -118.308117
     },
     {
       "id": "vermont-sunset",
       "name": "Vermont/Sunset",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.097708,
+      "lng": -118.291756
     },
     {
       "id": "vermont-santa-monica",
       "name": "Vermont/Santa Monica",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.08991,
+      "lng": -118.29173
     },
     {
       "id": "vermont-beverly",
       "name": "Vermont/Beverly",
       "lines": [
         "B"
-      ]
+      ],
+      "lat": 34.076526,
+      "lng": -118.291686
     },
     {
       "id": "wilshire-vermont",
@@ -457,7 +569,9 @@
         "B",
         "D"
       ],
-      "doNotGroupNote": "B x D branch point (B continues to North Hollywood, D continues west)."
+      "doNotGroupNote": "B x D branch point (B continues to North Hollywood, D continues west).",
+      "lat": 34.062701,
+      "lng": -118.290082
     },
     {
       "id": "westlake-macarthur-park",
@@ -465,7 +579,9 @@
       "lines": [
         "B",
         "D"
-      ]
+      ],
+      "lat": 34.056368,
+      "lng": -118.274879
     },
     {
       "id": "pershing-square",
@@ -474,7 +590,9 @@
         "B",
         "D"
       ],
-      "doNotGroupNote": "B/D only. NOT Historic Broadway."
+      "doNotGroupNote": "B/D only. NOT Historic Broadway.",
+      "lat": 34.049316,
+      "lng": -118.251259
     },
     {
       "id": "civic-ctr-grand-park",
@@ -486,14 +604,18 @@
       "aliases": [
         "Civic Center/Grand Park"
       ],
-      "doNotGroupNote": "B/D only. NOT 7th St/Metro Ctr. NOT East LA Civic Ctr."
+      "doNotGroupNote": "B/D only. NOT 7th St/Metro Ctr. NOT East LA Civic Ctr.",
+      "lat": 34.0549,
+      "lng": -118.246057
     },
     {
       "id": "norwalk",
       "name": "Norwalk",
       "lines": [
         "C"
-      ]
+      ],
+      "lat": 33.914033,
+      "lng": -118.104717
     },
     {
       "id": "lakewood-bl",
@@ -504,21 +626,27 @@
       "aliases": [
         "Lakewood Blvd",
         "Lakewood Boulevard"
-      ]
+      ],
+      "lat": 33.91307,
+      "lng": -118.1406
     },
     {
       "id": "lynwood",
       "name": "Lynwood",
       "lines": [
         "C"
-      ]
+      ],
+      "lat": 33.92488,
+      "lng": -118.209945
     },
     {
       "id": "avalon",
       "name": "Avalon",
       "lines": [
         "C"
-      ]
+      ],
+      "lat": 33.927465,
+      "lng": -118.265217
     },
     {
       "id": "harbor-fwy",
@@ -528,14 +656,18 @@
       ],
       "aliases": [
         "Harbor Freeway"
-      ]
+      ],
+      "lat": 33.928714,
+      "lng": -118.2811
     },
     {
       "id": "vermont-athens",
       "name": "Vermont/Athens",
       "lines": [
         "C"
-      ]
+      ],
+      "lat": 33.928683,
+      "lng": -118.291733
     },
     {
       "id": "crenshaw",
@@ -543,14 +675,18 @@
       "lines": [
         "C"
       ],
-      "doNotGroupNote": "C only; distinct from Expo/Crenshaw (E x K) (doNotGroup)."
+      "doNotGroupNote": "C only; distinct from Expo/Crenshaw (E x K) (doNotGroup).",
+      "lat": 33.925201,
+      "lng": -118.32655
     },
     {
       "id": "hawthorne-lennox",
       "name": "Hawthorne/Lennox",
       "lines": [
         "C"
-      ]
+      ],
+      "lat": 33.933408,
+      "lng": -118.351602
     },
     {
       "id": "aviation-imperial",
@@ -558,7 +694,9 @@
       "lines": [
         "C"
       ],
-      "doNotGroupNote": "C only; distinct from Aviation/Century (doNotGroup)."
+      "doNotGroupNote": "C only; distinct from Aviation/Century (doNotGroup).",
+      "lat": 33.929621,
+      "lng": -118.377134
     },
     {
       "id": "aviation-century",
@@ -567,7 +705,9 @@
         "C",
         "K"
       ],
-      "doNotGroupNote": "C x K shared stop."
+      "doNotGroupNote": "C x K shared stop.",
+      "lat": 33.945572,
+      "lng": -118.378683
     },
     {
       "id": "lax-metro-transit-center",
@@ -576,119 +716,153 @@
         "C",
         "K"
       ],
-      "doNotGroupNote": "C west terminus; K through stop. Transfer to FlyAway/airport people movers, not a D1 stop (doNotGroup)."
+      "doNotGroupNote": "C west terminus; K through stop. Transfer to FlyAway/airport people movers, not a D1 stop (doNotGroup).",
+      "lat": 33.950075,
+      "lng": -118.37866
     },
     {
       "id": "wilshire-normandie",
       "name": "Wilshire/Normandie",
       "lines": [
         "D"
-      ]
+      ],
+      "lat": 34.061753,
+      "lng": -118.301458
     },
     {
       "id": "wilshire-western",
       "name": "Wilshire/Western",
       "lines": [
         "D"
-      ]
+      ],
+      "lat": 34.061689,
+      "lng": -118.308756
     },
     {
       "id": "wilshire-la-brea",
       "name": "Wilshire/La Brea",
       "lines": [
         "D"
-      ]
+      ],
+      "lat": 34.062215,
+      "lng": -118.343447
     },
     {
       "id": "wilshire-fairfax",
       "name": "Wilshire/Fairfax",
       "lines": [
         "D"
-      ]
+      ],
+      "lat": 34.062967,
+      "lng": -118.361166
     },
     {
       "id": "wilshire-la-cienega",
       "name": "Wilshire/La Cienega",
       "lines": [
         "D"
-      ]
+      ],
+      "lat": 34.064834,
+      "lng": -118.374701
     },
     {
       "id": "downtown-santa-monica",
       "name": "Downtown Santa Monica",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.01401,
+      "lng": -118.491384
     },
     {
       "id": "17th-st-smc",
       "name": "17th St/SMC",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.023155,
+      "lng": -118.480372
     },
     {
       "id": "26th-st-bergamot",
       "name": "26th St/Bergamot",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.027995,
+      "lng": -118.46912
     },
     {
       "id": "expo-bundy",
       "name": "Expo/Bundy",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.031705,
+      "lng": -118.452896
     },
     {
       "id": "expo-sepulveda",
       "name": "Expo/Sepulveda",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.035408,
+      "lng": -118.434234
     },
     {
       "id": "westwood-rancho-park",
       "name": "Westwood/Rancho Park",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.036816,
+      "lng": -118.424576
     },
     {
       "id": "palms",
       "name": "Palms",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.029323,
+      "lng": -118.404255
     },
     {
       "id": "culver-city",
       "name": "Culver City",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.027896,
+      "lng": -118.388986
     },
     {
       "id": "la-cienega-jefferson",
       "name": "La Cienega/Jefferson",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.026355,
+      "lng": -118.37212
     },
     {
       "id": "expo-la-brea",
       "name": "Expo/La Brea",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.024803,
+      "lng": -118.355159
     },
     {
       "id": "farmdale",
       "name": "Farmdale",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.023981,
+      "lng": -118.346095
     },
     {
       "id": "expo-crenshaw",
@@ -697,35 +871,45 @@
         "E",
         "K"
       ],
-      "doNotGroupNote": "E x K terminus for K. NOT Crenshaw (C)."
+      "doNotGroupNote": "E x K terminus for K. NOT Crenshaw (C).",
+      "lat": 34.022341,
+      "lng": -118.334964
     },
     {
       "id": "expo-western",
       "name": "Expo/Western",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.018331,
+      "lng": -118.30891
     },
     {
       "id": "expo-vermont",
       "name": "Expo/Vermont",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.018245,
+      "lng": -118.29154
     },
     {
       "id": "expo-park-usc",
       "name": "Expo Park/USC",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.018227,
+      "lng": -118.285734
     },
     {
       "id": "jefferson-usc",
       "name": "Jefferson/USC",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.022123,
+      "lng": -118.278118
     },
     {
       "id": "lattc-ortho-institute",
@@ -736,7 +920,9 @@
       "aliases": [
         "LA Trade-Tech College/Ortho Institute"
       ],
-      "doNotGroupNote": "E only; distinct from Grand/LATTC (A) (doNotGroup)."
+      "doNotGroupNote": "E only; distinct from Grand/LATTC (A) (doNotGroup).",
+      "lat": 34.029112,
+      "lng": -118.273603
     },
     {
       "id": "pico-aliso",
@@ -744,35 +930,45 @@
       "lines": [
         "E"
       ],
-      "doNotGroupNote": "E only; distinct E-family name from Pico (doNotGroup)."
+      "doNotGroupNote": "E only; distinct E-family name from Pico (doNotGroup).",
+      "lat": 34.047634,
+      "lng": -118.22594
     },
     {
       "id": "mariachi-plaza",
       "name": "Mariachi Plaza",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.047215,
+      "lng": -118.219648
     },
     {
       "id": "soto",
       "name": "Soto",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.043747,
+      "lng": -118.210061
     },
     {
       "id": "indiana",
       "name": "Indiana",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.0343,
+      "lng": -118.192182
     },
     {
       "id": "maravilla",
       "name": "Maravilla",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.033319,
+      "lng": -118.16814
     },
     {
       "id": "east-la-civic-ctr",
@@ -783,84 +979,108 @@
       "aliases": [
         "East LA Civic Center"
       ],
-      "doNotGroupNote": "E only; different place from Civic Ctr/Grand Park (doNotGroup)."
+      "doNotGroupNote": "E only; different place from Civic Ctr/Grand Park (doNotGroup).",
+      "lat": 34.033364,
+      "lng": -118.161206
     },
     {
       "id": "atlantic",
       "name": "Atlantic",
       "lines": [
         "E"
-      ]
+      ],
+      "lat": 34.033398,
+      "lng": -118.154469
     },
     {
       "id": "martin-luther-king-jr",
       "name": "Martin Luther King Jr",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 34.009563,
+      "lng": -118.335359
     },
     {
       "id": "leimert-park",
       "name": "Leimert Park",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 34.003909,
+      "lng": -118.332016
     },
     {
       "id": "hyde-park",
       "name": "Hyde Park",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.988187,
+      "lng": -118.330816
     },
     {
       "id": "fairview-heights",
       "name": "Fairview Heights",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.975252,
+      "lng": -118.336072
     },
     {
       "id": "downtown-inglewood",
       "name": "Downtown Inglewood",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.967156,
+      "lng": -118.351497
     },
     {
       "id": "westchester-veterans",
       "name": "Westchester/Veterans",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.962031,
+      "lng": -118.374378
     },
     {
       "id": "mariposa",
       "name": "Mariposa",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.9232,
+      "lng": -118.387572
     },
     {
       "id": "el-segundo",
       "name": "El Segundo",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.916063,
+      "lng": -118.386539
     },
     {
       "id": "douglas",
       "name": "Douglas",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.905299,
+      "lng": -118.383113
     },
     {
       "id": "redondo-beach",
       "name": "Redondo Beach",
       "lines": [
         "K"
-      ]
+      ],
+      "lat": 33.89464,
+      "lng": -118.369196
     }
   ]
 }

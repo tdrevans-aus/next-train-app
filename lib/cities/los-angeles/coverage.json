@@ -1,0 +1,31 @@
+{
+  "region": "los-angeles",
+  "updated": "2026-10-25",
+  "covered": [
+    {
+      "label": "LA Metro Rail (A, B, C, D, E, K)",
+      "detail": "110 of 110 stations on the six Metro Rail lines, live departures. Three D Line stations west of Wilshire/Western (Wilshire/La Brea, Wilshire/Fairfax, Wilshire/La Cienega) are in the app but show no service until the new timetable starts on 1 November; the app detects this automatically from the published timetable and says so instead of showing a blank board, and resumes live departures by itself when service starts."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Metrolink and Amtrak Pacific Surfliner",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "Amtrak long-distance trains (Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle)",
+      "detail": "Excluded - booking a seat is compulsory."
+    },
+    {
+      "label": "Metro G Line and J Line busways, Metro buses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "LAX airport shuttles and people movers",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "110 Metro Rail stations.",
+  "notes": "7th St/Metro Ctr is the A x B x D x E hub; Union Station, Civic Ctr/Grand Park, Pershing Square and Historic Broadway are separate stations, not the same stop."
+}

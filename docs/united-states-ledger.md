@@ -102,6 +102,22 @@ explicit product decision, not silently and not as `out-mode`. Source:
 | bart | Caltrain | Millbrae | `out-product` | v1 ships on BART's own ETD API only; Caltrain needs a separate feed (511.org). Revisit post-launch. |
 | bart | Capitol Corridor (Amtrak) | Richmond, Coliseum | `out-product` | Same reason; needs Amtrak's feed, whose availability and terms this ledger records as unverified (§1, §3). Revisit post-launch. |
 
+### Los Angeles (confirmed against `docs/los-angeles-d1/oracle-clash-report.md` "Board eligibility", 25 Oct 2026)
+
+Brief: `docs/jim-brief-la-flip-follow-through.md`. LA v1 is LA Metro Rail only (A, B, C, D, E, K). Every
+other service calling at an in-catalog station has a recorded verdict:
+
+| Service | At | Verdict | Reason |
+|---|---|---|---|
+| Metrolink | Union Station | `out-product` - **proposed, awaits Tim's sign-off** | Passes both walk-up tests (oracle: `in`). Excluded from v1 for the same reason as BART/Caltrain and WMATA/MARC above: v1 ships on LA Metro's own Swiftly feed; Metrolink needs a separate agency feed. Revisit post-launch. |
+| Amtrak Pacific Surfliner | Union Station | `out-product` - **proposed, awaits Tim's sign-off** | Unreserved/walk-up (oracle and §2: `in`), but §3 bars wiring Amtrak real-time without Tim's approval; same treatment as Capitol Corridor at BART. Revisit post-launch. |
+| Amtrak Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle | Union Station | `out-reservation` | Compulsory seat reservation (§2, long-distance network). |
+| LA Metro G Line, J Line (busways) and Metro buses | North Hollywood, Union Station, 7th St/Metro Ctr | `out-mode` | Buses; v1 is rail only. |
+| LAX people mover | LAX/Metro Transit Center | none recorded | Not yet operating. |
+
+Not an exclusion: the D Line stations Wilshire/La Brea, Wilshire/Fairfax and Wilshire/La Cienega are in
+the catalog and show the `not-currently-served` empty state until the `-90` timetable starts on 1 Nov 2026.
+
 ---
 
 ## Propagation log
