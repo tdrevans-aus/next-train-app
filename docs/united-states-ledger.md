@@ -104,13 +104,18 @@ explicit product decision, not silently and not as `out-mode`. Source:
 
 ### Los Angeles (confirmed against `docs/los-angeles-d1/oracle-clash-report.md` "Board eligibility", 25 Oct 2026)
 
-Brief: `docs/jim-brief-la-flip-follow-through.md`. LA v1 is LA Metro Rail only (A, B, C, D, E, K). Every
-other service calling at an in-catalog station has a recorded verdict:
+Brief: `docs/jim-brief-la-flip-follow-through.md`. LA Metro Rail (A, B, C, D, E, K) is the primary
+network. Every other service calling at an in-catalog station has a recorded verdict.
+
+**Tim, 25 Oct 2026 (Australia/Perth) — Option B.** The proposed `out-product` rows for Metrolink and
+Pacific Surfliner are withdrawn. Both stay `in` (they pass both walk-up tests; the oracle already
+said so). Los Angeles does not flip until Metrolink is on the board. Flip PR #534 stays labelled
+`hold` and must not merge on the Metro-only pack.
 
 | Service | At | Verdict | Reason |
 |---|---|---|---|
-| Metrolink | Union Station | `out-product` - **proposed, awaits Tim's sign-off** | Passes both walk-up tests (oracle: `in`). Excluded from v1 for the same reason as BART/Caltrain and WMATA/MARC above: v1 ships on LA Metro's own Swiftly feed; Metrolink needs a separate agency feed. Revisit post-launch. |
-| Amtrak Pacific Surfliner | Union Station | `out-product` - **proposed, awaits Tim's sign-off** | Unreserved/walk-up (oracle and §2: `in`), but §3 bars wiring Amtrak real-time without Tim's approval; same treatment as Capitol Corridor at BART. Revisit post-launch. |
+| Metrolink | Union Station (oracle). Pomona North is also in the catalog — confirm whether Metrolink calls there before the pack is closed | `in` — **Tim, 25 Oct 2026** | Walk-up at station machines. Build before the flip: second operator on the existing LA board, Brussels STIB + SNCB shape (same station, directions not collapsed into Metro chips). Catalog cut for this pass: only in-catalog LA stations where Metrolink actually calls. The rest of the Metrolink network is not added as new stations. Research: `docs/los-angeles-metrolink-d1/oracle-clash-report.md`. |
+| Amtrak Pacific Surfliner | Union Station | `in` — **Tim, 25 Oct 2026** | Unreserved coach (§2). Wiring is still gated by §3: Nico must verify an official feed and its redistribution terms, and Tim must approve those terms, before any adapter calls Amtrak. Not `out-product`. A Metro+Metrolink flip is not green while this row is `in` and absent from the board — if the feed or the terms come back unverifiable, that returns to Tim before anyone writes `out-product`. Research: `docs/pacific-surfliner-d1/oracle-clash-report.md`. |
 | Amtrak Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle | Union Station | `out-reservation` | Compulsory seat reservation (§2, long-distance network). |
 | LA Metro G Line, J Line (busways) and Metro buses | North Hollywood, Union Station, 7th St/Metro Ctr | `out-mode` | Buses; v1 is rail only. |
 | LAX people mover | LAX/Metro Transit Center | none recorded | Not yet operating. |
@@ -126,3 +131,4 @@ the catalog and show the `not-currently-served` empty state until the `-90` time
 |---|---|---|
 | 20 Sep 2026 | Controller verified Amtrak Northeast Regional coach as RESERVED (official page, not walk-up). Corrected Nico's first passes in Philadelphia-d1 and VRE-d1, which claimed unreserved/walk-up. Boston-d1 and Washington-d1 had correct verdict (`out-reservation`) from the start. | Philadelphia and VRE pack verdicts remain as written (immutable history); this ledger records the single authoritative fact (reserved coach) for all future builds. MARC, NJ Transit, Metro-North had `out-product` verdicts with operator-scope rationale — accepted as defensible but suboptimal clarity per rule §3. Next builds should flip to `out-reservation` and cite this ledger. |
 | 20 Sep 2026 | Verified unreserved coaches: Capitol Corridor and Pacific Surfliner confirmed on Amtrak's official unreserved-coach page. Both qualify as `in` pending Amtrak feed verification. Lake Shore Limited verdict cannot be confirmed from public Amtrak pages (likely reserved long-distance, but not explicit). | No adapters updated; findings recorded for future regional builds. Feed verification is a prerequisite for Capitol Corridor / Pacific Surfliner regions. |
+| 25 Oct 2026 | Tim chose Option B for Los Angeles: Metrolink and Pacific Surfliner stay `in`. The same-day proposed `out-product` rows (modelled on BART/Caltrain and WMATA/MARC) are withdrawn. Metrolink is built onto the LA board before any flip. Surfliner wiring still needs §3 feed and redistribution verification plus Tim's approval of those terms. Flip PR #534 stays on `hold`. | Ledger LA table updated. Metrolink research goes to `docs/los-angeles-metrolink-d1/`. Surfliner feed research goes to `docs/pacific-surfliner-d1/`. No adapter change in this commit. |
