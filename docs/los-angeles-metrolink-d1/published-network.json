@@ -1,0 +1,199 @@
+{
+  "city": "los-angeles",
+  "operator": "los-angeles-metrolink",
+  "displayName": "Los Angeles — Metrolink",
+  "status": "planned",
+  "agency": "Southern California Regional Rail Authority (Metrolink)",
+  "timezone": "America/Los_Angeles",
+  "source": "https://metrolinktrains.com/globalassets/about/gtfs/gtfs.zip",
+  "sources": [
+    {
+      "role": "Static GTFS — primary schedule source for this pack",
+      "title": "Metrolink GTFS",
+      "url": "https://metrolinktrains.com/globalassets/about/gtfs/gtfs.zip",
+      "linkedFrom": "https://metrolinktrains.com/about/gtfs/",
+      "transitlandOnestop": "f-9qh-metrolinktrains",
+      "mobilityDatabaseId": "mdb-96",
+      "auth": "none (unkeyed download)",
+      "serviceWindow": "2026-05-05 through 2036-05-01",
+      "verifiedAt": "2026-10-25",
+      "note": "7 routes in GTFS. Stop IDs 107 (L.A. Union Station) and 109 (Pomona - North) confirmed via stop_times join on 25 Oct 2026. No named open-data license; feed_info.txt has no license field. Redistribution terms: unclear."
+    },
+    {
+      "role": "GTFS-RT trips and vehicles — BLOCKED (EULA internal-use only; no distribution without written consent)",
+      "title": "Metrolink GTFS-RT Trips",
+      "urls": [
+        "https://metrolink-gtfsrt.gbsdigital.us/feed/gtfsrt-trips",
+        "https://metrolink-gtfsrt.gbsdigital.us/feed/gtfsrt-vehicles"
+      ],
+      "auth": "X-Api-Key header (keyed)",
+      "transitlandOnestop": "f-metrolinktrains~rt",
+      "refresh": "30 seconds",
+      "eulaUrl": "https://metrolinktrains.com/about/gtfs/gtfs-rt-terms-and-conditions/",
+      "eulaBlock": "§1 limits use to own internal business purposes. §3: 'You may not copy, modify, distribute, sell, or transfer the API Access or any part thereof without the prior written consent of Metrolink.' Live wiring blocked until Tim approves or Metrolink grants written consent.",
+      "keySignup": "https://metrolinktrains.com/about/gtfs/gtfs-rt-access/",
+      "note": "Never paste a key. Do not wire until Tim approves EULA."
+    },
+    {
+      "role": "GTFS-RT alerts — keyless but governed by EULA",
+      "title": "Metrolink Service Alerts",
+      "url": "https://cdn.simplifytransit.com/metrolink/alerts/service-alerts.pb",
+      "auth": "none",
+      "note": "Protobuf. No stated redistribution restriction on this URL, but governed by the broader Metrolink GTFS-RT EULA. Not a departure board — alerts only."
+    }
+  ],
+  "retrievedAt": "2026-10-25T00:00:00Z",
+  "notes": [
+    "Second operator on the existing Los Angeles catalog. No new stations added. Only in-catalog stations where Metrolink actually calls are included: Union Station (GTFS stop_id 107, catalog name 'Union Station') and Pomona North (GTFS stop_id 109, GTFS stop_name 'Pomona - North', catalog name 'Pomona North').",
+    "Pomona - Downtown (Metrolink GTFS stop_id 120) is a different Metrolink station and is NOT in the LA catalog. Not added.",
+    "IE-OC (Inland Empire–Orange County) Line does not serve Union Station or Pomona North. No IE-OC entry in this pack.",
+    "Metrolink direction group is separate from LA Metro Rail direction group on the same station board. Same shape as Brussels STIB + SNCB: one station board, two operator groups, directions not collapsed. Do not merge Metrolink chips into Metro Rail chips.",
+    "7th St/Metro Ctr is the Metro Rail hub lock (A × B × D × E). Never a Metrolink direction token. No Metrolink line calls at 7th St/Metro Ctr.",
+    "A trip terminating at the board station is not a direction chip there. Union Station is the Metrolink terminal for all six lines; only outbound departures generate chips at Union Station. Pomona North is an intermediate SB Line station; both directions appear.",
+    "Timezone America/Los_Angeles HAS DST (PDT/PST). Do not copy Perth / Brisbane no-DST.",
+    "Oracle 'A/B/D serve' means Metro Rail lines A, B and D, not a Metrolink service pattern. Pomona North and Union Station see the same SB Line trips. Filter by stop_id.",
+    "Redlands - University (39 SB trips) does not call at stop 107 or 109. The extension that does is one weekday trip each way to Redlands - Downtown (service_id 1146). It is a short-turn chip. Counts and route_ids are in hazard-pack.md H5.",
+    "Chip text is route_short_name + exact GTFS stop_name, joined with ' + '. route_id is the long line name (91 Line, not 91-PV Line). Westbound at Pomona North uses the catalog name Union Station.",
+    "Dropping any of the six Metrolink lines from the Union Station board is a silent board cut. Source: oracle clash report §Catalog cut.",
+    "Live wiring blocked. GTFS-RT EULA §3 bars distribution without Metrolink written consent. Status stays planned until Tim approves. Do not write provider code in lib/.",
+    "City id: los-angeles (same as the Metro Rail pack). This is the Metrolink second-operator supplement. Do not overwrite docs/los-angeles-d1/published-network.json."
+  ],
+  "catalogStations": [
+    {
+      "catalogName": "Union Station",
+      "gtfsStopId": "107",
+      "gtfsStopName": "L.A. Union Station",
+      "directionGroup": "Metrolink",
+      "metrolinkLinesServed": ["AV Line", "VC Line", "OC Line", "91-PV Line", "RIV Line", "SB Line"],
+      "directionChips": [
+        {"label": "AV Line + Lancaster", "routeId": "Antelope Valley Line", "gtfsShortName": "AV Line", "finalStopName": "Lancaster", "trips": 19},
+        {"label": "AV Line + Via Princessa", "routeId": "Antelope Valley Line", "gtfsShortName": "AV Line", "finalStopName": "Via Princessa", "trips": 6},
+        {"label": "AV Line + Vista Canyon", "routeId": "Antelope Valley Line", "gtfsShortName": "AV Line", "finalStopName": "Vista Canyon", "trips": 4},
+        {"label": "VC Line + Moorpark", "routeId": "Ventura County Line", "gtfsShortName": "VC Line", "finalStopName": "Moorpark", "trips": 9},
+        {"label": "VC Line + Ventura - East", "routeId": "Ventura County Line", "gtfsShortName": "VC Line", "finalStopName": "Ventura - East", "trips": 6},
+        {"label": "VC Line + Chatsworth", "routeId": "Ventura County Line", "gtfsShortName": "VC Line", "finalStopName": "Chatsworth", "trips": 1},
+        {"label": "OC Line + Oceanside", "routeId": "Orange County Line", "gtfsShortName": "OC Line", "finalStopName": "Oceanside", "trips": 14},
+        {"label": "OC Line + Laguna Niguel / Mission Viejo", "routeId": "Orange County Line", "gtfsShortName": "OC Line", "finalStopName": "Laguna Niguel / Mission Viejo", "trips": 11},
+        {"label": "91-PV Line + Perris - South", "routeId": "91 Line", "gtfsShortName": "91-PV Line", "finalStopName": "Perris - South", "trips": 17},
+        {"label": "91-PV Line + Riverside - Downtown", "routeId": "91 Line", "gtfsShortName": "91-PV Line", "finalStopName": "Riverside - Downtown", "trips": 1},
+        {"label": "RIV Line + Riverside - Downtown", "routeId": "Riverside Line", "gtfsShortName": "RIV Line", "finalStopName": "Riverside - Downtown", "trips": 5},
+        {"label": "SB Line + San Bernardino - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "San Bernardino - Downtown", "trips": 30},
+        {"label": "SB Line + Redlands - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "Redlands - Downtown", "trips": 1, "serviceId": "1146"}
+      ],
+      "doNotEmit": [
+        "to 7th St/Metro Ctr",
+        "to Downtown",
+        "to City",
+        "to Metro Center",
+        "inbound",
+        "outbound",
+        "to Union Station"
+      ],
+      "note": "Terminal for all six in-catalog Metrolink lines. All six must appear on this board — dropping any is a silent board cut. Arriving trains that terminate at Union Station are not chips."
+    },
+    {
+      "catalogName": "Pomona North",
+      "gtfsStopId": "109",
+      "gtfsStopName": "Pomona - North",
+      "directionGroup": "Metrolink",
+      "metrolinkLinesServed": ["SB Line"],
+      "directionChips": [
+        {"label": "SB Line + San Bernardino - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "San Bernardino - Downtown", "trips": 30},
+        {"label": "SB Line + Redlands - Downtown", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "Redlands - Downtown", "trips": 1, "serviceId": "1146"},
+        {"label": "SB Line + Union Station", "routeId": "San Bernardino Line", "gtfsShortName": "SB Line", "finalStopName": "L.A. Union Station", "catalogLabelStop": "Union Station", "trips": 26}
+      ],
+      "doNotAdd": ["AV Line", "VC Line", "OC Line", "91-PV Line", "RIV Line", "IE-OC Line"],
+      "doNotConfuse": "Pomona - Downtown (Metrolink GTFS stop_id 120) is a different station, not in catalog, never added here.",
+      "note": "Intermediate station on the SB Line. Both directions appear. A trip terminating at Pomona North is not a chip there."
+    }
+  ],
+  "lines": [
+    {
+      "id": "AV",
+      "gtfsShortName": "AV Line",
+      "displayName": "Antelope Valley Line",
+      "routeId": "Antelope Valley Line",
+      "termini": ["L.A. Union Station", "Lancaster"],
+      "shortTurnFinalsAtUnionStation": ["Via Princessa", "Vista Canyon"],
+      "catalogStationsServed": ["Union Station"],
+      "note": "Does not call at Pomona North or any other in-catalog LA station."
+    },
+    {
+      "id": "VC",
+      "gtfsShortName": "VC Line",
+      "displayName": "Ventura County Line",
+      "routeId": "Ventura County Line",
+      "termini": ["L.A. Union Station", "Ventura - East"],
+      "shortTurnFinalsAtUnionStation": ["Moorpark", "Chatsworth"],
+      "catalogStationsServed": ["Union Station"],
+      "note": "Does not call at Pomona North or any other in-catalog LA station."
+    },
+    {
+      "id": "OC",
+      "gtfsShortName": "OC Line",
+      "displayName": "Orange County Line",
+      "routeId": "Orange County Line",
+      "termini": ["L.A. Union Station", "Oceanside"],
+      "shortTurnFinalsAtUnionStation": ["Laguna Niguel / Mission Viejo"],
+      "catalogStationsServed": ["Union Station"],
+      "note": "Does not call at Pomona North or any other in-catalog LA station."
+    },
+    {
+      "id": "91PV",
+      "gtfsShortName": "91-PV Line",
+      "displayName": "91/Perris Valley Line",
+      "routeId": "91 Line",
+      "termini": ["L.A. Union Station", "Perris - South"],
+      "shortTurnFinalsAtUnionStation": ["Riverside - Downtown"],
+      "catalogStationsServed": ["Union Station"],
+      "note": "Does not call at Pomona North or any other in-catalog LA station."
+    },
+    {
+      "id": "RIV",
+      "gtfsShortName": "RIV Line",
+      "displayName": "Riverside Line",
+      "routeId": "Riverside Line",
+      "termini": ["L.A. Union Station", "Riverside - Downtown"],
+      "catalogStationsServed": ["Union Station"],
+      "note": "Does not call at Pomona North or any other in-catalog LA station."
+    },
+    {
+      "id": "SB",
+      "gtfsShortName": "SB Line",
+      "displayName": "San Bernardino Line",
+      "routeId": "San Bernardino Line",
+      "termini": ["L.A. Union Station", "San Bernardino - Downtown"],
+      "catalogReachingExtension": {
+        "finalStopName": "Redlands - Downtown",
+        "stopId": "190",
+        "tripsEachWayThroughUnionAndPomona": 1,
+        "serviceId": "1146"
+      },
+      "notOnTheseBoards": "Redlands - University (stop_id 191) is the end of 39 other SB trips. None call at stop 107 or 109.",
+      "catalogStationsServed": ["Union Station", "Pomona North"],
+      "pomona_north_note": "Intermediate stops between Union Station and Pomona North — Cal State LA, El Monte, Baldwin Park, Covina — are not in the LA catalog and are not added.",
+      "note": "The only Metrolink line calling at Pomona North."
+    }
+  ],
+  "outOfScope": [
+    {
+      "line": "IE-OC Line",
+      "displayName": "Inland Empire–Orange County Line",
+      "reason": "Does not serve Union Station or Pomona North. No in-catalog station board receives IE-OC chips.",
+      "source": "oracle clash report — 'IE-OC calls at neither'"
+    },
+    {
+      "station": "Pomona - Downtown",
+      "gtfsStopId": "120",
+      "reason": "Different Metrolink station; not in the LA catalog. Do not confuse with Pomona North (stop_id 109).",
+      "source": "oracle clash report — 'Do not invent a second Pomona stop'"
+    }
+  ],
+  "liveBoard": {
+    "status": "planned — blocked by GTFS-RT EULA",
+    "blocker": "EULA §3 prohibits distribution of the API without prior written consent from Metrolink. §1 limits use to own internal business purposes. Static zip is unkeyed but redistribution terms are unclear. Tim must approve before wiring.",
+    "eulaUrl": "https://metrolinktrains.com/about/gtfs/gtfs-rt-terms-and-conditions/",
+    "keySignup": "https://metrolinktrains.com/about/gtfs/gtfs-rt-access/",
+    "note": "Do not write provider code. assertCityLive('los-angeles-metrolink') must fail — city is not in lib/providers/registry.js. Jim reads this pack when Tim has approved the EULA."
+  }
+}
