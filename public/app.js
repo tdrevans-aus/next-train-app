@@ -7653,6 +7653,10 @@ function initStationComboboxesFromModule() {
     getNearbyStationsList,
     // docs/jim-brief-country-wide-station-picker.md #3: "Your routes" group.
     getConfiguredJourneys,
+    // Country-wide search fetches /api/country-stations. On the native shell
+    // that has to use the same origin as every other API call — a relative
+    // /api path never leaves the Capacitor webview.
+    apiUrl,
   });
 }
 
