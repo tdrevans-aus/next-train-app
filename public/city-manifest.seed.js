@@ -454,7 +454,7 @@ window.__CITY_MANIFEST_SEED__ = {
         "rail"
       ],
       "nearbyEligible": true,
-      "directionsVersion": "b77b62e9"
+      "directionsVersion": "806eccf0"
     },
     {
       "id": "hong-kong",
