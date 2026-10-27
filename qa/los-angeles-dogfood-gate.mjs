@@ -1706,6 +1706,73 @@ setMetrolinkStaticLoader(null);
 setLosAngelesStaticLoader(null);
 console.log("los-angeles Surfliner dogfood directions assertions: ok (7g)");
 
+// ---- 7j. REAL Amtrak feed: static times are Eastern, rows must land at the right LA wall-clock ----
+// docs/jim-brief-la-surfliner-timezone.md. qa/fixtures/los-angeles/amtrak-surfliner-real.json is a
+// pinned extract of Amtrak's real static GTFS (route 78 trips calling at LAX, with its real
+// agency.txt = America/New_York) plus one captured transitdocs TripUpdate (train 562, static
+// "9:10:00" Eastern = 06:10 PDT). Regenerate: node scripts/build-la-surfliner-fixture.mjs. No network.
+{
+  const real = JSON.parse(readFileSync(join(ROOT, "qa/fixtures/los-angeles/amtrak-surfliner-real.json"), "utf8"));
+  const buildRealStatic = (agencyTimeZone) => {
+    const tripsById = new Map(real.trips.map((t) => [t.trip_id, t]));
+    const stopTimesByStopId = new Map();
+    for (const st of real.stop_times) {
+      if (!stopTimesByStopId.has(st.stop_id)) stopTimesByStopId.set(st.stop_id, []);
+      stopTimesByStopId.get(st.stop_id).push({ ...st, stop_headsign: "" });
+    }
+    return {
+      stops: real.stops,
+      stopsById: new Map(real.stops.map((s) => [s.stop_id, s])),
+      routesById: new Map(real.routes.map((r) => [r.route_id, r])),
+      tripsById,
+      stopTimesByStopId,
+      calendar: real.calendar,
+      calendarDates: real.calendar_dates,
+      agencyTimeZone,
+      timeZone: "America/Los_Angeles",
+    };
+  };
+  const realAgencyTz = real.agency.map((a) => a.agency_timezone).find(Boolean);
+  assert(realAgencyTz === "America/New_York", `fixture precondition: Amtrak agency_timezone is America/New_York, got ${realAgencyTz}`);
+
+  const realNow = new Date(real.capture.now);
+  // The real transitdocs feed is nationwide Amtrak: 654 entities, ~27 on route 78. Pad with
+  // other-route entities (trip ids absent from the extract) so the resolved-share staleness check
+  // (which fires at >=20 raw ids and <50% resolved) would reject the board if the Surfliner path
+  // did not opt out of it - the second 27 Oct live-probe bug, hidden behind the timezone one.
+  const otherAmtrak = Array.from({ length: 60 }, (_v, i) => ({
+    tripUpdate: { trip: { tripId: `9${String(i).padStart(5, "0")}`, routeId: "84" }, stopTimeUpdate: [{ stopId: "SAC", departure: { time: real.capture.laxDepartureEpoch } }] },
+  }));
+  const realRt = { entities: [real.capture.entity, ...otherAmtrak], fetchedAt: realNow };
+  const expectedLa = new Date(real.capture.laxDepartureEpoch * 1000).toLocaleTimeString("en-AU", {
+    hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/Los_Angeles",
+  });
+  const boardWith = (tz) =>
+    composeStationBoard("Union Station", miniStatic, { entities: [], fetchedAt: realNow }, {
+      now: realNow,
+      surflinerStaticData: buildRealStatic(tz),
+      surflinerRealtime: realRt,
+    });
+
+  const realBoard = await boardWith(realAgencyTz);
+  const realSf = realBoard.trips.filter((t) => t.agency === "Pacific Surfliner");
+  assert(realSf.length === 1, `real feed: exactly 1 live Surfliner row at Union Station, got ${realSf.length}`);
+  assert(realSf[0].destination === "Pacific Surfliner + San Diego", `real feed: train 562 is the San Diego chip, got ${realSf[0].destination}`);
+  assert(realSf[0].displayTime === expectedLa, `real feed: displayTime must be the LA wall clock of the captured departure (${expectedLa}), got ${realSf[0].displayTime}`);
+  assert(realSf[0].displayTime === "06:10", `real feed: train 562 departs 06:10 PDT, got ${realSf[0].displayTime}`);
+  assert(realSf[0].scheduledDisplayTime === "06:10", `real feed: static 9:10 Eastern is 06:10 PDT, got ${realSf[0].scheduledDisplayTime}`);
+  assert(
+    new Date(realSf[0].liveDeparture).getTime() === real.capture.laxDepartureEpoch * 1000,
+    "real feed: liveDeparture instant equals the captured feed epoch"
+  );
+  // Negative control / mutation: parsing the same static times in LA time (the bug) must NOT produce
+  // the 06:10 row. If it did, this fixture would not discriminate and the assertions above are void.
+  const bugBoard = await boardWith("America/Los_Angeles");
+  const bugSf = bugBoard.trips.filter((t) => t.agency === "Pacific Surfliner");
+  assert(bugSf.length === 0, `mutation: LA-time parse of Eastern static times must drop the live row (the 27 Oct bug), got ${bugSf.length}`);
+  console.log(`los-angeles real Amtrak feed: train 562 live row at Union Station ${realSf[0].displayTime} PDT (static 9:10 Eastern), LA-time parse drops it: ok (7j)`);
+}
+
 // 5 (picker/manifest): no picker entry while planned; the flip commit adds it.
 console.log(
   "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Pacific Surfliner group at Union Station only - 3 chips, non-78 dropped, Metro+Metrolink survive Surfliner failure, empty-reason rule, mutation checks 7a-7g, AMTK trip_id join via trip_short_name - 2026-10-24_AMTK_595 live, mutation check 7h, duplicate short-name calendar selection - 761 active service, mutation check 7i, Perth Australia green)"
