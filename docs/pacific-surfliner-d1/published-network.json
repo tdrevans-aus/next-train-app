@@ -1,0 +1,156 @@
+{
+  "city": "los-angeles",
+  "operator": "pacific-surfliner",
+  "displayName": "Los Angeles — Amtrak Pacific Surfliner",
+  "status": "planned",
+  "agency": "Amtrak (National Railroad Passenger Corporation)",
+  "timezone": "America/Los_Angeles",
+  "source": "https://content.amtrak.com/content/gtfs/GTFS.zip",
+  "sources": [
+    {
+      "role": "Static GTFS — primary schedule source for this pack",
+      "title": "Amtrak GTFS",
+      "url": "https://content.amtrak.com/content/gtfs/GTFS.zip",
+      "linkedFrom": "https://www.transit.land/feeds/f-9-amtrak~amtrakcalifornia~amtrakcharteredvehicle",
+      "transitlandOnestop": "f-9-amtrak~amtrakcalifornia~amtrakcharteredvehicle",
+      "auth": "none (unkeyed download)",
+      "lastFetchConfirmed": "2026-10-16 (Transitland)",
+      "verifiedAt": "2026-10-25",
+      "note": "route_id 78 is Pacific Surfliner. stop_id LAX, stop_name 'Los Angeles', is Union Station — the only Pacific Surfliner stop in the LA catalog. No license field in feed_info.txt. Amtrak web terms (updated 2025-03-05) prohibit redistribution without prior written permission; no named open-data license exists. Redistribution terms: unclear."
+    },
+    {
+      "role": "GTFS-RT trips, vehicles, and alerts — APPROVED by Tim, 25 Oct 2026",
+      "title": "Amtrak GTFS-RT (transitdocs third-party conversion)",
+      "url": "https://asm-backend.transitdocs.com/gtfs/amtrak",
+      "auth": "none (keyless)",
+      "operator": "Bridger Cummings / transitdocs project (asm-contact@transitdocs.com)",
+      "derivedFrom": "Amtrak Track-A-Train map JSON (https://maps.amtrak.com/services/MapDataService/trains/getTrainsData), decrypted and converted to GTFS-RT. Not an official Amtrak API.",
+      "timApproval": "Tim approved serving this feed to riders on 25 Oct 2026 (Australia/Perth session). Amtrak has not given written permission. This row records Tim's product decision; it is not a license clearance. Source: oracle clash report §Board eligibility; ledger §LA table.",
+      "routeFilter": "Filter by route_id 78 (Pacific Surfliner). All other route_ids in this feed are long-distance Amtrak (out-reservation). Do not pass any other route_id to the board.",
+      "knownRisks": [
+        "No Amtrak SLA or service continuity guarantee for the Track-A-Train endpoint.",
+        "Transitdocs is volunteer-maintained; no continuity guarantee.",
+        "Track-A-Train data is sometimes stale or day-old; derived GTFS-RT inherits this quality issue.",
+        "Amtrak web terms prohibit redistribution without prior written permission. Tim's approval is the operative gate."
+      ],
+      "note": "Transitdocs asks to be notified (asm-contact@transitdocs.com) as a courtesy when their feed is used — not a formal attribution clause. Record in provider comments."
+    }
+  ],
+  "retrievedAt": "2026-10-25T00:00:00Z",
+  "notes": [
+    "Second operator on the existing Los Angeles catalog. No new stations added. Only the single in-catalog station where Pacific Surfliner calls is included: Union Station (GTFS stop_id 'LAX', GTFS stop_name 'Los Angeles', catalog name 'Union Station').",
+    "Pomona North is NOT a Pacific Surfliner station. Pacific Surfliner (route 78) does not run into the San Gabriel Valley. Do not add Pomona North.",
+    "Pacific Surfliner direction group is separate from LA Metro Rail direction group AND Metrolink direction group on the same Union Station board. Three operator groups coexist; directions must not be collapsed across groups.",
+    "7th St/Metro Ctr is the Metro Rail hub lock (A × B × D × E). Never a Pacific Surfliner direction token. Pacific Surfliner does not call at 7th St/Metro Ctr.",
+    "A trip terminating at the board station is not a direction chip there. 13 trips whose final stop is 'Los Angeles' (stop_id LAX) terminate at Union Station and are not chips at Union Station.",
+    "Long-distance Amtrak trains in the same transitdocs feed (Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle, and all other route_ids) are out-reservation. Filter by route_id 78 only. No other Amtrak route appears on this board.",
+    "Chip text format: 'Pacific Surfliner + {exact GTFS final stop_name}'. No route_short_name prefix variant — the prefix is always 'Pacific Surfliner'.",
+    "Timezone America/Los_Angeles HAS DST (PDT/PST). Do not copy Perth / Brisbane no-DST.",
+    "City id: los-angeles (same as the Metro Rail pack). This is the Pacific Surfliner second-operator supplement. Do not overwrite docs/los-angeles-d1/published-network.json.",
+    "Tim approved feed wiring on 25 Oct 2026. Status stays 'planned' until Jim writes the provider code. Feed approval does not change Jim's job — do not write provider code in lib/."
+  ],
+  "catalogStations": [
+    {
+      "catalogName": "Union Station",
+      "gtfsStopId": "LAX",
+      "gtfsStopName": "Los Angeles",
+      "directionGroup": "Pacific Surfliner",
+      "routeId": "78",
+      "routeLongName": "Pacific Surfliner",
+      "directionChips": [
+        {
+          "label": "Pacific Surfliner + San Diego",
+          "finalStopName": "San Diego",
+          "tripsFromUnionStation": 22,
+          "tripOrigins": [
+            {"origin": "Los Angeles", "trips": 13},
+            {"origin": "Goleta Amtrak", "trips": 6},
+            {"origin": "San Luis Obispo", "trips": 3}
+          ],
+          "note": "Trips may originate at various stops north of Union Station and call at LAX en route southbound. Final stop is the chip label regardless of origin."
+        },
+        {
+          "label": "Pacific Surfliner + Goleta Amtrak",
+          "finalStopName": "Goleta Amtrak",
+          "tripsFromUnionStation": 6,
+          "tripOrigins": [
+            {"origin": "San Diego", "trips": 5},
+            {"origin": "Los Angeles", "trips": 1}
+          ],
+          "note": "Trips from San Diego call at Union Station northbound. Final stop is Goleta Amtrak."
+        },
+        {
+          "label": "Pacific Surfliner + San Luis Obispo",
+          "finalStopName": "San Luis Obispo",
+          "tripsFromUnionStation": 3,
+          "tripOrigins": [
+            {"origin": "San Diego", "trips": 2},
+            {"origin": "Los Angeles", "trips": 1}
+          ],
+          "note": "Trips from San Diego call at Union Station northbound. Final stop is San Luis Obispo."
+        }
+      ],
+      "notChipped": {
+        "description": "13 trips whose final stop is 'Los Angeles' (stop_id LAX). These terminate at Union Station. Not direction chips.",
+        "finalStopName": "Los Angeles",
+        "trips": 13,
+        "origin": "San Diego"
+      },
+      "doNotEmit": [
+        "to 7th St/Metro Ctr",
+        "to Downtown",
+        "to City",
+        "to Metro Center",
+        "to Union Station",
+        "to Los Angeles",
+        "inbound",
+        "outbound",
+        "any Metrolink line name (AV Line, VC Line, OC Line, 91-PV Line, RIV Line, SB Line)",
+        "any Metro Rail line name (A Line, B Line, C Line, D Line, E Line, K Line)"
+      ],
+      "doNotBoard": "Long-distance Amtrak (any route_id other than 78) from the transitdocs feed. Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle are out-reservation and must not appear on this board.",
+      "note": "The only Pacific Surfliner stop in the LA catalog. All three departure destinations must appear — dropping any is a silent board cut. Arriving trains that terminate here (final stop = 'Los Angeles') are not chips."
+    }
+  ],
+  "lines": [
+    {
+      "id": "pacific-surfliner",
+      "gtfsRouteId": "78",
+      "displayName": "Pacific Surfliner",
+      "routeLongName": "Pacific Surfliner",
+      "operator": "Amtrak",
+      "coachClass": "unreserved (walk-up default; restrictions may apply on peak all-reserved days per board-eligibility rule §6)",
+      "termini": ["Los Angeles", "San Luis Obispo", "San Diego"],
+      "catalogStationsServed": ["Union Station"],
+      "note": "Single route in this pack. No sub-lines or branches within the LA catalog."
+    }
+  ],
+  "outOfScope": [
+    {
+      "station": "Pomona North",
+      "reason": "Not served by Pacific Surfliner. route_id 78 does not call at any San Gabriel Valley station. Oracle clash report: 'Pomona North: Not served by Pacific Surfliner. Surfliner does not run into the San Gabriel Valley.'",
+      "source": "oracle clash report §Stations in Los Angeles catalog"
+    },
+    {
+      "service": "Long-distance Amtrak (Coast Starlight, Southwest Chief, Sunset Limited, Texas Eagle, and all other route_ids)",
+      "verdict": "out-reservation",
+      "reason": "Compulsory seat reservation; fails walk-up test 1 (board-eligibility rule §3). These trains appear in the same transitdocs GTFS-RT feed. Must be filtered out by route_id — only route_id 78 is in scope.",
+      "source": "ledger §2 long-distance row; ledger §LA table"
+    }
+  ],
+  "boardEligibility": {
+    "verdict": "in",
+    "decidedBy": "Tim, 25 Oct 2026",
+    "basis": "Unreserved coach (walk-up). Ledger §2 Pacific Surfliner row confirmed. Feed approved same day.",
+    "source": "oracle clash report §Board eligibility; ledger §LA table"
+  },
+  "liveBoard": {
+    "status": "feed approved — provider code not yet written",
+    "feedUrl": "https://asm-backend.transitdocs.com/gtfs/amtrak",
+    "feedAuth": "none (keyless)",
+    "timApproval": "25 Oct 2026 (Australia/Perth session)",
+    "amtrakWrittenPermission": "not obtained — Tim's decision to proceed is the operative gate",
+    "routeFilter": "route_id 78 only. All other Amtrak route_ids in this feed are out-reservation.",
+    "note": "Do not write provider code. Jim reads this pack and wires it when ready. assertCityLive('pacific-surfliner') must fail — city is not yet in lib/providers/registry.js."
+  }
+}

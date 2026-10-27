@@ -1,8 +1,8 @@
 /**
- * Shared assertion block for the six *-dogfood-gate.mjs files affected by
+ * Shared assertion block for the five *-dogfood-gate.mjs files affected by
  * docs/jim-brief-no-live-feed-stops-out-of-picker.md (greater-manchester,
- * east-midlands, north-east, south-yorkshire, glasgow, edinburgh). Kept as a
- * single helper so all six gates check the same three things the same way:
+ * east-midlands, north-east, south-yorkshire, glasgow; Edinburgh left 25 Oct 2026 when its trams went live). Kept as a
+ * single helper so all five gates check the same three things the same way:
  *
  *   1. every `mode: metro` stop in the region's stations.json carries
  *      `liveFeed: false`, and every `mode: train` stop does not;

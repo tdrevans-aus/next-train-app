@@ -132,6 +132,8 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 
 Five rail services call at in-catalog LA Metro Rail stations. Metrolink and Amtrak Pacific Surfliner pass walk-up and leave-by tests; long-distance Amtrak services require compulsory seat reservations and are excluded. Metro G/J busway are buses — explicitly out of v1 mode cut. LAX people mover (SkyLink) is under construction as of 2026-08-29.
 
+**Correction (Tim, 25 Oct 2026, Australia/Perth).** The `in` rows below for Metrolink and Pacific Surfliner stand. A later ledger proposal to mark both `out-product` for v1 (same shape as Caltrain at BART and MARC/VRE at DC) was not signed. Tim chose to build them before Los Angeles flips. Metrolink is the build that starts now (`docs/los-angeles-metrolink-d1/`). Surfliner stays `in`, and wiring it still waits on the US ledger's Amtrak feed and redistribution check (`docs/pacific-surfliner-d1/`). The original table is unchanged.
+
 | Service | Station(s) | Verdict | Evidence | Live API |
 | --- | --- | --- | --- | --- |
 | **Metrolink** | Union Station (A/B/D serve) | `in` | Walk-up ticketing available at station machines; no advance reservation requirement — https://metrolinktrains.com/ticketsOverview/ticket-info/ticket-types/ | Yes: GTFS-RT via https://metrolink-gtfsrt.gbsdigital.us/ + public keyless JSON rtt.metrolinktrains.com |
