@@ -1773,6 +1773,72 @@ console.log("los-angeles Surfliner dogfood directions assertions: ok (7g)");
   console.log(`los-angeles real Amtrak feed: train 562 live row at Union Station ${realSf[0].displayTime} PDT (static 9:10 Eastern), LA-time parse drops it: ok (7j)`);
 }
 
+// ---- 7k. No silent feed-group failures (docs/jim-brief-la-feed-groups-honest.md) ----
+// A Metrolink/Surfliner group that throws (or a stale Surfliner static) must: keep Metro rows, log,
+// flag the board partial, name the group in failedGroups, and give that group's chips an emptyReason.
+{
+  const boomRt = (fetchedAt) => ({ get entities() { throw new Error("boom SECRET-KEY-123 https://x/?key=abc"); }, fetchedAt });
+  const logged = [];
+  const origErr = console.error;
+  const compose = async (opts) => {
+    console.error = (...a) => logged.push(a.join(" "));
+    try {
+      return await composeStationBoard("Union Station", miniStatic, miniRealtime, { now: sfNow, ...opts });
+    } finally {
+      console.error = origErr;
+    }
+  };
+  const chipReason = (board, chip) =>
+    buildLosAngelesNextTrainFromBoard(board, { station: "Union Station", destination: chip, leaveBeforeMinutes: 0, refreshSeconds: 60, now: sfNow }).emptyReason;
+  const metroCount = (b) => b.trips.filter((t) => t.agency !== "Metrolink" && t.agency !== "Pacific Surfliner").length;
+
+  // Throwing Metrolink composer.
+  const mlFail = await compose({ metrolinkStaticData: mlStaticFixture, metrolinkRealtime: boomRt(sfNow), metrolinkStopId: "107", surflinerStaticData: sfStaticFixture, surflinerRealtime: sfRtFixture });
+  assert(metroCount(mlFail) >= 1, "7k: Metro rows must survive a throwing Metrolink composer");
+  assert(mlFail.trips.every((t) => t.agency !== "Metrolink"), "7k: no Metrolink rows when its composer throws");
+  assert(mlFail.metrolinkPartial === true, "7k: metrolinkPartial set when the Metrolink composer throws");
+  assert(mlFail.failedGroups?.includes("metrolink") && !mlFail.failedGroups.includes("surfliner"), `7k: failedGroups names only metrolink, got ${JSON.stringify(mlFail.failedGroups)}`);
+  assert(logged.some((l) => /Metrolink group composition failed \(Error\)/.test(l)), `7k: a Metrolink log line is emitted, got ${JSON.stringify(logged)}`);
+  assert(!logged.some((l) => /SECRET-KEY|key=abc|https?:/.test(l)), "7k: log lines must not carry key, URL or query");
+  assert(chipReason(mlFail, "AV Line + Lancaster") === "no-live-predictions", "7k: Metrolink chip carries emptyReason no-live-predictions when its group fails");
+  assert(mlFail.trips.some((t) => t.agency === "Pacific Surfliner"), "7k: Surfliner rows survive a Metrolink failure");
+
+  // Throwing Surfliner composer.
+  logged.length = 0;
+  const sfFail = await compose({ metrolinkStaticData: mlStaticFixture, metrolinkRealtime: mlRealtimeFixture, metrolinkStopId: "107", surflinerStaticData: sfStaticFixture, surflinerRealtime: boomRt(sfNow) });
+  assert(metroCount(sfFail) >= 1, "7k: Metro rows must survive a throwing Surfliner composer");
+  assert(sfFail.trips.every((t) => t.agency !== "Pacific Surfliner"), "7k: no Surfliner rows when its composer throws");
+  assert(sfFail.surflinerPartial === true, "7k: surflinerPartial set (on the board) when the Surfliner composer throws");
+  assert(sfFail.failedGroups?.includes("surfliner") && !sfFail.failedGroups.includes("metrolink"), `7k: failedGroups names only surfliner, got ${JSON.stringify(sfFail.failedGroups)}`);
+  assert(logged.some((l) => /Pacific Surfliner group composition failed \(Error\)/.test(l)), "7k: a Surfliner log line is emitted");
+  assert(!logged.some((l) => /SECRET-KEY|key=abc|https?:/.test(l)), "7k: Surfliner log lines must not carry key, URL or query");
+  for (const chip of ["Pacific Surfliner + San Diego", "Pacific Surfliner + Goleta Amtrak"]) {
+    assert(chipReason(sfFail, chip) === "no-live-predictions", `7k: ${chip} carries no-live-predictions when its group fails`);
+  }
+
+  // Healthy boards carry no partial flag and no failedGroups.
+  const healthy = await compose({ surflinerStaticData: sfStaticFixture, surflinerRealtime: sfRtFixture });
+  assert(!healthy.surflinerPartial && !healthy.failedGroups, "7k: a healthy board carries no surflinerPartial / failedGroups");
+
+  // Route-78 staleness: 8 route-78 entities, none of whose train numbers the static knows -> stale.
+  logged.length = 0;
+  const unresolved = Array.from({ length: 8 }, (_v, i) => ({
+    tripUpdate: { trip: { tripId: `2026-10-26_AMTK_9${i}99`, routeId: "78" }, stopTimeUpdate: [{ stopId: "LAX", departure: { time: sfSec(15, 0) } }] },
+  }));
+  const staleBoard = await compose({ surflinerStaticData: sfStaticFixture, surflinerRealtime: { entities: [...unresolved, ...sfEntities], fetchedAt: sfNow } });
+  assert(staleBoard.failedGroups?.includes("surfliner") && staleBoard.surflinerPartial === true, "7k: route-78 resolved share under 50% flags the Surfliner group stale");
+  assert(logged.some((l) => /GtfsSnapshotStaleError/.test(l)), `7k: the stale log names GtfsSnapshotStaleError, got ${JSON.stringify(logged)}`);
+  assert(staleBoard.trips.every((t) => t.agency !== "Pacific Surfliner"), "7k: a stale Surfliner static shows no Surfliner rows");
+  assert(chipReason(staleBoard, "Pacific Surfliner + San Diego") === "no-live-predictions", "7k: stale Surfliner chips carry emptyReason");
+  assert(metroCount(staleBoard) >= 1, "7k: Metro rows survive a stale Surfliner static");
+
+  // Nationwide padding (non-78 entities that never resolve) must NOT trip the route-78 check.
+  const padded = Array.from({ length: 60 }, (_v, i) => ({ tripUpdate: { trip: { tripId: `9${i}`, routeId: "84" }, stopTimeUpdate: [] } }));
+  const okBoard = await compose({ surflinerStaticData: sfStaticFixture, surflinerRealtime: { entities: [...sfEntities, ...padded], fetchedAt: sfNow } });
+  assert(!okBoard.failedGroups, "7k: non-78 nationwide entities never count toward the route-78 staleness share");
+  console.log("los-angeles feed-group failures: no silent drops, route-78 staleness flags the Surfliner group: ok (7k)");
+}
+
 // 5 (picker/manifest): no picker entry while planned; the flip commit adds it.
 console.log(
   "los-angeles-dogfood-gate: ok (status-agnostic, dispatch + dogfood module wired, emptyReason pass-through gated, bounds + 110 coordinates, coverage notes, MULTI_CITY_IDS/manifest tracking status, adapterReady, D1 pack, 110 stations, hub 7th St/Metro Ctr locked to A/B/D/E, doNotGroup pairs enforced, line+terminus direction model, hub never a direction token, missing-key throws without network, exact station matching with no doNotGroup overlap, scheduled-only/SKIPPED rows never shown, board realtime:true, no bare line chip at any of 110 stations, terminating-here trips excluded, unresolvable terminus dropped, honest empty state (not-currently-served / no-live-predictions / none / throw-safe), Metrolink group on Union Station and Pomona North boards - chip split, two stations, absent at hub, Metro survives Metrolink failure, mutation checks 6a-6j, Pacific Surfliner group at Union Station only - 3 chips, non-78 dropped, Metro+Metrolink survive Surfliner failure, empty-reason rule, mutation checks 7a-7g, AMTK trip_id join via trip_short_name - 2026-10-24_AMTK_595 live, mutation check 7h, duplicate short-name calendar selection - 761 active service, mutation check 7i, Perth Australia green)"
