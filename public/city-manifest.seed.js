@@ -450,7 +450,8 @@ window.__CITY_MANIFEST_SEED__ = {
       },
       "modes": [
         "metro",
-        "light_rail"
+        "light_rail",
+        "rail"
       ],
       "nearbyEligible": true,
       "directionsVersion": "b77b62e9"

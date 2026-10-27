@@ -1,153 +1,25 @@
 {
-  "Pomona North": [
-    "A Line + Downtown Long Beach"
-  ],
-  "La Verne/Fairplex": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach"
-  ],
-  "San Dimas": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach"
-  ],
-  "Glendora": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach"
-  ],
-  "APU/Citrus College": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach"
-  ],
-  "Azusa Downtown": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + APU/Citrus College"
-  ],
-  "Irwindale": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + APU/Citrus College"
-  ],
-  "Duarte/City of Hope": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + APU/Citrus College"
-  ],
-  "Monrovia": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + APU/Citrus College"
-  ],
-  "Arcadia": [
+  "103rd St/Watts Towers": [
     "A Line + Pomona North",
     "A Line + Downtown Long Beach",
     "A Line + Monrovia",
     "A Line + APU/Citrus College"
   ],
-  "Sierra Madre Villa": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Allen": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Lake": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Memorial Park": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Del Mar": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Fillmore": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "South Pasadena": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Highland Park": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Southwest Museum": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Heritage Sq": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Lincoln/Cypress": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Chinatown": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Union Station": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College",
-    "B Line + North Hollywood",
-    "D Line + Wilshire/La Cienega",
-    "D Line + Wilshire/Western"
-  ],
-  "Little Tokyo/Arts Dist": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College",
+  "17th St/SMC": [
     "E Line + Downtown Santa Monica",
     "E Line + Atlantic"
   ],
-  "Historic Broadway": [
+  "1st St": [
     "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College",
+    "A Line + Downtown Long Beach"
+  ],
+  "26th St/Bergamot": [
     "E Line + Downtown Santa Monica",
     "E Line + Atlantic"
   ],
-  "Grand Av Arts/Bunker Hill": [
+  "5th St": [
     "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College",
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
+    "A Line + Downtown Long Beach"
   ],
   "7th St/Metro Ctr": [
     "A Line + Pomona North",
@@ -162,7 +34,187 @@
     "E Line + Downtown Santa Monica",
     "E Line + Atlantic"
   ],
-  "Pico": [
+  "Allen": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Anaheim St": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "APU/Citrus College": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach"
+  ],
+  "Arcadia": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Artesia": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Atlantic": [
+    "E Line + Downtown Santa Monica"
+  ],
+  "Avalon": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Aviation/Century": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Aviation/Imperial": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Azusa Downtown": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + APU/Citrus College"
+  ],
+  "Chinatown": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Civic Ctr/Grand Park": [
+    "B Line + North Hollywood",
+    "B Line + Union Station",
+    "D Line + Union Station",
+    "D Line + Wilshire/La Cienega",
+    "D Line + Wilshire/Western"
+  ],
+  "Compton": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Crenshaw": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Culver City": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Del Amo": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Del Mar": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Douglas": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Downtown Inglewood": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Downtown Long Beach": [
+    "A Line + Pomona North",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Downtown Santa Monica": [
+    "E Line + Atlantic"
+  ],
+  "Duarte/City of Hope": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + APU/Citrus College"
+  ],
+  "East LA Civic Ctr": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "El Segundo": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Expo Park/USC": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Expo/Bundy": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Expo/Crenshaw": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic",
+    "K Line + Redondo Beach"
+  ],
+  "Expo/La Brea": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Expo/Sepulveda": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Expo/Vermont": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Expo/Western": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Fairview Heights": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Farmdale": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Fillmore": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Firestone": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Florence": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Glendora": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach"
+  ],
+  "Grand Av Arts/Bunker Hill": [
     "A Line + Pomona North",
     "A Line + Downtown Long Beach",
     "A Line + Monrovia",
@@ -176,19 +228,205 @@
     "A Line + Monrovia",
     "A Line + APU/Citrus College"
   ],
+  "Harbor Fwy": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Hawthorne/Lennox": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Heritage Sq": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Highland Park": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Historic Broadway": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College",
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Hollywood/Highland": [
+    "B Line + North Hollywood",
+    "B Line + Union Station"
+  ],
+  "Hollywood/Vine": [
+    "B Line + North Hollywood",
+    "B Line + Union Station"
+  ],
+  "Hollywood/Western": [
+    "B Line + North Hollywood",
+    "B Line + Union Station"
+  ],
+  "Hyde Park": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Indiana": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Irwindale": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + APU/Citrus College"
+  ],
+  "Jefferson/USC": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "La Cienega/Jefferson": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "La Verne/Fairplex": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach"
+  ],
+  "Lake": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Lakewood Bl": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "LATTC/Ortho Institute": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "LAX/Metro Transit Center": [
+    "C Line + Norwalk",
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Leimert Park": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Lincoln/Cypress": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Little Tokyo/Arts Dist": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College",
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Lynwood": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Maravilla": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Mariachi Plaza": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Mariposa": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Martin Luther King Jr": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Memorial Park": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Monrovia": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + APU/Citrus College"
+  ],
+  "North Hollywood": [
+    "B Line + Union Station"
+  ],
+  "Norwalk": [
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Pacific Av": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Pacific Coast Hwy": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Palms": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Pershing Square": [
+    "B Line + North Hollywood",
+    "B Line + Union Station",
+    "D Line + Union Station",
+    "D Line + Wilshire/La Cienega",
+    "D Line + Wilshire/Western"
+  ],
+  "Pico": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College",
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Pico/Aliso": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Pomona North": [
+    "A Line + Downtown Long Beach",
+    "SB Line + Redlands - Downtown",
+    "SB Line + San Bernardino - Downtown",
+    "SB Line + Union Station"
+  ],
+  "Redondo Beach": [
+    "K Line + Expo/Crenshaw"
+  ],
+  "San Dimas": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach"
+  ],
   "San Pedro St": [
     "A Line + Pomona North",
     "A Line + Downtown Long Beach",
     "A Line + Monrovia",
     "A Line + APU/Citrus College"
   ],
-  "Washington": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Vernon": [
+  "Sierra Madre Villa": [
     "A Line + Pomona North",
     "A Line + Downtown Long Beach",
     "A Line + Monrovia",
@@ -200,19 +438,102 @@
     "A Line + Monrovia",
     "A Line + APU/Citrus College"
   ],
-  "Florence": [
+  "Soto": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "South Pasadena": [
     "A Line + Pomona North",
     "A Line + Downtown Long Beach",
     "A Line + Monrovia",
     "A Line + APU/Citrus College"
   ],
-  "Firestone": [
+  "Southwest Museum": [
     "A Line + Pomona North",
     "A Line + Downtown Long Beach",
     "A Line + Monrovia",
     "A Line + APU/Citrus College"
   ],
-  "103rd St/Watts Towers": [
+  "Union Station": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College",
+    "B Line + North Hollywood",
+    "D Line + Wilshire/La Cienega",
+    "D Line + Wilshire/Western",
+    "91-PV Line + Perris - South",
+    "91-PV Line + Riverside - Downtown",
+    "AV Line + Lancaster",
+    "AV Line + Via Princessa",
+    "AV Line + Vista Canyon",
+    "OC Line + Laguna Niguel / Mission Viejo",
+    "OC Line + Oceanside",
+    "RIV Line + Riverside - Downtown",
+    "SB Line + Redlands - Downtown",
+    "SB Line + San Bernardino - Downtown",
+    "VC Line + Chatsworth",
+    "VC Line + Moorpark",
+    "VC Line + Ventura - East",
+    "Pacific Surfliner + Goleta Amtrak",
+    "Pacific Surfliner + San Diego",
+    "Pacific Surfliner + San Luis Obispo"
+  ],
+  "Universal City/Studio City": [
+    "B Line + North Hollywood",
+    "B Line + Union Station"
+  ],
+  "Vermont/Athens": [
+    "C Line + Norwalk",
+    "C Line + LAX/Metro Transit Center",
+    "C Line + Aviation/Century"
+  ],
+  "Vermont/Beverly": [
+    "B Line + North Hollywood",
+    "B Line + Union Station"
+  ],
+  "Vermont/Santa Monica": [
+    "B Line + North Hollywood",
+    "B Line + Union Station"
+  ],
+  "Vermont/Sunset": [
+    "B Line + North Hollywood",
+    "B Line + Union Station"
+  ],
+  "Vernon": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Wardlow": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Washington": [
+    "A Line + Pomona North",
+    "A Line + Downtown Long Beach",
+    "A Line + Monrovia",
+    "A Line + APU/Citrus College"
+  ],
+  "Westchester/Veterans": [
+    "K Line + Expo/Crenshaw",
+    "K Line + Redondo Beach"
+  ],
+  "Westlake/MacArthur Park": [
+    "B Line + North Hollywood",
+    "B Line + Union Station",
+    "D Line + Union Station",
+    "D Line + Wilshire/La Cienega",
+    "D Line + Wilshire/Western"
+  ],
+  "Westwood/Rancho Park": [
+    "E Line + Downtown Santa Monica",
+    "E Line + Atlantic"
+  ],
+  "Willow St": [
     "A Line + Pomona North",
     "A Line + Downtown Long Beach",
     "A Line + Monrovia",
@@ -227,97 +548,21 @@
     "C Line + LAX/Metro Transit Center",
     "C Line + Aviation/Century"
   ],
-  "Compton": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
+  "Wilshire/Fairfax": [
+    "D Line + Union Station",
+    "D Line + Wilshire/La Cienega"
   ],
-  "Artesia": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
+  "Wilshire/La Brea": [
+    "D Line + Union Station",
+    "D Line + Wilshire/La Cienega"
   ],
-  "Del Amo": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
+  "Wilshire/La Cienega": [
+    "D Line + Union Station"
   ],
-  "Wardlow": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Willow St": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Pacific Coast Hwy": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Anaheim St": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "5th St": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach"
-  ],
-  "1st St": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach"
-  ],
-  "Downtown Long Beach": [
-    "A Line + Pomona North",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "Pacific Av": [
-    "A Line + Pomona North",
-    "A Line + Downtown Long Beach",
-    "A Line + Monrovia",
-    "A Line + APU/Citrus College"
-  ],
-  "North Hollywood": [
-    "B Line + Union Station"
-  ],
-  "Universal City/Studio City": [
-    "B Line + North Hollywood",
-    "B Line + Union Station"
-  ],
-  "Hollywood/Highland": [
-    "B Line + North Hollywood",
-    "B Line + Union Station"
-  ],
-  "Hollywood/Vine": [
-    "B Line + North Hollywood",
-    "B Line + Union Station"
-  ],
-  "Hollywood/Western": [
-    "B Line + North Hollywood",
-    "B Line + Union Station"
-  ],
-  "Vermont/Sunset": [
-    "B Line + North Hollywood",
-    "B Line + Union Station"
-  ],
-  "Vermont/Santa Monica": [
-    "B Line + North Hollywood",
-    "B Line + Union Station"
-  ],
-  "Vermont/Beverly": [
-    "B Line + North Hollywood",
-    "B Line + Union Station"
+  "Wilshire/Normandie": [
+    "D Line + Union Station",
+    "D Line + Wilshire/La Cienega",
+    "D Line + Wilshire/Western"
   ],
   "Wilshire/Vermont": [
     "B Line + North Hollywood",
@@ -326,234 +571,8 @@
     "D Line + Wilshire/La Cienega",
     "D Line + Wilshire/Western"
   ],
-  "Westlake/MacArthur Park": [
-    "B Line + North Hollywood",
-    "B Line + Union Station",
-    "D Line + Union Station",
-    "D Line + Wilshire/La Cienega",
-    "D Line + Wilshire/Western"
-  ],
-  "Pershing Square": [
-    "B Line + North Hollywood",
-    "B Line + Union Station",
-    "D Line + Union Station",
-    "D Line + Wilshire/La Cienega",
-    "D Line + Wilshire/Western"
-  ],
-  "Civic Ctr/Grand Park": [
-    "B Line + North Hollywood",
-    "B Line + Union Station",
-    "D Line + Union Station",
-    "D Line + Wilshire/La Cienega",
-    "D Line + Wilshire/Western"
-  ],
-  "Norwalk": [
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Lakewood Bl": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Lynwood": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Avalon": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Harbor Fwy": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Vermont/Athens": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Crenshaw": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Hawthorne/Lennox": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Aviation/Imperial": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "C Line + Aviation/Century"
-  ],
-  "Aviation/Century": [
-    "C Line + Norwalk",
-    "C Line + LAX/Metro Transit Center",
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "LAX/Metro Transit Center": [
-    "C Line + Norwalk",
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Wilshire/Normandie": [
-    "D Line + Union Station",
-    "D Line + Wilshire/La Cienega",
-    "D Line + Wilshire/Western"
-  ],
   "Wilshire/Western": [
     "D Line + Union Station",
     "D Line + Wilshire/La Cienega"
-  ],
-  "Wilshire/La Brea": [
-    "D Line + Union Station",
-    "D Line + Wilshire/La Cienega"
-  ],
-  "Wilshire/Fairfax": [
-    "D Line + Union Station",
-    "D Line + Wilshire/La Cienega"
-  ],
-  "Wilshire/La Cienega": [
-    "D Line + Union Station"
-  ],
-  "Downtown Santa Monica": [
-    "E Line + Atlantic"
-  ],
-  "17th St/SMC": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "26th St/Bergamot": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Expo/Bundy": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Expo/Sepulveda": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Westwood/Rancho Park": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Palms": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Culver City": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "La Cienega/Jefferson": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Expo/La Brea": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Farmdale": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Expo/Crenshaw": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic",
-    "K Line + Redondo Beach"
-  ],
-  "Expo/Western": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Expo/Vermont": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Expo Park/USC": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Jefferson/USC": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "LATTC/Ortho Institute": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Pico/Aliso": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Mariachi Plaza": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Soto": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Indiana": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Maravilla": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "East LA Civic Ctr": [
-    "E Line + Downtown Santa Monica",
-    "E Line + Atlantic"
-  ],
-  "Atlantic": [
-    "E Line + Downtown Santa Monica"
-  ],
-  "Martin Luther King Jr": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Leimert Park": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Hyde Park": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Fairview Heights": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Downtown Inglewood": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Westchester/Veterans": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Mariposa": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "El Segundo": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Douglas": [
-    "K Line + Expo/Crenshaw",
-    "K Line + Redondo Beach"
-  ],
-  "Redondo Beach": [
-    "K Line + Expo/Crenshaw"
   ]
 }
