@@ -47,7 +47,7 @@ H7: America/Los_Angeles **HAS DST** (PDT/PST). Do not copy Perth / Brisbane no-D
 - `lib/cities/los-angeles/coverage.json` (required by `coverage-notes-gate` once live) and registry coverage notes: Metro Rail only; Wilshire/La Brea, Wilshire/Fairfax, Wilshire/La Cienega stay in the catalog and show `not-currently-served` until the `-90` timetable from 1 Nov.
 - `qa/los-angeles-dogfood-gate.mjs` replaces `los-angeles-planned-gate.mjs` (all its assertions kept; status-agnostic, same shape as Prague's). `qa/los-angeles-all-stations-live-sweep.mjs` (one Swiftly request per poll; SKIP-LIVE without a key; not registered in run-all, like Prague/Dublin). Evidence: `live-sweep-log.jsonl`, `ci-live-evidence.md`.
 - `public/city-directions/los-angeles.json`; `write-city-directions.mjs` bundles `los-angeles` via `EXTRA_BUNDLED_CITY_IDS` (as Dublin).
-- `docs/united-states-ledger.md`: LA board-eligibility verdicts. **Metrolink and Pacific Surfliner were recorded `out-product` as PROPOSED, pending Tim's sign-off** (the oracle report says `in`; the ledger's BART/Caltrain and MARC/VRE precedent is Tim's `out-product` ruling, which this handoff could not make). **Resolved 25 Oct 2026:** Tim ruled both `in` (Option B). The proposal is withdrawn. See the ledger's Los Angeles table.
+- `docs/united-states-ledger.md`: LA board-eligibility verdicts. ~~Metrolink and Pacific Surfliner were recorded `out-product` as PROPOSED, pending Tim's sign-off~~ **Superseded 25 Oct 2026 by Tim's Option B ruling: both are `in`; the `out-product` proposal is withdrawn** (the oracle report always said `in`). Both are wired in the adapter; see the ledger's Los Angeles table.
 
 **Flip PR contents (Mark; match Prague #498 / Dublin #501):**
 1. `lib/providers/registry.js`: LA `status: "live"`.

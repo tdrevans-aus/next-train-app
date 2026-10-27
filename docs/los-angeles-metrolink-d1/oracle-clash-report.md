@@ -100,3 +100,5 @@ The existing LA oracle already records Amtrak and busway verdicts. This pass rec
 ## Skip risk
 
 The feeds exist. Wiring a live board is blocked until Tim accepts the GTFS-RT EULA (internal use only; no distribution without written consent) or Metrolink grants consent. The static zip is unkeyed and the agency page invites other developers to use it; that does not clear the real-time EULA. Not a missing-feed skip.
+
+**Decision 27 Oct 2026 (Tim):** Los Angeles flips with Metrolink live, accepting the EULA risk. This supersedes "blocked until Tim accepts" above. The ledger's 25 Oct reading stands (one server-side key, rider-facing boards, no raw protobuf republished), but the licence question is not cleared by Metrolink and the risk is Tim's.

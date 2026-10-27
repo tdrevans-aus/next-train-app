@@ -10,7 +10,7 @@
 
 **Per-agency adapters, no national feed.** Each US region operates its own real-time GTFS-RT feed (SEPTA Regional Rail, VRE, MARC, NJ Transit, LIRR, Metro-North, Metra, CTA/Metra split in Chicago, etc.). No shared adapter over a national US provider exists — unlike UK (Darwin), Sweden (Trafiklab), or Australia (Transitland). Regions are built as independent adapters.
 
-**Amtrak's own real-time feed.** Amtrak provides GTFS-RT but **availability and redistribution terms are not confirmed** — Nico has not yet verified the feed's public URL, API authentication, or data-sharing terms. Amtrak's ticketing pages confirm seat/reservation policy per route (see verdicts below), but the operational feed is not yet wired into any planned US region adapter. **Note:** This ledger records board-eligibility verdicts only; it does not authorize wiring an Amtrak feed. Feed verification and Tim's approval are prerequisites for any region's adapter.
+**Amtrak's own real-time feed.** Amtrak publishes no official public GTFS-RT. **Pacific Surfliner at Los Angeles: approved by Tim 25 Oct 2026 (keyless transitdocs feed `https://asm-backend.transitdocs.com/gtfs/amtrak`, route 78 only, Union Station); wired in `lib/providers/los-angeles.js`.** Any other Amtrak service or region still needs its own verdict and Tim's approval before an adapter wires a feed. Amtrak's static `stop_times` are written in the feed's own `agency_timezone` (America/New_York) even for West Coast trains; adapters must read `agency.txt` and convert to instants (fixed for LA 27 Oct 2026, `docs/jim-brief-la-surfliner-timezone.md`). This ledger otherwise records board-eligibility verdicts only.
 
 ---
 
@@ -53,7 +53,7 @@ Vocabulary per `docs/board-eligibility-rule.md` §3. All verdicts derived from A
 
 **Per-agency GTFS-RT feeds — no fallback.** Every region's GTFS-RT feed ends at the region's geographic scope. No national US feed covers all regions (unlike UK Darwin, Sweden Trafiklab). Each region's catalog is bounded by its agency's own GTFS-RT coverage. No cross-region static fallback exists. Regions stay within their declared agency boundary.
 
-**Amtrak real-time — unconfirmed.** Amtrak operates its own GTFS-RT, but no region's oracle report confirms the feed URL, API authentication, or data-sharing terms for public redistribution in a third-party app. [Amtrak's developer resources](https://www.amtrak.com/) do not publicly document a real-time feed for regional services. **No region may wire Amtrak real-time without Tim's explicit approval and Nico verification of redistribution terms.** This is a blocker for any region that wants to show walk-up Amtrak services (Capitol Corridor, Pacific Surfliner) on boards.
+**Amtrak real-time — approved for Pacific Surfliner at LA only.** Amtrak publishes no official public GTFS-RT, and [Amtrak's developer resources](https://www.amtrak.com/) do not document one for regional services. **Approved by Tim 25 Oct 2026 (transitdocs feed) for Pacific Surfliner at Los Angeles Union Station.** No other region may wire Amtrak real-time (for example Capitol Corridor) without Tim's explicit approval and Nico verification of redistribution terms.
 
 ---
 
@@ -80,11 +80,11 @@ The following region packs have Amtrak verdicts that contradict this ledger's fi
    - Amtrak's official page is wrong or has changed since today;
    - Metro-North report misread Amtrak's ticketing page (e.g., conflating business-class assigned seats with coach-class walk-up). If Amtrak's page is confirmed, flip Metro-North to `out-reservation` and mark as controller corrected.
 
-3. **Capitol Corridor and Pacific Surfliner Amtrak feed blocker.** Both services are unreserved and walk-up eligible for `in` verdicts at Bay Area and Southern California regions (if built). Both currently have no confirmed public GTFS-RT feed, and no region has wired them yet. Feed verification and redistribution-terms clearance from Tim are prerequisites for any region build.
+3. **Capitol Corridor and Pacific Surfliner Amtrak feed blocker.** Both services are unreserved and walk-up eligible for `in` verdicts at Bay Area and Southern California regions (if built). Neither has an official public GTFS-RT feed. Pacific Surfliner at Los Angeles was approved by Tim on 25 Oct 2026 (transitdocs feed) and is wired. Capitol Corridor has no approval yet: feed verification and redistribution-terms clearance from Tim are prerequisites for any Bay Area build.
 
 4. **Lake Shore Limited verdict — undecided, requires confirmation.** Long-distance service not listed on Amtrak's official unreserved-coach page; likely reserved (long-distance network pattern), but Amtrak's public ticketing page does not explicitly state Lake Shore Limited's seating policy. Before any region covering Lake Shore Limited (e.g., Midwest regions, Chicago if expanded to cover Boston/NYC termini), verify the policy and confirm it at [https://www.amtrak.com/lake-shore-limited-train](https://www.amtrak.com/lake-shore-limited-train) or contact Amtrak directly. Assume reserved (`out-reservation`) unless confirmed otherwise.
 
-5. **Amtrak real-time feed — not yet verified.** No region has confirmed Amtrak's official GTFS-RT feed URL, API authentication, or data-sharing license. Any region build that includes unreserved Amtrak service (Capitol Corridor, Pacific Surfliner) and wants live boarding must verify the feed first. Tim's approval required before wiring.
+5. **Amtrak real-time feed.** Pacific Surfliner at Los Angeles: approved by Tim 25 Oct 2026 (transitdocs feed) and wired. Any other region that includes unreserved Amtrak service (for example Capitol Corridor) and wants live boarding must verify a feed first; Tim's approval required before wiring.
 
 ---
 
