@@ -107,6 +107,7 @@ H2 conclusion: passenger letters on the map already agree (A B C D E K). Clash i
 2. **7th St/Metro Ctr** is the locked inner-city hub (A × B × D × E). Clash-report long form **7th Street/Metro Center**. Not Union Station, not Civic Ctr/Grand Park, not Pershing Square, not Historic Broadway. **C and K do not serve it.**
 3. **7th St/Metro Ctr ≠ Union Station ≠ Civic Ctr/Grand Park ≠ Pershing Square ≠ Historic Broadway ≠ East LA Civic Ctr.** Do not collapse. doNotGroup Union Station metro vs Metrolink/Amtrak.
 4. **Modes v1: Metro Rail only (A B C D E K).** G Line / J Line busway out. Bus / Metrolink / Amtrak / FlyAway / airport people movers out.
+   *Correction 27 Oct 2026 (history above unchanged): superseded by Tim's 25 Oct 2026 ruling. Metrolink (Union Station and Pomona North) and Pacific Surfliner (Union Station) are `in` and wired for v1; see the Board eligibility section. Buses, G/J busways, FlyAway, people movers and long-distance Amtrak stay out.*
 5. **D Line Section 1 to Wilshire/La Cienega is in.** Further D west is dashed under construction — out. **A Line to Pomona North is in.** Further A east is dashed — out.
 6. **C Line west end is LAX/Metro Transit Center.** K through-runs there. C station **Lynwood** (not Long Beach Bl).
 7. **E east end stop string is Atlantic.** Legend/rider **East LA** is the area.
@@ -132,7 +133,9 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 
 Five rail services call at in-catalog LA Metro Rail stations. Metrolink and Amtrak Pacific Surfliner pass walk-up and leave-by tests; long-distance Amtrak services require compulsory seat reservations and are excluded. Metro G/J busway are buses — explicitly out of v1 mode cut. LAX people mover (SkyLink) is under construction as of 2026-08-29.
 
-**Correction (Tim, 25 Oct 2026, Australia/Perth).** The `in` rows below for Metrolink and Pacific Surfliner stand. A later ledger proposal to mark both `out-product` for v1 (same shape as Caltrain at BART and MARC/VRE at DC) was not signed. Tim chose to build them before Los Angeles flips. Metrolink is the build that starts now (`docs/los-angeles-metrolink-d1/`). Surfliner stays `in`, and wiring it still waits on the US ledger's Amtrak feed and redistribution check (`docs/pacific-surfliner-d1/`). The original table is unchanged.
+**Correction (Tim, 25 Oct 2026, Australia/Perth).** The `in` rows below for Metrolink and Pacific Surfliner stand. A later ledger proposal to mark both `out-product` for v1 (same shape as Caltrain at BART and MARC/VRE at DC) was not signed. Tim chose to build them before Los Angeles flips. Metrolink is the build that starts now (`docs/los-angeles-metrolink-d1/`). Surfliner stays `in`.
+
+**Correction 27 Oct 2026.** The "waits on the US ledger's Amtrak feed and redistribution check" wording above is superseded: Tim approved the transitdocs feed on 25 Oct 2026 and Surfliner is wired (`docs/pacific-surfliner-d1/`, `docs/united-states-ledger.md`). Metrolink is `in` at Union Station and Pomona North (the table row below names Union Station only). Also fixed 27 Oct: Amtrak's static times are Eastern, now converted correctly (`docs/jim-brief-la-surfliner-timezone.md`). The original table is unchanged.
 
 | Service | Station(s) | Verdict | Evidence | Live API |
 | --- | --- | --- | --- | --- |
