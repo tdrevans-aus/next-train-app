@@ -17,7 +17,7 @@
  * still expired after the run, makes the whole run exit 1 (the workflow then fails loudly).
  *
  * Usage: node scripts/refresh-hand-published-gtfs.mjs [--dry-run] [--force] [--cities=a,b]
- * Secrets: BLOB_READ_WRITE_TOKEN always; TRAFIKLAB_API_KEY when malmo/uppsala are selected.
+ * Secrets: BLOB_READ_WRITE_TOKEN always; TRAFIKLAB_API_KEY when malmo/uppsala are selected; TFNSW_API_KEY for sydney.
  */
 import { spawnSync } from "child_process";
 import { appendFileSync } from "fs";
@@ -87,6 +87,28 @@ export const REFRESH_UNITS = [
     probeUrl: STATEWIDE_GTFS_URL,
     commands: [["node", ["scripts/publish-melbourne-gtfs-to-blob.mjs", "--download"]]],
   },
+  // TfNSW static GTFS is behind an API key, so no unauthenticated HEAD probe: refresh weekly (or when the
+  // published calendar nears its end). Sydney was missing from this list and its blob expired 14 Oct 2026
+  // (docs/jim-brief-sydney-fixture-expired.md). Three raw zips -> Python trim -> qa/fixtures/sydney/gtfs -> blob.
+  {
+    id: "sydney",
+    blobCities: ["sydney"],
+    probeUrl: null,
+    requiredEnv: ["TFNSW_API_KEY"],
+    commands: [
+      ["node", ["scripts/download-sydney-gtfs-zips.mjs", ".gtfs-download-tmp"]],
+      [
+        "python3",
+        [
+          "scripts/trim-sydney-gtfs.py",
+          ".gtfs-download-tmp/sydneytrains-static.zip",
+          ".gtfs-download-tmp/metro-static.zip",
+          ".gtfs-download-tmp/nswtrains-static.zip",
+        ],
+      ],
+      ["node", ["scripts/publish-gtfs-fixture-to-blob.mjs", "sydney", "--allow-live"]],
+    ],
+  },
   // Trafiklab counts requests against a monthly quota, so no HEAD probe: refresh weekly instead.
   {
     id: "malmo",
@@ -105,7 +127,7 @@ export const REFRESH_UNITS = [
 ];
 
 /** Blob-backed live cities refreshed by something else (lib/gtfs-refresh.js via the Vercel cron). */
-export const AUTO_REFRESHED_ELSEWHERE = ["canberra", "newcastle", "gold-coast"];
+export const AUTO_REFRESHED_ELSEWHERE = ["canberra", "newcastle", "gold-coast", "brisbane"];
 
 export function ymd(date) {
   return date.toISOString().slice(0, 10).replace(/-/g, "");

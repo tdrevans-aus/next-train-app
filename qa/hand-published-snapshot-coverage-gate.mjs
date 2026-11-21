@@ -22,11 +22,22 @@ const PROVIDERS_DIR = path.join(ROOT, "lib", "providers");
 
 const blobBacked = new Set();
 const callRe = /gtfsFixtureBlobUrl\(\s*["'`]([a-z0-9-]+)["'`]\s*\)/g;
-for (const entry of fs.readdirSync(PROVIDERS_DIR, { withFileTypes: true })) {
-  if (!entry.isFile() || !entry.name.endsWith(".js")) continue;
-  const text = fs.readFileSync(path.join(PROVIDERS_DIR, entry.name), "utf8");
+function scanFile(file) {
+  const text = fs.readFileSync(file, "utf8");
   let m;
   while ((m = callRe.exec(text))) blobBacked.add(m[1]);
+}
+for (const entry of fs.readdirSync(PROVIDERS_DIR, { withFileTypes: true })) {
+  if (entry.isFile() && entry.name.endsWith(".js")) scanFile(path.join(PROVIDERS_DIR, entry.name));
+}
+// Per-city dogfood modules (lib/cities/<city>/*.js) also read blobs directly; Sydney's did, and the
+// providers-only scan missed it (blob expired 14 Oct 2026, docs/jim-brief-sydney-fixture-expired.md).
+const CITIES_DIR = path.join(ROOT, "lib", "cities");
+for (const dir of fs.readdirSync(CITIES_DIR, { withFileTypes: true })) {
+  if (!dir.isDirectory()) continue;
+  for (const entry of fs.readdirSync(path.join(CITIES_DIR, dir.name), { withFileTypes: true })) {
+    if (entry.isFile() && entry.name.endsWith(".js")) scanFile(path.join(CITIES_DIR, dir.name, entry.name));
+  }
 }
 const live = new Set(CITIES.filter((c) => c.status === "live").map((c) => c.id));
 // melbourne-vline is not a registry city; it rides with melbourne.
@@ -57,6 +68,14 @@ for (const unit of REFRESH_UNITS) {
     assert.ok(workflow.includes(`${name}: \${{ secrets.${name} }}`), `${unit.id}: workflow does not pass secret ${name}`);
   }
 }
+
+// Sydney: unit exists, needs TFNSW_API_KEY wired in the workflow, and its stale error carries cityId.
+const sydneyUnit = REFRESH_UNITS.find((u) => u.id === "sydney");
+assert.ok(sydneyUnit, "sydney must be a refresh unit");
+assert.deepEqual(missingEnvFor(sydneyUnit, {}), ["TFNSW_API_KEY"], "sydney fails loudly without TFNSW_API_KEY");
+assert.ok(workflow.includes("sydney"), "workflow dispatch help must list sydney");
+const sydneyDogfood = fs.readFileSync(path.join(CITIES_DIR, "sydney", "dogfood-next-train.js"), "utf8");
+assert.match(sydneyDogfood, /buildBoardForStops\(\{[^}]*cityId:\s*"sydney"/s, "sydney fixture board must pass cityId: \"sydney\" so stale errors reach /api/health");
 
 // decideRefresh() behaviour.
 const now = new Date("2026-10-08T12:00:00Z");
