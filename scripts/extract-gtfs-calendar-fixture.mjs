@@ -26,6 +26,8 @@
  * Usage:
  *   node scripts/extract-gtfs-calendar-fixture.mjs <city> <path-to-zip>
  *   node scripts/extract-gtfs-calendar-fixture.mjs <city> <path-to-zip> --keep-calendar-dates
+ *   node scripts/extract-gtfs-calendar-fixture.mjs <city> <path-to-zip> --source="<upstream URL or blob path>"
+ *     (--source records durable provenance in the README instead of the local zip path)
  *
  * Writes qa/fixtures/gtfs-snapshots/<city>/{calendar,calendar_dates,stops,
  * routes,trips,stop_times}.txt + a README documenting source/extracted-on/
@@ -43,6 +45,9 @@ const ROOT = join(__dirname, "..");
 
 const [, , city, zipPath, ...rest] = process.argv;
 const keepCalendarDates = rest.includes("--keep-calendar-dates");
+const sourceArg = rest.find((a) => a.startsWith("--source="))?.slice("--source=".length);
+// Local zip paths are throwaway (scratchpads); prefer an explicit durable source when given.
+const sourceLabel = sourceArg || zipPath;
 
 if (!city || !zipPath) {
   console.error("Usage: node scripts/extract-gtfs-calendar-fixture.mjs <city> <path-to-zip> [--keep-calendar-dates]");
@@ -147,7 +152,7 @@ const readmeLines = [
   "but nothing here reads their rows). Real-snapshot freshness in production is monitored on",
   "a schedule by qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, not here.",
   "",
-  `**Source zip:** ${zipPath}`,
+  `**Source zip:** ${sourceLabel}`,
   `**Extracted:** ${new Date().toISOString().slice(0, 10)}`,
   feedInfoRow?.feed_version ? `**feed_version:** ${feedInfoRow.feed_version}` : null,
   feedInfoRow?.feed_publisher_name ? `**feed_publisher_name:** ${feedInfoRow.feed_publisher_name}` : null,
@@ -169,7 +174,7 @@ if (preservedTables.length && existsSync(readmePath)) {
   // A fixture with hand-maintained trip rows has a hand-maintained README
   // describing them; refresh only the calendar facts in it.
   const refreshed = readFileSync(readmePath, "utf8")
-    .replace(/^\*\*Source zip:\*\* .*$/m, `**Source zip:** ${zipPath}`)
+    .replace(/^\*\*Source zip:\*\* .*$/m, `**Source zip:** ${sourceLabel}`)
     .replace(/^\*\*Extracted:\*\* .*$/m, `**Extracted:** ${new Date().toISOString().slice(0, 10)}`)
     .replace(
       /^\*\*Real validity window:\*\* .*$/m,

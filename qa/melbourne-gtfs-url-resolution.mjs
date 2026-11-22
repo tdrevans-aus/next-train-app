@@ -11,6 +11,7 @@ import {
   resolveStatewideGtfsUrl,
   resolveOuterZipBytes,
 } from "../scripts/trim-melbourne-gtfs.mjs";
+import { REFRESH_UNITS } from "../scripts/refresh-hand-published-gtfs.mjs";
 
 const ckan = JSON.parse(readFileSync(new URL("./fixtures/melbourne/ckan-gtfs-schedule.json", import.meta.url), "utf8"));
 const DEAD = "fb152201-859f-4882-9206-b768060b50ad";
@@ -45,6 +46,41 @@ const reissued = {
   },
 };
 check(pickStatewideGtfsUrl(reissued) === "https://example.test/new/gtfs.zip", "newest ZIP resource not preferred");
+
+// 3b. A newer non-GTFS ZIP (docs, GTFS-RT) on the record must not be picked over the GTFS schedule.
+const withDocsZip = {
+  ...ckan,
+  result: {
+    ...ckan.result,
+    resources: [
+      { id: "x", format: "ZIP", name: "Data dictionary", url: "https://example.test/docs/dictionary.zip", last_modified: "2027-06-01T00:00:00" },
+      ckan.result.resources[0],
+    ],
+  },
+};
+check(pickStatewideGtfsUrl(withDocsZip) === ckan.result.resources[0].url, "picked a non-GTFS ZIP resource");
+const onlyDocsZip = { success: true, result: { resources: [{ format: "ZIP", name: "Docs", url: "https://example.test/docs.zip" }] } };
+try {
+  pickStatewideGtfsUrl(onlyDocsZip);
+  failures.push("non-GTFS-only ZIP list: did not throw");
+} catch (err) {
+  check(/no ZIP resource/.test(err.message), `non-GTFS-only ZIP list: unclear error "${err.message}"`);
+}
+
+// 3c. The scheduled refresh's melbourne probe resolves from CKAN too (not a pinned probeUrl).
+{
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = fixtureFetch;
+  try {
+    const unit = REFRESH_UNITS.find((u) => u.id === "melbourne");
+    check(typeof unit?.resolveProbeUrl === "function", "melbourne refresh unit has no resolveProbeUrl");
+    check(!unit?.probeUrl, "melbourne refresh unit pins a probeUrl");
+    const probeUrl = await unit?.resolveProbeUrl?.();
+    check(probeUrl === ckan.result.resources[0].url, `refresh probe resolved ${probeUrl}`);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+}
 
 // 4. Clear errors on resolution failure.
 const cases = [

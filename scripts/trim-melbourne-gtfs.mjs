@@ -33,7 +33,13 @@ export function pickStatewideGtfsUrl(body) {
   if (!Array.isArray(resources)) {
     throw new Error("GTFS Schedule dataset lookup failed: CKAN response has no resources");
   }
-  const zips = resources.filter((r) => r?.url && String(r.format ?? "").toUpperCase() === "ZIP");
+  // The dataset can also carry docs or GTFS-RT ZIPs - only accept a resource that says it is GTFS.
+  const zips = resources.filter(
+    (r) =>
+      r?.url &&
+      String(r.format ?? "").toUpperCase() === "ZIP" &&
+      (/gtfs/i.test(String(r.url)) || /gtfs/i.test(String(r.name ?? "")))
+  );
   if (!zips.length) {
     throw new Error("GTFS Schedule dataset lookup failed: no ZIP resource listed on the dataset");
   }
