@@ -28,6 +28,14 @@
       content="About Next Train — the unofficial leave-by companion for train travel across Australia, the UK, Sweden, Finland and Norway. Know when to walk out."
     />
     <title>About — Next Train</title>
+    <link rel="canonical" href="https://next-train-app.vercel.app/about.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="About — Next Train" />
+    <meta
+      property="og:description"
+      content="The unofficial leave-by companion for train travel across Australia, the UK, Sweden, Finland and Norway. Know when to walk out."
+    />
+    <meta property="og:url" content="https://next-train-app.vercel.app/about.html" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -54,6 +62,14 @@
           you. <strong>My Journeys</strong> saves a regular trip (station,
           direction, target train, and how long you need to get to the platform) and turns that
           into a leave-by time. <strong>My Routes</strong> is a quick saved departure board when you only need times. Preferences stay on this device.
+        </p>
+      </section>
+
+      <section class="page-section" id="store-links-section" hidden>
+        <h2>Get the app</h2>
+        <p class="store-links">
+          <a class="btn-primary store-link" id="store-link-ios" href="#" rel="noopener" hidden>Download on the App Store</a>
+          <a class="btn-primary store-link" id="store-link-android" href="#" rel="noopener" hidden>Get it on Google Play</a>
         </p>
       </section>
 
@@ -93,7 +109,7 @@
         <p>
           In the Android app, you can remove ads with a one-time purchase
           from Menu when that option is available. We never see your card details
-          — Google Play handles payment.
+          — Google Play handles payment. Remove ads is not available in the iOS app.
         </p>
       </section>
 
@@ -115,6 +131,10 @@
       </p>
     </main>
     <script src="static-page-ad-padding.js"></script>
+    <script src="store-links.js"></script>
+    <script>
+      window.nextTrainStoreLinks.initAboutSection();
+    </script>
     <script>
       fetch("/site-config.json", { cache: "no-store" })
         .then((response) => (response.ok ? response.json() : null))
