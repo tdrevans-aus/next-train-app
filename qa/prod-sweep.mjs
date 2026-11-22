@@ -87,12 +87,12 @@ export const ALERT_THRESHOLD = Number(process.env.PROD_SWEEP_THRESHOLD) || 3;
  * Every other `status: "live"` city is expected to return realtime trips, so a schedule-only
  * result there is a finding. An entry needs a reason string; remove it when the city gains a
  * realtime feed.
- * KNOWN BLIND SPOT: the check only sees trips the API marks `realtime: false`. Copenhagen's and
- * Sydney's schedule-only boards do NOT mark their trips (the board-level `realtime: false` is
- * dropped before /api/next-train; Sydney never sets it), so both read as live=N today.
- * Closing that needs a response/adapter change, which is out of scope here
- * (docs/jim-brief-prod-sweep-realtime-check.md, PR description). Sydney is deliberately NOT
- * allow-listed so it starts alerting as soon as its trips carry the marker.
+ * KNOWN BLIND SPOT: the check only sees trips the API marks `realtime: false`. Copenhagen's schedule-only
+ * board does NOT mark its trips (the board-level `realtime: false` is dropped before /api/next-train),
+ * so it reads as live=N today. Closing that needs a response/adapter change
+ * (docs/jim-brief-prod-sweep-realtime-check.md). Sydney's blind spot is closed: its trips carry a
+ * per-trip `realtime` since docs/jim-brief-sydney-live-on-vercel.md, so it is deliberately NOT
+ * allow-listed and alerts if its RT feeds go dark.
  * @type {Record<string, string>}
  */
 export const SCHEDULE_ONLY_CITIES = {

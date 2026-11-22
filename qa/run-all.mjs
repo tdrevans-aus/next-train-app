@@ -62,6 +62,7 @@ const SMOKE_SCRIPTS = [
   "sydney-dogfood-gate.mjs",
   "sydney-direction-match.mjs",
   "sydney-direction-match-negative.mjs",
+  "sydney-vercel-realtime.mjs",
   "sydney-banksia-perth-route.mjs",
   "sydney-new-journey-not-perth.mjs",
   "sydney-line-map-conformance.mjs",
