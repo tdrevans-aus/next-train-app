@@ -7,9 +7,9 @@ staleness-detection logic without a network fetch
 but nothing here reads their rows). Real-snapshot freshness in production is monitored on
 a schedule by qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, not here.
 
-**Source zip:** C:\Users\tdrev\AppData\Local\Temp\claude\C--Users-tdrev-Projects-next-train-app\1bbd2b25-bfba-41a6-8789-fda413e3cdec\scratchpad/canberra.zip
-**Extracted:** 2026-09-12
-**feed_version:** 20260731
+**Source zip:** C:/Users/tdrev/AppData/Local/Temp/claude/096a592d6e302db3/c9061930-65c0-404d-9697-950f6a22e7ab/scratchpad/z/canberra.zip
+**Extracted:** 2026-11-22
+**feed_version:** 20261012
 **feed_publisher_name:** Canberra Metro Operations
 **Real validity window:** 20260731 .. 20270729
 

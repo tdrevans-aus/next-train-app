@@ -53,9 +53,9 @@ exists.
 
 ## Calendar refresh
 
-**Source zip:** C:\Users\tdrev\AppData\Local\Temp\claude\C--Users-tdrev-Projects-next-train-app\1bbd2b25-bfba-41a6-8789-fda413e3cdec\scratchpad/sydney.zip
-**Extracted:** 2026-09-12
-**Real validity window:** 20260823 .. 20261121
+**Source zip:** C:/Users/tdrev/AppData/Local/Temp/claude/096a592d6e302db3/c9061930-65c0-404d-9697-950f6a22e7ab/scratchpad/z/sydney.zip
+**Extracted:** 2026-11-22
+**Real validity window:** 20240915 .. 20261220
 
 ```bash
 node scripts/extract-gtfs-calendar-fixture.mjs sydney <path-to-fresh-zip>

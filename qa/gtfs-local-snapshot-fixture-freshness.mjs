@@ -23,6 +23,40 @@ import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 
 const CITIES = ["sydney", "brisbane", "canberra", "gold-coast", "newcastle", "malmo", "uppsala"];
 
+const WARN_WITHIN_DAYS = 21;
+
+function ymdToUtcDays(ymd) {
+  const s = String(ymd);
+  return Date.UTC(Number(s.slice(0, 4)), Number(s.slice(4, 6)) - 1, Number(s.slice(6, 8))) / 86400000;
+}
+
+/**
+ * Early-warning line for a fixture whose calendar ends within WARN_WITHIN_DAYS
+ * of today, or null. A WARNING, never a failure: the hard failure arrives only
+ * once the fixture actually expires (and every PR's web-qa goes red with it).
+ */
+function expiryWarning(city, check) {
+  if (!check?.maxDate || !check?.todayYmd) return null;
+  const daysLeft = ymdToUtcDays(check.maxDate) - ymdToUtcDays(check.todayYmd);
+  if (daysLeft > WARN_WITHIN_DAYS) return null;
+  return (
+    `WARNING: ${city} local GTFS fixture calendar ends ${check.maxDate} (${daysLeft} day(s) left; ` +
+    `warns within ${WARN_WITHIN_DAYS}). Refresh before it expires or every PR's web-qa goes red: ` +
+    `node scripts/extract-gtfs-calendar-fixture.mjs ${city} <path-to-fresh-zip> ` +
+    `(see qa/fixtures/gtfs-snapshots/${city}/README.md)`
+  );
+}
+
+function testExpiryWarningLogic() {
+  const base = { todayYmd: "20261122" };
+  assert(expiryWarning("x", { ...base, maxDate: "20261213" }) !== null, "21 days left must warn");
+  assert(expiryWarning("x", { ...base, maxDate: "20261214" }) === null, "22 days left must not warn");
+  assert(
+    /extract-gtfs-calendar-fixture\.mjs x /.test(expiryWarning("x", { ...base, maxDate: "20261123" })),
+    "warning must name the refresh command"
+  );
+}
+
 function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
@@ -36,6 +70,8 @@ async function testEveryCityFixtureCoversToday() {
     );
     assert(check !== null, `${city}: local fixture must be judgable (not skipped)`);
     assert(check.coversToday === true, `${city}: local fixture must cover today, got ${JSON.stringify(check)}`);
+    const warning = expiryWarning(city, check);
+    if (warning) console.warn(warning);
   }
 }
 
@@ -72,6 +108,7 @@ async function testExpiredLocalFixtureStillThrows() {
 }
 
 async function main() {
+  testExpiryWarningLogic();
   await testEveryCityFixtureCoversToday();
   await testExpiredLocalFixtureStillThrows();
   console.log(
