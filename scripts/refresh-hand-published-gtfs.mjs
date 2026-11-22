@@ -34,7 +34,7 @@ import {
   probeUpstreamChanged,
 } from "../lib/providers/gtfs/snapshot-manifest.js";
 import { REJSEPLANEN_GTFS_STATIC_URL } from "../lib/providers/rejseplanen.js";
-import { STATEWIDE_GTFS_URL } from "./trim-melbourne-gtfs.mjs";
+import { resolveStatewideGtfsUrl } from "./trim-melbourne-gtfs.mjs";
 
 export const EXPIRY_WINDOW_DAYS = 7;
 export const MAX_AGE_DAYS_WITHOUT_PROBE = 7;
@@ -84,7 +84,9 @@ export const REFRESH_UNITS = [
   {
     id: "melbourne",
     blobCities: ["melbourne", "melbourne-vline"],
-    probeUrl: STATEWIDE_GTFS_URL,
+    probeUrl: null,
+    // Resolved from the CKAN dataset record at run time - the resource UUID changes on reissue.
+    resolveProbeUrl: () => resolveStatewideGtfsUrl(),
     commands: [["node", ["scripts/publish-melbourne-gtfs-to-blob.mjs", "--download"]]],
   },
   // TfNSW static GTFS is behind an API key, so no unauthenticated HEAD probe: refresh weekly (or when the
@@ -250,8 +252,9 @@ async function processUnit(unit, { now, force, dryRun }) {
 
   let probe = null;
   let upstreamLastModified = null;
-  if (unit.probeUrl) {
-    probe = await probeUpstreamChanged({ url: unit.probeUrl, manifest });
+  const probeUrl = unit.resolveProbeUrl ? await unit.resolveProbeUrl() : unit.probeUrl;
+  if (probeUrl) {
+    probe = await probeUpstreamChanged({ url: probeUrl, manifest });
     upstreamLastModified = probe.lastModified;
   }
   const decision = decideRefresh({
@@ -279,7 +282,7 @@ async function processUnit(unit, { now, force, dryRun }) {
       await writeManifest(
         primary,
         buildManifest({
-          upstreamUrl: unit.probeUrl ?? "n/a",
+          upstreamUrl: probeUrl ?? "n/a",
           etag: probe?.etag ?? null,
           lastModified: probe?.lastModified ?? null,
           publishedAt: new Date(Date.parse(published.lastModified ?? "") || now.getTime()).toISOString(),
@@ -316,7 +319,7 @@ async function processUnit(unit, { now, force, dryRun }) {
     await writeManifest(
       city,
       buildManifest({
-        upstreamUrl: unit.probeUrl ?? "trafiklab",
+        upstreamUrl: probeUrl ?? "trafiklab",
         etag: probe?.etag ?? null,
         lastModified: probe?.lastModified ?? null,
         calendarRange: afterRange,
