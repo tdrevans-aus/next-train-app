@@ -27,14 +27,14 @@ get no ads. This predates FB-68. iOS has most likely never served a real ad.
 ## Prerequisite — Tim, in AdMob (apps.admob.com), before the Mac work
 
 **Tim's plan (24 Oct):** wait for Apple to approve 3.0.4, then create the iOS AdMob app already
-linked to the live App Store listing. So this brief is blocked until the IDs are added below.
+linked to the live App Store listing. ~~So this brief is blocked until the IDs are added below.~~ **Unblocked 22 Nov 2026:** 3.0.4 is live on the App Store (id6803145625), the iOS AdMob app exists, and both IDs are below.
 
 1. **Apps → Add app → iOS.** If 3.0.4 is already live, answer "Yes, it's listed" and pick Next Train
    from the App Store. Otherwise add it as unlisted and link the store later.
 2. On the new iOS app: **Ad units → Add → Banner**. Name it e.g. `ios-banner`.
 3. Paste both IDs into the PR thread or the top of this brief:
-   - iOS AdMob **app ID**: `ca-app-pub-2659068072900088~__________`
-   - iOS **banner unit ID**: `ca-app-pub-2659068072900088/__________`
+   - iOS AdMob **app ID**: `ca-app-pub-2659068072900088~4788376838` (from Tim, 22 Nov 2026)
+   - iOS **banner unit ID**: `ca-app-pub-2659068072900088/3732773470` (from Tim, 22 Nov 2026)
 
 The Mac session should not invent or guess these. If they're missing, stop and ask Tim.
 
@@ -86,5 +86,4 @@ The Android AdMob app is **"Requires review — Limited ad serving — Add store
 "Apps to confirm" lists `com.tdrevans.nexttrain` as "Setup incomplete", with only **5 ad requests in
 the last 7 days**. Tim should link the Play listing in AdMob. Whether 5 requests a week is a real
 signal of low Android usage, or a sign the consent gate is failing closed, needs its own triage.
-There's also no `app-ads.txt` published. AdMob expects it on the developer website listed in the
-store.
+`app-ads.txt` has been published at https://next-train-app.vercel.app/app-ads.txt since 22 Nov 2026 (#546).
