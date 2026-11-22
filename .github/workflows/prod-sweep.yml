@@ -30,7 +30,7 @@ name: Production sweep
 
 on:
   schedule:
-    - cron: "7 */6 * * *"
+    - cron: "43 */6 * * *"
   workflow_dispatch:
     inputs:
       base:
@@ -99,7 +99,7 @@ jobs:
             let log = "";
             try { log = fs.readFileSync("sweep.log", "utf8"); } catch {}
             const lines = log.split("\n");
-            const interesting = lines.filter((l) => /ALERTING|FINDING|FAIL|ERROR|stale|500|fatal/i.test(l)).slice(0, 40);
+            const interesting = lines.filter((l) => /ALERTING|FINDING|FAIL|ERROR|schedule-only|stale|500|fatal/i.test(l)).slice(0, 40);
             const body = (interesting.length ? interesting : lines.slice(-40)).join("\n").slice(0, 6000);
             const { data: open } = await github.rest.issues.listForRepo({
               owner, repo, state: "open", labels: label, per_page: 1,
