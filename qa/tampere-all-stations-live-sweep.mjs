@@ -60,7 +60,12 @@ const MIN_POLL_INTERVAL_MS = 30_000;
 const MAX_POLL_INTERVAL_MS = 90_000;
 // Bounded well under common CI/tool foreground-command ceilings (e.g. a 10-minute Bash timeout) —
 // a script that only finishes by being auto-backgrounded defeats "explicit progress lines, exits".
-const MAX_RUNTIME_MS = 9 * 60 * 1000;
+// Nightly budget (qa/run-all.mjs gives each script 180 s under CI): when run by the nightly/CI runner
+// (CI=true) or with QA_SWEEP_MAX_RUNTIME_MS set, the sweep runs a short paced subset (~140 s) instead
+// of the 9-minute soak. It still catches bare-blank boards and fetch errors; the 1.5x-headway
+// permanent-gap threshold needs the full local/manual run (`node qa/tampere-all-stations-live-sweep.mjs`).
+const BUDGET_MS = Number(process.env.QA_SWEEP_MAX_RUNTIME_MS) || (process.env.CI === "true" ? 140_000 : 0);
+const MAX_RUNTIME_MS = BUDGET_MS || 9 * 60 * 1000;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -223,6 +228,7 @@ async function main() {
   let sawAnyTrips = false;
   let lastErrored = [];
 
+  const runStartMs = Date.now();
   for (let poll = 1; poll <= maxPolls; poll += 1) {
     const pollStartMs = Date.now();
     const results = await sweepOnce(stations);
@@ -266,6 +272,10 @@ async function main() {
     }
 
     if (poll < maxPolls) {
+      // Budget mode: stop early rather than start a poll that would overrun the nightly limit.
+      if (BUDGET_MS && Date.now() - runStartMs + pollIntervalMs + (Date.now() - pollStartMs) > BUDGET_MS) {
+        break;
+      }
       await sleep(pollIntervalMs);
     }
   }

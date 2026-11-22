@@ -7,7 +7,7 @@ staleness-detection logic without a network fetch
 but nothing here reads their rows). Real-snapshot freshness in production is monitored on
 a schedule by qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, not here.
 
-**Source zip:** C:/Users/tdrev/AppData/Local/Temp/claude/096a592d6e302db3/c9061930-65c0-404d-9697-950f6a22e7ab/scratchpad/z/brisbane.zip
+**Source zip:** https://gtfsrt.api.translink.com.au/GTFS/SEQ_GTFS.zip (Translink SEQ static GTFS; published copy https://n1sivhxcnzarmc6t.public.blob.vercel-storage.com/gtfs/brisbane.zip) - fetched and extracted 2026-11-22 (PR #542); the exact local download path was not recorded
 **Extracted:** 2026-11-22
 **feed_publisher_name:** Department of Transport and Main Roads - Translink Division
 **Real validity window:** 20261121 .. 20270120

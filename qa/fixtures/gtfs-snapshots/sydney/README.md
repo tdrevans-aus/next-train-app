@@ -53,7 +53,7 @@ exists.
 
 ## Calendar refresh
 
-**Source zip:** C:/Users/tdrev/AppData/Local/Temp/claude/096a592d6e302db3/c9061930-65c0-404d-9697-950f6a22e7ab/scratchpad/z/sydney.zip
+**Source zip:** https://api.transport.nsw.gov.au/v1/gtfs/schedule/sydneytrains (TfNSW; published copy https://n1sivhxcnzarmc6t.public.blob.vercel-storage.com/gtfs/sydney.zip) - fetched and extracted 2026-11-22 (PR #542); the exact local download path was not recorded
 **Extracted:** 2026-11-22
 **Real validity window:** 20240915 .. 20261220
 

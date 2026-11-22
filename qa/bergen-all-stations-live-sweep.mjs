@@ -37,9 +37,15 @@ const EVIDENCE_WINDOW_DAYS = 7;
 
 const FALLBACK_HEADWAY_MINUTES = 20;
 const REQUIRED_EMPTY_MULTIPLE = 1.5;
-const POLL_INTERVAL_MS = 60_000; // Bybanen headways are >=~5min even at the busy trunk; no need to poll faster than Dublin's floor.
+// Nightly budget (qa/run-all.mjs gives each script 180 s under CI): when run by the nightly/CI runner
+// (CI=true) or with QA_SWEEP_MAX_RUNTIME_MS set, the sweep runs a short paced subset — 30 s polls for
+// ~140 s — instead of the 9-minute soak. A short run can only prove "every station is non-empty, or
+// honestly empty" and catches bare-blank boards; it cannot reach the 1.5x-headway permanent-gap
+// threshold, which needs the full local/manual run (`node qa/bergen-all-stations-live-sweep.mjs`).
+const BUDGET_MS = Number(process.env.QA_SWEEP_MAX_RUNTIME_MS) || (process.env.CI === "true" ? 140_000 : 0);
+const POLL_INTERVAL_MS = BUDGET_MS ? 30_000 : 60_000; // Bybanen headways are >=~5min even at the busy trunk; no need to poll faster than Dublin's floor.
 // Bounded well under common CI/tool foreground-command ceilings (e.g. a 10-minute Bash timeout).
-const MAX_RUNTIME_MS = 9 * 60 * 1000;
+const MAX_RUNTIME_MS = BUDGET_MS || 9 * 60 * 1000;
 const MAX_POLLS = Math.max(2, Math.floor(MAX_RUNTIME_MS / POLL_INTERVAL_MS));
 
 function sleep(ms) {
@@ -124,6 +130,7 @@ async function main() {
   let sawAnyTrips = false;
   let lastErrored = [];
 
+  const runStartMs = Date.now();
   for (let poll = 1; poll <= MAX_POLLS; poll += 1) {
     const pollStartMs = Date.now();
     const results = await sweepOnce(stations);
@@ -163,6 +170,10 @@ async function main() {
     }
 
     if (poll < MAX_POLLS) {
+      // Budget mode: stop early rather than start a poll that would overrun the nightly limit.
+      if (BUDGET_MS && Date.now() - runStartMs + POLL_INTERVAL_MS + (Date.now() - pollStartMs) > BUDGET_MS) {
+        break;
+      }
       await sleep(POLL_INTERVAL_MS);
     }
   }
