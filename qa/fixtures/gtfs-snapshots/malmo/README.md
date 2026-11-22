@@ -7,13 +7,11 @@ staleness-detection logic without a network fetch
 but nothing here reads their rows). Real-snapshot freshness in production is monitored on
 a schedule by qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, not here.
 
-**Source zip:** last-known-good `malmo.zip` preserved 10 Sep 2026 during the
-`next-train-gtfs` Blob suspension (docs/jim-brief-blob-transfer-reduction.md), fetched before the
-suspension from `gtfsFixtureBlobUrl("malmo")`
-**Extracted:** 2026-09-10
-**feed_version:** 2026-09-06
+**Source zip:** C:/Users/tdrev/AppData/Local/Temp/claude/096a592d6e302db3/c9061930-65c0-404d-9697-950f6a22e7ab/scratchpad/z/skane.zip
+**Extracted:** 2026-11-22
+**feed_version:** 2026-11-21
 **feed_publisher_name:** Samtrafiken i Sverige AB
-**Real validity window:** 20260903 .. 20261212
+**Real validity window:** 20261118 .. 20271211
 
 ## Regenerate
 
@@ -21,6 +19,6 @@ suspension from `gtfsFixtureBlobUrl("malmo")`
 node scripts/extract-gtfs-calendar-fixture.mjs malmo <path-to-fresh-zip>
 ```
 
-This fixture stops covering "today" after 20261212 — the dogfood gate will start
+This fixture stops covering "today" after 20271211 — the dogfood gate will start
 failing then (correctly: the logic is doing its job) and this needs a refresh with a newer
 zip. That is expected maintenance, not a bug.
