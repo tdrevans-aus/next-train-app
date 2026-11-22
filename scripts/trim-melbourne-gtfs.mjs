@@ -17,8 +17,43 @@ import { fileURLToPath } from "url";
 import { unzipSync } from "fflate";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
-export const STATEWIDE_GTFS_URL =
-  "https://opendata.transport.vic.gov.au/dataset/3f4e292e-7f8a-4ffe-831f-1953be0fe448/resource/fb152201-859f-4882-9206-b768060b50ad/download/gtfs.zip";
+/**
+ * The GTFS Schedule dataset's CKAN record. The download URL is resolved from this at run time and
+ * never pinned: Transport Victoria reissues the resource under a new UUID (the pinned
+ * .../resource/fb152201-.../download/gtfs.zip started 404ing and the scheduled refresh failed
+ * from 25 Oct to 21 Nov 2026 while the published snapshot went stale -
+ * docs/jim-brief-melbourne-gtfs-url-404.md).
+ */
+export const STATEWIDE_DATASET_API_URL =
+  "https://opendata.transport.vic.gov.au/api/3/action/package_show?id=gtfs-schedule";
+
+/** Pick the current statewide GTFS zip resource out of a CKAN package_show response body. */
+export function pickStatewideGtfsUrl(body) {
+  const resources = body?.success ? body?.result?.resources : null;
+  if (!Array.isArray(resources)) {
+    throw new Error("GTFS Schedule dataset lookup failed: CKAN response has no resources");
+  }
+  const zips = resources.filter((r) => r?.url && String(r.format ?? "").toUpperCase() === "ZIP");
+  if (!zips.length) {
+    throw new Error("GTFS Schedule dataset lookup failed: no ZIP resource listed on the dataset");
+  }
+  zips.sort((a, b) => String(b.last_modified ?? "").localeCompare(String(a.last_modified ?? "")));
+  return zips[0].url;
+}
+
+/** Resolve the current statewide GTFS zip download URL from CKAN (network; fetchImpl injectable). */
+export async function resolveStatewideGtfsUrl({ fetchImpl = fetch } = {}) {
+  let res;
+  try {
+    res = await fetchImpl(STATEWIDE_DATASET_API_URL);
+  } catch (err) {
+    throw new Error(`GTFS Schedule dataset lookup failed: ${err?.message ?? err}`);
+  }
+  if (!res.ok) {
+    throw new Error(`GTFS Schedule dataset lookup failed: HTTP ${res.status} from ${STATEWIDE_DATASET_API_URL}`);
+  }
+  return pickStatewideGtfsUrl(await res.json());
+}
 
 /** Mirrors the filtering lib/providers/melbourne.js applies at load time — this only shrinks
  * the published blob, loadGtfsStatic's own filtering at request time is still authoritative. */
@@ -134,10 +169,11 @@ export function buildMelbourneSnapshots(outerBytes) {
   return result;
 }
 
-export async function resolveOuterZipBytes(arg) {
+export async function resolveOuterZipBytes(arg, { fetchImpl = fetch } = {}) {
   if (arg === "--download" || !arg) {
-    console.log(`Downloading statewide GTFS zip from ${STATEWIDE_GTFS_URL} (~250MB)...`);
-    const res = await fetch(STATEWIDE_GTFS_URL);
+    const url = await resolveStatewideGtfsUrl({ fetchImpl });
+    console.log(`Downloading statewide GTFS zip from ${url} (~290MB)...`);
+    const res = await fetchImpl(url);
     if (!res.ok) {
       throw new Error(`Statewide GTFS download failed: HTTP ${res.status}`);
     }
