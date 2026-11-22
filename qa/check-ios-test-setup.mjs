@@ -86,6 +86,31 @@ if (!check("IAP list price", siteConfig.adFreeListPrice === "A$7.99", siteConfig
   failed += 1;
 }
 
+// FB-69 (docs/mac-brief-ios-admob-ids.md): iOS must use its own AdMob app,
+// not Android's. Info.plist's GADApplicationIdentifier must match the iOS app
+// ID in site-config, and neither iOS ID may equal its Android counterpart.
+const infoPlist = fs.readFileSync(path.join(ROOT, "ios/App/App/Info.plist"), "utf8");
+const gadAppId =
+  infoPlist.match(/<key>GADApplicationIdentifier<\/key>\s*<string>([^<]*)<\/string>/)?.[1] ?? "";
+if (
+  !check(
+    "iOS AdMob app ID (Info.plist = site-config admobIosAppId)",
+    Boolean(gadAppId) && gadAppId === siteConfig.admobIosAppId && gadAppId !== siteConfig.admobAppId,
+    gadAppId || "missing"
+  )
+) {
+  failed += 1;
+}
+if (
+  !check(
+    "iOS AdMob banner unit is iOS-specific",
+    Boolean(siteConfig.admobIosBannerId) && siteConfig.admobIosBannerId !== siteConfig.admobBannerId,
+    siteConfig.admobIosBannerId || "missing"
+  )
+) {
+  failed += 1;
+}
+
 const pbxproj = fs.readFileSync(
   path.join(ROOT, "ios/App/App.xcodeproj/project.pbxproj"),
   "utf8"

@@ -87,3 +87,26 @@ The Android AdMob app is **"Requires review — Limited ad serving — Add store
 the last 7 days**. Tim should link the Play listing in AdMob. Whether 5 requests a week is a real
 signal of low Android usage, or a sign the consent gate is failing closed, needs its own triage.
 `app-ads.txt` has been published at https://next-train-app.vercel.app/app-ads.txt since 22 Nov 2026 (#546).
+
+## Done (22 Nov 2026, Mac session) — and one AdMob-side blocker found
+
+Code changes 1–6 above are in the FB-69 PR (iOS 3.0.5 (31)). `qa/ad-consent-gate.mjs` case (e)
+asserts the per-platform units and goes red with the platform switch reverted;
+`qa/check-ios-test-setup.mjs` now checks Info.plist's `GADApplicationIdentifier` equals
+site-config `admobIosAppId` and differs from Android's.
+
+**Blocker for real iOS ads (Tim, in AdMob):** in a debug simulator build with the new iOS app ID,
+UMP `requestConsentInfo` fails ("Request consent info failed"), so the D-01 fail-closed gate
+shows no banner at all — not even the test ad. Swapping only the plist back to the Android app ID
+(diagnostic build, not committed) makes consent succeed, and Google's **iOS** test banner then
+shows at the bottom ("Test mode"), proving the per-platform wiring. So the failure is per-app-ID
+AdMob configuration, most likely that the new iOS app is not covered by a published
+**Privacy & messaging** message. Before uploading 3.0.5:
+
+1. AdMob → **Privacy & messaging** → *European regulations* (GDPR) message → add the iOS app
+   `~4788376838` to it (or create one for it) and **Publish**. Do the same for any *US states*
+   message the Android app has.
+2. Re-test a debug build: Xcode console should show `AdMob requestConsentInfo` → `initialize` →
+   `showBanner` with no "Request consent info failed".
+
+Without step 1, 3.0.5 on iOS will request no ads at all, by design (consent fails closed).

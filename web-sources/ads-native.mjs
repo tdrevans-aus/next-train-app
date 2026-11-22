@@ -1,6 +1,11 @@
 import { AdMob, AdmobConsentStatus } from "@capacitor-community/admob";
 
-const GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
+// AdMob app IDs and ad units are per-platform: iOS ad requests made with the
+// Android app's units get no fill (docs/mac-brief-ios-admob-ids.md, FB-69).
+// Google's sample banners: Android keeps the long-standing fixed-size sample;
+// iOS uses Google's iOS adaptive-banner sample (we request ADAPTIVE_BANNER).
+const GOOGLE_TEST_BANNER_ID_ANDROID = "ca-app-pub-3940256099942544/6300978111";
+const GOOGLE_TEST_BANNER_ID_IOS = "ca-app-pub-3940256099942544/2435281174";
 const CONSENT_TIMEOUT_MS = 5_000;
 // The plugin's dist/esm/consent barrel doesn't re-export
 // PrivacyOptionsRequirementStatus (deep-path-only in v8.0.0); it's a plain
@@ -186,14 +191,24 @@ export async function showNativeBanner(config) {
     initializeForTesting: admobTestMode,
   });
 
-  const adId = admobTestMode ? GOOGLE_TEST_BANNER_ID : bannerConfig.admobBannerId;
+  const isIos = window.Capacitor?.getPlatform?.() === "ios";
+  // iOS never falls back to the Android unit — no iOS unit means no banner.
+  const adId = isIos
+    ? admobTestMode
+      ? GOOGLE_TEST_BANNER_ID_IOS
+      : bannerConfig.admobIosBannerId
+    : admobTestMode
+      ? GOOGLE_TEST_BANNER_ID_ANDROID
+      : bannerConfig.admobBannerId;
+  if (!adId) {
+    return;
+  }
 
   // 72 clears Android's bottom chrome / nav bar. On iOS that same margin
   // leaves a band of page content visible below the banner (it sits well
   // above the safe area rather than right on top of it) — the plugin
   // already respects the safe area on iOS, so no extra margin is needed
   // there (docs/jim-brief-ios-remove-ad-free-purchase.md, Part B).
-  const isIos = window.Capacitor?.getPlatform?.() === "ios";
   const margin = isIos ? 0 : 72;
 
   // iOS: Next Train does not track (docs/mac-brief-ios-3.0.4-build30-no-tracking.md,

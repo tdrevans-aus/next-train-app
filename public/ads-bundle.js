@@ -267,7 +267,8 @@ var NextTrainAdsNative = (() => {
   });
 
   // web-sources/ads-native.mjs
-  var GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
+  var GOOGLE_TEST_BANNER_ID_ANDROID = "ca-app-pub-3940256099942544/6300978111";
+  var GOOGLE_TEST_BANNER_ID_IOS = "ca-app-pub-3940256099942544/2435281174";
   var CONSENT_TIMEOUT_MS = 5e3;
   var PRIVACY_OPTIONS_REQUIRED = "REQUIRED";
   var admobClient = AdMob;
@@ -396,8 +397,11 @@ var NextTrainAdsNative = (() => {
     await admobClient.initialize({
       initializeForTesting: admobTestMode
     });
-    const adId = admobTestMode ? GOOGLE_TEST_BANNER_ID : bannerConfig.admobBannerId;
     const isIos = window.Capacitor?.getPlatform?.() === "ios";
+    const adId = isIos ? admobTestMode ? GOOGLE_TEST_BANNER_ID_IOS : bannerConfig.admobIosBannerId : admobTestMode ? GOOGLE_TEST_BANNER_ID_ANDROID : bannerConfig.admobBannerId;
+    if (!adId) {
+      return;
+    }
     const margin = isIos ? 0 : 72;
     const bannerOptions = {
       adId,
