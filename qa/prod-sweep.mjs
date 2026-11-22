@@ -44,6 +44,14 @@
  *    a `throttled` result can never appear in the alerting set. If a run ever does end with a
  *    throttled city, that's printed as a sweep-pacing defect, not folded into the per-city table.
  *
+ * Realtime check (docs/jim-brief-prod-sweep-realtime-check.md, 22 Nov 2026): "a trip came
+ * back" is not "the city is live". `/api/next-train` marks timetable-only rows `realtime:
+ * false` (lib/train-times-core.js), so a city whose realtime feed is down but whose static
+ * schedule still answers used to pass. A chip whose trips are ALL `realtime: false`, for a
+ * city expected to be live (everything except SCHEDULE_ONLY_CITIES below), is now the
+ * `schedule-only` outcome: it counts toward ALERT_THRESHOLD like `error`, under the same
+ * 06:00-23:00 local-hours rule as `empty`. Each city's live/scheduled trip split is logged.
+ *
  * This script never gates a PR: it is not registered in qa/run-all.mjs at any tier (see the
  * RUNNER_EXCLUDE entry there) and .github/workflows/prod-sweep.yml never runs on push or
  * pull_request.
@@ -73,6 +81,30 @@ export const BASE = (process.env.PROD_SWEEP_BASE || "https://next-train-app.verc
 
 /** Six-hourly cron (Tim, 12 Sep 2026 — hourly cost ~3,600 Actions min/month, ~2x the free tier): N consecutive in-service findings before alerting. */
 export const ALERT_THRESHOLD = Number(process.env.PROD_SWEEP_THRESHOLD) || 3;
+
+/**
+ * Live cities that are DELIBERATELY schedule-only in production: the one place that list lives.
+ * Every other `status: "live"` city is expected to return realtime trips, so a schedule-only
+ * result there is a finding. An entry needs a reason string; remove it when the city gains a
+ * realtime feed.
+ * KNOWN BLIND SPOT: the check only sees trips the API marks `realtime: false`. Copenhagen's and
+ * Sydney's schedule-only boards do NOT mark their trips (the board-level `realtime: false` is
+ * dropped before /api/next-train; Sydney never sets it), so both read as live=N today.
+ * Closing that needs a response/adapter change, which is out of scope here
+ * (docs/jim-brief-prod-sweep-realtime-check.md, PR description). Sydney is deliberately NOT
+ * allow-listed so it starts alerting as soon as its trips carry the marker.
+ * @type {Record<string, string>}
+ */
+export const SCHEDULE_ONLY_CITIES = {
+  copenhagen:
+    "Rejseplanen departureBoard / SIRI-ET need a key registered at labs.rejseplanen.dk, not registered; static GTFS only (registry notes, lib/providers/copenhagen.js)",
+};
+
+/** @returns {{expected: boolean, reason?: string}} whether this live city is expected to serve realtime trips. */
+export function expectedLive(city) {
+  const reason = SCHEDULE_ONLY_CITIES[city.id];
+  return reason ? { expected: false, reason } : { expected: true };
+}
 
 /** A small, stable sample per city — cheap enough to run hourly without hammering upstreams. */
 const SAMPLE_SIZE = 2;
@@ -327,14 +359,33 @@ async function sampleStations(city) {
  * strictly better than `error` — a 429 is never allowed to read as a defect finding, only as
  * "we don't yet know."
  */
-const OUTCOME_RANK = { ok: 0, empty: 1, throttled: 2, error: 3 };
+const OUTCOME_RANK = { ok: 0, "schedule-only": 1, empty: 2, throttled: 3, error: 4 };
 
 function bestOutcome(results) {
   return results.reduce((best, cur) => (OUTCOME_RANK[cur.outcome] < OUTCOME_RANK[best.outcome] ? cur : best));
 }
 
-/** @returns {Promise<{outcome: "ok"|"empty"|"throttled"|"error", detail: string}>} */
-async function checkChip(city, station, direction) {
+/** Every trip payload a /api/next-train response carries (next, following, upcoming, arrivalsOnly). */
+function responseTrips(data) {
+  const trips = [data.next, data.following, ...(Array.isArray(data.upcoming) ? data.upcoming : [])];
+  if (Array.isArray(data.arrivalsOnly?.arrivals)) {
+    trips.push(...data.arrivalsOnly.arrivals);
+  }
+  const seen = new Set();
+  return trips.filter((t) => {
+    if (!t || typeof t !== "object") return false;
+    const key = `${t.departure ?? t.displayTime}|${t.line ?? ""}|${t.platform ?? ""}|${t.realtime}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * `realtime: false` = timetable row; `true`/`undefined` = live (lib/train-times-core.js).
+ * @returns {Promise<{outcome: "ok"|"schedule-only"|"empty"|"throttled"|"error", detail: string, live?: number, scheduled?: number}>}
+ */
+export async function checkChip(city, station, direction) {
   const nextTrainUrl =
     `${BASE}/api/next-train?city=${encodeURIComponent(city.id)}&station=${encodeURIComponent(station)}` +
     `&direction=${encodeURIComponent(direction)}&destination=${encodeURIComponent(direction)}`;
@@ -350,20 +401,43 @@ async function checkChip(city, station, direction) {
     return { outcome: "error", detail: "next-train: response missing expected 'next' field" };
   }
   const hasTrip = Boolean(data.next) || Boolean(data.arrivalsOnly);
-  if (hasTrip) {
-    return { outcome: "ok", detail: `${station} -> ${direction}: has upcoming trip` };
+  if (!hasTrip) {
+    return { outcome: "empty", detail: `${station} -> ${direction}: no upcoming trips`, live: 0, scheduled: 0 };
   }
-  return { outcome: "empty", detail: `${station} -> ${direction}: no upcoming trips` };
+  const trips = responseTrips(data);
+  const scheduled = trips.filter((t) => t.realtime === false).length;
+  const live = trips.length - scheduled;
+  const split = `live=${live} scheduled=${scheduled}`;
+  if (live === 0 && !expectedLive(city).expected) {
+    return { outcome: "ok", detail: `${station} -> ${direction}: schedule-only as allow-listed (${split})`, live, scheduled };
+  }
+  if (live === 0) {
+    return {
+      outcome: "schedule-only",
+      detail: `${station} -> ${direction}: only scheduled (realtime:false) trips, no live data (${split})`,
+      live,
+      scheduled,
+    };
+  }
+  return { outcome: "ok", detail: `${station} -> ${direction}: has upcoming trip (${split})`, live, scheduled };
+}
+
+/** Sum live/scheduled trip counts over chip/station results (best-of picks the outcome, not the counts). */
+function sumSplit(results) {
+  return results.reduce(
+    (acc, r) => ({ live: acc.live + (r.live ?? 0), scheduled: acc.scheduled + (r.scheduled ?? 0) }),
+    { live: 0, scheduled: 0 }
+  );
 }
 
 /**
- * @returns {Promise<{outcome: "ok"|"empty"|"throttled"|"error", detail: string}>}
+ * @returns {Promise<{outcome: "ok"|"schedule-only"|"empty"|"throttled"|"error", detail: string, live?: number, scheduled?: number}>}
  *
  * FB-64 fix-up: checks up to CHIPS_PER_STATION chips and only reports `empty` when none of
  * them has a trip — a station is only empty if every chip it offers is empty, not just
  * whichever chip happened to be listed first.
  */
-async function checkStation(city, station) {
+export async function checkStation(city, station) {
   const directionsUrl = `${BASE}/api/directions?city=${encodeURIComponent(city.id)}&station=${encodeURIComponent(
     station
   )}`;
@@ -386,7 +460,7 @@ async function checkStation(city, station) {
     // eslint-disable-next-line no-await-in-loop
     chipResults.push(await checkChip(city, station, direction));
   }
-  return bestOutcome(chipResults);
+  return { ...bestOutcome(chipResults), ...sumSplit(chipResults) };
 }
 
 /**
@@ -431,6 +505,7 @@ export async function sweepCity(city, now = new Date()) {
     results.push(await checkStation(city, station));
   }
   const worst = bestOutcome(results);
+  const split = sumSplit(results);
   const inServiceHours = isInServiceHours(city.timeZone, now);
 
   if (worst.outcome === "error") {
@@ -452,9 +527,27 @@ export async function sweepCity(city, now = new Date()) {
         detail: `outside service hours (${city.timeZone}); ${worst.detail}`,
       };
     }
-    return { id: city.id, displayName: city.displayName, status: "empty", detail: worst.detail };
+    return { id: city.id, displayName: city.displayName, status: "empty", detail: worst.detail, ...split };
   }
-  return { id: city.id, displayName: city.displayName, status: "ok", detail: worst.detail };
+  if (worst.outcome === "schedule-only") {
+    if (!inServiceHours) {
+      return {
+        id: city.id,
+        displayName: city.displayName,
+        status: "skipped",
+        detail: `outside service hours (${city.timeZone}); ${worst.detail}`,
+        ...split,
+      };
+    }
+    return { id: city.id, displayName: city.displayName, status: "schedule-only", detail: worst.detail, ...split };
+  }
+  return {
+    id: city.id,
+    displayName: city.displayName,
+    status: "ok",
+    detail: worst.detail,
+    ...split,
+  };
 }
 
 function loadState() {
@@ -465,10 +558,10 @@ function loadState() {
   }
 }
 
-function updateState(state, results, now = new Date()) {
+export function updateState(state, results, now = new Date()) {
   const cities = { ...state.cities };
   for (const result of results) {
-    const prev = cities[result.id] ?? { consecutiveError: 0, consecutiveEmptyInHours: 0 };
+    const prev = cities[result.id] ?? { consecutiveError: 0, consecutiveEmptyInHours: 0, consecutiveScheduleOnly: 0 };
     if (result.status === "throttled") {
       // A 429 is a fact about the sweep, not the city: never increments a counter, and never
       // resets one either — an in-progress error/empty streak survives a throttled run
@@ -477,6 +570,7 @@ function updateState(state, results, now = new Date()) {
       cities[result.id] = {
         consecutiveError: prev.consecutiveError,
         consecutiveEmptyInHours: prev.consecutiveEmptyInHours,
+        consecutiveScheduleOnly: prev.consecutiveScheduleOnly ?? 0,
         lastStatus: result.status,
         lastDetail: result.detail,
         lastRunAt: now.toISOString(),
@@ -485,7 +579,10 @@ function updateState(state, results, now = new Date()) {
     }
     let consecutiveError = 0;
     let consecutiveEmptyInHours = 0;
-    if (result.status === "error") {
+    let consecutiveScheduleOnly = 0;
+    if (result.status === "schedule-only") {
+      consecutiveScheduleOnly = (prev.consecutiveScheduleOnly ?? 0) + 1;
+    } else if (result.status === "error") {
       consecutiveError = prev.consecutiveError + 1;
     } else if (result.status === "empty") {
       consecutiveEmptyInHours = prev.consecutiveEmptyInHours + 1;
@@ -493,6 +590,7 @@ function updateState(state, results, now = new Date()) {
     cities[result.id] = {
       consecutiveError,
       consecutiveEmptyInHours,
+      consecutiveScheduleOnly,
       lastStatus: result.status,
       lastDetail: result.detail,
       lastRunAt: now.toISOString(),
@@ -503,6 +601,19 @@ function updateState(state, results, now = new Date()) {
 
 function saveState(state) {
   fs.writeFileSync(STATE_PATH, `${JSON.stringify(state, null, 2)}\n`);
+}
+
+export function alertingCityIds(results, nextState) {
+  return results
+    .filter((r) => {
+      const s = nextState.cities[r.id];
+      return (
+        s.consecutiveError >= ALERT_THRESHOLD ||
+        s.consecutiveEmptyInHours >= ALERT_THRESHOLD ||
+        (s.consecutiveScheduleOnly ?? 0) >= ALERT_THRESHOLD
+      );
+    })
+    .map((r) => r.id);
 }
 
 function liveCities() {
@@ -523,10 +634,7 @@ async function main() {
   const nextState = updateState(state, results, now);
   saveState(nextState);
 
-  const alerting = results.filter((r) => {
-    const s = nextState.cities[r.id];
-    return s.consecutiveError >= ALERT_THRESHOLD || s.consecutiveEmptyInHours >= ALERT_THRESHOLD;
-  });
+  const alerting = alertingCityIds(results, nextState);
 
   const refreshStatus = await checkRefreshStatus();
 
@@ -534,7 +642,7 @@ async function main() {
   console.log("");
   console.log(`GTFS refresh cron: [${refreshStatus.status}] ${refreshStatus.detail}`);
   console.log("");
-  const byStatus = { ok: 0, empty: 0, error: 0, skipped: 0, throttled: 0 };
+  const byStatus = { ok: 0, empty: 0, "schedule-only": 0, error: 0, skipped: 0, throttled: 0 };
   for (const r of results) {
     byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
     const s = nextState.cities[r.id];
@@ -543,12 +651,19 @@ async function main() {
         ? ` (error x${s.consecutiveError})`
         : s.consecutiveEmptyInHours > 0
           ? ` (empty x${s.consecutiveEmptyInHours})`
-          : "";
-    console.log(`  [${r.status.padEnd(7)}] ${r.id.padEnd(28)} ${r.detail}${streak}`);
+          : (s.consecutiveScheduleOnly ?? 0) > 0
+            ? ` (schedule-only x${s.consecutiveScheduleOnly})`
+            : "";
+    const exp = expectedLive(cities.find((c) => c.id === r.id));
+    const splitText =
+      r.live === undefined
+        ? ""
+        : ` | split live=${r.live} scheduled=${r.scheduled} (${exp.expected ? "expected live" : "schedule-only allow-listed"})`;
+    console.log(`  [${r.status.padEnd(13)}] ${r.id.padEnd(28)} ${r.detail}${streak}${splitText}`);
   }
   console.log("");
   console.log(
-    `Summary: ok=${byStatus.ok} empty=${byStatus.empty} error=${byStatus.error} skipped=${byStatus.skipped}` +
+    `Summary: ok=${byStatus.ok} empty=${byStatus.empty} schedule-only=${byStatus["schedule-only"]} error=${byStatus.error} skipped=${byStatus.skipped}` +
       (byStatus.throttled > 0 ? ` throttled=${byStatus.throttled}` : "")
   );
 
@@ -573,9 +688,7 @@ async function main() {
   if (alerting.length > 0) {
     console.log("");
     console.log(
-      `ALERTING (>= ${ALERT_THRESHOLD} consecutive in-service findings): ${alerting
-        .map((r) => r.id)
-        .join(", ")}`
+      `ALERTING (>= ${ALERT_THRESHOLD} consecutive in-service findings): ${alerting.join(", ")}`
     );
     process.exitCode = 1;
     return;
