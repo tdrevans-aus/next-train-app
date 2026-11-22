@@ -165,3 +165,57 @@ body.native-ad-banner main.page {
   gap: 0.35rem;
   font-size: 0.85rem;
 }
+
+.page-section .store-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.page-section a.store-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Mobile-web "Get the app" banner (first row inside .app on index.html). */
+.store-banner {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.store-banner-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.store-banner a.store-banner-link {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.store-banner-dismiss {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+}

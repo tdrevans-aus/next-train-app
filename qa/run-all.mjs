@@ -46,6 +46,7 @@ const SMOKE_SCRIPTS = [
   "nearby-content-above-ad.mjs",
   "nearby-pin-notify-label.mjs",
   "static-page-above-ad.mjs",
+  "store-links.mjs",
   "dialog-above-ad.mjs",
   "onboarding-not-on-overlay.mjs",
   "onboarding-got-it-no-loop.mjs",
