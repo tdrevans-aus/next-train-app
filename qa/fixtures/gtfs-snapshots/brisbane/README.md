@@ -7,10 +7,10 @@ staleness-detection logic without a network fetch
 but nothing here reads their rows). Real-snapshot freshness in production is monitored on
 a schedule by qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, not here.
 
-**Source zip:** C:\Users\tdrev\AppData\Local\Temp\claude\C--Users-tdrev-Projects-next-train-app\1bbd2b25-bfba-41a6-8789-fda413e3cdec\scratchpad/brisbane.zip
-**Extracted:** 2026-09-12
+**Source zip:** C:/Users/tdrev/AppData/Local/Temp/claude/096a592d6e302db3/c9061930-65c0-404d-9697-950f6a22e7ab/scratchpad/z/brisbane.zip
+**Extracted:** 2026-11-22
 **feed_publisher_name:** Department of Transport and Main Roads - Translink Division
-**Real validity window:** 20260829 .. 20261028
+**Real validity window:** 20261121 .. 20270120
 
 ## Regenerate
 
@@ -18,6 +18,6 @@ a schedule by qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, no
 node scripts/extract-gtfs-calendar-fixture.mjs brisbane <path-to-fresh-zip>
 ```
 
-This fixture stops covering "today" after 20261028 — the dogfood gate will start
+This fixture stops covering "today" after 20270120 — the dogfood gate will start
 failing then (correctly: the logic is doing its job) and this needs a refresh with a newer
 zip. That is expected maintenance, not a bug.
