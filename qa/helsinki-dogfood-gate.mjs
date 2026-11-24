@@ -72,7 +72,7 @@ assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(assertCityLive("stockholm")?.ok === true, "Stockholm stays live");
 assert(assertCityLive("goteborg")?.ok === true, "Göteborg stays live");
 assert(assertCityLive("malmo")?.ok === true, "Malmö stays live");
-assert(assertCityLive("uppsala")?.ok === true, "Uppsala stays live");
+assert(assertCityLive("uppsala")?.ok === false, "Uppsala is retired (24 Nov 2026) and must stay 501");
 
 // D1 pack (absorbed from the retired helsinki-planned-gate).
 const d1Dir = join(ROOT, "docs/helsinki-d1");

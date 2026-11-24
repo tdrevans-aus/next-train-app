@@ -10,7 +10,7 @@
 #
 # Secrets required (never a silent skip):
 #   BLOB_READ_WRITE_TOKEN  - always; the job fails immediately without it
-#   TRAFIKLAB_API_KEY      - malmo, uppsala (Trafiklab static GTFS). If missing, ONLY those two units are
+#   TRAFIKLAB_API_KEY      - malmo (Trafiklab static GTFS). If missing, ONLY that unit is
 #                            marked FAILED and skipped; every other unit still runs, and the job exits 1.
 #   TFNSW_API_KEY          - sydney (TfNSW static GTFS). If missing, ONLY the sydney unit is marked FAILED and skipped.
 # A unit whose upstream is unchanged but whose published calendar ends within 3 days is also FAILED.
@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       cities:
-        description: "Comma-separated unit ids (blank = all): prague,dublin,copenhagen,brussels,melbourne,malmo,uppsala,sydney"
+        description: "Comma-separated unit ids (blank = all): prague,dublin,copenhagen,brussels,melbourne,malmo,sydney"
         required: false
         type: string
       force:

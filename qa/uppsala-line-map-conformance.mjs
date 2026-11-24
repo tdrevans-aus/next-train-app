@@ -2,7 +2,7 @@
  * D5 — Offline Uppsala line-map conformance.
  * Usage: node qa/uppsala-line-map-conformance.mjs
  *
- * Tester-live (flipped by Tim 30 Aug 2026). D1 pack required. Not generated from GTFS
+ * Retired 24 Nov 2026 (adapter, catalog, line map and D1 pack kept for re-enable). D1 pack required. Not generated from GTFS
  * (line-map is a hand-built summary of the D1 pack's lines[], not re-derived from a live pull).
  */
 import { existsSync, readFileSync } from "fs";
@@ -26,8 +26,8 @@ function main() {
   const catalog = loadJson("lib/cities/uppsala/stations.json");
   const failures = [];
 
-  if (getCity("uppsala")?.status !== "live") {
-    failures.push("C0: uppsala registry status must be live");
+  if (getCity("uppsala")?.status !== "retired") {
+    failures.push("C0: uppsala registry status must be retired (24 Nov 2026, docs/jim-brief-uppsala-retire.md)");
   }
   if (lineMap.timeZone !== "Europe/Stockholm" || lineMap.dst !== true) {
     failures.push("C0: Europe/Stockholm must record DST");

@@ -106,7 +106,7 @@ assert.equal(decideRefresh({ manifest, probe: same, calendarMaxDate: "20261012",
 assert.ok(decideRefresh({ manifest, probe: same, calendarMaxDate: "20261012", now }).warn, "7-day warning kept");
 assert.equal(decideRefresh({ manifest, probe: diff, calendarMaxDate: "20261010", now }).fail ?? false, false, "changed upstream refreshes instead of failing");
 
-// Per-unit secret gating: a missing TRAFIKLAB_API_KEY fails/skips only malmo+uppsala.
+// Per-unit secret gating: a missing TRAFIKLAB_API_KEY fails/skips only malmo (uppsala retired 24 Nov 2026, docs/jim-brief-uppsala-retire.md).
 const malmo = REFRESH_UNITS.find((u) => u.id === "malmo");
 assert.deepEqual(missingEnvFor(malmo, {}), ["TRAFIKLAB_API_KEY"]);
 assert.deepEqual(missingEnvFor(malmo, { TRAFIKLAB_API_KEY: "x" }), []);
@@ -115,10 +115,10 @@ assert.deepEqual(missingEnvFor(REFRESH_UNITS.find((u) => u.id === "prague"), {})
   // End to end, offline: only secret-gated units selected, so no network is touched.
   // Empty string (not deleted) so loadEnvLocal() doesn't fill it in from a developer's .env.local.
   const env = { ...process.env, BLOB_READ_WRITE_TOKEN: "dummy", TRAFIKLAB_API_KEY: "" };
-  const res = spawnSync("node", ["scripts/refresh-hand-published-gtfs.mjs", "--cities=malmo,uppsala"], { cwd: ROOT, env, encoding: "utf8" });
+  const res = spawnSync("node", ["scripts/refresh-hand-published-gtfs.mjs", "--cities=malmo"], { cwd: ROOT, env, encoding: "utf8" });
   assert.equal(res.status, 1, "job exits 1 when a unit failed");
   assert.match(res.stdout, /malmo: missing required secret\(s\) TRAFIKLAB_API_KEY - unit SKIPPED/);
-  assert.match(res.stdout, /uppsala: missing required secret/);
+  assert.equal(REFRESH_UNITS.some((u) => u.id === "uppsala"), false, "retired uppsala must not be a scheduled refresh unit");
   assert.match(res.stdout, /\| malmo \| FAILED \|/);
 }
 
