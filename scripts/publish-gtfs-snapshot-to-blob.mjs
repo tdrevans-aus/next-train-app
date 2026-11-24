@@ -42,7 +42,8 @@ loadEnvLocal();
  * only to shrink the blob.
  */
 export const CITY_CONFIG = {
-  goteborg: { operator: GOTEBORG_OPERATOR, routeTypes: GOTEBORG_ROUTE_TYPES, agencyIds: null },
+  // Göteborg's catalog keys on vasttrafikStopAreaGids, not GTFS names: only assert non-empty trips/stops.
+  goteborg: { operator: GOTEBORG_OPERATOR, routeTypes: GOTEBORG_ROUTE_TYPES, agencyIds: null, catalogResolution: "none" },
   malmo: { operator: MALMO_OPERATOR, routeTypes: MALMO_ROUTE_TYPES, agencyIds: null },
   uppsala: {
     operator: UPPSALA_OPERATOR,
@@ -153,6 +154,41 @@ export function stripToConfig(files, config) {
   return output;
 }
 
+/**
+ * Strip, verify, then publish. The catalog-resolution assertion runs BEFORE put(): throwing here
+ * exits the refresh unit non-zero and the previously published blob stays in place
+ * (22 Nov 2026: the `ul` feed lost all rail routes -> empty snapshot -> Uppsala 500s).
+ * `putFn` is injectable so qa/publish-path-gate tests run network-free.
+ */
+export async function publishSnapshot({
+  city,
+  config = CITY_CONFIG[city],
+  files,
+  beforeBytes = 0,
+  putFn = put,
+  catalogStations = catalogStationsFor(city),
+}) {
+  const stripped = stripToConfig(files, config);
+  assertSnapshotResolvesCatalog({
+    city,
+    trips: readTable(stripped, "trips.txt") ?? [],
+    stops: readTable(stripped, "stops.txt") ?? [],
+    catalogStations,
+    resolution: config.catalogResolution ?? "name",
+  });
+  const zipped = zipSync(stripped, { level: 6 });
+
+  console.log(
+    `${city}: downloaded ${(beforeBytes / 1024 / 1024).toFixed(2)} MB, publishing ${(zipped.length / 1024 / 1024).toFixed(2)} MB stripped to routeTypes=${JSON.stringify(config.routeTypes)}${config.agencyIds ? ` agencyIds=${JSON.stringify(config.agencyIds)}` : ""}`
+  );
+
+  return putFn(`gtfs/${city}.zip`, Buffer.from(zipped), {
+    access: "public",
+    allowOverwrite: true,
+    contentType: "application/zip",
+  });
+}
+
 async function main() {
   const city = process.argv[2];
   const config = CITY_CONFIG[city];
@@ -181,31 +217,7 @@ async function main() {
   const files = unzipSync(new Uint8Array(buffer));
   const beforeBytes = buffer.length;
 
-  const stripped = stripToConfig(files, config);
-
-  // Never overwrite a working blob with one the adapter cannot resolve its catalog against
-  // (22 Nov 2026: the `ul` feed lost all rail routes -> empty snapshot -> Uppsala 500s).
-  // Throwing here exits non-zero before put(), so the refresh workflow fails the unit and the
-  // previously published blob stays in place.
-  assertSnapshotResolvesCatalog({
-    city,
-    trips: readTable(stripped, "trips.txt") ?? [],
-    stops: readTable(stripped, "stops.txt") ?? [],
-    catalogStations: catalogStationsFor(city),
-  });
-  const zipped = zipSync(stripped, { level: 6 });
-
-  console.log(
-    `${city}: downloaded ${(beforeBytes / 1024 / 1024).toFixed(2)} MB, publishing ${(zipped.length / 1024 / 1024).toFixed(2)} MB stripped to routeTypes=${JSON.stringify(config.routeTypes)}${config.agencyIds ? ` agencyIds=${JSON.stringify(config.agencyIds)}` : ""}`
-  );
-
-  const pathname = `gtfs/${city}.zip`;
-  const blob = await put(pathname, Buffer.from(zipped), {
-    access: "public",
-    allowOverwrite: true,
-    contentType: "application/zip",
-  });
-
+  const blob = await publishSnapshot({ city, config, files, beforeBytes });
   console.log(`Published ${city}: ${blob.url}`);
 }
 

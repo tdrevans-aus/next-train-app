@@ -17,7 +17,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { stripToConfig, CITY_CONFIG, catalogStationsFor } from "../scripts/publish-gtfs-snapshot-to-blob.mjs";
+import { stripToConfig, CITY_CONFIG, catalogStationsFor, publishSnapshot } from "../scripts/publish-gtfs-snapshot-to-blob.mjs";
 import { assertSnapshotResolvesCatalog, unresolvedCatalogStations } from "../lib/providers/gtfs/catalog-resolution.js";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 import { FeedUnavailableError } from "../lib/providers/gtfs/errors.js";
@@ -92,6 +92,66 @@ assert.throws(
   () => publishCheck("uppsala", rawFeed({ agencyId: "33010000000547186", railRouteType: 100, railStopNames: uppsalaCatalog.map((s) => s.name) })),
   /Refusing to publish/
 );
+
+// 7. Publish path (publishSnapshot, the function main() delegates to) with a stubbed put():
+//    a rail-less feed must throw WITHOUT calling put(); a healthy feed must call put() once.
+//    Removing the assertion from publishSnapshot turns the first case red.
+{
+  const calls = [];
+  const putFn = async (pathname, body, opts) => {
+    calls.push({ pathname, bytes: body.length, opts });
+    return { url: `https://blob.test/${pathname}` };
+  };
+  await assert.rejects(
+    () => publishSnapshot({ city: "uppsala", files: rawFeed({ agencyId: agency, railRouteType: 100, railStopNames: null }), putFn }),
+    /Refusing to publish; the existing blob is left in place/
+  );
+  assert.equal(calls.length, 0, "rail-less Uppsala snapshot must never reach put()");
+
+  await assert.rejects(
+    () => publishSnapshot({ city: "uppsala", files: renamed, putFn }),
+    /Uppsala C/
+  );
+  assert.equal(calls.length, 0, "renamed-station snapshot must never reach put()");
+
+  const res = await publishSnapshot({ city: "uppsala", files: healthy, putFn });
+  assert.equal(calls.length, 1, "healthy Uppsala snapshot publishes once");
+  assert.equal(calls[0].pathname, "gtfs/uppsala.zip");
+  assert.equal(calls[0].opts.allowOverwrite, true);
+  assert.match(res.url, /gtfs\/uppsala\.zip/);
+}
+
+// 8. Error format: every unresolved station is listed by name (all-or-nothing, but actionable).
+{
+  const twoGone = rawFeed({
+    agencyId: agency,
+    railRouteType: 100,
+    railStopNames: uppsalaCatalog.map((s) => (["Uppsala C", "Knivsta"].includes(s.name) ? `Nytt namn ${s.name.length}` : s.name)),
+  });
+  const gone = uppsalaCatalog.filter((s) => ["Uppsala C", "Knivsta"].includes(s.name)).map((s) => s.name);
+  await assert.rejects(
+    () => publishSnapshot({ city: "uppsala", files: twoGone, putFn: async () => assert.fail("put called") }),
+    (err) => gone.every((n) => err.message.includes(n)) && err.message.includes(`${gone.length}/${uppsalaCatalog.length} catalog stations`)
+  );
+}
+
+// 9. Göteborg (vasttrafikStopAreaGids catalog, no GTFS-name resolution): a healthy snapshot publishes
+//    even though no catalog name matches a stop; an empty one is still refused.
+{
+  const calls = [];
+  const putFn = async (pathname) => (calls.push(pathname), { url: `https://blob.test/${pathname}` });
+  const csv = (...lines) => enc(lines.join("\n") + "\n");
+  const goteborgFeed = (withTrips) => ({
+    "routes.txt": csv("route_id,agency_id,route_short_name,route_long_name,route_type", `T1,VT,1,,${CITY_CONFIG.goteborg.routeTypes[0]}`),
+    "trips.txt": csv("route_id,service_id,trip_id", ...(withTrips ? ["T1,1,TT1"] : [])),
+    "stop_times.txt": csv("trip_id,stop_id,stop_sequence,arrival_time,departure_time", ...(withTrips ? ["TT1,G1,1,08:00:00,08:00:00"] : [])),
+    "stops.txt": csv("stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station", ...(withTrips ? ["G1,Some Unrelated Name,57.7,11.9,0,"] : [])),
+  });
+  await publishSnapshot({ city: "goteborg", files: goteborgFeed(true), putFn });
+  assert.deepEqual(calls, ["gtfs/goteborg.zip"], "healthy Göteborg-shaped snapshot must be accepted");
+  await assert.rejects(() => publishSnapshot({ city: "goteborg", files: goteborgFeed(false), putFn }), /Refusing to publish/);
+  assert.equal(calls.length, 1, "empty Göteborg snapshot must not reach put()");
+}
 
 // 5. Malmö: every catalog station resolves against the real published stops (healthy 24 Nov 2026).
 const malmoFixture = JSON.parse(
