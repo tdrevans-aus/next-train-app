@@ -263,7 +263,22 @@ function runCommands(commands) {
 
 const putImpl = (pathname, body, opts) => put(pathname, body, opts);
 
-async function processUnit(unit, { now, force, dryRun }) {
+/** Seams for qa/refresh-process-unit-gate.mjs: network-free stubs for the I/O processUnit does. */
+const defaultDeps = {
+  readManifest,
+  writeManifest,
+  fetchPublished,
+  runCommands,
+  probeUpstreamChanged,
+  probeUpstreamSetChanged,
+  putImpl,
+  sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  readBackRetryDelayMs: 10_000,
+};
+
+export async function processUnit(unit, { now, force, dryRun }, depsOverride = {}) {
+  const deps = { ...defaultDeps, ...depsOverride };
+  const { readManifest, writeManifest, fetchPublished, runCommands, probeUpstreamChanged, probeUpstreamSetChanged, putImpl } = deps;
   // Representative city for the manifest/decision: the unit's first blob city; all must be healthy.
   const primary = unit.blobCities[0];
   const manifest = await readManifest(primary);
@@ -344,7 +359,7 @@ async function processUnit(unit, { now, force, dryRun }) {
       for (let attempt = 1; attempt <= 6 && after.ok; attempt += 1) {
         const probeModes = checkModeFreshnessFromFiles(unzipSync(new Uint8Array(after.bytes)), { now, timeZone: unit.modeFreshness.timeZone });
         if (!probeModes.staleModes.length) break;
-        await new Promise((resolve) => setTimeout(resolve, 10_000));
+        await deps.sleep(deps.readBackRetryDelayMs);
         after = await fetchPublished(city);
       }
     }

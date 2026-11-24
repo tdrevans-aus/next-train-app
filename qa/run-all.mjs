@@ -84,6 +84,7 @@ const SMOKE_SCRIPTS = [
   "snapshot-catalog-resolution-gate.mjs",
   "snapshot-feed-info-carried.mjs",
   "sydney-mode-freshness.mjs",
+  "refresh-process-unit-gate.mjs",
   "melbourne-gtfs-url-resolution.mjs",
   "gtfs-service-day-overnight.mjs",
   "gtfs-stale-eviction.mjs",
@@ -194,6 +195,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-refresh-partial-status-gate.mjs",
   "gtfs-refresh-status-cache-gate.mjs",
   "prod-sweep-refresh-failed-gate.mjs",
+  "prod-sweep-realtime-gate.mjs",
   "no-hardcoded-qa-port.mjs",
   "service-hours-helper.mjs",
   "ad-consent-gate.mjs",
@@ -366,6 +368,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "snapshot-catalog-resolution-gate.mjs",
   "snapshot-feed-info-carried.mjs",
   "sydney-mode-freshness.mjs",
+  "refresh-process-unit-gate.mjs",
   "melbourne-gtfs-url-resolution.mjs",
   "gtfs-service-day-overnight.mjs",
   "gtfs-stale-eviction.mjs",
@@ -413,6 +416,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
    * docs/jim-brief-prod-sweep-refresh-failed-alarm.md, 13 Sep 2026.
    */
   "prod-sweep-refresh-failed-gate.mjs",
+  "prod-sweep-realtime-gate.mjs",
   /** Pure static-text scan of qa/*.mjs for hardcoded :3000; no dev server. */
   "no-hardcoded-qa-port.mjs",
   /**
