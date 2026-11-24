@@ -763,6 +763,20 @@ function cityIdForStation(station) {
   return "";
 }
 
+/**
+ * docs/jim-brief-retired-city-saved-route-message.md — a saved journey whose cityId is a city the
+ * registry has retired. normalizeCityId() only accepts live cities, so without this check
+ * resolveJourneyCity() would quietly fall back to "perth" and query Perth with that city's
+ * station name. Returns {id, name} or null. The saved journey itself is never altered.
+ */
+function retiredCityForJourney(journey) {
+  const id = String(journey?.cityId || "").trim().toLowerCase();
+  if (!id || !window.CityManifest?.isRetiredCity?.(id)) {
+    return null;
+  }
+  return { id, name: window.CityManifest.retiredCityName(id) || id };
+}
+
 function resolveJourneyCity(journey) {
   return normalizeCityId(journey?.cityId) || cityIdForStation(journey?.station) || "perth";
 }
@@ -4946,6 +4960,9 @@ function enterJourneyMode() {
 }
 
 function renderTravelTabEmptyState() {
+  if (heroEmptyStateEl) {
+    delete heroEmptyStateEl.dataset.retiredCity;
+  }
   journeyModeActive = true;
   exitNearbyMode();
   hideNearbyPinLeaveSurfaces();
@@ -5018,6 +5035,67 @@ function renderTravelTabEmptyState() {
   syncHeroPinChrome();
   renderJourneySwitcher();
 }
+
+/**
+ * Honest empty state for a saved journey in a retired city (reuses the hero empty-state block —
+ * no new visual pattern). Never fetches a board; the journey stays in storage untouched.
+ */
+function renderRetiredCityState(retiredCity) {
+  renderTravelTabEmptyState();
+  const journey = getActiveJourney();
+  setRouteDisplay(journey?.name || journey?.station || retiredCity.name);
+  if (heroEmptyTitleEl) {
+    heroEmptyTitleEl.textContent = `${retiredCity.name} is no longer covered.`;
+  }
+  if (heroEmptyTextEl) {
+    heroEmptyTextEl.textContent =
+      "Live train data for this area stopped being available. Choose another city.";
+  }
+  if (heroEmptyAddBtn) {
+    heroEmptyAddBtn.textContent = "Choose a city";
+  }
+  if (heroEmptyStateEl) {
+    heroEmptyStateEl.dataset.retiredCity = retiredCity.id;
+  }
+  syncRetiredCityBanner();
+}
+
+function clearRetiredCityState() {
+  if (heroEmptyStateEl) {
+    delete heroEmptyStateEl.dataset.retiredCity;
+    heroEmptyStateEl.hidden = true;
+  }
+  syncRetiredCityBanner();
+}
+
+/**
+ * Saved CITY (not journey) that has been retired: the app defaults to Perth/Near me, so say why
+ * above the board. Hidden while the journey-level message is already showing the same thing.
+ */
+function syncRetiredCityBanner() {
+  const bannerEl = document.getElementById("retired-city-banner");
+  if (!bannerEl) {
+    return;
+  }
+  const retired = heroEmptyStateEl?.dataset.retiredCity
+    ? null
+    : window.NextTrainCitySession?.retiredSavedCity?.();
+  if (!retired) {
+    bannerEl.hidden = true;
+    return;
+  }
+  const titleEl = document.getElementById("retired-city-banner-title");
+  if (titleEl) {
+    titleEl.textContent = `${retired.name} is no longer covered.`;
+  }
+  bannerEl.hidden = false;
+}
+
+document.getElementById("retired-city-banner-btn")?.addEventListener("click", (event) => {
+  event.preventDefault();
+  window.NextTrainCitySession?.openRegionScreen?.();
+});
+document.addEventListener("nexttrain:city-changed", () => syncRetiredCityBanner());
 
 function renderJourneyEmptyState() {
   renderTravelTabEmptyState();
@@ -5882,6 +5960,14 @@ async function fetchNextTrain() {
   }
 
   syncActiveJourneyForCurrentTab();
+  const retiredCity = retiredCityForJourney(getActiveJourney());
+  if (retiredCity) {
+    renderRetiredCityState(retiredCity);
+    return;
+  }
+  if (heroEmptyStateEl?.dataset.retiredCity) {
+    clearRetiredCityState();
+  }
   clearHeroSetupState();
   if (!lastApiData) {
     paintJourneyBoardLoadingState();
@@ -7307,6 +7393,10 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
 heroEmptyAddBtn?.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
+  if (heroEmptyStateEl?.dataset.retiredCity) {
+    window.NextTrainCitySession?.openRegionScreen?.();
+    return;
+  }
   if (chromeTravelTab === "routes") {
     void createJourneyFromRoute().catch((error) => {
       console.warn("Could not create route journey", error);
@@ -7605,6 +7695,7 @@ async function init() {
     console.warn("Could not peek widget launch deep link", error);
   }
   await applyJourneysMode({ coldStart: true, skipNearbyDefault });
+  syncRetiredCityBanner();
   await window.nextTrainWidget?.consumeLaunchDeepLink?.();
   window.nextTrainWidget?.syncWidgetSettings?.(settings);
   if (isNativeApp()) {

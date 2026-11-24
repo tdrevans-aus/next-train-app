@@ -1050,3 +1050,42 @@
 .footer-dot {
   margin: 0 0.35rem;
 }
+
+/* Saved city retired (retired-city brief): same dashed empty-state card as .hero.hero-setup,
+   shown above the Near me board. */
+.retired-city-banner {
+  margin: 0 0 0.75rem;
+  padding: 1rem 1rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px dashed rgba(11, 110, 106, 0.35);
+  background: var(--hero-bg-setup);
+}
+
+.retired-city-banner[hidden] {
+  display: none !important;
+}
+
+.retired-city-banner-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.retired-city-banner-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.retired-city-banner-text {
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 18rem;
+}
+
+.retired-city-banner-btn {
+  width: min(100%, 14rem);
+}

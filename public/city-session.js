@@ -253,6 +253,21 @@
     return city;
   }
 
+  /**
+   * The rider's explicitly chosen city when the registry has since retired it
+   * (docs/jim-brief-retired-city-saved-route-message.md), else null. readSavedCity() returns ""
+   * for it, so the app quietly defaults to Perth — callers use this to say so honestly instead.
+   * The stored savedCity is left alone: if the city returns, it simply works again.
+   */
+  function retiredSavedCity() {
+    const store = readStore();
+    const id = String(store.savedCity || "").trim().toLowerCase();
+    if (!id || store.regionExplicit !== true || !window.CityManifest?.isRetiredCity?.(id)) {
+      return null;
+    }
+    return { id, name: window.CityManifest.retiredCityName(id) || id };
+  }
+
   function readSavedCountry() {
     const fromStore = String(readStore().savedCountry || "").toLowerCase();
     if (countryById(fromStore)?.id === fromStore) {
@@ -842,6 +857,7 @@
     init,
     applyCity,
     readSavedCity,
+    retiredSavedCity,
     readSavedCountry,
     readRegionExplicit,
     hintCityFromCoords,
