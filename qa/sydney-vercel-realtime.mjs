@@ -28,6 +28,8 @@ process.env.VERCEL = "1";
 process.env.TFNSW_API_KEY = "test-key";
 
 const fetchLog = [];
+/** Order of "snapshot-done" / "rt" events, to prove RT is not started during the static load. */
+const events = [];
 /** @type {Record<string, () => Response>} */
 let rtBehaviour = {};
 let zipBytes = null;
@@ -35,7 +37,13 @@ let zipBytes = null;
 globalThis.fetch = async (input) => {
   const url = String(typeof input === "string" ? input : input?.url ?? input);
   fetchLog.push(url);
+  if (url.includes("gtfs/realtime")) {
+    events.push("rt");
+  }
   if (url.includes(SNAPSHOT_URL_PART)) {
+    // Slow enough that an RT fetch started alongside it would be recorded first.
+    await new Promise((resolve) => setTimeout(resolve, 25));
+    events.push("snapshot-done");
     return new Response(zipBytes, { status: 200, headers: { "content-type": "application/zip" } });
   }
   const name = Object.keys(RT_URLS).find((key) => RT_URLS[key] === url);
@@ -136,6 +144,7 @@ async function fresh(behaviour) {
   clearGtfsStaticCaches();
   rtBehaviour = behaviour;
   fetchLog.length = 0;
+  events.length = 0;
 }
 const rtFetches = () => fetchLog.filter((u) => u.includes("gtfs/realtime")).length;
 
@@ -161,6 +170,15 @@ assert(
 );
 assert(unmatched.realtime === false, `unmatched trip must carry realtime:false, got ${unmatched.realtime}`);
 assert(/scheduled/i.test(String(unmatched.status)), `unmatched trip must read Scheduled, got ${unmatched.status}`);
+
+// ---- 6: RT must not be in flight during the snapshot load ------------------
+// On Vercel the snapshot decode is seconds of synchronous CPU; a TfNSW fetch started alongside it
+// hits its 4 s AbortSignal.timeout the moment the loop resumes, so all three feeds "time out"
+// (22-24 Nov 2026 outage, docs/jim-brief-sydney-rt-timeout-us-region.md). RT must start only after.
+assert(
+  events.indexOf("snapshot-done") !== -1 && events.indexOf("rt") > events.indexOf("snapshot-done"),
+  `RT feeds must be fetched only after the static snapshot has loaded, saw order ${JSON.stringify(events)}`
+);
 
 // ---- 5: coalescing (the two calls above are two "directions" of one board) -
 assert(rtFetches() === 3, `two directions must share one RT fetch per feed (3 total), saw ${rtFetches()}`);
