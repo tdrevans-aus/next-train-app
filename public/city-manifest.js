@@ -26,7 +26,7 @@
   const STALE_WARN_MS = 7 * 24 * 60 * 60 * 1000;
 
   function emptyManifest() {
-    return { contractVersion: 2, cities: [], countries: [], docs: "" };
+    return { contractVersion: 2, cities: [], countries: [], retired: [], docs: "" };
   }
 
   function normalizeManifest(raw) {
@@ -37,6 +37,8 @@
       contractVersion: raw.contractVersion ?? 2,
       cities: raw.cities,
       countries: Array.isArray(raw.countries) ? raw.countries : [],
+      // Older cached manifests predate `retired`: keep whatever the seed/previous one knew.
+      retired: Array.isArray(raw.retired) ? raw.retired : manifest.retired || [],
       docs: raw.docs || "",
     };
   }
@@ -150,6 +152,17 @@
     return cityId === "perth" || Boolean(get(cityId));
   }
 
+  /** A city the registry marks `retired` (dropped from the app) and that is not live now. */
+  function isRetiredCity(id) {
+    const cityId = normalizeId(id);
+    return !isLiveCity(cityId) && (manifest.retired || []).some((city) => city.id === cityId);
+  }
+
+  function retiredCityName(id) {
+    const cityId = normalizeId(id);
+    return (manifest.retired || []).find((city) => city.id === cityId)?.displayName || "";
+  }
+
   function liveCityIds() {
     return manifest.cities.map((city) => city.id);
   }
@@ -173,6 +186,8 @@
   window.CityManifest = {
     ready: () => readyPromise,
     isLiveCity,
+    isRetiredCity,
+    retiredCityName,
     liveCityIds,
     countries,
     boundsFor,

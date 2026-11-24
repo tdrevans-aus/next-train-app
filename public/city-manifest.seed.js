@@ -1277,5 +1277,31 @@ window.__CITY_MANIFEST_SEED__ = {
       ]
     }
   ],
+  "retired": [
+    {
+      "id": "auckland",
+      "displayName": "Auckland"
+    },
+    {
+      "id": "wellington",
+      "displayName": "Wellington"
+    },
+    {
+      "id": "amsterdam",
+      "displayName": "Amsterdam"
+    },
+    {
+      "id": "rotterdam",
+      "displayName": "Rotterdam"
+    },
+    {
+      "id": "vancouver",
+      "displayName": "Vancouver"
+    },
+    {
+      "id": "uppsala",
+      "displayName": "Uppsala"
+    }
+  ],
   "docs": "docs/multi-city-provider-design.md"
 };
