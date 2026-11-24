@@ -32,7 +32,16 @@ import {
   writeManifest,
   buildManifest,
   probeUpstreamChanged,
+  probeUpstreamSetChanged,
 } from "../lib/providers/gtfs/snapshot-manifest.js";
+import { checkModeFreshnessFromFiles } from "../lib/providers/gtfs/mode-freshness.js";
+import { tfnswAuthHeaders, readTfnswApiKey } from "../lib/providers/gtfs/auth.js";
+import {
+  SYDNEY_TRAINS_STATIC_URL,
+  SYDNEY_METRO_STATIC_URL,
+  SYDNEY_NSWTRAINS_STATIC_URL,
+  SYDNEY_TIME_ZONE,
+} from "../lib/providers/sydney.js";
 import { REJSEPLANEN_GTFS_STATIC_URL } from "../lib/providers/rejseplanen.js";
 import { resolveStatewideGtfsUrl } from "./trim-melbourne-gtfs.mjs";
 
@@ -89,13 +98,24 @@ export const REFRESH_UNITS = [
     resolveProbeUrl: () => resolveStatewideGtfsUrl(),
     commands: [["node", ["scripts/publish-melbourne-gtfs-to-blob.mjs", "--download"]]],
   },
-  // TfNSW static GTFS is behind an API key, so no unauthenticated HEAD probe: refresh weekly (or when the
-  // published calendar nears its end). Sydney was missing from this list and its blob expired 14 Oct 2026
-  // (docs/jim-brief-sydney-fixture-expired.md). Three raw zips -> Python trim -> qa/fixtures/sydney/gtfs -> blob.
+  // TfNSW static GTFS is behind an API key but answers an authenticated HEAD with Last-Modified, so
+  // Sydney IS probed: the daily run HEADs sydneytrains + metro + nswtrains (free, no download) and
+  // republishes when any of them changed - a TfNSW timetable republish is picked up within 24 h
+  // (docs/jim-brief-sydney-metro-stale-and-refresh-cadence.md; it was weekly and probe-less, and
+  // went 0/384 stale two days after each republish). modeFreshness additionally refreshes (and, if a
+  // fresh publish is still stale, fails the job) when any included mode has no service today, which
+  // the overall calendar range cannot see. Three raw zips -> Python trim -> qa/fixtures/sydney/gtfs -> blob.
   {
     id: "sydney",
     blobCities: ["sydney"],
     probeUrl: null,
+    probeSources: [
+      { name: "sydneytrains", url: SYDNEY_TRAINS_STATIC_URL },
+      { name: "metro", url: SYDNEY_METRO_STATIC_URL },
+      { name: "nswtrains", url: SYDNEY_NSWTRAINS_STATIC_URL },
+    ],
+    probeHeaders: () => tfnswAuthHeaders(readTfnswApiKey()),
+    modeFreshness: { timeZone: SYDNEY_TIME_ZONE },
     requiredEnv: ["TFNSW_API_KEY"],
     commands: [
       ["node", ["scripts/download-sydney-gtfs-zips.mjs", ".gtfs-download-tmp"]],
@@ -139,12 +159,16 @@ export function addDaysYmd(now, days) {
  * Pure refresh decision.
  * @param {{ manifest: object|null, probe: { changed: boolean, reason: string }|null,
  *   calendarMaxDate: string|null, now: Date, force?: boolean,
- *   blobLastModified?: string|null, upstreamLastModified?: string|null }} p
+ *   blobLastModified?: string|null, upstreamLastModified?: string|null, staleModes?: string[] }} p
  * @returns {{ refresh: boolean, reason: string, warn?: string }}
  */
-export function decideRefresh({ manifest, probe, calendarMaxDate, now, force = false, blobLastModified = null, upstreamLastModified = null }) {
+export function decideRefresh({ manifest, probe, calendarMaxDate, now, force = false, blobLastModified = null, upstreamLastModified = null, staleModes = [] }) {
   if (force) {
     return { refresh: true, reason: "forced" };
+  }
+  if (staleModes.length) {
+    // One mode's current calendar must not hide another's expired one.
+    return { refresh: true, reason: `no service today for mode(s): ${staleModes.join(", ")}` };
   }
   const expiresSoon = calendarMaxDate !== null && calendarMaxDate < addDaysYmd(now, EXPIRY_WINDOW_DAYS);
   const expired = calendarMaxDate !== null && calendarMaxDate < ymd(now);
@@ -246,10 +270,21 @@ async function processUnit(unit, { now, force, dryRun }) {
   const published = await fetchPublished(primary);
   const range = published.ok ? calendarMaxFromZip(published.bytes) : { minDate: null, maxDate: null };
 
+  let staleModes = [];
+  if (unit.modeFreshness && published.ok) {
+    const fresh = checkModeFreshnessFromFiles(unzipSync(new Uint8Array(published.bytes)), { now, timeZone: unit.modeFreshness.timeZone });
+    staleModes = fresh.staleModes;
+    console.log(`${unit.id}: per-mode freshness ${fresh.today}: ${JSON.stringify(fresh.modes)}`);
+  }
+
   let probe = null;
   let upstreamLastModified = null;
-  const probeUrl = unit.resolveProbeUrl ? await unit.resolveProbeUrl() : unit.probeUrl;
-  if (probeUrl) {
+  let probeUrl = unit.resolveProbeUrl ? await unit.resolveProbeUrl() : unit.probeUrl;
+  if (unit.probeSources) {
+    probeUrl = unit.probeSources.map((src) => src.url).join(" + ");
+    probe = await probeUpstreamSetChanged({ sources: unit.probeSources, headers: unit.probeHeaders?.() ?? {}, manifest });
+    upstreamLastModified = probe.lastModified;
+  } else if (probeUrl) {
     probe = await probeUpstreamChanged({ url: probeUrl, manifest });
     upstreamLastModified = probe.lastModified;
   }
@@ -261,6 +296,7 @@ async function processUnit(unit, { now, force, dryRun }) {
     force,
     blobLastModified: published.lastModified,
     upstreamLastModified,
+    staleModes,
   });
   const line = { id: unit.id, published: `${range.minDate}..${range.maxDate}`, decision: decision.refresh ? "REFRESH" : "skip", reason: decision.reason };
 
@@ -301,13 +337,29 @@ async function processUnit(unit, { now, force, dryRun }) {
   const today = ymd(now);
   const results = [];
   for (const city of unit.blobCities) {
-    const after = await fetchPublished(city);
+    let after = await fetchPublished(city);
+    if (unit.modeFreshness) {
+      // The Blob CDN can serve the previous object for a few seconds after an overwrite (seen 24 Nov
+      // 2026: the read-back still held the old Metro section). Give it a few tries before judging.
+      for (let attempt = 1; attempt <= 6 && after.ok; attempt += 1) {
+        const probeModes = checkModeFreshnessFromFiles(unzipSync(new Uint8Array(after.bytes)), { now, timeZone: unit.modeFreshness.timeZone });
+        if (!probeModes.staleModes.length) break;
+        await new Promise((resolve) => setTimeout(resolve, 10_000));
+        after = await fetchPublished(city);
+      }
+    }
     if (!after.ok) {
       throw new Error(`${city}: published zip not readable after publish (HTTP ${after.status})`);
     }
     const afterRange = calendarMaxFromZip(after.bytes);
     if (afterRange.maxDate === null || afterRange.maxDate < today) {
       throw new Error(`${city}: published calendar ${afterRange.minDate}..${afterRange.maxDate} does not cover today (${today}) — upstream may itself be expired`);
+    }
+    if (unit.modeFreshness) {
+      const afterModes = checkModeFreshnessFromFiles(unzipSync(new Uint8Array(after.bytes)), { now, timeZone: unit.modeFreshness.timeZone });
+      if (afterModes.staleModes.length) {
+        throw new Error(`${city}: published snapshot has no service today (${afterModes.today}) for mode(s) ${afterModes.staleModes.join(", ")} - upstream may itself be stale ${JSON.stringify(afterModes.modes)}`);
+      }
     }
     if (afterRange.maxDate < addDaysYmd(now, EXPIRY_WINDOW_DAYS)) {
       console.log(`::warning::${city}: freshly published calendar ends ${afterRange.maxDate} (< ${EXPIRY_WINDOW_DAYS} days ahead)`);

@@ -12,7 +12,8 @@
 #   BLOB_READ_WRITE_TOKEN  - always; the job fails immediately without it
 #   TRAFIKLAB_API_KEY      - malmo (Trafiklab static GTFS). If missing, ONLY that unit is
 #                            marked FAILED and skipped; every other unit still runs, and the job exits 1.
-#   TFNSW_API_KEY          - sydney (TfNSW static GTFS). If missing, ONLY the sydney unit is marked FAILED and skipped.
+#   TFNSW_API_KEY          - sydney (TfNSW static GTFS; also authenticates the daily HEAD probe of the three
+#                            static zips, so a TfNSW republish is picked up within 24 h). If missing, ONLY the sydney unit is marked FAILED and skipped.
 # A unit whose upstream is unchanged but whose published calendar ends within 3 days is also FAILED.
 # Prague, Dublin, Copenhagen, Brussels and Melbourne upstreams are unauthenticated.
 name: Refresh hand-published GTFS snapshots

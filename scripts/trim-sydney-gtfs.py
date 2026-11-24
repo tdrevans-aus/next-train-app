@@ -276,7 +276,7 @@ def main() -> None:
 
 **Sources (authenticated TfNSW gateway, via scripts/download-sydney-gtfs-zips.mjs):**
 - https://api.transport.nsw.gov.au/v1/gtfs/schedule/sydneytrains
-- https://api.transport.nsw.gov.au/v1/gtfs/schedule/metro
+- https://api.transport.nsw.gov.au/v2/gtfs/schedule/metro (v1 serves a stale Sep-2024 feed)
 - https://api.transport.nsw.gov.au/v1/gtfs/schedule/nswtrains
 
 **Trimmed:** {date.today().isoformat()}
