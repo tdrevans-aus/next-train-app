@@ -152,7 +152,15 @@ async function checkBrowser() {
     await page.waitForFunction(() => typeof window.nextTrainApp?.ensureDeferredModulesReady === "function", null, {
       timeout: 20000,
     });
-    await page.waitForFunction(() => window.nextTrainNearby?.getNearbySession?.() != null, null, {
+    // `!= null` was the wrong signal (24 Nov 2026 CI flake, runs 45400431905 / 45411586690): with
+    // no cached station, startNearbyMode() immediately installs a "locating" placeholder session
+    // {station: null, ...} (public/nearby-mode.js), so a non-null session is true before GPS
+    // resolution has done anything and the assert below read {"station":null,...} on a slow runner.
+    // The resolved session is the one that names a station and a city.
+    await page.waitForFunction(() => {
+      const session = window.nextTrainNearby?.getNearbySession?.();
+      return Boolean(session?.station && session?.city);
+    }, null, {
       timeout: 20000,
     });
 

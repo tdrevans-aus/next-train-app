@@ -211,6 +211,7 @@ const SMOKE_SCRIPTS = [
   "api-500-no-error-echo.mjs",
   "country-wide-picker.mjs",
   "retired-city-saved-route.mjs",
+  "missing-city-default-gate.mjs",
   "bundled-city-directions.mjs",
   "no-self-terminus-gate.mjs",
   "lane-lock-shared-worktree.mjs",
