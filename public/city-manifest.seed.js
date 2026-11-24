@@ -285,27 +285,6 @@ window.__CITY_MANIFEST_SEED__ = {
       "directionsVersion": "58b93d3e"
     },
     {
-      "id": "uppsala",
-      "displayName": "Uppsala",
-      "status": "live",
-      "country": {
-        "id": "se",
-        "name": "Sweden"
-      },
-      "timeZone": "Europe/Stockholm",
-      "bounds": {
-        "minLat": 59.3,
-        "maxLat": 60.75,
-        "minLng": 16.8,
-        "maxLng": 18.6
-      },
-      "modes": [
-        "train"
-      ],
-      "nearbyEligible": true,
-      "directionsVersion": "4bde25d5"
-    },
-    {
       "id": "helsinki",
       "displayName": "Helsinki",
       "status": "live",
@@ -1254,11 +1233,6 @@ window.__CITY_MANIFEST_SEED__ = {
         {
           "id": "stockholm",
           "name": "Stockholm",
-          "timeZone": "Europe/Stockholm"
-        },
-        {
-          "id": "uppsala",
-          "name": "Uppsala",
           "timeZone": "Europe/Stockholm"
         }
       ]

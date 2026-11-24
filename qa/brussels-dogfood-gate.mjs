@@ -105,7 +105,7 @@ assert(perth?.ok === true, "Perth must stay live");
 assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must stay green");
 assert(assertCityLive("goteborg")?.ok === true, "Göteborg tester-live must stay green");
 assert(assertCityLive("malmo")?.ok === true, "Malmö tester-live must stay green");
-assert(assertCityLive("uppsala")?.ok === true, "Uppsala tester-live must stay green");
+assert(assertCityLive("uppsala")?.ok === false, "Uppsala is retired (24 Nov 2026) and must stay 501");
 
 // Registry identity + live status — true post-flip.
 const live = assertCityLive("brussels");

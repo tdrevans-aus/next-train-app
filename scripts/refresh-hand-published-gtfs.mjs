@@ -17,7 +17,7 @@
  * still expired after the run, makes the whole run exit 1 (the workflow then fails loudly).
  *
  * Usage: node scripts/refresh-hand-published-gtfs.mjs [--dry-run] [--force] [--cities=a,b]
- * Secrets: BLOB_READ_WRITE_TOKEN always; TRAFIKLAB_API_KEY when malmo/uppsala are selected; TFNSW_API_KEY for sydney.
+ * Secrets: BLOB_READ_WRITE_TOKEN always; TRAFIKLAB_API_KEY when malmo is selected; TFNSW_API_KEY for sydney.
  */
 import { spawnSync } from "child_process";
 import { appendFileSync } from "fs";
@@ -119,13 +119,9 @@ export const REFRESH_UNITS = [
     requiredEnv: ["TRAFIKLAB_API_KEY"],
     commands: [["node", ["scripts/publish-gtfs-snapshot-to-blob.mjs", "malmo"]]],
   },
-  {
-    id: "uppsala",
-    blobCities: ["uppsala"],
-    probeUrl: null,
-    requiredEnv: ["TRAFIKLAB_API_KEY"],
-    commands: [["node", ["scripts/publish-gtfs-snapshot-to-blob.mjs", "uppsala"]]],
-  },
+  // uppsala: retired 24 Nov 2026 (docs/jim-brief-uppsala-retire.md) - Trafiklab ul has no rail. Re-add when it returns:
+  // { id: "uppsala", blobCities: ["uppsala"], probeUrl: null, requiredEnv: ["TRAFIKLAB_API_KEY"],
+  //   commands: [["node", ["scripts/publish-gtfs-snapshot-to-blob.mjs", "uppsala"]]] },
 ];
 
 /** Blob-backed live cities refreshed by something else (lib/gtfs-refresh.js via the Vercel cron). */

@@ -188,4 +188,18 @@ for (const [name, board, station] of [
   );
 }
 
+// 8. Source-level guard (Mark, #554 re-QA): main() must publish via publishSnapshot() and never call put()
+//    itself. The behavioural cases above only exercise publishSnapshot, so a main() that bypassed it (and
+//    the catalog-resolution assertion inside it) would otherwise stay green.
+{
+  const src = readFileSync(fileURLToPath(new URL("../scripts/publish-gtfs-snapshot-to-blob.mjs", import.meta.url)), "utf8");
+  const start = src.indexOf("async function main()");
+  assert.ok(start >= 0, "publish script must define async function main()");
+  const end = src.indexOf("\n}\n", start);
+  assert.ok(end > start, "could not find the end of main()");
+  const mainSrc = src.slice(start, end);
+  assert.match(mainSrc, /\bpublishSnapshot\(/, "main() must publish through publishSnapshot()");
+  assert.doesNotMatch(mainSrc, /\bput\(/, "main() must never call put() directly (bypasses the catalog-resolution assertion)");
+}
+
 console.log("snapshot-catalog-resolution-gate: PASS");
