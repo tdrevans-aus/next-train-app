@@ -19,6 +19,9 @@
  */
 import { put } from "@vercel/blob";
 import { unzipSync, zipSync } from "fflate";
+import { readFileSync } from "fs";
+import { fileURLToPath, pathToFileURL } from "url";
+import { assertSnapshotResolvesCatalog } from "../lib/providers/gtfs/catalog-resolution.js";
 import { loadEnvLocal } from "../lib/load-env-local.js";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 import { requireTrafiklabApiKey, trafiklabGtfsStaticUrl } from "../lib/providers/gtfs/auth.js";
@@ -38,8 +41,9 @@ loadEnvLocal();
  * filtering at load time is still authoritative for correctness; this is
  * only to shrink the blob.
  */
-const CITY_CONFIG = {
-  goteborg: { operator: GOTEBORG_OPERATOR, routeTypes: GOTEBORG_ROUTE_TYPES, agencyIds: null },
+export const CITY_CONFIG = {
+  // Göteborg's catalog keys on vasttrafikStopAreaGids, not GTFS names: only assert non-empty trips/stops.
+  goteborg: { operator: GOTEBORG_OPERATOR, routeTypes: GOTEBORG_ROUTE_TYPES, agencyIds: null, catalogResolution: "none" },
   malmo: { operator: MALMO_OPERATOR, routeTypes: MALMO_ROUTE_TYPES, agencyIds: null },
   uppsala: {
     operator: UPPSALA_OPERATOR,
@@ -47,6 +51,12 @@ const CITY_CONFIG = {
     agencyIds: [MALARDALSTRAFIK_AGENCY_ID],
   },
 };
+
+/** Catalog stations (lib/cities/<city>/stations.json) the snapshot must resolve. */
+export function catalogStationsFor(city) {
+  const path = fileURLToPath(new URL(`../lib/cities/${city}/stations.json`, import.meta.url));
+  return JSON.parse(readFileSync(path, "utf8")).stations ?? [];
+}
 
 function csvField(value) {
   const raw = String(value ?? "");
@@ -85,7 +95,7 @@ function readTable(files, name) {
  * calendar_dates, feed_info, shapes) are passed through unchanged — they're
  * small relative to stop_times/stops on a regional feed.
  */
-function stripToConfig(files, config) {
+export function stripToConfig(files, config) {
   const routes = readTable(files, "routes.txt");
   const trips = readTable(files, "trips.txt");
   const stopTimes = readTable(files, "stop_times.txt");
@@ -144,6 +154,41 @@ function stripToConfig(files, config) {
   return output;
 }
 
+/**
+ * Strip, verify, then publish. The catalog-resolution assertion runs BEFORE put(): throwing here
+ * exits the refresh unit non-zero and the previously published blob stays in place
+ * (22 Nov 2026: the `ul` feed lost all rail routes -> empty snapshot -> Uppsala 500s).
+ * `putFn` is injectable so qa/publish-path-gate tests run network-free.
+ */
+export async function publishSnapshot({
+  city,
+  config = CITY_CONFIG[city],
+  files,
+  beforeBytes = 0,
+  putFn = put,
+  catalogStations = catalogStationsFor(city),
+}) {
+  const stripped = stripToConfig(files, config);
+  assertSnapshotResolvesCatalog({
+    city,
+    trips: readTable(stripped, "trips.txt") ?? [],
+    stops: readTable(stripped, "stops.txt") ?? [],
+    catalogStations,
+    resolution: config.catalogResolution ?? "name",
+  });
+  const zipped = zipSync(stripped, { level: 6 });
+
+  console.log(
+    `${city}: downloaded ${(beforeBytes / 1024 / 1024).toFixed(2)} MB, publishing ${(zipped.length / 1024 / 1024).toFixed(2)} MB stripped to routeTypes=${JSON.stringify(config.routeTypes)}${config.agencyIds ? ` agencyIds=${JSON.stringify(config.agencyIds)}` : ""}`
+  );
+
+  return putFn(`gtfs/${city}.zip`, Buffer.from(zipped), {
+    access: "public",
+    allowOverwrite: true,
+    contentType: "application/zip",
+  });
+}
+
 async function main() {
   const city = process.argv[2];
   const config = CITY_CONFIG[city];
@@ -172,24 +217,13 @@ async function main() {
   const files = unzipSync(new Uint8Array(buffer));
   const beforeBytes = buffer.length;
 
-  const stripped = stripToConfig(files, config);
-  const zipped = zipSync(stripped, { level: 6 });
-
-  console.log(
-    `${city}: downloaded ${(beforeBytes / 1024 / 1024).toFixed(2)} MB, publishing ${(zipped.length / 1024 / 1024).toFixed(2)} MB stripped to routeTypes=${JSON.stringify(config.routeTypes)}${config.agencyIds ? ` agencyIds=${JSON.stringify(config.agencyIds)}` : ""}`
-  );
-
-  const pathname = `gtfs/${city}.zip`;
-  const blob = await put(pathname, Buffer.from(zipped), {
-    access: "public",
-    allowOverwrite: true,
-    contentType: "application/zip",
-  });
-
+  const blob = await publishSnapshot({ city, config, files, beforeBytes });
   console.log(`Published ${city}: ${blob.url}`);
 }
 
-main().catch((err) => {
-  console.error(err?.stack || err);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error(err?.stack || err);
+    process.exit(1);
+  });
+}

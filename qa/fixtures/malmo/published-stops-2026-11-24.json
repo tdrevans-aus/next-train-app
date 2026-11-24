@@ -1,0 +1,1840 @@
+{
+ "source": "published gtfs/malmo.zip stops.txt, downloaded 2026-11-24 (healthy)",
+ "stops": [
+  {
+   "stop_id": "9021012007013000",
+   "stop_name": "Markaryd station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007022000",
+   "stop_name": "Älmhult station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007046000",
+   "stop_name": "Diö station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007047000",
+   "stop_name": "Gemla station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007048000",
+   "stop_name": "Vislanda station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007051000",
+   "stop_name": "Alvesta",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007054000",
+   "stop_name": "Växjö",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007055000",
+   "stop_name": "Hovmantorp",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012007056000",
+   "stop_name": "Lessebo",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012008000000",
+   "stop_name": "Emmaboda",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012008001000",
+   "stop_name": "Nybro",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012008004000",
+   "stop_name": "Kalmar C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012010001000",
+   "stop_name": "Sölvesborg resecentrum",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012010002000",
+   "stop_name": "Mörrum station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012010003000",
+   "stop_name": "Karlshamn resecentrum",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012010004000",
+   "stop_name": "Bräkne Hoby station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012010005000",
+   "stop_name": "Ronneby resecentrum",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012010006000",
+   "stop_name": "Bergåsa station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012010007000",
+   "stop_name": "Karlskrona C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012013003000",
+   "stop_name": "Halmstad C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012013009000",
+   "stop_name": "Laholm station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012013038000",
+   "stop_name": "Falkenberg",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012013040000",
+   "stop_name": "Åsa station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012013042000",
+   "stop_name": "Varberg",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012013046000",
+   "stop_name": "Kungsbacka",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012014000000",
+   "stop_name": "Svalöv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012014096000",
+   "stop_name": "Teckomatorp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012014097000",
+   "stop_name": "Billeberga station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012014098000",
+   "stop_name": "Tågarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012014108000",
+   "stop_name": "Kågeröd station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012030082000",
+   "stop_name": "Hjärup station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012031031000",
+   "stop_name": "Burlöv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012031032000",
+   "stop_name": "Åkarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012033071000",
+   "stop_name": "Östra Grevie station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012033072000",
+   "stop_name": "Västra Ingelstad station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012034270000",
+   "stop_name": "Smedby station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012035016000",
+   "stop_name": "Trekanten station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012044009000",
+   "stop_name": "Örsjö station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012045005000",
+   "stop_name": "Ørestad",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012045006000",
+   "stop_name": "CPH Airport",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012045007000",
+   "stop_name": "København H",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012045008000",
+   "stop_name": "Tårnby",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012045011000",
+   "stop_name": "København Østerport",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012045012000",
+   "stop_name": "København Nørreport",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012060086000",
+   "stop_name": "Billesholm station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012060090000",
+   "stop_name": "Bjuv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012061042000",
+   "stop_name": "Furulund station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012061065000",
+   "stop_name": "Dösjebro station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012061079000",
+   "stop_name": "Kävlinge station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012062000000",
+   "stop_name": "Lomma station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012063069000",
+   "stop_name": "Svedala station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012064072000",
+   "stop_name": "Rydsgård station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012064073000",
+   "stop_name": "Skurup station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012067018000",
+   "stop_name": "Tjörnarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012067048000",
+   "stop_name": "Höör station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012070011000",
+   "stop_name": "Lunnarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012070023000",
+   "stop_name": "Smedstorp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012070060000",
+   "stop_name": "Tomelilla station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012072002000",
+   "stop_name": "Bromölla station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012073005000",
+   "stop_name": "Osby station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012073065000",
+   "stop_name": "Killeberg station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012075004000",
+   "stop_name": "Perstorp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012076011000",
+   "stop_name": "Klippan station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012077028000",
+   "stop_name": "Åstorp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012077264000",
+   "stop_name": "Kvidinge station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012078114000",
+   "stop_name": "Båstad station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012078115000",
+   "stop_name": "Förslöv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080000000",
+   "stop_name": "Malmö C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080040000",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080075000",
+   "stop_name": "Malmö Rosengård station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080140000",
+   "stop_name": "Malmö Triangeln",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080201000",
+   "stop_name": "Malmö Östervärn",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080580000",
+   "stop_name": "Malmö Svågertorp",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080682000",
+   "stop_name": "Malmö Persborg",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012080733000",
+   "stop_name": "Oxie station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012081215000",
+   "stop_name": "Lund Gunnesbo station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012081216000",
+   "stop_name": "Lund C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012081219000",
+   "stop_name": "Stångby station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012081263000",
+   "stop_name": "Lund Klostergården station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012082000000",
+   "stop_name": "Landskrona station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012082185000",
+   "stop_name": "Häljarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012082309000",
+   "stop_name": "Glumslöv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083046000",
+   "stop_name": "Gantofta station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083157000",
+   "stop_name": "Vallåkra station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083194000",
+   "stop_name": "Kattarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083195000",
+   "stop_name": "Maria station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083196000",
+   "stop_name": "Ödåkra station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083205000",
+   "stop_name": "Ramlösa station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083241000",
+   "stop_name": "Helsingborg C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083244000",
+   "stop_name": "Mörarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083245000",
+   "stop_name": "Påarp station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012083266000",
+   "stop_name": "Rydebäck station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012085000000",
+   "stop_name": "Marieholm station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012085131000",
+   "stop_name": "Eslöv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012085132000",
+   "stop_name": "Örtofta station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012085133000",
+   "stop_name": "Stehag station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012086025000",
+   "stop_name": "Köpingebro station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012086239000",
+   "stop_name": "Ystad station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012086311000",
+   "stop_name": "Svarte station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012087071000",
+   "stop_name": "Trelleborg C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012090042000",
+   "stop_name": "Kristianstad C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012090155000",
+   "stop_name": "Önnestad station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012090156000",
+   "stop_name": "Fjälkinge station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012091069000",
+   "stop_name": "Simrishamn station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012091152000",
+   "stop_name": "Gärsnäs station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012092010000",
+   "stop_name": "Ängelholm station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012092041000",
+   "stop_name": "Barkåkra station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093004000",
+   "stop_name": "Bjärnum station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093043000",
+   "stop_name": "Ballingslöv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093070000",
+   "stop_name": "Hässleholm C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093129000",
+   "stop_name": "Sösdala station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093147000",
+   "stop_name": "Tyringe station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093212000",
+   "stop_name": "Vittsjö station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093263000",
+   "stop_name": "Vinslöv station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012093304000",
+   "stop_name": "Hästveda station",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012095003000",
+   "stop_name": "Mölndal",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9021012095006000",
+   "stop_name": "Göteborg C",
+   "parent_station": ""
+  },
+  {
+   "stop_id": "9022012007013042",
+   "stop_name": "Markaryd station",
+   "parent_station": "9021012007013000"
+  },
+  {
+   "stop_id": "9022012007022041",
+   "stop_name": "Älmhult station",
+   "parent_station": "9021012007022000"
+  },
+  {
+   "stop_id": "9022012007022042",
+   "stop_name": "Älmhult station",
+   "parent_station": "9021012007022000"
+  },
+  {
+   "stop_id": "9022012007022043",
+   "stop_name": "Älmhult station",
+   "parent_station": "9021012007022000"
+  },
+  {
+   "stop_id": "9022012007046041",
+   "stop_name": "Diö station",
+   "parent_station": "9021012007046000"
+  },
+  {
+   "stop_id": "9022012007046042",
+   "stop_name": "Diö station",
+   "parent_station": "9021012007046000"
+  },
+  {
+   "stop_id": "9022012007047041",
+   "stop_name": "Gemla station",
+   "parent_station": "9021012007047000"
+  },
+  {
+   "stop_id": "9022012007047042",
+   "stop_name": "Gemla station",
+   "parent_station": "9021012007047000"
+  },
+  {
+   "stop_id": "9022012007048041",
+   "stop_name": "Vislanda station",
+   "parent_station": "9021012007048000"
+  },
+  {
+   "stop_id": "9022012007048042",
+   "stop_name": "Vislanda station",
+   "parent_station": "9021012007048000"
+  },
+  {
+   "stop_id": "9022012007051042",
+   "stop_name": "Alvesta",
+   "parent_station": "9021012007051000"
+  },
+  {
+   "stop_id": "9022012007051044",
+   "stop_name": "Alvesta",
+   "parent_station": "9021012007051000"
+  },
+  {
+   "stop_id": "9022012007051048",
+   "stop_name": "Alvesta",
+   "parent_station": "9021012007051000"
+  },
+  {
+   "stop_id": "9022012007054001",
+   "stop_name": "Växjö",
+   "parent_station": "9021012007054000"
+  },
+  {
+   "stop_id": "9022012007054019",
+   "stop_name": "Växjö",
+   "parent_station": "9021012007054000"
+  },
+  {
+   "stop_id": "9022012007054022",
+   "stop_name": "Växjö",
+   "parent_station": "9021012007054000"
+  },
+  {
+   "stop_id": "9022012007054046",
+   "stop_name": "Växjö",
+   "parent_station": "9021012007054000"
+  },
+  {
+   "stop_id": "9022012007054047",
+   "stop_name": "Växjö",
+   "parent_station": "9021012007054000"
+  },
+  {
+   "stop_id": "9022012007055042",
+   "stop_name": "Hovmantorp",
+   "parent_station": "9021012007055000"
+  },
+  {
+   "stop_id": "9022012007056041",
+   "stop_name": "Lessebo",
+   "parent_station": "9021012007056000"
+  },
+  {
+   "stop_id": "9022012007056042",
+   "stop_name": "Lessebo",
+   "parent_station": "9021012007056000"
+  },
+  {
+   "stop_id": "9022012008000041",
+   "stop_name": "Emmaboda",
+   "parent_station": "9021012008000000"
+  },
+  {
+   "stop_id": "9022012008000042",
+   "stop_name": "Emmaboda",
+   "parent_station": "9021012008000000"
+  },
+  {
+   "stop_id": "9022012008000043",
+   "stop_name": "Emmaboda",
+   "parent_station": "9021012008000000"
+  },
+  {
+   "stop_id": "9022012008001041",
+   "stop_name": "Nybro",
+   "parent_station": "9021012008001000"
+  },
+  {
+   "stop_id": "9022012008001042",
+   "stop_name": "Nybro",
+   "parent_station": "9021012008001000"
+  },
+  {
+   "stop_id": "9022012008004011",
+   "stop_name": "Kalmar C",
+   "parent_station": "9021012008004000"
+  },
+  {
+   "stop_id": "9022012008004047",
+   "stop_name": "Kalmar C",
+   "parent_station": "9021012008004000"
+  },
+  {
+   "stop_id": "9022012010001041",
+   "stop_name": "Sölvesborg resecentrum",
+   "parent_station": "9021012010001000"
+  },
+  {
+   "stop_id": "9022012010001042",
+   "stop_name": "Sölvesborg resecentrum",
+   "parent_station": "9021012010001000"
+  },
+  {
+   "stop_id": "9022012010002041",
+   "stop_name": "Mörrum station",
+   "parent_station": "9021012010002000"
+  },
+  {
+   "stop_id": "9022012010002042",
+   "stop_name": "Mörrum station",
+   "parent_station": "9021012010002000"
+  },
+  {
+   "stop_id": "9022012010003047",
+   "stop_name": "Karlshamn resecentrum",
+   "parent_station": "9021012010003000"
+  },
+  {
+   "stop_id": "9022012010004042",
+   "stop_name": "Bräkne Hoby station",
+   "parent_station": "9021012010004000"
+  },
+  {
+   "stop_id": "9022012010005041",
+   "stop_name": "Ronneby resecentrum",
+   "parent_station": "9021012010005000"
+  },
+  {
+   "stop_id": "9022012010006041",
+   "stop_name": "Bergåsa station",
+   "parent_station": "9021012010006000"
+  },
+  {
+   "stop_id": "9022012010007041",
+   "stop_name": "Karlskrona C",
+   "parent_station": "9021012010007000"
+  },
+  {
+   "stop_id": "9022012013003042",
+   "stop_name": "Halmstad C",
+   "parent_station": "9021012013003000"
+  },
+  {
+   "stop_id": "9022012013003043",
+   "stop_name": "Halmstad C",
+   "parent_station": "9021012013003000"
+  },
+  {
+   "stop_id": "9022012013003048",
+   "stop_name": "Halmstad C",
+   "parent_station": "9021012013003000"
+  },
+  {
+   "stop_id": "9022012013009041",
+   "stop_name": "Laholm station",
+   "parent_station": "9021012013009000"
+  },
+  {
+   "stop_id": "9022012013009044",
+   "stop_name": "Laholm station",
+   "parent_station": "9021012013009000"
+  },
+  {
+   "stop_id": "9022012013038041",
+   "stop_name": "Falkenberg",
+   "parent_station": "9021012013038000"
+  },
+  {
+   "stop_id": "9022012013038044",
+   "stop_name": "Falkenberg",
+   "parent_station": "9021012013038000"
+  },
+  {
+   "stop_id": "9022012013040041",
+   "stop_name": "Åsa station",
+   "parent_station": "9021012013040000"
+  },
+  {
+   "stop_id": "9022012013040042",
+   "stop_name": "Åsa station",
+   "parent_station": "9021012013040000"
+  },
+  {
+   "stop_id": "9022012013042022",
+   "stop_name": "Varberg",
+   "parent_station": "9021012013042000"
+  },
+  {
+   "stop_id": "9022012013042023",
+   "stop_name": "Varberg",
+   "parent_station": "9021012013042000"
+  },
+  {
+   "stop_id": "9022012013046042",
+   "stop_name": "Kungsbacka",
+   "parent_station": "9021012013046000"
+  },
+  {
+   "stop_id": "9022012013046043",
+   "stop_name": "Kungsbacka",
+   "parent_station": "9021012013046000"
+  },
+  {
+   "stop_id": "9022012014000041",
+   "stop_name": "Svalöv station",
+   "parent_station": "9021012014000000"
+  },
+  {
+   "stop_id": "9022012014000042",
+   "stop_name": "Svalöv station",
+   "parent_station": "9021012014000000"
+  },
+  {
+   "stop_id": "9022012014096041",
+   "stop_name": "Teckomatorp station",
+   "parent_station": "9021012014096000"
+  },
+  {
+   "stop_id": "9022012014096042",
+   "stop_name": "Teckomatorp station",
+   "parent_station": "9021012014096000"
+  },
+  {
+   "stop_id": "9022012014096043",
+   "stop_name": "Teckomatorp station",
+   "parent_station": "9021012014096000"
+  },
+  {
+   "stop_id": "9022012014097041",
+   "stop_name": "Billeberga station",
+   "parent_station": "9021012014097000"
+  },
+  {
+   "stop_id": "9022012014098041",
+   "stop_name": "Tågarp station",
+   "parent_station": "9021012014098000"
+  },
+  {
+   "stop_id": "9022012014108042",
+   "stop_name": "Kågeröd station",
+   "parent_station": "9021012014108000"
+  },
+  {
+   "stop_id": "9022012030082041",
+   "stop_name": "Hjärup station",
+   "parent_station": "9021012030082000"
+  },
+  {
+   "stop_id": "9022012030082044",
+   "stop_name": "Hjärup station",
+   "parent_station": "9021012030082000"
+  },
+  {
+   "stop_id": "9022012031031041",
+   "stop_name": "Burlöv station",
+   "parent_station": "9021012031031000"
+  },
+  {
+   "stop_id": "9022012031031042",
+   "stop_name": "Burlöv station",
+   "parent_station": "9021012031031000"
+  },
+  {
+   "stop_id": "9022012031031043",
+   "stop_name": "Burlöv station",
+   "parent_station": "9021012031031000"
+  },
+  {
+   "stop_id": "9022012031031044",
+   "stop_name": "Burlöv station",
+   "parent_station": "9021012031031000"
+  },
+  {
+   "stop_id": "9022012031032041",
+   "stop_name": "Åkarp station",
+   "parent_station": "9021012031032000"
+  },
+  {
+   "stop_id": "9022012031032044",
+   "stop_name": "Åkarp station",
+   "parent_station": "9021012031032000"
+  },
+  {
+   "stop_id": "9022012033071041",
+   "stop_name": "Östra Grevie station",
+   "parent_station": "9021012033071000"
+  },
+  {
+   "stop_id": "9022012033071042",
+   "stop_name": "Östra Grevie station",
+   "parent_station": "9021012033071000"
+  },
+  {
+   "stop_id": "9022012033072041",
+   "stop_name": "Västra Ingelstad station",
+   "parent_station": "9021012033072000"
+  },
+  {
+   "stop_id": "9022012034270041",
+   "stop_name": "Smedby station",
+   "parent_station": "9021012034270000"
+  },
+  {
+   "stop_id": "9022012035016041",
+   "stop_name": "Trekanten station",
+   "parent_station": "9021012035016000"
+  },
+  {
+   "stop_id": "9022012044009041",
+   "stop_name": "Örsjö station",
+   "parent_station": "9021012044009000"
+  },
+  {
+   "stop_id": "9022012045005001",
+   "stop_name": "Ørestad",
+   "parent_station": "9021012045005000"
+  },
+  {
+   "stop_id": "9022012045005002",
+   "stop_name": "Ørestad",
+   "parent_station": "9021012045005000"
+  },
+  {
+   "stop_id": "9022012045006022",
+   "stop_name": "CPH Airport",
+   "parent_station": "9021012045006000"
+  },
+  {
+   "stop_id": "9022012045006041",
+   "stop_name": "CPH Airport",
+   "parent_station": "9021012045006000"
+  },
+  {
+   "stop_id": "9022012045006042",
+   "stop_name": "CPH Airport",
+   "parent_station": "9021012045006000"
+  },
+  {
+   "stop_id": "9022012045007042",
+   "stop_name": "København H",
+   "parent_station": "9021012045007000"
+  },
+  {
+   "stop_id": "9022012045007046",
+   "stop_name": "København H",
+   "parent_station": "9021012045007000"
+  },
+  {
+   "stop_id": "9022012045007047",
+   "stop_name": "København H",
+   "parent_station": "9021012045007000"
+  },
+  {
+   "stop_id": "9022012045008001",
+   "stop_name": "Tårnby",
+   "parent_station": "9021012045008000"
+  },
+  {
+   "stop_id": "9022012045008002",
+   "stop_name": "Tårnby",
+   "parent_station": "9021012045008000"
+  },
+  {
+   "stop_id": "9022012045011002",
+   "stop_name": "København Østerport",
+   "parent_station": "9021012045011000"
+  },
+  {
+   "stop_id": "9022012045011043",
+   "stop_name": "København Østerport",
+   "parent_station": "9021012045011000"
+  },
+  {
+   "stop_id": "9022012045012041",
+   "stop_name": "København Nørreport",
+   "parent_station": "9021012045012000"
+  },
+  {
+   "stop_id": "9022012045012042",
+   "stop_name": "København Nørreport",
+   "parent_station": "9021012045012000"
+  },
+  {
+   "stop_id": "9022012060086041",
+   "stop_name": "Billesholm station",
+   "parent_station": "9021012060086000"
+  },
+  {
+   "stop_id": "9022012060086042",
+   "stop_name": "Billesholm station",
+   "parent_station": "9021012060086000"
+  },
+  {
+   "stop_id": "9022012060090041",
+   "stop_name": "Bjuv station",
+   "parent_station": "9021012060090000"
+  },
+  {
+   "stop_id": "9022012060090042",
+   "stop_name": "Bjuv station",
+   "parent_station": "9021012060090000"
+  },
+  {
+   "stop_id": "9022012061042041",
+   "stop_name": "Furulund station",
+   "parent_station": "9021012061042000"
+  },
+  {
+   "stop_id": "9022012061065042",
+   "stop_name": "Dösjebro station",
+   "parent_station": "9021012061065000"
+  },
+  {
+   "stop_id": "9022012061079041",
+   "stop_name": "Kävlinge station",
+   "parent_station": "9021012061079000"
+  },
+  {
+   "stop_id": "9022012061079043",
+   "stop_name": "Kävlinge station",
+   "parent_station": "9021012061079000"
+  },
+  {
+   "stop_id": "9022012061079044",
+   "stop_name": "Kävlinge station",
+   "parent_station": "9021012061079000"
+  },
+  {
+   "stop_id": "9022012061079045",
+   "stop_name": "Kävlinge station",
+   "parent_station": "9021012061079000"
+  },
+  {
+   "stop_id": "9022012062000041",
+   "stop_name": "Lomma station",
+   "parent_station": "9021012062000000"
+  },
+  {
+   "stop_id": "9022012063069041",
+   "stop_name": "Svedala station",
+   "parent_station": "9021012063069000"
+  },
+  {
+   "stop_id": "9022012063069042",
+   "stop_name": "Svedala station",
+   "parent_station": "9021012063069000"
+  },
+  {
+   "stop_id": "9022012064072041",
+   "stop_name": "Rydsgård station",
+   "parent_station": "9021012064072000"
+  },
+  {
+   "stop_id": "9022012064072042",
+   "stop_name": "Rydsgård station",
+   "parent_station": "9021012064072000"
+  },
+  {
+   "stop_id": "9022012064073041",
+   "stop_name": "Skurup station",
+   "parent_station": "9021012064073000"
+  },
+  {
+   "stop_id": "9022012064073042",
+   "stop_name": "Skurup station",
+   "parent_station": "9021012064073000"
+  },
+  {
+   "stop_id": "9022012067018042",
+   "stop_name": "Tjörnarp station",
+   "parent_station": "9021012067018000"
+  },
+  {
+   "stop_id": "9022012067018043",
+   "stop_name": "Tjörnarp station",
+   "parent_station": "9021012067018000"
+  },
+  {
+   "stop_id": "9022012067048041",
+   "stop_name": "Höör station",
+   "parent_station": "9021012067048000"
+  },
+  {
+   "stop_id": "9022012067048042",
+   "stop_name": "Höör station",
+   "parent_station": "9021012067048000"
+  },
+  {
+   "stop_id": "9022012067048043",
+   "stop_name": "Höör station",
+   "parent_station": "9021012067048000"
+  },
+  {
+   "stop_id": "9022012070011041",
+   "stop_name": "Lunnarp station",
+   "parent_station": "9021012070011000"
+  },
+  {
+   "stop_id": "9022012070023041",
+   "stop_name": "Smedstorp station",
+   "parent_station": "9021012070023000"
+  },
+  {
+   "stop_id": "9022012070023042",
+   "stop_name": "Smedstorp station",
+   "parent_station": "9021012070023000"
+  },
+  {
+   "stop_id": "9022012070060041",
+   "stop_name": "Tomelilla station",
+   "parent_station": "9021012070060000"
+  },
+  {
+   "stop_id": "9022012070060042",
+   "stop_name": "Tomelilla station",
+   "parent_station": "9021012070060000"
+  },
+  {
+   "stop_id": "9022012072002041",
+   "stop_name": "Bromölla station",
+   "parent_station": "9021012072002000"
+  },
+  {
+   "stop_id": "9022012072002042",
+   "stop_name": "Bromölla station",
+   "parent_station": "9021012072002000"
+  },
+  {
+   "stop_id": "9022012073005041",
+   "stop_name": "Osby station",
+   "parent_station": "9021012073005000"
+  },
+  {
+   "stop_id": "9022012073005042",
+   "stop_name": "Osby station",
+   "parent_station": "9021012073005000"
+  },
+  {
+   "stop_id": "9022012073065041",
+   "stop_name": "Killeberg station",
+   "parent_station": "9021012073065000"
+  },
+  {
+   "stop_id": "9022012073065042",
+   "stop_name": "Killeberg station",
+   "parent_station": "9021012073065000"
+  },
+  {
+   "stop_id": "9022012075004041",
+   "stop_name": "Perstorp station",
+   "parent_station": "9021012075004000"
+  },
+  {
+   "stop_id": "9022012076011041",
+   "stop_name": "Klippan station",
+   "parent_station": "9021012076011000"
+  },
+  {
+   "stop_id": "9022012077028041",
+   "stop_name": "Åstorp station",
+   "parent_station": "9021012077028000"
+  },
+  {
+   "stop_id": "9022012077028043",
+   "stop_name": "Åstorp station",
+   "parent_station": "9021012077028000"
+  },
+  {
+   "stop_id": "9022012077264042",
+   "stop_name": "Kvidinge station",
+   "parent_station": "9021012077264000"
+  },
+  {
+   "stop_id": "9022012078114041",
+   "stop_name": "Båstad station",
+   "parent_station": "9021012078114000"
+  },
+  {
+   "stop_id": "9022012078114044",
+   "stop_name": "Båstad station",
+   "parent_station": "9021012078114000"
+  },
+  {
+   "stop_id": "9022012078115041",
+   "stop_name": "Förslöv station",
+   "parent_station": "9021012078115000"
+  },
+  {
+   "stop_id": "9022012080000016",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080000017",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080000018",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080000019",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080000021",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080000023",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080000047",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080000048",
+   "stop_name": "Malmö C",
+   "parent_station": "9021012080000000"
+  },
+  {
+   "stop_id": "9022012080040012",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080040013",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080040041",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080040042",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080040043",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080040046",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080040048",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080040049",
+   "stop_name": "Malmö Hyllie",
+   "parent_station": "9021012080040000"
+  },
+  {
+   "stop_id": "9022012080075041",
+   "stop_name": "Malmö Rosengård station",
+   "parent_station": "9021012080075000"
+  },
+  {
+   "stop_id": "9022012080075042",
+   "stop_name": "Malmö Rosengård station",
+   "parent_station": "9021012080075000"
+  },
+  {
+   "stop_id": "9022012080140041",
+   "stop_name": "Malmö Triangeln",
+   "parent_station": "9021012080140000"
+  },
+  {
+   "stop_id": "9022012080140042",
+   "stop_name": "Malmö Triangeln",
+   "parent_station": "9021012080140000"
+  },
+  {
+   "stop_id": "9022012080201041",
+   "stop_name": "Malmö Östervärn",
+   "parent_station": "9021012080201000"
+  },
+  {
+   "stop_id": "9022012080580041",
+   "stop_name": "Malmö Svågertorp",
+   "parent_station": "9021012080580000"
+  },
+  {
+   "stop_id": "9022012080580042",
+   "stop_name": "Malmö Svågertorp",
+   "parent_station": "9021012080580000"
+  },
+  {
+   "stop_id": "9022012080580043",
+   "stop_name": "Malmö Svågertorp",
+   "parent_station": "9021012080580000"
+  },
+  {
+   "stop_id": "9022012080682041",
+   "stop_name": "Malmö Persborg",
+   "parent_station": "9021012080682000"
+  },
+  {
+   "stop_id": "9022012080682042",
+   "stop_name": "Malmö Persborg",
+   "parent_station": "9021012080682000"
+  },
+  {
+   "stop_id": "9022012080733041",
+   "stop_name": "Oxie station",
+   "parent_station": "9021012080733000"
+  },
+  {
+   "stop_id": "9022012081215041",
+   "stop_name": "Lund Gunnesbo station",
+   "parent_station": "9021012081215000"
+  },
+  {
+   "stop_id": "9022012081215042",
+   "stop_name": "Lund Gunnesbo station",
+   "parent_station": "9021012081215000"
+  },
+  {
+   "stop_id": "9022012081216041",
+   "stop_name": "Lund C",
+   "parent_station": "9021012081216000"
+  },
+  {
+   "stop_id": "9022012081216042",
+   "stop_name": "Lund C",
+   "parent_station": "9021012081216000"
+  },
+  {
+   "stop_id": "9022012081216043",
+   "stop_name": "Lund C",
+   "parent_station": "9021012081216000"
+  },
+  {
+   "stop_id": "9022012081216044",
+   "stop_name": "Lund C",
+   "parent_station": "9021012081216000"
+  },
+  {
+   "stop_id": "9022012081216045",
+   "stop_name": "Lund C",
+   "parent_station": "9021012081216000"
+  },
+  {
+   "stop_id": "9022012081216046",
+   "stop_name": "Lund C",
+   "parent_station": "9021012081216000"
+  },
+  {
+   "stop_id": "9022012081219042",
+   "stop_name": "Stångby station",
+   "parent_station": "9021012081219000"
+  },
+  {
+   "stop_id": "9022012081263041",
+   "stop_name": "Lund Klostergården station",
+   "parent_station": "9021012081263000"
+  },
+  {
+   "stop_id": "9022012081263044",
+   "stop_name": "Lund Klostergården station",
+   "parent_station": "9021012081263000"
+  },
+  {
+   "stop_id": "9022012082000042",
+   "stop_name": "Landskrona station",
+   "parent_station": "9021012082000000"
+  },
+  {
+   "stop_id": "9022012082000043",
+   "stop_name": "Landskrona station",
+   "parent_station": "9021012082000000"
+  },
+  {
+   "stop_id": "9022012082185042",
+   "stop_name": "Häljarp station",
+   "parent_station": "9021012082185000"
+  },
+  {
+   "stop_id": "9022012082309042",
+   "stop_name": "Glumslöv station",
+   "parent_station": "9021012082309000"
+  },
+  {
+   "stop_id": "9022012083046041",
+   "stop_name": "Gantofta station",
+   "parent_station": "9021012083046000"
+  },
+  {
+   "stop_id": "9022012083157041",
+   "stop_name": "Vallåkra station",
+   "parent_station": "9021012083157000"
+  },
+  {
+   "stop_id": "9022012083194041",
+   "stop_name": "Kattarp station",
+   "parent_station": "9021012083194000"
+  },
+  {
+   "stop_id": "9022012083194042",
+   "stop_name": "Kattarp station",
+   "parent_station": "9021012083194000"
+  },
+  {
+   "stop_id": "9022012083195041",
+   "stop_name": "Maria station",
+   "parent_station": "9021012083195000"
+  },
+  {
+   "stop_id": "9022012083195042",
+   "stop_name": "Maria station",
+   "parent_station": "9021012083195000"
+  },
+  {
+   "stop_id": "9022012083196041",
+   "stop_name": "Ödåkra station",
+   "parent_station": "9021012083196000"
+  },
+  {
+   "stop_id": "9022012083196042",
+   "stop_name": "Ödåkra station",
+   "parent_station": "9021012083196000"
+  },
+  {
+   "stop_id": "9022012083205041",
+   "stop_name": "Ramlösa station",
+   "parent_station": "9021012083205000"
+  },
+  {
+   "stop_id": "9022012083205042",
+   "stop_name": "Ramlösa station",
+   "parent_station": "9021012083205000"
+  },
+  {
+   "stop_id": "9022012083241021",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241023",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241026",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241028",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241029",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241044",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241045",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241046",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241047",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241048",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083241049",
+   "stop_name": "Helsingborg C",
+   "parent_station": "9021012083241000"
+  },
+  {
+   "stop_id": "9022012083244041",
+   "stop_name": "Mörarp station",
+   "parent_station": "9021012083244000"
+  },
+  {
+   "stop_id": "9022012083245041",
+   "stop_name": "Påarp station",
+   "parent_station": "9021012083245000"
+  },
+  {
+   "stop_id": "9022012083245042",
+   "stop_name": "Påarp station",
+   "parent_station": "9021012083245000"
+  },
+  {
+   "stop_id": "9022012083266042",
+   "stop_name": "Rydebäck station",
+   "parent_station": "9021012083266000"
+  },
+  {
+   "stop_id": "9022012085000041",
+   "stop_name": "Marieholm station",
+   "parent_station": "9021012085000000"
+  },
+  {
+   "stop_id": "9022012085131041",
+   "stop_name": "Eslöv station",
+   "parent_station": "9021012085131000"
+  },
+  {
+   "stop_id": "9022012085131043",
+   "stop_name": "Eslöv station",
+   "parent_station": "9021012085131000"
+  },
+  {
+   "stop_id": "9022012085131044",
+   "stop_name": "Eslöv station",
+   "parent_station": "9021012085131000"
+  },
+  {
+   "stop_id": "9022012085132041",
+   "stop_name": "Örtofta station",
+   "parent_station": "9021012085132000"
+  },
+  {
+   "stop_id": "9022012085132042",
+   "stop_name": "Örtofta station",
+   "parent_station": "9021012085132000"
+  },
+  {
+   "stop_id": "9022012085133042",
+   "stop_name": "Stehag station",
+   "parent_station": "9021012085133000"
+  },
+  {
+   "stop_id": "9022012085133043",
+   "stop_name": "Stehag station",
+   "parent_station": "9021012085133000"
+  },
+  {
+   "stop_id": "9022012086025041",
+   "stop_name": "Köpingebro station",
+   "parent_station": "9021012086025000"
+  },
+  {
+   "stop_id": "9022012086025042",
+   "stop_name": "Köpingebro station",
+   "parent_station": "9021012086025000"
+  },
+  {
+   "stop_id": "9022012086239044",
+   "stop_name": "Ystad station",
+   "parent_station": "9021012086239000"
+  },
+  {
+   "stop_id": "9022012086239046",
+   "stop_name": "Ystad station",
+   "parent_station": "9021012086239000"
+  },
+  {
+   "stop_id": "9022012086239047",
+   "stop_name": "Ystad station",
+   "parent_station": "9021012086239000"
+  },
+  {
+   "stop_id": "9022012086311042",
+   "stop_name": "Svarte station",
+   "parent_station": "9021012086311000"
+  },
+  {
+   "stop_id": "9022012087071041",
+   "stop_name": "Trelleborg C",
+   "parent_station": "9021012087071000"
+  },
+  {
+   "stop_id": "9022012087071042",
+   "stop_name": "Trelleborg C",
+   "parent_station": "9021012087071000"
+  },
+  {
+   "stop_id": "9022012090042045",
+   "stop_name": "Kristianstad C",
+   "parent_station": "9021012090042000"
+  },
+  {
+   "stop_id": "9022012090042046",
+   "stop_name": "Kristianstad C",
+   "parent_station": "9021012090042000"
+  },
+  {
+   "stop_id": "9022012090042047",
+   "stop_name": "Kristianstad C",
+   "parent_station": "9021012090042000"
+  },
+  {
+   "stop_id": "9022012090042048",
+   "stop_name": "Kristianstad C",
+   "parent_station": "9021012090042000"
+  },
+  {
+   "stop_id": "9022012090042049",
+   "stop_name": "Kristianstad C",
+   "parent_station": "9021012090042000"
+  },
+  {
+   "stop_id": "9022012090155041",
+   "stop_name": "Önnestad station",
+   "parent_station": "9021012090155000"
+  },
+  {
+   "stop_id": "9022012090155042",
+   "stop_name": "Önnestad station",
+   "parent_station": "9021012090155000"
+  },
+  {
+   "stop_id": "9022012090156042",
+   "stop_name": "Fjälkinge station",
+   "parent_station": "9021012090156000"
+  },
+  {
+   "stop_id": "9022012091069041",
+   "stop_name": "Simrishamn station",
+   "parent_station": "9021012091069000"
+  },
+  {
+   "stop_id": "9022012091152041",
+   "stop_name": "Gärsnäs station",
+   "parent_station": "9021012091152000"
+  },
+  {
+   "stop_id": "9022012091152042",
+   "stop_name": "Gärsnäs station",
+   "parent_station": "9021012091152000"
+  },
+  {
+   "stop_id": "9022012092010042",
+   "stop_name": "Ängelholm station",
+   "parent_station": "9021012092010000"
+  },
+  {
+   "stop_id": "9022012092010043",
+   "stop_name": "Ängelholm station",
+   "parent_station": "9021012092010000"
+  },
+  {
+   "stop_id": "9022012092041041",
+   "stop_name": "Barkåkra station",
+   "parent_station": "9021012092041000"
+  },
+  {
+   "stop_id": "9022012092041042",
+   "stop_name": "Barkåkra station",
+   "parent_station": "9021012092041000"
+  },
+  {
+   "stop_id": "9022012093004041",
+   "stop_name": "Bjärnum station",
+   "parent_station": "9021012093004000"
+  },
+  {
+   "stop_id": "9022012093043041",
+   "stop_name": "Ballingslöv station",
+   "parent_station": "9021012093043000"
+  },
+  {
+   "stop_id": "9022012093043042",
+   "stop_name": "Ballingslöv station",
+   "parent_station": "9021012093043000"
+  },
+  {
+   "stop_id": "9022012093070019",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070021",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070022",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070026",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070042",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070044",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070045",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070046",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070047",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093070049",
+   "stop_name": "Hässleholm C",
+   "parent_station": "9021012093070000"
+  },
+  {
+   "stop_id": "9022012093129042",
+   "stop_name": "Sösdala station",
+   "parent_station": "9021012093129000"
+  },
+  {
+   "stop_id": "9022012093147041",
+   "stop_name": "Tyringe station",
+   "parent_station": "9021012093147000"
+  },
+  {
+   "stop_id": "9022012093147042",
+   "stop_name": "Tyringe station",
+   "parent_station": "9021012093147000"
+  },
+  {
+   "stop_id": "9022012093212041",
+   "stop_name": "Vittsjö station",
+   "parent_station": "9021012093212000"
+  },
+  {
+   "stop_id": "9022012093263041",
+   "stop_name": "Vinslöv station",
+   "parent_station": "9021012093263000"
+  },
+  {
+   "stop_id": "9022012093263042",
+   "stop_name": "Vinslöv station",
+   "parent_station": "9021012093263000"
+  },
+  {
+   "stop_id": "9022012093304041",
+   "stop_name": "Hästveda station",
+   "parent_station": "9021012093304000"
+  },
+  {
+   "stop_id": "9022012093304042",
+   "stop_name": "Hästveda station",
+   "parent_station": "9021012093304000"
+  },
+  {
+   "stop_id": "9022012095003042",
+   "stop_name": "Mölndal",
+   "parent_station": "9021012095003000"
+  },
+  {
+   "stop_id": "9022012095003043",
+   "stop_name": "Mölndal",
+   "parent_station": "9021012095003000"
+  },
+  {
+   "stop_id": "9022012095006005",
+   "stop_name": "Göteborg C",
+   "parent_station": "9021012095006000"
+  },
+  {
+   "stop_id": "9022012095006049",
+   "stop_name": "Göteborg C",
+   "parent_station": "9021012095006000"
+  }
+ ]
+}
