@@ -19,6 +19,9 @@
  */
 import { put } from "@vercel/blob";
 import { unzipSync, zipSync } from "fflate";
+import { readFileSync } from "fs";
+import { fileURLToPath, pathToFileURL } from "url";
+import { assertSnapshotResolvesCatalog } from "../lib/providers/gtfs/catalog-resolution.js";
 import { loadEnvLocal } from "../lib/load-env-local.js";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 import { requireTrafiklabApiKey, trafiklabGtfsStaticUrl } from "../lib/providers/gtfs/auth.js";
@@ -38,7 +41,7 @@ loadEnvLocal();
  * filtering at load time is still authoritative for correctness; this is
  * only to shrink the blob.
  */
-const CITY_CONFIG = {
+export const CITY_CONFIG = {
   goteborg: { operator: GOTEBORG_OPERATOR, routeTypes: GOTEBORG_ROUTE_TYPES, agencyIds: null },
   malmo: { operator: MALMO_OPERATOR, routeTypes: MALMO_ROUTE_TYPES, agencyIds: null },
   uppsala: {
@@ -47,6 +50,12 @@ const CITY_CONFIG = {
     agencyIds: [MALARDALSTRAFIK_AGENCY_ID],
   },
 };
+
+/** Catalog stations (lib/cities/<city>/stations.json) the snapshot must resolve. */
+export function catalogStationsFor(city) {
+  const path = fileURLToPath(new URL(`../lib/cities/${city}/stations.json`, import.meta.url));
+  return JSON.parse(readFileSync(path, "utf8")).stations ?? [];
+}
 
 function csvField(value) {
   const raw = String(value ?? "");
@@ -85,7 +94,7 @@ function readTable(files, name) {
  * calendar_dates, feed_info, shapes) are passed through unchanged — they're
  * small relative to stop_times/stops on a regional feed.
  */
-function stripToConfig(files, config) {
+export function stripToConfig(files, config) {
   const routes = readTable(files, "routes.txt");
   const trips = readTable(files, "trips.txt");
   const stopTimes = readTable(files, "stop_times.txt");
@@ -173,6 +182,17 @@ async function main() {
   const beforeBytes = buffer.length;
 
   const stripped = stripToConfig(files, config);
+
+  // Never overwrite a working blob with one the adapter cannot resolve its catalog against
+  // (22 Nov 2026: the `ul` feed lost all rail routes -> empty snapshot -> Uppsala 500s).
+  // Throwing here exits non-zero before put(), so the refresh workflow fails the unit and the
+  // previously published blob stays in place.
+  assertSnapshotResolvesCatalog({
+    city,
+    trips: readTable(stripped, "trips.txt") ?? [],
+    stops: readTable(stripped, "stops.txt") ?? [],
+    catalogStations: catalogStationsFor(city),
+  });
   const zipped = zipSync(stripped, { level: 6 });
 
   console.log(
@@ -189,7 +209,9 @@ async function main() {
   console.log(`Published ${city}: ${blob.url}`);
 }
 
-main().catch((err) => {
-  console.error(err?.stack || err);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error(err?.stack || err);
+    process.exit(1);
+  });
+}
