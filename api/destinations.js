@@ -3,6 +3,7 @@ import { resolveDirectionsForStation } from "../lib/cities/perth/static-directio
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
+import { resolveRequestCity } from "../lib/api-city-default.js";
 import { assertCityLive } from "../lib/providers/registry.js";
 import {
   getMultiCityDirections,
@@ -20,7 +21,12 @@ export default async function handler(req, res) {
     return;
   }
 
-  const city = req.query?.city ?? "perth";
+  const resolvedCity = resolveRequestCity(req.query);
+  if (resolvedCity.error) {
+    res.status(400).json(resolvedCity.error);
+    return;
+  }
+  const city = resolvedCity.city;
   const cityGate = assertCityLive(city);
   if (!cityGate.ok) {
     res.status(cityGate.status).json({

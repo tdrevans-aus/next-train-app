@@ -20,6 +20,7 @@ import { buildCityManifest } from "./lib/cities/city-manifest.js";
 import { checkRateLimit } from "./lib/api-rate-limit.js";
 import { resolveDirectionsForStation } from "./lib/cities/perth/static-directions.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
+import { resolveRequestCity } from "./lib/api-city-default.js";
 import { assertCityLive, getCity, CITIES } from "./lib/providers/registry.js";
 import { isKnownCountry, regionIdsForCountry } from "./lib/cities/country-regions.js";
 import { applyCors } from "./lib/api-cors.js";
@@ -63,7 +64,8 @@ function readQueryParams(query) {
   const leaveBefore = query.leaveBefore ?? query.leaveBeforeMinutes;
   const refresh = query.refresh ?? query.refreshSeconds;
   const skipTrains = query.skipTrains ?? query.skip;
-  const city = query.city ?? "perth";
+  const resolved = resolveRequestCity(query);
+  const city = resolved.city;
 
   if (!station || !direction) {
     return null;
@@ -71,6 +73,7 @@ function readQueryParams(query) {
 
   return {
     city,
+    cityError: resolved.error,
     station,
     destination: direction,
     destinationLabel: direction,
@@ -162,6 +165,11 @@ app.get("/api/next-train", async (req, res) => {
     return;
   }
 
+  if (config.cityError) {
+    res.status(400).json(config.cityError);
+    return;
+  }
+
   if (isMultiCityRequest(req.query)) {
     const station = resolveMultiCityStation(config.city, config.station);
     if (!station) {
@@ -228,6 +236,14 @@ app.get("/api/directions", async (req, res) => {
 
   if (!gateRequest(req, res)) {
     return;
+  }
+
+  {
+    const resolvedCity = resolveRequestCity(req.query);
+    if (resolvedCity.error) {
+      res.status(400).json(resolvedCity.error);
+      return;
+    }
   }
 
   if (isMultiCityRequest(req.query)) {
@@ -297,6 +313,14 @@ app.get("/api/destinations", async (req, res) => {
 
   if (!gateRequest(req, res)) {
     return;
+  }
+
+  {
+    const resolvedCity = resolveRequestCity(req.query);
+    if (resolvedCity.error) {
+      res.status(400).json(resolvedCity.error);
+      return;
+    }
   }
 
   if (isMultiCityRequest(req.query)) {
@@ -395,7 +419,12 @@ app.get("/api/board", async (req, res) => {
     return;
   }
 
-  const city = req.query?.city ?? "perth";
+  const resolvedCity = resolveRequestCity(req.query);
+  if (resolvedCity.error) {
+    res.status(400).json(resolvedCity.error);
+    return;
+  }
+  const city = resolvedCity.city;
   let stationName = req.query?.station;
   const lat = req.query?.lat ? parseFloat(req.query.lat) : null;
   const lng = req.query?.lng ? parseFloat(req.query.lng) : null;

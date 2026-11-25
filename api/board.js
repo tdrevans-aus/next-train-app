@@ -20,6 +20,7 @@ import {
   DEFAULT_REFRESH_SECONDS,
 } from "../lib/train-times-server.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
+import { resolveRequestCity } from "../lib/api-city-default.js";
 import { FeedUnavailableError } from "../lib/providers/gtfs/errors.js";
 
 export default async function handler(req, res) {
@@ -34,7 +35,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const city = req.query?.city ?? "perth";
+    const resolvedCity = resolveRequestCity(req.query);
+    if (resolvedCity.error) {
+      res.status(400).json(resolvedCity.error);
+      return;
+    }
+    const city = resolvedCity.city;
   let stationName = req.query?.station;
   const lat = req.query?.lat ? parseFloat(req.query.lat) : null;
   const lng = req.query?.lng ? parseFloat(req.query.lng) : null;
