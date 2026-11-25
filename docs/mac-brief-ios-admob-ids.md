@@ -110,3 +110,8 @@ AdMob configuration, most likely that the new iOS app is not covered by a publis
    `showBanner` with no "Request consent info failed".
 
 Without step 1, 3.0.5 on iOS will request no ads at all, by design (consent fails closed).
+
+**Resolved 25 Nov 2026.** Tim added the iOS app to AdMob's Privacy & messaging messages. Re-test
+on a debug simulator build with the committed iOS app ID (`~4788376838`): `requestConsentInfo` →
+`initialize` → `showBanner`, and Google's iOS test banner renders ("Test mode"). Clear to upload
+3.0.5 (31).
