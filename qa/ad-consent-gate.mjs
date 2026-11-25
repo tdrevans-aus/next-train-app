@@ -13,6 +13,10 @@
  *     path — window.NextTrainAdFree.isEntitled() === true.
  *  d. A UMP throw (requestConsentInfo rejects) leaves the board rendering:
  *     showNativeBanner resolves without throwing, and shows no banner.
+ *  e. FB-69 (docs/mac-brief-ios-admob-ids.md): AdMob units are per-platform.
+ *     iOS gets admobIosBannerId (Google's iOS sample in test mode), Android
+ *     gets admobBannerId (Google's Android sample in test mode), and iOS
+ *     with no iOS unit shows no banner rather than falling back to Android's.
  *
  * Usage: node qa/ad-consent-gate.mjs
  */
@@ -65,7 +69,11 @@ function makeAdmobStub({ consentInfo, consentThrows = false, formInfo } = {}) {
 
 async function run() {
   const ads = await import("../web-sources/ads-native.mjs");
-  const config = { admobTestMode: false, admobBannerId: "ca-app-pub-test/1" };
+  const config = {
+    admobTestMode: false,
+    admobBannerId: "ca-app-pub-test/1",
+    admobIosBannerId: "ca-app-pub-test/ios-1",
+  };
 
   // --- (b) canRequestAds: true → showBanner called exactly once ---
   {
@@ -190,6 +198,62 @@ async function run() {
     assert(androidStub.calls.showBanner === 1, "(FB-68 Android) expected 1 showBanner call");
     assert(!("npa" in (androidStub.calls.lastBannerOptions ?? {})), "(FB-68 Android) showBanner must not carry npa");
     assert(androidStub.calls.lastBannerOptions?.margin === 72, "(FB-68 Android) Android margin must stay 72");
+
+    globalThis.window.Capacitor = originalCapacitor;
+  }
+
+  // --- (e) FB-69: per-platform ad unit IDs, never Android's unit on iOS ---
+  {
+    const originalCapacitor = globalThis.window.Capacitor;
+    const consentOk = {
+      status: "NOT_REQUIRED",
+      isConsentFormAvailable: false,
+      canRequestAds: true,
+      privacyOptionsRequirementStatus: "NOT_REQUIRED",
+    };
+    globalThis.window.NextTrainAdFree.isEntitled = () => false;
+
+    // Release build: WidgetSync.isDebugBuild() → { debug: false }, so the
+    // configured (real) unit is used. Debug build: Google's sample unit.
+    const nativeWindow = (platform, debug) => ({
+      isNativePlatform: () => true,
+      getPlatform: () => platform,
+      Plugins: { WidgetSync: { isDebugBuild: async () => ({ debug }) } },
+    });
+
+    const bannerFor = async (platform, debug, cfg = config) => {
+      globalThis.window.Capacitor = nativeWindow(platform, debug);
+      const stub = makeAdmobStub({ consentInfo: consentOk });
+      ads.__setAdMobClientForTests(stub);
+      await ads.showNativeBanner(cfg);
+      return stub.calls;
+    };
+
+    const iosRelease = await bannerFor("ios", false);
+    assert(
+      iosRelease.lastBannerOptions?.adId === "ca-app-pub-test/ios-1",
+      `(e iOS release) expected admobIosBannerId, got ${iosRelease.lastBannerOptions?.adId}`
+    );
+    const iosDebug = await bannerFor("ios", true);
+    assert(
+      iosDebug.lastBannerOptions?.adId === "ca-app-pub-3940256099942544/2435281174",
+      `(e iOS debug) expected Google's iOS sample banner, got ${iosDebug.lastBannerOptions?.adId}`
+    );
+    const androidRelease = await bannerFor("android", false);
+    assert(
+      androidRelease.lastBannerOptions?.adId === "ca-app-pub-test/1",
+      `(e Android release) expected admobBannerId, got ${androidRelease.lastBannerOptions?.adId}`
+    );
+    const androidDebug = await bannerFor("android", true);
+    assert(
+      androidDebug.lastBannerOptions?.adId === "ca-app-pub-3940256099942544/6300978111",
+      `(e Android debug) expected Google's Android sample banner, got ${androidDebug.lastBannerOptions?.adId}`
+    );
+    const iosNoUnit = await bannerFor("ios", false, { ...config, admobIosBannerId: "" });
+    assert(
+      iosNoUnit.showBanner === 0,
+      `(e iOS no unit) must show no banner rather than fall back to Android's unit, got adId ${iosNoUnit.lastBannerOptions?.adId}`
+    );
 
     globalThis.window.Capacitor = originalCapacitor;
   }

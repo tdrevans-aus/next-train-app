@@ -83,6 +83,8 @@ Ad IDs live in `public/site-config.json`:
 {
   "admobAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY",
   "admobBannerId": "ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ",
+  "admobIosAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~IIIIIIIIII",
+  "admobIosBannerId": "ca-app-pub-XXXXXXXXXXXXXXXX/JJJJJJJJJJ",
   "admobTestMode": true
 }
 ```

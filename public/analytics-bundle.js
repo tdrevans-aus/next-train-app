@@ -8293,6 +8293,8 @@ Event: ${getEventDescription(event)}`
           delete breadcrumb.data.apiKey;
           delete breadcrumb.data.admobAppId;
           delete breadcrumb.data.admobBannerId;
+          delete breadcrumb.data.admobIosAppId;
+          delete breadcrumb.data.admobIosBannerId;
         }
         return breadcrumb;
       },

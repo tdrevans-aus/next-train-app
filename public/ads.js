@@ -6,7 +6,12 @@ function isAdSenseConfigured(config) {
   return Boolean(config.adsenseClient && config.adsenseSlot);
 }
 
+// AdMob IDs are per-platform (docs/mac-brief-ios-admob-ids.md, FB-69). iOS
+// requires its own app + banner IDs and never falls back to Android's.
 function isAdMobConfigured(config) {
+  if (window.Capacitor?.getPlatform?.() === "ios") {
+    return Boolean(config.admobIosAppId && config.admobIosBannerId);
+  }
   return Boolean(config.admobAppId && config.admobBannerId);
 }
 
