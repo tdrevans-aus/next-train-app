@@ -53,6 +53,7 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Web-to-Android sync | **3.0.2** | **26** | `v3.0.2` | PATCH shipping the weekend's web changes to the APK: country-wide station search with Region as an optional filter, full UK National Rail catalogs, closure notice on empty boards, Sydney intercity lines, bundled directions — see `docs/release-notes-3.0.2.md` |
 | First public release | **3.0.3** | **27** | `v3.0.3` | First production rollout on Play (20 Sep 2026): Near me resolves the region from the nearest live station, nine Essex stations moved to Greater Anglia. Shipped with two defects fixed in 3.0.4: no banner ads, and a dev-only LAN-origin file in the bundle — see `docs/release-notes-3.0.3.md` |
 | Ads fix | **3.0.4** | **28** | `v3.0.4` | Fixes-only PATCH: banner ads never started in 3.0.3 because `ads.js` missed the page `load` event (#434); release builds now prune dev-only assets (#406, #407) — see `docs/release-notes-3.0.4.md` |
+| Retired-city message + iOS ads | **3.0.5** | **29** (iOS build 31) | `v3.0.5` | Ships client-side changes since 3.0.4: honest message for a saved city/journey in a retired city (#558), iOS uses its own AdMob IDs (#550, FB-69), registry-driven picker, honest empty states — see `docs/release-notes-3.0.5.md` |
 
 Update this table when you ship.
 
