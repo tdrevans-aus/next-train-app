@@ -376,28 +376,14 @@ var NextTrainGeo = (() => {
     console.log("[Geo] navigator.geolocation success");
     return { coords };
   }
-  async function getCurrentPosition(options = {}) {
-    await ensureLocationPermission();
-    const timeout = options.timeout ?? (isIos() ? 8e3 : 5e3);
-    const maximumAge = options.maximumAge ?? 6e4;
-    const preferHighAccuracy = Boolean(options.enableHighAccuracy);
-    const nativeAttempts = preferHighAccuracy ? [
-      { enableHighAccuracy: true, maximumAge, timeout },
-      { enableHighAccuracy: false, maximumAge, timeout }
-    ] : isEmulator() ? [
-      { enableHighAccuracy: false, maximumAge: 0, timeout },
-      {
-        enableHighAccuracy: false,
-        maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1e3),
-        timeout
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout }
-    ] : [
-      { enableHighAccuracy: false, maximumAge, timeout },
-      { enableHighAccuracy: true, maximumAge, timeout: Math.max(timeout, 6e3) }
-    ];
+  function isAndroidNative() {
+    return isNativePlatform() && globalThis.Capacitor?.getPlatform?.() === "android";
+  }
+  var ANDROID_QUICK_FIX_MAX_AGE_MS = 12e4;
+  var ANDROID_QUICK_FIX_TIMEOUT_MS = 2500;
+  async function readNativeAttempts(attempts) {
     let lastError = null;
-    for (const attempt of nativeAttempts) {
+    for (const attempt of attempts) {
       try {
         console.log(
           `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
@@ -420,6 +406,60 @@ var NextTrainGeo = (() => {
         console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
         lastError = error;
       }
+    }
+    throw lastError ?? new Error("Could not obtain location in time");
+  }
+  function firstFulfilled(promises) {
+    return new Promise((resolve, reject) => {
+      let pending = promises.length;
+      let firstError = null;
+      for (const promise of promises) {
+        promise.then(resolve, (error) => {
+          firstError = firstError ?? error;
+          pending -= 1;
+          if (pending === 0) {
+            reject(firstError);
+          }
+        });
+      }
+    });
+  }
+  async function getCurrentPosition(options = {}) {
+    await ensureLocationPermission();
+    const timeout = options.timeout ?? (isIos() ? 8e3 : 5e3);
+    const maximumAge = options.maximumAge ?? 6e4;
+    const preferHighAccuracy = Boolean(options.enableHighAccuracy);
+    const nativeAttempts = preferHighAccuracy ? [
+      { enableHighAccuracy: true, maximumAge, timeout },
+      { enableHighAccuracy: false, maximumAge, timeout }
+    ] : isEmulator() ? [
+      { enableHighAccuracy: false, maximumAge: 0, timeout },
+      {
+        enableHighAccuracy: false,
+        maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1e3),
+        timeout
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout }
+    ] : [
+      { enableHighAccuracy: false, maximumAge, timeout },
+      { enableHighAccuracy: true, maximumAge, timeout: Math.max(timeout, 6e3) }
+    ];
+    let lastError = null;
+    try {
+      const fresh = readNativeAttempts(nativeAttempts);
+      if (isAndroidNative() && maximumAge < ANDROID_QUICK_FIX_MAX_AGE_MS) {
+        const quick = readNativeAttempts([
+          {
+            enableHighAccuracy: false,
+            maximumAge: ANDROID_QUICK_FIX_MAX_AGE_MS,
+            timeout: ANDROID_QUICK_FIX_TIMEOUT_MS
+          }
+        ]);
+        return await firstFulfilled([quick, fresh]);
+      }
+      return await fresh;
+    } catch (error) {
+      lastError = error;
     }
     if (!isNativePlatform() && navigator.geolocation) {
       try {

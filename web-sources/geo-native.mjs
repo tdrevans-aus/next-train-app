@@ -232,6 +232,67 @@ async function readNavigatorPosition(options = {}) {
   return { coords };
 }
 
+function isAndroidNative() {
+  return isNativePlatform() && globalThis.Capacitor?.getPlatform?.() === "android";
+}
+
+// docs/jim-brief-android-near-me-slow-location.md: Near me asks for maximumAge: 0 on open and
+// resume so it never trusts a 45-60 s old fix. On Android that is a fresh-only
+// FusedLocationProvider request, which indoors / on a cold provider can sit for the whole
+// attempt budget (twice, low then high accuracy) while the cached station stays on screen.
+// Since #450 removed the navigator.geolocation fallback there is nothing else to rescue it, so
+// on Android we race the fresh request against a recent-fix read and take whichever lands first.
+const ANDROID_QUICK_FIX_MAX_AGE_MS = 120_000;
+const ANDROID_QUICK_FIX_TIMEOUT_MS = 2500;
+
+async function readNativeAttempts(attempts) {
+  let lastError = null;
+  for (const attempt of attempts) {
+    try {
+      console.log(
+        `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
+      );
+      const position = await withDeadline(
+        Geolocation.getCurrentPosition({
+          enableHighAccuracy: attempt.enableHighAccuracy,
+          timeout: attempt.timeout,
+          maximumAge: attempt.maximumAge,
+        }),
+        attempt.timeout + 1000
+      );
+
+      const coords = readPositionCoords(position);
+      if (!coords) {
+        throw new Error("Geolocation returned an invalid position");
+      }
+
+      console.log("[Geo] getCurrentPosition success");
+      return { coords };
+    } catch (error) {
+      console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
+      lastError = error;
+    }
+  }
+  throw lastError ?? new Error("Could not obtain location in time");
+}
+
+/** First fulfilled promise wins; rejects with the first rejection's error only if all reject. */
+function firstFulfilled(promises) {
+  return new Promise((resolve, reject) => {
+    let pending = promises.length;
+    let firstError = null;
+    for (const promise of promises) {
+      promise.then(resolve, (error) => {
+        firstError = firstError ?? error;
+        pending -= 1;
+        if (pending === 0) {
+          reject(firstError);
+        }
+      });
+    }
+  });
+}
+
 export async function getCurrentPosition(options = {}) {
   await ensureLocationPermission();
 
@@ -263,31 +324,22 @@ export async function getCurrentPosition(options = {}) {
         ];
 
   let lastError = null;
-  for (const attempt of nativeAttempts) {
-    try {
-      console.log(
-        `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
-      );
-      const position = await withDeadline(
-        Geolocation.getCurrentPosition({
-          enableHighAccuracy: attempt.enableHighAccuracy,
-          timeout: attempt.timeout,
-          maximumAge: attempt.maximumAge,
-        }),
-        attempt.timeout + 1000
-      );
-
-      const coords = readPositionCoords(position);
-      if (!coords) {
-        throw new Error("Geolocation returned an invalid position");
-      }
-
-      console.log("[Geo] getCurrentPosition success");
-      return { coords };
-    } catch (error) {
-      console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
-      lastError = error;
+  try {
+    const fresh = readNativeAttempts(nativeAttempts);
+    if (isAndroidNative() && maximumAge < ANDROID_QUICK_FIX_MAX_AGE_MS) {
+      const quick = readNativeAttempts([
+        {
+          enableHighAccuracy: false,
+          maximumAge: ANDROID_QUICK_FIX_MAX_AGE_MS,
+          timeout: ANDROID_QUICK_FIX_TIMEOUT_MS,
+        },
+      ]);
+      // Whichever lands first; the loser keeps running harmlessly (errors are consumed above).
+      return await firstFulfilled([quick, fresh]);
     }
+    return await fresh;
+  } catch (error) {
+    lastError = error;
   }
 
   // jim-brief-ios-webkit-location-prompt: never fall back to navigator.geolocation
