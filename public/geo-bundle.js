@@ -376,6 +376,85 @@ var NextTrainGeo = (() => {
     console.log("[Geo] navigator.geolocation success");
     return { coords };
   }
+  function isAndroidNative() {
+    return isNativePlatform() && globalThis.Capacitor?.getPlatform?.() === "android";
+  }
+  var ANDROID_QUICK_FIX_MAX_AGE_MS = 12e4;
+  var ANDROID_QUICK_FIX_TIMEOUT_MS = 2500;
+  var inflightNative = [];
+  function nativeGetCurrentPosition(attempt) {
+    const call = () => Geolocation2.getCurrentPosition({
+      enableHighAccuracy: attempt.enableHighAccuracy,
+      timeout: attempt.timeout,
+      maximumAge: attempt.maximumAge
+    });
+    if (!isAndroidNative()) {
+      return call();
+    }
+    const match = inflightNative.find(
+      (entry2) => entry2.enableHighAccuracy === Boolean(attempt.enableHighAccuracy) && entry2.maximumAge <= attempt.maximumAge && // A cache-tolerant caller must not join a fresh-only (maximumAge: 0) request: that one
+      // can sit for its whole budget while a cached fix is available right now.
+      (entry2.maximumAge > 0 || attempt.maximumAge === 0) && // The quick read exists to return a recent fix immediately, so it only shares another
+      // request of exactly its own age, never a slower, fresher one.
+      (!attempt.quick || entry2.maximumAge === attempt.maximumAge)
+    );
+    if (match) {
+      console.log(`[Geo] joining in-flight native request (maximumAge=${match.maximumAge})`);
+      return match.promise;
+    }
+    const entry = {
+      enableHighAccuracy: Boolean(attempt.enableHighAccuracy),
+      maximumAge: attempt.maximumAge,
+      promise: null
+    };
+    entry.promise = Promise.resolve(call());
+    inflightNative.push(entry);
+    const drop = () => {
+      const index = inflightNative.indexOf(entry);
+      if (index !== -1) inflightNative.splice(index, 1);
+    };
+    entry.promise.then(drop, drop);
+    return entry.promise;
+  }
+  async function readNativeAttempts(attempts) {
+    let lastError = null;
+    for (const attempt of attempts) {
+      try {
+        console.log(
+          `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
+        );
+        const position = await withDeadline(
+          nativeGetCurrentPosition(attempt),
+          attempt.timeout + 1e3
+        );
+        const coords = readPositionCoords(position);
+        if (!coords) {
+          throw new Error("Geolocation returned an invalid position");
+        }
+        console.log("[Geo] getCurrentPosition success");
+        return { coords };
+      } catch (error) {
+        console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
+        lastError = error;
+      }
+    }
+    throw lastError ?? new Error("Could not obtain location in time");
+  }
+  function firstFulfilled(promises) {
+    return new Promise((resolve, reject) => {
+      let pending = promises.length;
+      let firstError = null;
+      for (const promise of promises) {
+        promise.then(resolve, (error) => {
+          firstError = firstError ?? error;
+          pending -= 1;
+          if (pending === 0) {
+            reject(firstError);
+          }
+        });
+      }
+    });
+  }
   async function getCurrentPosition(options = {}) {
     await ensureLocationPermission();
     const timeout = options.timeout ?? (isIos() ? 8e3 : 5e3);
@@ -397,29 +476,39 @@ var NextTrainGeo = (() => {
       { enableHighAccuracy: true, maximumAge, timeout: Math.max(timeout, 6e3) }
     ];
     let lastError = null;
-    for (const attempt of nativeAttempts) {
-      try {
-        console.log(
-          `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
-        );
-        const position = await withDeadline(
-          Geolocation2.getCurrentPosition({
-            enableHighAccuracy: attempt.enableHighAccuracy,
-            timeout: attempt.timeout,
-            maximumAge: attempt.maximumAge
-          }),
-          attempt.timeout + 1e3
-        );
-        const coords = readPositionCoords(position);
-        if (!coords) {
-          throw new Error("Geolocation returned an invalid position");
+    try {
+      const fresh = readNativeAttempts(nativeAttempts);
+      if (isAndroidNative() && maximumAge === 0) {
+        const quick = readNativeAttempts([
+          {
+            enableHighAccuracy: false,
+            maximumAge: ANDROID_QUICK_FIX_MAX_AGE_MS,
+            timeout: ANDROID_QUICK_FIX_TIMEOUT_MS,
+            quick: true
+          }
+        ]);
+        const winner = await firstFulfilled([
+          quick.then((position) => ({ position, wasQuick: true })),
+          fresh.then((position) => ({ position, wasQuick: false }))
+        ]);
+        if (winner.wasQuick && typeof options.onRefine === "function") {
+          fresh.then(
+            (position) => {
+              try {
+                options.onRefine(position);
+              } catch (error) {
+                console.warn("[Geo] onRefine failed:", error?.message || error);
+              }
+            },
+            () => {
+            }
+          );
         }
-        console.log("[Geo] getCurrentPosition success");
-        return { coords };
-      } catch (error) {
-        console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
-        lastError = error;
+        return winner.position;
       }
+      return await fresh;
+    } catch (error) {
+      lastError = error;
     }
     if (!isNativePlatform() && navigator.geolocation) {
       try {

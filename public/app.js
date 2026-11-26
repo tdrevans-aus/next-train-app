@@ -5585,6 +5585,7 @@ async function findNearestStation({
   allowSessionShortcut = true,
   maximumAge,
   followGps = false,
+  onRefine,
 } = {}) {
   const planningCity = planningCityId();
   const regionMismatch = Object.assign(
@@ -5625,12 +5626,42 @@ async function findNearestStation({
       : forceFresh
         ? 0
         : NEARBY_SOFT_LOCATION_MAX_AGE_MS;
-  const position = await getAppGeolocationPosition({
+  // docs/jim-brief-android-near-me-561-followup.md: on Android an open/resume (maximumAge: 0)
+  // paints from a quick, possibly 2-minute-old fix; the fresh fix lands later through
+  // onRefine and, when it maps to a different station, is handed to the caller's onRefine.
+  let settleInitial;
+  const initialSettled = new Promise((resolve) => {
+    settleInitial = resolve;
+  });
+  let initialStation = null;
+  const geoOptions = {
     enableHighAccuracy: forceFresh,
     timeout: geoTimeoutMs,
     maximumAge: resolvedMaximumAge,
-  });
+  };
+  if (typeof onRefine === "function" && resolvedMaximumAge === 0) {
+    geoOptions.onRefine = (freshPosition) => {
+      void (async () => {
+        await initialSettled;
+        const refined = await resolveFromPosition(freshPosition);
+        if (refined?.station && refined.station !== initialStation) {
+          onRefine(refined);
+        }
+      })().catch((error) => {
+        console.warn("[App] findNearestStation: refine skipped:", error?.message || error);
+      });
+    };
+  }
+  const position = await getAppGeolocationPosition(geoOptions);
+  try {
+    const initial = await resolveFromPosition(position);
+    initialStation = initial?.station ?? null;
+    return initial;
+  } finally {
+    settleInitial();
+  }
 
+  async function resolveFromPosition(position) {
   const { latitude, longitude } = position.coords;
   // Raw hint: null when the fix is inside no region we cover. nearbyCityFromCoords
   // folds that to "perth", which is right for region-scoped callers but wrong for
@@ -5715,6 +5746,7 @@ async function findNearestStation({
     lat: latitude,
     lng: longitude,
   };
+  }
 }
 
 

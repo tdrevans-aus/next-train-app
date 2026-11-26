@@ -232,6 +232,112 @@ async function readNavigatorPosition(options = {}) {
   return { coords };
 }
 
+function isAndroidNative() {
+  return isNativePlatform() && globalThis.Capacitor?.getPlatform?.() === "android";
+}
+
+// docs/jim-brief-android-near-me-slow-location.md: Near me asks for maximumAge: 0 on open and
+// resume so it never trusts a 45-60 s old fix. On Android that is a fresh-only
+// FusedLocationProvider request, which indoors / on a cold provider can sit for the whole
+// attempt budget (twice, low then high accuracy) while the cached station stays on screen.
+// Since #450 removed the navigator.geolocation fallback there is nothing else to rescue it, so
+// on Android we race the fresh request against a recent-fix read and take whichever lands first.
+const ANDROID_QUICK_FIX_MAX_AGE_MS = 120_000;
+const ANDROID_QUICK_FIX_TIMEOUT_MS = 2500;
+
+// docs/jim-brief-android-near-me-561-followup.md: several callers ask for a position on open
+// (Near me locate, the region hint, the relocate loop, and the quick/fresh race above), each
+// issuing up to two native requests. On Android, share one in-flight native request between
+// callers whose needs it satisfies: same accuracy, and an in-flight maximumAge no larger than
+// the joiner's (so the result is never older than the joiner allows) and, unless the joiner
+// itself wants a fresh-only fix, not a fresh-only one. A caller wanting a
+// fresher fix than anything in flight issues its own. Android only — iOS is unchanged.
+const inflightNative = [];
+
+function nativeGetCurrentPosition(attempt) {
+  const call = () =>
+    Geolocation.getCurrentPosition({
+      enableHighAccuracy: attempt.enableHighAccuracy,
+      timeout: attempt.timeout,
+      maximumAge: attempt.maximumAge,
+    });
+  if (!isAndroidNative()) {
+    return call();
+  }
+  const match = inflightNative.find(
+    (entry) =>
+      entry.enableHighAccuracy === Boolean(attempt.enableHighAccuracy) &&
+      entry.maximumAge <= attempt.maximumAge &&
+      // A cache-tolerant caller must not join a fresh-only (maximumAge: 0) request: that one
+      // can sit for its whole budget while a cached fix is available right now.
+      (entry.maximumAge > 0 || attempt.maximumAge === 0) &&
+      // The quick read exists to return a recent fix immediately, so it only shares another
+      // request of exactly its own age, never a slower, fresher one.
+      (!attempt.quick || entry.maximumAge === attempt.maximumAge)
+  );
+  if (match) {
+    console.log(`[Geo] joining in-flight native request (maximumAge=${match.maximumAge})`);
+    return match.promise;
+  }
+  const entry = {
+    enableHighAccuracy: Boolean(attempt.enableHighAccuracy),
+    maximumAge: attempt.maximumAge,
+    promise: null,
+  };
+  entry.promise = Promise.resolve(call());
+  inflightNative.push(entry);
+  const drop = () => {
+    const index = inflightNative.indexOf(entry);
+    if (index !== -1) inflightNative.splice(index, 1);
+  };
+  entry.promise.then(drop, drop);
+  return entry.promise;
+}
+
+async function readNativeAttempts(attempts) {
+  let lastError = null;
+  for (const attempt of attempts) {
+    try {
+      console.log(
+        `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
+      );
+      const position = await withDeadline(
+        nativeGetCurrentPosition(attempt),
+        attempt.timeout + 1000
+      );
+
+      const coords = readPositionCoords(position);
+      if (!coords) {
+        throw new Error("Geolocation returned an invalid position");
+      }
+
+      console.log("[Geo] getCurrentPosition success");
+      return { coords };
+    } catch (error) {
+      console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
+      lastError = error;
+    }
+  }
+  throw lastError ?? new Error("Could not obtain location in time");
+}
+
+/** First fulfilled promise wins; rejects with the first rejection's error only if all reject. */
+function firstFulfilled(promises) {
+  return new Promise((resolve, reject) => {
+    let pending = promises.length;
+    let firstError = null;
+    for (const promise of promises) {
+      promise.then(resolve, (error) => {
+        firstError = firstError ?? error;
+        pending -= 1;
+        if (pending === 0) {
+          reject(firstError);
+        }
+      });
+    }
+  });
+}
+
 export async function getCurrentPosition(options = {}) {
   await ensureLocationPermission();
 
@@ -263,31 +369,44 @@ export async function getCurrentPosition(options = {}) {
         ];
 
   let lastError = null;
-  for (const attempt of nativeAttempts) {
-    try {
-      console.log(
-        `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
-      );
-      const position = await withDeadline(
-        Geolocation.getCurrentPosition({
-          enableHighAccuracy: attempt.enableHighAccuracy,
-          timeout: attempt.timeout,
-          maximumAge: attempt.maximumAge,
-        }),
-        attempt.timeout + 1000
-      );
-
-      const coords = readPositionCoords(position);
-      if (!coords) {
-        throw new Error("Geolocation returned an invalid position");
+  try {
+    const fresh = readNativeAttempts(nativeAttempts);
+    // Only when the caller asked for maximumAge: 0 (open/resume). A caller that allows some
+    // age (travel mode's 30 s relocate tick) gets exactly that age and no wider: a 2-minute-old
+    // cached fix must never beat the fresh one for a rider who is moving.
+    if (isAndroidNative() && maximumAge === 0) {
+      const quick = readNativeAttempts([
+        {
+          enableHighAccuracy: false,
+          maximumAge: ANDROID_QUICK_FIX_MAX_AGE_MS,
+          timeout: ANDROID_QUICK_FIX_TIMEOUT_MS,
+          quick: true,
+        },
+      ]);
+      // Whichever lands first; the loser keeps running harmlessly (errors are consumed above).
+      const winner = await firstFulfilled([
+        quick.then((position) => ({ position, wasQuick: true })),
+        fresh.then((position) => ({ position, wasQuick: false })),
+      ]);
+      // Refine: the quick fix may be up to 2 minutes old. If the fresh request lands later,
+      // hand it to the caller once so it can swap to a different nearest station.
+      if (winner.wasQuick && typeof options.onRefine === "function") {
+        fresh.then(
+          (position) => {
+            try {
+              options.onRefine(position);
+            } catch (error) {
+              console.warn("[Geo] onRefine failed:", error?.message || error);
+            }
+          },
+          () => {}
+        );
       }
-
-      console.log("[Geo] getCurrentPosition success");
-      return { coords };
-    } catch (error) {
-      console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
-      lastError = error;
+      return winner.position;
     }
+    return await fresh;
+  } catch (error) {
+    lastError = error;
   }
 
   // jim-brief-ios-webkit-location-prompt: never fall back to navigator.geolocation
