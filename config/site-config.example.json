@@ -8,7 +8,7 @@
   "admobTestMode": true,
   "adFreeProductId": "com.tdrevans.nexttrain.adfree",
   "adFreeListPrice": "A$7.99",
-  "appVersion": "3.0.4",
-  "appVersionCode": 28,
+  "appVersion": "3.0.5",
+  "appVersionCode": 29,
   "sentryDsn": ""
 }
