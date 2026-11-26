@@ -2001,6 +2001,53 @@ function isNearbyLocateCurrent(generation) {
   return generation === nearbyLocateGeneration && Boolean(nearbySession);
 }
 
+// docs/jim-brief-android-near-me-561-followup.md: Android open paints from a quick (up to
+// 2-minute-old) fix, then the fresh fix lands. If it maps to a different station, swap once —
+// same station-change path as a relocate tick (pin cleared, "Updated to nearest station",
+// cache + board refresh). No-op when the station is unchanged, so nothing flickers.
+async function applyNearbyRefine(generation, refined) {
+  if (
+    !isNearbyLocateCurrent(generation) ||
+    nearbyUserPickedStation ||
+    nearbyLocatePickerVisible ||
+    !refined?.station ||
+    !nearbySession?.station ||
+    refined.station === nearbySession.station
+  ) {
+    return;
+  }
+  nearbySession.unsupportedRegion = false;
+  nearbySession.fromCache = false;
+  nearbySession.station = refined.station;
+  nearbySession.city = refined.city || readNearbyCity();
+  nearbySession.lat = refined.lat ?? null;
+  nearbySession.lng = refined.lng ?? null;
+  nearbySession.distanceKm = refined.distanceKm;
+  nearbySession.refineNotice = "Updated to nearest station";
+  if (typeof refined.lat === "number" && typeof refined.lng === "number") {
+    lastRelocateSample = { latitude: refined.lat, longitude: refined.lng, at: Date.now() };
+  }
+  clearNearbyPin();
+  writeLastNearbyStationCache({
+    station: refined.station,
+    city: refined.city || readNearbyCity(),
+    distanceKm: refined.distanceKm,
+  });
+  try {
+    await fetchNearbyBoard();
+    if (!isNearbyLocateCurrent(generation)) {
+      return;
+    }
+    clearNearbyError();
+  } catch (error) {
+    if (!isNearbyLocateCurrent(generation)) {
+      return;
+    }
+    setNearbyError(error.message ?? "Could not load departures for this station", "board");
+  }
+  renderNearbyBoard();
+}
+
 async function locateNearbyInBackground({ forceFresh = false, maximumAge } = {}) {
   const generation = ++nearbyLocateGeneration;
   const previousStation = nearbySession?.station ?? null;
@@ -2016,6 +2063,7 @@ async function locateNearbyInBackground({ forceFresh = false, maximumAge } = {})
       // otherwise a Perth rider with Netherlands selected stays stuck on the cached station.
       followGps: true,
       ...(typeof maximumAge === "number" ? { maximumAge } : {}),
+      onRefine: (refined) => void applyNearbyRefine(generation, refined),
     });
     // User may have left Near me (or started a newer locate) while GPS resolved.
     if (!isNearbyLocateCurrent(generation)) {

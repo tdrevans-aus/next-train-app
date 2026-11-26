@@ -245,6 +245,55 @@ function isAndroidNative() {
 const ANDROID_QUICK_FIX_MAX_AGE_MS = 120_000;
 const ANDROID_QUICK_FIX_TIMEOUT_MS = 2500;
 
+// docs/jim-brief-android-near-me-561-followup.md: several callers ask for a position on open
+// (Near me locate, the region hint, the relocate loop, and the quick/fresh race above), each
+// issuing up to two native requests. On Android, share one in-flight native request between
+// callers whose needs it satisfies: same accuracy, and an in-flight maximumAge no larger than
+// the joiner's (so the result is never older than the joiner allows) and, unless the joiner
+// itself wants a fresh-only fix, not a fresh-only one. A caller wanting a
+// fresher fix than anything in flight issues its own. Android only — iOS is unchanged.
+const inflightNative = [];
+
+function nativeGetCurrentPosition(attempt) {
+  const call = () =>
+    Geolocation.getCurrentPosition({
+      enableHighAccuracy: attempt.enableHighAccuracy,
+      timeout: attempt.timeout,
+      maximumAge: attempt.maximumAge,
+    });
+  if (!isAndroidNative()) {
+    return call();
+  }
+  const match = inflightNative.find(
+    (entry) =>
+      entry.enableHighAccuracy === Boolean(attempt.enableHighAccuracy) &&
+      entry.maximumAge <= attempt.maximumAge &&
+      // A cache-tolerant caller must not join a fresh-only (maximumAge: 0) request: that one
+      // can sit for its whole budget while a cached fix is available right now.
+      (entry.maximumAge > 0 || attempt.maximumAge === 0) &&
+      // The quick read exists to return a recent fix immediately, so it only shares another
+      // request of exactly its own age, never a slower, fresher one.
+      (!attempt.quick || entry.maximumAge === attempt.maximumAge)
+  );
+  if (match) {
+    console.log(`[Geo] joining in-flight native request (maximumAge=${match.maximumAge})`);
+    return match.promise;
+  }
+  const entry = {
+    enableHighAccuracy: Boolean(attempt.enableHighAccuracy),
+    maximumAge: attempt.maximumAge,
+    promise: null,
+  };
+  entry.promise = Promise.resolve(call());
+  inflightNative.push(entry);
+  const drop = () => {
+    const index = inflightNative.indexOf(entry);
+    if (index !== -1) inflightNative.splice(index, 1);
+  };
+  entry.promise.then(drop, drop);
+  return entry.promise;
+}
+
 async function readNativeAttempts(attempts) {
   let lastError = null;
   for (const attempt of attempts) {
@@ -253,11 +302,7 @@ async function readNativeAttempts(attempts) {
         `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
       );
       const position = await withDeadline(
-        Geolocation.getCurrentPosition({
-          enableHighAccuracy: attempt.enableHighAccuracy,
-          timeout: attempt.timeout,
-          maximumAge: attempt.maximumAge,
-        }),
+        nativeGetCurrentPosition(attempt),
         attempt.timeout + 1000
       );
 
@@ -326,16 +371,38 @@ export async function getCurrentPosition(options = {}) {
   let lastError = null;
   try {
     const fresh = readNativeAttempts(nativeAttempts);
-    if (isAndroidNative() && maximumAge < ANDROID_QUICK_FIX_MAX_AGE_MS) {
+    // Only when the caller asked for maximumAge: 0 (open/resume). A caller that allows some
+    // age (travel mode's 30 s relocate tick) gets exactly that age and no wider: a 2-minute-old
+    // cached fix must never beat the fresh one for a rider who is moving.
+    if (isAndroidNative() && maximumAge === 0) {
       const quick = readNativeAttempts([
         {
           enableHighAccuracy: false,
           maximumAge: ANDROID_QUICK_FIX_MAX_AGE_MS,
           timeout: ANDROID_QUICK_FIX_TIMEOUT_MS,
+          quick: true,
         },
       ]);
       // Whichever lands first; the loser keeps running harmlessly (errors are consumed above).
-      return await firstFulfilled([quick, fresh]);
+      const winner = await firstFulfilled([
+        quick.then((position) => ({ position, wasQuick: true })),
+        fresh.then((position) => ({ position, wasQuick: false })),
+      ]);
+      // Refine: the quick fix may be up to 2 minutes old. If the fresh request lands later,
+      // hand it to the caller once so it can swap to a different nearest station.
+      if (winner.wasQuick && typeof options.onRefine === "function") {
+        fresh.then(
+          (position) => {
+            try {
+              options.onRefine(position);
+            } catch (error) {
+              console.warn("[Geo] onRefine failed:", error?.message || error);
+            }
+          },
+          () => {}
+        );
+      }
+      return winner.position;
     }
     return await fresh;
   } catch (error) {
